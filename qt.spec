@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 10
+Release: 11
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -95,6 +95,7 @@ Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.3-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch15: qt-x11-free-3.3.3-qimage.patch
+Patch16: qt-x11-free-3.3.3-fullscreen.patch
 
 # feature patches
 Patch50: qt-x11-immodule-unified-qt3.3.3-20040910.diff.bz2
@@ -120,7 +121,7 @@ BuildRequires: libungif-devel
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: findutils
-BuildRequires: xorg-x11-devel >= 4.3
+BuildRequires: xorg-x11-devel
 BuildRequires: cups-devel
 BuildRequires: tar
 
@@ -292,6 +293,7 @@ for the Qt toolkit.
 %patch13 -p1 -b .fonts
 %patch14 -p1 -b .gl
 %patch15 -p1 -b .image
+%patch16 -p1 -b .size
 
 %if %{immodule}
 %patch50 -p0
@@ -314,7 +316,11 @@ export QTDEST=%{qtdir}
 %endif
 
 # set some default FLAGS
-OPTFLAGS=$RPM_OPT_FLAGS
+%ifarch ia64
+OPTFLAGS="-O0"
+%else
+OPTFLAGS="$RPM_OPT_FLAGS"
+%endif
 
 # don't use rpath
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
@@ -439,7 +445,7 @@ popd
 # install man pages
 mkdir -p %{buildroot}%{_mandir}
 cp -fR doc/man/* %{buildroot}%{_mandir}/
-rm -rf doc/man
+rm -rf doc/man %{buildroot}%{qtdir}/doc/html
 
 # clean up
 make -C tutorial clean
@@ -483,9 +489,11 @@ done
 
 # make symbolic link to qt docdir
 if echo %{_docdir} | grep  share >& /dev/null ; then
-  ln -s  ../../../share/doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
+  ln -s ../../../share/doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
+  ln -s ../../../share/doc/%{name}-devel-%{version}/html %{buildroot}%{qtdir}/doc
 else
-  ln -s  ../../../doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
+  ln -s ../../../doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
+  ln -s ../../../doc/%{name}-devel-%{version}/html %{buildroot}%{qtdir}/doc
 fi
 
 # Add desktop file
@@ -694,15 +702,16 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Nov 10 2004 Than Ngo <than@redhat.com> 1:3.3.3-11
+- apply patch to fix fullscreen problem
+- remove html documents duplicate #135696
+
 * Tue Nov 02 2004 Than Ngo <than@redhat.com> 1:3.3.3-10
 - rebuilt
 
 * Tue Nov 02 2004 Than Ngo <than@redhat.com> 1:3.3.3-9
 - remove unused patch
 - set XIMInputStyle=On The Spot
-- require xorg-x11-devel instead XFree86-devel
-
-* Sun Oct 31 2004 Than Ngo <than@redhat.com> 1:3.3.3-9
 - require xorg-x11-devel instead XFree86-devel
 
 * Thu Oct 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-8
