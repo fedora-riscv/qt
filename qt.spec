@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 6
+Release: 7
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -310,7 +310,7 @@ export QTDEST=%{qtdir}
 %endif
 
 %if %{immodule}
-sh ./make-symlinks.sh
+   sh ./make-symlinks.sh
 %endif
 
 # set some default FLAGS
@@ -567,7 +567,9 @@ rm -rf %{buildroot}
 %dir %{qtdir}/bin
 %dir %{qtdir}/lib
 %dir %{qtdir}/plugins
+%if %{immodule}
 %{qtdir}/plugins/inputmethods
+%endif
 /etc/ld.so.conf.d/*
 %if ! %{redhat_artwork}
 %{qtdir}/etc/settings/qtrc
@@ -692,6 +694,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Oct 07 2004 Than Ngo <than@redhat.com> 1:3.3.3-7
+- fix build problem without qt immodule #134918
+
 * Tue Sep 28 2004 Than Ngo <than@redhat.com> 1:3.3.3-6
 - fix font problem, bz #133578
 
