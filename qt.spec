@@ -106,7 +106,7 @@ Patch14: qt-x11-free-3.3.3-gl.patch
 Patch16: qt-x11-free-3.3.4-fullscreen.patch
 
 # feature patches
-Patch50: qt-x11-immodule-unified-qt3.3.4-20040910.diff.bz2
+Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
 Patch51: qximinputcontext_x11.cpp.patch
 Patch52: qt-x11-free-3.3.3-immodule-quiet.patch
 Patch53: qt-x11-free-3.3.3-immodule-qinputcontext.patch
