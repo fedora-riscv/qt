@@ -2,19 +2,16 @@
 %define redhat_artwork 1
 %define desktop_file_utils_version 0.2.93
 
-%define ver 3.1.2
+%define ver 3.2.3
 
-%define qt_dirname qt-3.1
+%define qt_dirname qt-3.2
 %define qtdir %{_libdir}/%{qt_dirname}
-
-# 64bit arch
-%define arch64 x86_64 s390x ppc64
 
 # build Motif extention
 %define motif_extention 0
 
 # pkg-config
-%define pkg_config 0
+%define pkg_config 1
 
 # install manuals
 %define installman 1
@@ -41,14 +38,14 @@
 
 %define debug 0
 
-%define sover %{ver}
+%define sover 3.2.3
 
 %define styleplugins 0
 
 %if %{styleplugins}
-%define plugins_style -plugin-style-cde -plugin-style-motifplus -plugin-style-platinum -plugin-style-sgi -plugin-style-windows -plugin-style-compact -plugin-style-interlace -plugin-style-common -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
+%define plugins_style -plugin-style-cde -plugin-style-motifplus -plugin-style-platinum -plugin-style-sgi -plugin-style-windows -plugin-style-compact -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
 %else
-%define plugins_style -qt-style-cde -qt-style-motifplus -qt-style-platinum -qt-style-sgi -qt-style-windows -qt-style-compact -qt-style-interlace -qt-style-common -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
+%define plugins_style -qt-style-cde -qt-style-motifplus -qt-style-platinum -qt-style-sgi -qt-style-windows -qt-style-compact -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
 %endif
 
 %if %{buildmysql}
@@ -74,7 +71,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 14.2
+Release: 0.2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -86,17 +83,8 @@ Source1: qtrc
 
 Patch1: qt-3.1.2-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
-Patch5: qt-3.1.0-makefile.patch
-Patch8: qt-x11-free-3.1.0-fontdatabase.patch
-Patch9: qt-x11-free-3.1.0-lib64.patch
-Patch13: qt-x11-free-3.1.1-monospace.patch
-Patch15: qt-x11-free-3.1.1-qmlined.patch
-Patch17: qt-x11-free-3.1.2-randr.patch
-Patch18: qt-x11-free-3.1.2-typo.patch
-Patch19: qt-x11-free-3.1.2-qt-copy.patch
-
-# security
-Patch50: qt-x11-free-3.1.2-sec.patch
+Patch3: qt-3.1.0-makefile.patch
+Patch4: qt-x11-free-3.2.2-fontdatabase.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -115,7 +103,7 @@ BuildRequires: libungif-devel
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: findutils
-BuildRequires: XFree86-devel >= 4.2.99
+BuildRequires: XFree86-devel >= 4.3
 BuildRequires: cups-devel
 
 %if %{motif_extention}
@@ -155,6 +143,7 @@ Requires: fontconfig >= 2.0
 Summary: Development files and documentation for the Qt GUI toolkit.
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: XFree86-devel
 Obsoletes: qt3-devel
 Provides: qt3-devel
 %if ! %{buildstatic}
@@ -232,15 +221,10 @@ applications, as well as the README files for qt.
 The qt-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
 object compiler, the man pages, the HTML documentation and example
-programs. See http://www.trolltech.com/products/qt.html for more
-information about Qt, or look at
-/usr/share/doc/qt-devel-3.0.0/html/index.html, which provides Qt
-documentation in HTML format.
+programs.
 
 Install qt-devel if you want to develop GUI applications using the Qt
 toolkit.
-
-%{_docdir}/%{name}-devel-%{version}/html/index.html, which
 
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
@@ -273,22 +257,11 @@ The qt-designer package contains an User Interface designer tool
 for the Qt toolkit.
 
 %prep
-%setup -q -n qt-x11-free-%{version}
+%setup -q -n %{name}-x11-free-%{version}
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
-%patch5 -p1 -b .makefile
-%patch8 -p1 -b .qfontdatabase
-%ifarch %{arch64}
-%patch9 -p1 -b .lib64
-%endif
-%patch13 -p1 -b .monospace
-%patch15 -p1
-%patch17 -p1 -b .randr
-%patch18 -p1 -b .typo
-%patch19 -p1 -b .cvs
-
-#security
-%patch50 -p1 -b .sec
+%patch3 -p1 -b .makefile
+%patch4 -p1 -b .fontdatabase
 
 %build
 export QTDIR=`/bin/pwd`
@@ -297,9 +270,13 @@ export PATH="$QTDIR/bin:$PATH"
 export QTDEST=%{qtdir}
 export SMP_MFLAGS="%{?_smp_mflags}"
 
+# turn off -g on alpha
+%ifarch alpha
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -g0"
+%endif
+
 # set some default FLAGS
-OPTFLAGS=`echo $RPM_OPT_FLAGS | sed -e s/-fno-rtti/-frtti/`
-OPTFLAGS="$OPTFLAGS -fno-use-cxa-atexit -fno-exceptions"
+OPTFLAGS=$RPM_OPT_FLAGS
 
 # don't use rpath
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
@@ -308,9 +285,10 @@ perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 perl -pi -e "s,-O2,$INCLUDES $OPTFLAGS,g" mkspecs/*/qmake.conf
 
 # set correct lib path
-%ifarch %{arch64}
-perl -pi -e "s,/usr/X11R6/lib,/usr/X11R6/%{_lib},g" mkspecs/*/qmake.conf
-%endif
+if [ "%{_lib}" = lib64 ] ; then
+   perl -pi -e "s,/usr/X11R6/lib,/usr/X11R6/%{_lib},g" mkspecs/*/qmake.conf
+   perl -pi -e "s,/lib, /%{_lib},g" config.tests/unix/{checkavail,cups.test,nis.test}
+fi
 
 # Create a qmake target for linking without libstdc++ - avoid bloat if
 # possible...
@@ -461,55 +439,43 @@ make sub-src $SMP_MFLAGS
 %endif
 
 %install
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
+
 export QTDIR=`/bin/pwd`
 export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
 export PATH="$QTDIR/bin:$PATH"
 export QTDEST=%{qtdir}
 
-mkdir -p $RPM_BUILD_ROOT%{qtdir}/{bin,include,lib}
-mkdir -p $RPM_BUILD_ROOT%{_mandir}/{man1,man3}
-mkdir -p $RPM_BUILD_ROOT%{qtdir}/translations
+make install INSTALL_ROOT=%{buildroot}
 
-%if ! %{pkg_config}
-rm -rf $RPM_BUILD_ROOT%{_libdir}/pkgconfig
-%endif
-
-# install translation
-install -m 0644 translations/*.qm $RPM_BUILD_ROOT%{qtdir}/translations/
-
-# install tools and libraries
-rm bin/qmake
-cp -fL qmake/qmake bin
-for i in bin/*; do
-	cp -fL $i $RPM_BUILD_ROOT/%{qtdir}/bin
-	chmod 0755 $RPM_BUILD_ROOT/%{qtdir}/$i
+for i in findtr qt20fix qtrename140 qt32castcompat ; do
+   install bin/$i %{buildroot}%{qtdir}/bin/
 done
-cp -aR lib/* $RPM_BUILD_ROOT/%{qtdir}/lib
-cp -aR plugins $RPM_BUILD_ROOT/%{qtdir}
 
-if [ -e $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.%{sover} ]; then
-	ln -sf libqt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3.1
-	ln -sf libqt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3
-	ln -sf libqt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so
+sover=%{sover}
+if [ -e %{buildroot}%{qtdir}/lib/libqt.so.%{sover} ]; then
+   ln -sf libqt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%??}
+   ln -sf libqt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%%.*}
+   ln -sf libqt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so
 else
-	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.%{sover}
-	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3.1
-	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3
-	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so
+   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.%{sover}
+   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%??}
+   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%%.*}
+   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so
 fi
 
-ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt-mt.so.3.1
-ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt-mt.so.3
-ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt-mt.so
-
-ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so.1.0
-ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so.1
-ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so
+%if ! %{pkg_config}
+rm -rf %{buildroot}%{_libdir}/pkgconfig
+%else
+mkdir -p  %{buildroot}%{_libdir}/pkgconfig
+pushd %{buildroot}%{_libdir}/pkgconfig
+ln -sf ../%{qt_dirname}/lib/pkgconfig/* .
+popd
+%endif
 
 # install man pages
-cp -fR doc/man/man1/* $RPM_BUILD_ROOT%{_mandir}/man1
-cp -fR doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
+mkdir -p %{buildroot}%{_mandir}
+cp -fR doc/man/* %{buildroot}%{_mandir}/
 rm -rf doc/man
 
 # clean up
@@ -528,13 +494,8 @@ for a in */*/Makefile ; do
   mv -v ${a}.2 $a
 done
 
-# Get rid of windows or mac specific links
-for i in include/* include/*/*; do [ -e $i ] || rm -f $i; done
-
-cp -frL include/* $RPM_BUILD_ROOT%{qtdir}/include
-
-mkdir -p $RPM_BUILD_ROOT/etc/profile.d
-cat > $RPM_BUILD_ROOT/etc/profile.d/qt.sh <<EOF
+mkdir -p %{buildroot}/etc/profile.d
+cat > %{buildroot}/etc/profile.d/qt.sh <<EOF
 # Qt initialization script (sh)
 if [ -z "\$QTDIR" ] ; then
 	QTDIR="%{qtdir}"
@@ -542,9 +503,9 @@ fi
 export QTDIR
 EOF
 
-chmod 755 $RPM_BUILD_ROOT/etc/profile.d/qt.sh
+chmod 755 %{buildroot}/etc/profile.d/qt.sh
 
-cat > $RPM_BUILD_ROOT/etc/profile.d/qt.csh <<EOF
+cat > %{buildroot}/etc/profile.d/qt.csh <<EOF
 # Qt initialization script (csh)
 if ( \$?QTDIR ) then
          exit
@@ -552,28 +513,28 @@ endif
 setenv QTDIR %{qtdir}
 EOF
 
-chmod 755 $RPM_BUILD_ROOT/etc/profile.d/qt.csh
+chmod 755 %{buildroot}/etc/profile.d/qt.csh
 
-mkdir -p $RPM_BUILD_ROOT/usr/bin
+mkdir -p %{buildroot}%{_bindir}
 for i in bin/*; do
-	ln -s ../%{_lib}/%{qt_dirname}/bin/`basename $i` $RPM_BUILD_ROOT/%{_bindir}
-	ln -s `basename $i` $RPM_BUILD_ROOT/usr/bin/`basename $i`3
+	ln -s ../%{_lib}/%{qt_dirname}/bin/`basename $i` %{buildroot}/%{_bindir}
+	ln -s `basename $i` %{buildroot}%{_bindir}/`basename $i`3
 done
 
 # make symbolic link to qt docdir
 if echo %{_docdir} | grep  share >& /dev/null ; then
-  ln -s  ../../share/doc/%{name}-devel-%{version} $RPM_BUILD_ROOT%{qtdir}/doc
+  ln -s  ../../share/doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
 else
-  ln -s  ../../doc/%{name}-devel-%{version} $RPM_BUILD_ROOT%{qtdir}/doc
+  ln -s  ../../doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
 fi
 
 # Add desktop file
 %if %{desktop_file}
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
-cat >$RPM_BUILD_ROOT%{_datadir}/applications/qt-designer.desktop <<EOF
+mkdir -p %{buildroot}%{_datadir}/applications
+cat >%{buildroot}%{_datadir}/applications/qt-designer.desktop <<EOF
 %else
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/applnk/Development
-cat >$RPM_BUILD_ROOT%{_datadir}/applnk/Development/designer.desktop <<EOF
+mkdir -p %{buildroot}%{_datadir}/applnk/Development
+cat >%{buildroot}%{_datadir}/applnk/Development/designer.desktop <<EOF
 %endif
 [Desktop Entry]
 BinaryPattern=designer;
@@ -594,8 +555,8 @@ EOF
 # move it into redhat-artwork
 %if ! %{redhat_artwork}
 # Sane default settings
-mkdir -p $RPM_BUILD_ROOT%{qtdir}/etc/settings
-cat >$RPM_BUILD_ROOT%{qtdir}/etc/settings/qtrc <<"EOF"
+mkdir -p %{buildroot}%{qtdir}/etc/settings
+cat >%{buildroot}%{qtdir}/etc/settings/qtrc <<"EOF"
 [General]
 libraryPath=%{_libdir}/kde3/plugins
 style=Highcolor
@@ -613,26 +574,17 @@ rm mkspecs/default
 ln -s `echo $TARGET |sed -e "s,gcc,g++,"` mkspecs/default
 %endif
 
-cp -aR mkspecs $RPM_BUILD_ROOT%{qtdir}
+cp -aR mkspecs %{buildroot}%{qtdir}
 
 # Patch qmake to use qt-mt unconditionally
-perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" $RPM_BUILD_ROOT%{qtdir}/mkspecs/*/qmake.conf
-
-# remove cache file
-find . -name ".qmake*cache" |xargs rm -f
+perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" %{buildroot}%{qtdir}/mkspecs/*/qmake.conf
 
 # don't include Makefiles of qt examples/tutorials
 find examples -name "Makefile" | xargs rm -f
 find tutorial -name "Makefile" | xargs rm -f
 
-# remove some uneeded stuffs
-rm -rf $RPM_BUILD_ROOT%{qtdir}/plugins/src \
-       $RPM_BUILD_ROOT%{qtdir}/lib/README \
-       $RPM_BUILD_ROOT%{qtdir}/lib/*.prl \
-       $RPM_BUILD_ROOT%{qtdir}/plugins/*.prl
-
 %clean
-rm -rf $RPM_BUILD_ROOT
+rm -rf %{buildroot}
 
 %post
 grep -v '^%{qtdir}' /etc/ld.so.conf >/etc/ld.so.conf.new
@@ -681,19 +633,23 @@ fi
 %{qtdir}/bin/assistant
 %{qtdir}/bin/qm2ts
 %{qtdir}/bin/qmake
+%{qtdir}/bin/qt32castcompat
 %{qtdir}/include
 %{qtdir}/doc
 %{qtdir}/mkspecs
 %{qtdir}/lib/libqt.so
 %{qtdir}/lib/libqt-mt.so
 %{qtdir}/lib/libqui.so
-%{qtdir}/lib/libdesigner.a
-%{qtdir}/lib/libqassistantclient.a
 %{qtdir}/lib/libeditor.a
+%{qtdir}/lib/libdesigner*.a
+%{qtdir}/lib/libqassistantclient.a
+%{qtdir}/lib/*.la
+%{qtdir}/lib/*.prl
 %if %{installman}
 %{_mandir}/*/*
 %endif
 %{qtdir}/translations
+%{qtdir}/phrasebooks
 %{_bindir}/assistant*
 %{_bindir}/moc*
 %{_bindir}/uic*
@@ -704,6 +660,7 @@ fi
 %{_bindir}/qm2ts*
 %if %{pkg_config}
 %{_libdir}/pkgconfig/*
+%{qtdir}/lib/pkgconfig
 %endif
 
 %doc doc/*
@@ -757,37 +714,70 @@ fi
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
 %dir %{qtdir}/plugins/designer
+%{qtdir}/templates
 %{qtdir}/plugins/designer/*
 %{qtdir}/bin/designer
 %{qtdir}/bin/linguist
 %{qtdir}/bin/lrelease
 %{qtdir}/bin/lupdate
 %if %{desktop_file}
-%{_datadir}/applications/*-designer.desktop
+%{_datadir}/applications/*.desktop
 %else
 %{_datadir}/applnk/Development/*
 %endif
 
 %changelog
-* Thu Aug 19 2004 Than Ngo <than@redhat.com> 1:3.1.2-14.2
-- fix image buffer overflows
+* Tue Dec  2 2003 Than Ngo <than@redhat.com> 1:3.2.3-0.2
+- Added missing prl files, (report from trolltech)
+- Fixed description
+- include requires XFree86-devel on qt-devel
+ 
+* Fri Nov 14 2003 Than Ngo <than@redhat.com> 1:3.2.3-0.1
+- 3.2.3 release
 
-* Thu Jul 29 2004 Than Ngo <than@redhat.com> 1:3.1.2-14.1
-- fix overflow vulnerability, thanks to trolltech
+* Thu Oct 30 2003 Than Ngo <than@redhat.com> 1:3.2.2-0.4
+- fix encoding problem
 
-* Thu Jul 31 2003 Than Ngo <than@redhat.com> 1:3.1.2-14
-- rebuilt
+* Sat Oct 18 2003 Than Ngo <than@redhat.com> 1:3.2.2-0.3
+- fix encoding problem
 
-* Thu Jul 31 2003 Than Ngo <than@redhat.com> 1:3.1.2-13
-- rebuilt
-
-* Thu Jul  3 2003 Than Ngo <than@redhat.com> 3.1.2-12
-- rebuilt against mysql 3.23.x
-
-* Tue Jun 24 2003 Than Ngo <than@redhat.com> 3.1.2-11
-- rebuild against gcc-3.3-12 for using virtual thunk
+* Fri Oct 17 2003 Than Ngo <than@redhat.com> 1:3.2.2-0.2
+- add font alias patch file, thanks to Leon Ho
+- clean up monospace.patch from Leon Ho
 - remove some unneeded patch files
-- remove some uneeded defines in specfile
+
+* Thu Oct 16 2003 Than Ngo <than@redhat.com> 1:3.2.2-0.1
+- 3.2.2 release
+- remove a patch file, which is included in 3.2.2
+
+* Tue Oct 14 2003 Than Ngo <than@redhat.com> 1:3.2.1-1.3
+- remove some unneeded patch files
+- don't load XLFDs if XFT2 is used
+
+* Mon Sep 08 2003 Than Ngo <than@redhat.com> 1:3.2.1-1.2
+- fixed rpm file list
+
+* Tue Sep 02 2003 Than Ngo <than@redhat.com> 1:3.2.1-1.1
+- fix for the khtml form lineedit bug from CVS
+
+* Wed Aug 27 2003 Than Ngo <than@redhat.com> 1:3.2.1-1
+- 3.2.1 release
+
+* Wed Jul 23 2003 Than Ngo <than@redhat.com> 1:3.2.0-1
+- 3.2.0 release
+
+* Mon Jun 23 2003 Than Ngo <than@redhat.com> 3.2.0b2-0.1
+- 3.2.0b2
+- add missing templates for designer
+
+* Wed Jun 18 2003 Than Ngo <than@redhat.com> 3.2.0b1-0.2
+- clean up specfile
+
+* Wed Jun 18 2003 Than Ngo <than@redhat.com> 3.2.0b1-0.1
+- 3.2.0b1
+
+* Tue Jun 17 2003 Than Ngo <than@redhat.com> 3.1.2-12
+- rebuilt
 
 * Tue Jun 17 2003 Than Ngo <than@redhat.com> 3.1.2-10
 - add missing translations
