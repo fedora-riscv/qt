@@ -2,9 +2,7 @@
 %define redhat_artwork 1
 %define desktop_file_utils_version 0.2.93
 
-%define ver 3.1.0
-%define rel 1.3
-%define beta %{nil}
+%define ver 3.1.1
 
 %define qt_dirname qt-3.1
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -79,17 +77,14 @@ Summary: The shared library for the Qt GUI toolkit.
 
 Name: qt
 Version: %{ver}
-BuildRequires: XFree86-devel >= 4.2.99
-BuildRequires: cups-devel
+Release: 6
+Epoch: 1
+License: GPL/QPL
+Group: System Environment/Libraries
+Buildroot: %{_tmppath}/%{name}-root
+Url: http://www.troll.no
 
-%if "%{beta}" == ""
-Release: %{rel}
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
-%else
-Release: 0.%{beta}.%{rel}
-Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}-%{beta}.tar.bz2
-%endif
-
 Source1: qt.pc
 Source2: Xinerama.tar.bz2
 Source3: qtrc
@@ -98,21 +93,17 @@ Source900: gccver.c
 Patch1: qt-3.1-beta2-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
 Patch3: qt-3.0.5-xim.patch
-Patch4: qwidget_x11.cpp.diff
 Patch5: qt-3.1.0-makefile.patch
 Patch6: qt-x11-free-3.1.0-editor.patch
-Patch7: qt-x11-free-3.1.0-qmotif.patch
+Patch7: qt-x11-free-3.1.1-qmotif.patch
 Patch8: qt-x11-free-3.1.0-fontdatabase.patch
 Patch9: qt-x11-free-3.1.0-lib64.patch
 Patch10: qt-x11-free-3.1.0-assistant.patch
 Patch11: qt-x11-free-3.1.0-designer.patch
 Patch12: qt-x11-free-3.1.0-header.patch
-
-Epoch: 1
-URL: http://www.troll.no/
-License: GPL/QPL
-Group: System Environment/Libraries
-Buildroot: %{_tmppath}/%{name}-root
+Patch13: qt-x11-free-3.1.1-monospace.patch
+Patch14: qt-x11-free-3.1.1-ansi.patch
+Patch15: qt-x11-free-3.1.1-qmlined.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -131,6 +122,8 @@ BuildRequires: libungif-devel
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: findutils
+BuildRequires: XFree86-devel >= 4.2.99
+BuildRequires: cups-devel
 
 %if %{motif_extention}
 BuildRequires: openmotif-devel >= 2.2.2
@@ -160,8 +153,8 @@ Conflicts: qt2 < 2.3.1-1
 Obsoletes: qt3
 
 BuildRequires: fontconfig-devel >= 2.0
+
 Requires: fontconfig >= 2.0
-Requires: XFree86 >= 4.2.99
 
 %package devel
 Summary: Development files and documentation for the Qt GUI toolkit.
@@ -285,16 +278,10 @@ The qt-designer package contains an User Interface designer tool
 for the Qt toolkit.
 
 %prep
-%if "%{beta}" == ""
 %setup -q -n qt-x11-free-%{version}
-%else
-%setup -q -n qt-x11-free-%{version}-%{beta}
-%endif
-
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
 %patch3 -p1 -b .xim
-%patch4 -p0 -b .qwidget_x11
 %patch5 -p1 -b .makefile
 %patch6 -p1 -b .editor
 %patch7 -p1 -b .qmotif
@@ -305,6 +292,9 @@ for the Qt toolkit.
 %patch10 -p1 -b .assistant
 %patch11 -p1 -b .designer
 %patch12 -p1 -b .hd2
+%patch13 -p1 -b .monospace
+%patch14 -p0 -b .ansi
+%patch15 -p1
 
 # this is for qt-copy in KDE CVS
 [ -f Makefile.cvs ] && make -f Makefile.cvs
@@ -329,6 +319,11 @@ export SMP_MFLAGS="%{?_smp_mflags}"
 
 # clean up source tree
 find . -type d -name CVS | xargs rm -rf
+
+# turn off -g on alpha
+%ifarch alpha
+RPM_OPT_FLAGS="-O2 -mieee"
+%endif
 
 # set some default FLAGS
 OPTFLAGS=`echo $RPM_OPT_FLAGS -DGLX_GLXEXT_LEGACY |sed -e s/-fno-rtti/-frtti/`
@@ -628,6 +623,8 @@ MimeType=application/x-designer
 Terminal=false
 Encoding=UTF-8
 Type=Application
+Categories=Application;Development;X-Red-Hat-Extra;
+X-Desktop-File-Install-Version=0.3
 EOF
 
 # move it into redhat-artwork
@@ -804,6 +801,27 @@ fi
 %endif
 
 %changelog
+* Wed Jan 29 2003 Than Ngo <than@redhat.com> 3.1.1-6
+- add missing Categories section in qt designer #82920
+
+* Wed Jan 22 2003 Tim Powers <timp@redhat.com>
+- rebuilt
+
+* Mon Dec 30 2002 Florian La Roche <Florian.LaRoche@redhat.de>
+- Change qmlined.h to not include an attic header that is also not shipped
+  with Red Hat Linux. This also fixes building unixODBC, that includes this
+  header (apparently also without needing it).
+
+* Thu Dec 19 2002 Than Ngo <than@redhat.com> 3.1.1-3
+- add monospace patch file from Leon Ho (bug #79949)
+- add small patch file from Sysoltsev Slawa (bug #79731)
+
+* Tue Dec 17 2002 Than Ngo <than@redhat.com> 3.1.1-2
+- don't require XFree86, it's not needed
+
+* Tue Dec 17 2002 Than Ngo <than@redhat.com> 3.1.1-1
+- update to 3.1.1
+
 * Thu Nov 28 2002 Than Ngo <than@redhat.com> 3.1.0-1.3
 - don't write Date into created moc files
 
