@@ -76,7 +76,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 5
+Release: 7
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -96,6 +96,7 @@ Patch7: qt-x11-free-3.3.2-quiet.patch
 Patch8: qt-x11-free-3.3.2-qembed.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch11: qt-x11-free-3.3.2-misc.patch
+Patch12: qt-uic-nostdlib.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -281,6 +282,7 @@ for the Qt toolkit.
 %patch8 -p1 -b .qembed
 %patch10 -p1 -b .lib64
 %patch11 -p1 -b .misc
+%patch12 -p1 -b .nostdlib
 
 %build
 export QTDIR=`/bin/pwd`
@@ -408,7 +410,7 @@ popd
 
 make $SMP_MFLAGS src-moc
 make $SMP_MFLAGS sub-src
-make $SMP_MFLAGS sub-tools
+make $SMP_MFLAGS sub-tools UIC="$QTDIR/bin/uic -nostdlib -L $QTDIR/plugins"
 
 # build Xt/Motif Extention
 %if %{motif_extention}
@@ -754,6 +756,9 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com> 1:3.3.2-7
+- rebuilt
+
 * Tue May 25 2004 Than Ngo <than@redhat.com> 1:3.3.2-5
 - add missing qembed tool #124052, #124052
 - get rid of unused trigger
