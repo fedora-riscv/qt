@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 11
+Release: 12
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -134,7 +134,7 @@ BuildRequires: desktop-file-utils >= %{desktop_file_utils_version}
 %endif
 
 %if %{buildmysql}
-BuildRequires: mysql-devel
+BuildRequires: mysqlclient10-devel
 %endif
 
 %if %{buildpsql}
@@ -392,14 +392,14 @@ make $SMP_MFLAGS src-qmake
 # build psql plugin
 %if %{buildpsql}
    pushd plugins/src/sqldrivers/psql
-   qmake -o Makefile "INCLUDEPATH+=/usr/include/pgsql /usr/include/pgsql/server /usr/include/pgsql/internal" "LIBS+=-lpq" psql.pro
+   qmake -o Makefile "INCLUDEPATH+=%{_includedir}/pgsql %{_includedir}/pgsql/server %{_includedir}/pgsql/internal" "LIBS+=-lpq" psql.pro
 popd
 %endif
 
 # build mysql plugin
 %if %{buildmysql}
    pushd plugins/src/sqldrivers/mysql
-   qmake -o Makefile "INCLUDEPATH+=/usr/include/mysql" "LIBS+=-L%{_libdir}/mysql -lmysqlclient" mysql.pro
+   qmake -o Makefile "INCLUDEPATH+=%{_includedir}/mysql3/mysql" "LIBS+=-L%{_libdir}/mysql3/mysql -lmysqlclient" mysql.pro
 popd
 %endif
 
@@ -445,7 +445,7 @@ popd
 # install man pages
 mkdir -p %{buildroot}%{_mandir}
 cp -fR doc/man/* %{buildroot}%{_mandir}/
-rm -rf doc/man %{buildroot}%{qtdir}/doc/html
+rm -rf doc/man %{buildroot}%{qtdir}/doc
 
 # clean up
 make -C tutorial clean
@@ -486,15 +486,6 @@ mkdir -p %{buildroot}%{_bindir}
 for i in bin/*; do
 	ln -s ../%{_lib}/%{qt_dirname}/bin/`basename $i` %{buildroot}/%{_bindir}
 done
-
-# make symbolic link to qt docdir
-if echo %{_docdir} | grep  share >& /dev/null ; then
-  ln -s ../../../share/doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
-  ln -s ../../../share/doc/%{name}-devel-%{version}/html %{buildroot}%{qtdir}/doc
-else
-  ln -s ../../../doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
-  ln -s ../../../doc/%{name}-devel-%{version}/html %{buildroot}%{qtdir}/doc
-fi
 
 # Add desktop file
 %if %{desktop_file}
@@ -631,8 +622,6 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*
 %{qtdir}/lib/pkgconfig
 %endif
-
-
 %doc doc/*
 %if %{compress}
 %doc examples.tar.bz2
@@ -702,6 +691,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Nov 11 2004 Than Ngo <than@redhat.com> 1:3.3.3-12
+- link against MySQL 3
+- fix rpm conflict
+
 * Wed Nov 10 2004 Than Ngo <than@redhat.com> 1:3.3.3-11
 - apply patch to fix fullscreen problem
 - remove html documents duplicate #135696
