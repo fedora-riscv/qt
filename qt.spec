@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 2
+Release: 3
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -94,6 +94,8 @@ Patch9: qt-x11-free-3.3.3-qmake.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.1-qfontdatabase_x11.patch
+Patch14: qt-x11-free-3.3.3-gl.patch
+Patch15: qt-x11-free-3.3.3-qimage.patch
 
 # feature patches
 Patch50: qt-x11-immodule-bc-qt3.3.3.patch
@@ -288,6 +290,8 @@ for the Qt toolkit.
 %patch10 -p1
 %patch12 -p1 -b .nostdlib
 %patch13 -p1 -b .fonts
+%patch14 -p1 -b .gl
+%patch15 -p1 -b .image
 
 %if %{immodule}
 %patch50 -p1 -b .im
@@ -693,6 +697,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 18 2004 Than Ngo <than@redhat.com> 1:3.3.3-3
+- add patch to fix dlopen issue (#126422)
+- add image handling fix
+
 * Thu Aug 12 2004 Than Ngo <than@redhat.com> 1:3.3.3-2
 - fix qmake broken link (#129723)
 
