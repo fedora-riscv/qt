@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 14
+Release: 15
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -302,6 +302,10 @@ for the Qt toolkit.
 %patch52 -p1 -b .quiet
 %patch53 -p1 -b .im
 %endif
+
+# convert to UTF-8
+iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
+mv doc/man/man3/qdial.3qt_ doc/man/man3/qdial.3qt
 
 %build
 export QTDIR=`/bin/pwd`
@@ -694,6 +698,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Nov 29 2004 Than Ngo <than@redhat.com> 1:3.3.3-15
+- convert qdial.3qt to UTF-8 bug #140946
+
 * Tue Nov 23 2004 Than Ngo <than@redhat.com> 1:3.3.3-14
 - add missing lupdate and lrelease #140230
 
