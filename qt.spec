@@ -1,0 +1,1448 @@
+%define desktop_file 1
+%define redhat_artwork 1
+%define desktop_file_utils_version 0.2.93
+
+%define ver 3.1.0
+%define rel 1.3
+%define beta %{nil}
+
+%define qt_dirname qt-3.1
+%define qtdir %{_libdir}/%{qt_dirname}
+
+# 64bit arch
+%define arch64 x86_64 s390x
+
+# build Motif extention
+%define motif_extention 1
+
+# use Xinerame from XFree
+%define xfree_xinerame 1
+
+# pkg-config
+%define pkg_config 0
+
+# strip binaries
+%define do_strip 0
+
+# install manuals
+%define installman 1
+
+# buildstatic: Build libs for static linking
+%define buildstatic 0
+
+# buildmysql: Build MySQL plugins
+%define buildmysql 1
+
+# buildpsql: Build Postgres plugins
+%define buildpsql 1
+
+# buildodbc: Build ODBC plugins
+%define buildodbc 1
+
+# buildnomt: Build libs without threading support
+%define buildnomt 0
+
+# cups support
+%define cups 1
+
+%define sover %{ver}
+
+%define styleplugins 0
+
+%if %{styleplugins}
+%define plugins_style -plugin-style-cde -plugin-style-motifplus -plugin-style-platinum -plugin-style-sgi -plugin-style-windows -plugin-style-compact -plugin-style-interlace -plugin-style-common -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
+%else
+%define plugins_style -qt-style-cde -qt-style-motifplus -qt-style-platinum -qt-style-sgi -qt-style-windows -qt-style-compact -qt-style-interlace -qt-style-common -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
+%endif
+
+%if %{buildmysql}
+%define plugin_mysql -plugin-sql-mysql
+%else
+%define plugin_mysql %{nil}
+%endif
+
+%if %{buildpsql}
+%define plugin_psql -plugin-sql-psql
+%else
+%define plugin_psql %{nil}
+%endif
+
+%if %{buildodbc}
+%define plugin_odbc -plugin-sql-odbc
+%else
+%define plugin_odbc %{nil}
+%endif
+
+%define plugins %{plugin_mysql} %{plugin_psql} %{plugin_odbc} %{plugins_style}
+
+Summary: The shared library for the Qt GUI toolkit.
+
+Name: qt
+Version: %{ver}
+BuildRequires: XFree86-devel >= 4.2.99
+BuildRequires: cups-devel
+
+%if "%{beta}" == ""
+Release: %{rel}
+Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
+%else
+Release: 0.%{beta}.%{rel}
+Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}-%{beta}.tar.bz2
+%endif
+
+Source1: qt.pc
+Source2: Xinerama.tar.bz2
+Source3: qtrc
+Source900: gccver.c
+
+Patch1: qt-3.1-beta2-print-CJK.patch
+Patch2: qt-3.0.5-nodebug.patch
+Patch3: qt-3.0.5-xim.patch
+Patch4: qwidget_x11.cpp.diff
+Patch5: qt-3.1.0-makefile.patch
+Patch6: qt-x11-free-3.1.0-editor.patch
+Patch7: qt-x11-free-3.1.0-qmotif.patch
+Patch8: qt-x11-free-3.1.0-fontdatabase.patch
+Patch9: qt-x11-free-3.1.0-lib64.patch
+Patch10: qt-x11-free-3.1.0-assistant.patch
+Patch11: qt-x11-free-3.1.0-designer.patch
+Patch12: qt-x11-free-3.1.0-header.patch
+
+Epoch: 1
+URL: http://www.troll.no/
+License: GPL/QPL
+Group: System Environment/Libraries
+Buildroot: %{_tmppath}/%{name}-root
+
+Prereq: /sbin/ldconfig
+Prereq: fileutils
+
+Prefix: %{qtdir}
+
+BuildRequires: gcc-c++
+BuildRequires: libstdc++
+BuildRequires: libstdc++-devel
+BuildRequires: libmng-devel
+BuildRequires: glibc-devel
+BuildRequires: libjpeg-devel
+BuildRequires: libpng-devel
+BuildRequires: zlib-devel
+BuildRequires: libungif-devel
+BuildRequires: perl
+BuildRequires: sed
+BuildRequires: findutils
+
+%if %{motif_extention}
+BuildRequires: openmotif-devel >= 2.2.2
+%endif
+
+%if %{desktop_file}
+BuildRequires: desktop-file-utils >= %{desktop_file_utils_version}
+%endif
+
+%if %{buildstatic}
+BuildRequires: libmng-static
+%endif
+
+%if %{buildmysql}
+BuildRequires: mysql-devel
+%endif
+
+%if %{buildpsql}
+BuildRequires: postgresql-devel
+%endif
+
+%if %{buildodbc}
+BuildRequires: unixODBC-devel
+%endif
+
+Conflicts: qt2 < 2.3.1-1
+Obsoletes: qt3
+
+BuildRequires: fontconfig-devel >= 2.0
+Requires: fontconfig >= 2.0
+Requires: XFree86 >= 4.2.99
+
+%package devel
+Summary: Development files and documentation for the Qt GUI toolkit.
+Group: Development/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-devel
+Provides: qt3-devel
+%if ! %{buildstatic}
+Obsoletes: qt-static
+Obsoletes: qt3-static
+%endif
+
+%package Xt
+Summary: An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
+Group: System Environment/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-Xt
+Provides: qt3-Xt
+
+%package styles
+Summary: Extra styles for the Qt GUI toolkit.
+Group: User Interface/Desktops
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-styles
+Provides: qt3-styles
+
+%if %{buildodbc}
+%package ODBC
+Summary: ODBC drivers for Qt's SQL classes.
+Group: System Environment/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-ODBC
+Provides: qt3-ODBC
+%endif
+
+%if %{buildmysql}
+%package MySQL
+Summary: MySQL drivers for Qt's SQL classes.
+Group: System Environment/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-MySQL
+Provides: qt3-MySQL
+%endif
+
+%if %{buildpsql}
+%package PostgreSQL
+Summary: PostgreSQL drivers for Qt's SQL classes.
+Group: System Environment/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-PostgreSQL
+Provides: qt3-PostgreSQL
+%endif
+
+%if %{buildstatic}
+%package static
+Summary: Version of the Qt GUI toolkit for static linking
+Group: Development/Libraries
+Requires: %{name}-devel = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-static
+Provides: qt3-static
+%endif
+
+%package designer
+Summary: Interface designer (IDE) for the Qt toolkit
+Group: Development/Tools
+Requires: %{name}-devel = %{epoch}:%{version}-%{release}
+Obsoletes: qt3-designer
+
+%description
+Qt is a GUI software toolkit which simplifies the task of writing and
+maintaining GUI (Graphical User Interface) applications
+for the X Window System.
+
+Qt is written in C++ and is fully object-oriented.
+
+This package contains the shared library needed to run qt
+applications, as well as the README files for qt.
+
+%description devel
+The qt-devel package contains the files necessary to develop
+applications using the Qt GUI toolkit: the header files, the Qt meta
+object compiler, the man pages, the HTML documentation and example
+programs. See http://www.trolltech.com/products/qt.html for more
+information about Qt, or look at
+/usr/share/doc/qt-devel-3.0.0/html/index.html, which provides Qt
+documentation in HTML format.
+
+Install qt-devel if you want to develop GUI applications using the Qt
+toolkit.
+
+%{_docdir}/%{name}-devel-%{version}/html/index.html, which
+
+%description Xt
+An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
+
+%if %{buildstatic}
+%description static
+Version of the Qt library for static linking
+%endif
+
+%description styles
+Extra styles (themes) for the Qt GUI toolkit.
+
+%if %{buildodbc}
+%description ODBC
+ODBC driver for Qt's SQL classes (QSQL)
+%endif
+
+%if %{buildmysql}
+%description MySQL
+MySQL driver for Qt's SQL classes (QSQL)
+%endif
+
+%if %{buildpsql}
+%description PostgreSQL
+PostgreSQL driver for Qt's SQL classes (QSQL)
+%endif
+
+%description designer
+The qt-designer package contains an User Interface designer tool
+for the Qt toolkit.
+
+%prep
+%if "%{beta}" == ""
+%setup -q -n qt-x11-free-%{version}
+%else
+%setup -q -n qt-x11-free-%{version}-%{beta}
+%endif
+
+%patch1 -p1 -b .cjk
+%patch2 -p1 -b .ndebug
+%patch3 -p1 -b .xim
+%patch4 -p0 -b .qwidget_x11
+%patch5 -p1 -b .makefile
+%patch6 -p1 -b .editor
+%patch7 -p1 -b .qmotif
+%patch8 -p1 -b .qfontdatabase
+%ifarch %{arch64}
+%patch9 -p1 -b .lib64
+%endif
+%patch10 -p1 -b .assistant
+%patch11 -p1 -b .designer
+%patch12 -p1 -b .hd2
+
+# this is for qt-copy in KDE CVS
+[ -f Makefile.cvs ] && make -f Makefile.cvs
+
+# HACK until XFree86 is fixed
+%if ! %{xfree_xinerame}
+mkdir Xinerama
+tar xjf %{SOURCE2} -C Xinerama
+pushd Xinerama
+gcc $RPM_OPT_FLAGS -fno-use-cxa-atexit -fPIC \
+    -c -I/usr/X11R6/include/X11/extensions -I. Xinerama.c
+ar r libXinerama.a Xinerama.o
+popd
+%endif
+
+%build
+export QTDIR=`/bin/pwd`
+export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
+export PATH="$QTDIR/bin:$PATH"
+export QTDEST=%{qtdir}
+export SMP_MFLAGS="%{?_smp_mflags}"
+
+# clean up source tree
+find . -type d -name CVS | xargs rm -rf
+
+# set some default FLAGS
+OPTFLAGS=`echo $RPM_OPT_FLAGS -DGLX_GLXEXT_LEGACY |sed -e s/-fno-rtti/-frtti/`
+OPTFLAGS="$OPTFLAGS -fno-use-cxa-atexit -fno-exceptions"
+
+# don't use rpath
+perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
+
+# set correct FLAGS
+perl -pi -e "s,-O2,$INCLUDES $OPTFLAGS,g" mkspecs/*/qmake.conf
+
+# set correct lib path
+%ifarch %{arch64}
+perl -pi -e "s,/usr/X11R6/lib,/usr/X11R6/%{_lib},g" mkspecs/*/qmake.conf
+%endif
+
+# Create a qmake target for linking without libstdc++ - avoid bloat if
+# possible...
+pushd mkspecs
+for i in *-g++ qws/*-g++; do
+   [ -d $i ] || continue
+   TARGET=`echo $i |sed -e 's,g++$,gcc,'`
+   cp -aR $i $TARGET
+   perl -pi -e "s,g\+\+,gcc,g;s,^(QMAKE_LIBS[[:space:]]*=.*),\1 -lsupc++,g" $TARGET/*
+done
+popd
+perl -pi -e 's,^(.*linux.*)-g\+\+(.*),\1-gcc\2,' configure
+perl -pi -e 's,^(.*CXX.*LFLAGS.*),\1 -lsupc++,' qmake/GNUmakefile.in
+
+# build shared, threaded (default) libraries
+echo yes | ./configure \
+  -prefix $QTDEST \
+  -release \
+  -shared \
+  -largefile \
+  -qt-gif \
+  -system-zlib \
+  -system-libpng \
+  -system-libmng \
+  -system-libjpeg \
+  -no-g++-exceptions \
+  -enable-tools \
+  -enable-kernel \
+  -enable-widgets \
+  -enable-dialogs \
+  -enable-iconview \
+  -enable-workspace \
+  -enable-network \
+  -enable-canvas \
+  -enable-table \
+  -enable-xml \
+  -enable-sql \
+  -qt-style-motif \
+  %{plugins} \
+  -stl \
+  -thread \
+%if %{cups}
+  -cups \
+%endif
+  -sm \
+%if "%{xfree_xinerame}" == "0"
+ -L`pwd`/Xinerama \
+%endif
+  -xinerama \
+  -xrender \
+  -xkb \
+  -xft
+
+make $SMP_MFLAGS src-qmake
+
+# build psql plugin
+%if %{buildpsql}
+pushd plugins/src/sqldrivers/psql
+qmake -o Makefile "INCLUDEPATH+=/usr/include/pgsql /usr/include/pgsql/server /usr/include/pgsql/internal" "LIBS+=-lpq" psql.pro
+popd
+%endif
+
+# build mysql plugin
+%if %{buildmysql}
+pushd plugins/src/sqldrivers/mysql
+qmake -o Makefile "INCLUDEPATH+=/usr/include/mysql" "LIBS+=-L%{_libdir}/mysql -lmysqlclient" mysql.pro
+popd
+%endif
+
+# build odbc plugin
+%if %{buildodbc}
+pushd plugins/src/sqldrivers/odbc
+qmake -o Makefile "LIBS+=-lodbc" odbc.pro
+popd
+%endif
+
+make $SMP_MFLAGS src-moc
+make $SMP_MFLAGS sub-src
+make $SMP_MFLAGS sub-tools
+
+# build Xt/Motif Extention
+%if %{motif_extention}
+make -C extensions/motif/src $SMP_MFLAGS
+%endif
+
+# build static libraries, if requested.
+%if "%{buildstatic}" == "1"
+cp -aR lib lib-bld
+cp -aR bin bin-bld
+make clean
+rm -rf lib bin
+mv lib-bld lib
+mv bin-bld bin
+echo yes | ./configure \
+  -prefix $QTDEST \
+  -release \
+  -largefile \
+  -static \
+  -qt-gif \
+  -system-zlib \
+  -system-libpng \
+  -system-libmng \
+  -system-libjpeg \
+  -no-g++-exceptions \
+  -enable-tools \
+  -enable-kernel \
+  -enable-widgets \
+  -enable-dialogs \
+  -enable-iconview \
+  -enable-workspace \
+  -enable-network \
+  -enable-canvas \
+  -enable-table \
+  -enable-xml \
+  -enable-sql \
+  -qt-style-motif \
+  %{plugins} \
+  -stl \
+  -thread \
+%if "%{cups}" == "1"
+  -cups \
+%endif
+  -sm \
+%if "%{xfree_xinerame}" == "0"
+  -L`pwd`/Xinerama \
+%endif
+  -xinerama \
+  -xrender \
+  -xkb \
+  -xft
+
+make src-qmake $SMP_MFLAGS
+make src-moc $SMP_MFLAGS
+make sub-src $SMP_MFLAGS
+%endif
+
+%install
+rm -rf $RPM_BUILD_ROOT
+export QTDIR=`/bin/pwd`
+export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
+export PATH="$QTDIR/bin:$PATH"
+export QTDEST=%{qtdir}
+
+mkdir -p $RPM_BUILD_ROOT%{qtdir}/{bin,include,lib}
+mkdir -p $RPM_BUILD_ROOT%{_mandir}/{man1,man3}
+
+%if %{pkg_config}
+mkdir -p $RPM_BUILD_ROOT%{_libdir}/pkgconfig
+sed -e "s,VERSION,%{version},g" %{SOURCE1} >$RPM_BUILD_ROOT%{_libdir}/pkgconfig/qt.pc
+ln -s qt.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/qt3.pc
+ln -s qt.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/qt-3.0.pc
+%endif
+
+# strip binaries
+rm -f bin/*.bat
+%if %{do_strip}
+for i in bin/*; do
+  strip -R .comment $i || :
+done
+%endif
+
+# install tools and libraries
+rm bin/qmake
+cp -fL qmake/qmake bin
+for i in bin/*; do
+	cp -fL $i $RPM_BUILD_ROOT/%{qtdir}/bin
+	chmod 0755 $RPM_BUILD_ROOT/%{qtdir}/$i
+done
+cp -aR lib/* $RPM_BUILD_ROOT/%{qtdir}/lib
+cp -aR plugins $RPM_BUILD_ROOT/%{qtdir}
+
+if [ -e $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.%{sover} ]; then
+	ln -sf libqt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3.1
+	ln -sf libqt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3
+	ln -sf libqt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so
+else
+	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.%{sover}
+	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3.1
+	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so.3
+	ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so
+fi
+
+ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt-mt.so.3.1
+ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt-mt.so.3
+ln -sf libqt-mt.so.%{sover} $RPM_BUILD_ROOT%{qtdir}/lib/libqt-mt.so
+
+ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so.1.0
+ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so.1
+ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so
+
+ln -sf libeditor.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libeditor.so.1.0
+ln -sf libeditor.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libeditor.so.1
+ln -sf libeditor.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libeditor.so
+
+ln -sf libdesigner.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libdesigner.so.1.0
+ln -sf libdesigner.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libdesigner.so.1
+ln -sf libdesigner.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libdesigner.so
+
+ln -sf libqassistantclient.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqassistantclient.so.1.0
+ln -sf libqassistantclient.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqassistantclient.so.1
+ln -sf libqassistantclient.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqassistantclient.so
+
+# install man pages
+cp -fR doc/man/man1/* $RPM_BUILD_ROOT%{_mandir}/man1
+cp -fR doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
+rm -rf doc/man
+
+# clean up
+make -C tutorial clean
+make -C examples clean
+
+find examples -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
+find examples -type f -perm 755 | xargs strip -R .comment || :
+find tutorial -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
+find tutorial -type f -perm 755 | xargs strip -R .comment || :
+
+# Make sure the examples can be built outside the source tree.
+# Our binaries fulfill all requirements, so...
+perl -pi -e "s,^DEPENDPATH.*,,g;s,^REQUIRES.*,,g" `find examples -name "*.pro"`
+
+for a in */*/Makefile ; do
+  sed 's|^SYSCONF_MOC.*|SYSCONF_MOC		= %{qtdir}/bin/moc|' < $a > ${a}.2
+  mv -v ${a}.2 $a
+done
+
+# Get rid of windows or mac specific links
+for i in include/* include/*/*; do [ -e $i ] || rm -f $i; done
+
+cp -frL include/* $RPM_BUILD_ROOT%{qtdir}/include
+
+mkdir -p $RPM_BUILD_ROOT/etc/profile.d
+cat > $RPM_BUILD_ROOT/etc/profile.d/qt.sh <<EOF
+# Qt initialization script (sh)
+if [ -z "\$QTDIR" ] ; then
+	QTDIR="%{qtdir}"
+fi
+export QTDIR
+EOF
+
+chmod 755 $RPM_BUILD_ROOT/etc/profile.d/qt.sh
+
+cat > $RPM_BUILD_ROOT/etc/profile.d/qt.csh <<EOF
+# Qt initialization script (csh)
+if ( \$?QTDIR ) then
+         exit
+endif
+setenv QTDIR %{qtdir}
+EOF
+
+chmod 755 $RPM_BUILD_ROOT/etc/profile.d/qt.csh
+
+mkdir -p $RPM_BUILD_ROOT/usr/bin
+for i in bin/*; do
+	ln -s ../%{_lib}/%{qt_dirname}/bin/`basename $i` $RPM_BUILD_ROOT/%{_bindir}
+	ln -s `basename $i` $RPM_BUILD_ROOT/usr/bin/`basename $i`3
+done
+
+# make symbolic link to qt docdir
+if echo %{_docdir} | grep  share >& /dev/null ; then
+  ln -s  ../../share/doc/%{name}-devel-%{version} $RPM_BUILD_ROOT%{qtdir}/doc
+else
+  ln -s  ../../doc/%{name}-devel-%{version} $RPM_BUILD_ROOT%{qtdir}/doc
+fi
+
+# Add desktop file
+%if %{desktop_file}
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/applications
+cat >$RPM_BUILD_ROOT%{_datadir}/applications/qt-designer.desktop <<EOF
+%else
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/applnk/Development
+cat >$RPM_BUILD_ROOT%{_datadir}/applnk/Development/designer.desktop <<EOF
+%endif
+[Desktop Entry]
+BinaryPattern=designer;
+Name=Qt Designer
+GenericName=Interface Designer
+Exec=designer
+Icon=designer
+InitialPreference=5
+MapNotify=true
+MimeType=application/x-designer
+Terminal=false
+Encoding=UTF-8
+Type=Application
+EOF
+
+# move it into redhat-artwork
+%if ! %{redhat_artwork}
+# Sane default settings
+mkdir -p $RPM_BUILD_ROOT%{qtdir}/etc/settings
+cat >$RPM_BUILD_ROOT%{qtdir}/etc/settings/qtrc <<"EOF"
+[General]
+libraryPath=%{_libdir}/kde3/plugins
+style=Highcolor
+
+[KDE]
+contrast=7
+EOF
+%endif
+
+# Ship qmake stuff
+# Point qmake at the *-g++ target by default, apps may use libstdc++
+TARGET=`ls -ld mkspecs/default |awk '{ print $11; }'`
+rm mkspecs/default
+ln -s `echo $TARGET |sed -e "s,gcc,g++,"` mkspecs/default
+cp -aR mkspecs $RPM_BUILD_ROOT%{qtdir}
+
+# Patch qmake to use qt-mt unconditionally
+perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" $RPM_BUILD_ROOT%{qtdir}/mkspecs/*/qmake.conf
+
+# remove cache file
+find . -name ".qmake*cache" |xargs rm -f
+
+# don't include Makefiles of qt examples/tutorials
+find examples -name "Makefile" | xargs rm -f
+find tutorial -name "Makefile" | xargs rm -f
+
+# remove some uneeded stuffs
+rm -rf $RPM_BUILD_ROOT%{qtdir}/plugins/src \
+       $RPM_BUILD_ROOT%{qtdir}/lib/README \
+       $RPM_BUILD_ROOT%{qtdir}/lib/*.prl \
+       $RPM_BUILD_ROOT%{qtdir}/plugins/*.prl
+
+%clean
+rm -rf $RPM_BUILD_ROOT
+
+%post
+grep -v '^%{qtdir}' /etc/ld.so.conf >/etc/ld.so.conf.new
+mv -f /etc/ld.so.conf.new /etc/ld.so.conf
+echo "%{qtdir}/lib" >> /etc/ld.so.conf
+/sbin/ldconfig
+
+%postun
+if [ $1 = 0 ]; then
+  grep -v '^%{qtdir}/lib$' /etc/ld.so.conf > /etc/ld.so.conf.new 2>/dev/null
+  mv -f /etc/ld.so.conf.new /etc/ld.so.conf
+fi
+/sbin/ldconfig
+
+%triggerpostun -- qt < 2.1.0-4.beta1
+if ! grep -q '^%{qtdir}/lib$' /etc/ld.so.conf; then
+  echo "%{qtdir}/lib" >> /etc/ld.so.conf
+fi
+/sbin/ldconfig
+
+
+%files
+%defattr(-,root,root,-)
+%doc FAQ LICENSE.QPL README* changes*
+%dir %{qtdir}
+%dir %{qtdir}/bin
+%dir %{qtdir}/lib
+%{qtdir}/bin/qtconfig
+%{_bindir}/qtconfig*
+%{qtdir}/lib/libqt.so.*
+%{qtdir}/lib/libqt-mt.so.*
+%if ! %{redhat_artwork}
+%{qtdir}/etc/settings/qtrc
+%endif
+%dir %{qtdir}/plugins
+%{qtdir}/lib/libqui.so.*
+%{qtdir}/lib/libeditor.so.*
+%{qtdir}/lib/libdesigner.so.*
+%{qtdir}/lib/libqassistantclient.so.*
+
+%files devel
+%defattr(-,root,root,-)
+%attr(0755,root,root) %config /etc/profile.d/*
+%{qtdir}/bin/moc
+%{qtdir}/bin/uic
+%{qtdir}/bin/findtr
+%{qtdir}/bin/qt20fix
+%{qtdir}/bin/qtrename140
+%{qtdir}/bin/assistant
+%{qtdir}/bin/qm2ts
+%{qtdir}/bin/qmake
+%{qtdir}/include
+%{qtdir}/doc
+%{qtdir}/mkspecs
+%{qtdir}/lib/libqt.so
+%{qtdir}/lib/libqt-mt.so
+%{qtdir}/lib/libqui.so
+%{qtdir}/lib/libdesigner.so
+%{qtdir}/lib/libqassistantclient.so
+%if %{installman}
+%{_mandir}/*/*
+%endif
+%{_bindir}/assistant*
+%{_bindir}/moc*
+%{_bindir}/uic*
+%{_bindir}/findtr*
+%{_bindir}/qt20fix*
+%{_bindir}/qtrename140*
+%{_bindir}/qmake*
+%{_bindir}/qm2ts*
+%if %{pkg_config}
+%{_libdir}/pkgconfig/*
+%endif
+
+%doc doc/*
+%doc examples
+%doc tutorial
+
+%post Xt -p /sbin/ldconfig
+%postun Xt -p /sbin/ldconfig
+
+%files Xt
+%defattr(-,root,root,-)
+%{qtdir}/lib/libqmotif.so*
+
+%if %{styleplugins}
+%files styles
+%defattr(-,root,root,-)
+%dir %{qtdir}/plugins/styles
+%{qtdir}/plugins/styles/*
+%endif
+
+%if %{buildodbc}
+%files ODBC
+%defattr(-,root,root,-)
+%{qtdir}/plugins/sqldrivers/libqsqlodbc*
+%endif
+
+%if %{buildpsql}
+%files PostgreSQL
+%defattr(-,root,root,-)
+%{qtdir}/plugins/sqldrivers/libqsqlpsql*
+%endif
+
+%if %{buildmysql}
+%files MySQL
+%defattr(-,root,root,-)
+%{qtdir}/plugins/sqldrivers/libqsqlmysql*
+%endif
+
+%if %{buildstatic}
+%files static
+%defattr(-,root,root,-)
+%{qtdir}/lib/*.a
+%endif
+
+%files designer
+%defattr(-,root,root,-)
+%{_bindir}/designer*
+%{_bindir}/linguist*
+%{_bindir}/lrelease*
+%{_bindir}/lupdate*
+%dir %{qtdir}/plugins/designer
+%{qtdir}/plugins/designer/*
+%{qtdir}/bin/designer
+%{qtdir}/bin/linguist
+%{qtdir}/bin/lrelease
+%{qtdir}/bin/lupdate
+%if %{desktop_file}
+%{_datadir}/applications/*-designer.desktop
+%else
+%{_datadir}/applnk/Development/*
+%endif
+
+%changelog
+* Thu Nov 28 2002 Than Ngo <than@redhat.com> 3.1.0-1.3
+- don't write Date into created moc files
+
+* Mon Nov 18 2002 Than Ngo <than@redhat.com> 3.1.0-1.2
+- add missing libs
+- remove workaround for ppc
+
+* Sun Nov 17 2002 Than Ngo <than@redhat.com> 3.1.0-1.1
+- adjust qfontdatabase_x11 for 3.1.0
+- fix lib64 issue
+- add workaround to build on ppc
+
+* Wed Nov 13 2002 Than Ngo <than@redhat.com> 3.1.0-1
+- update to 3.1.0
+- adjust some patch files for 3.1.0
+- clean up specfile
+- remove some Xft2 patch files, which are now in 3.1.0
+- add qwidget_x11.cpp.diff from Trolltech
+- install qt in %%{_libdir}/qt-3.1 (bug #77706)
+- don't use rpath
+- enable large file support
+- use system Xinerama
+- remove unneeded cups patch file
+- fix to build against new XFree86
+
+* Tue Nov  5 2002 Than Ngo <than@redhat.com> 3.0.5-19
+- examples misconfigured (bug #76083)
+- don't include pkg-config (bug #74621)
+- fix build problem with new XFree86
+
+* Tue Sep 17 2002 Than Ngo <than@redhat.com> 3.0.5-18
+- Fixed binaries symlinks
+
+* Mon Sep  9 2002 Than Ngo <than@redhat.com> 3.0.5-17hammer
+- clean up spec file for 64bit machine
+
+* Thu Aug 29 2002 Than Ngo <than@redhat.com> 3.0.5-17
+- Fixed rpath issue (bug #69692, #69575)
+- Removed dlopen patch
+- Added monospace alias patch from Leon Ho (bug #72811)
+- Added man pages
+
+* Sun Aug 25 2002 Than Ngo <than@redhat.com> 3.0.5-16
+- Added missing catagory in qt designer
+- Added small gb18030 patch file from Leon Ho
+
+* Thu Aug 22 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.5-15
+- Prereq fileutils (#71500)
+
+* Tue Aug 20 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.5-14
+- Don't link to libstdc++, it isn't used
+- Work around s390 compiler bug (fpic/fPIC coexistance)
+- Do away with the "Feature Bluecurve already defined" warning message
+- Remove qmake cache files from the package
+
+* Wed Aug 14 2002 Than Ngo <than@redhat.com> 3.0.5-13
+- Added fix to use VT100 graphic characters (bug #71364)
+- Added fontdatabase fix from llch@redhat.com (bug #68353)
+
+* Mon Aug 12 2002 Bernhard Rosenkraenzer <bero@redhat.com> [not built]
+- Fix default qtrc
+
+* Mon Aug 12 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.5-12
+- Fix CJK Printing (#71123)
+
+* Sun Aug 11 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.5-11
+- Move qtconfig from qt-devel to qt, it's generally useful
+- Use -fno-use-cxa-atexit
+- Some tweaks to allow building Qt/Embedded with the same spec file
+- Apply the GB18030 patch even if xft2 isn't set
+
+* Fri Aug  9 2002 Than Ngo <than@redhat.com> 3.0.5-10
+- Added XIM patch from llch@redhat.com (bug #70411)
+
+* Sun Aug  4 2002 Than Ngo <than@redhat.com> 3.0.5-9
+- add a missing patch file (closelock/openlock)
+
+* Thu Aug  1 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.5-8
+- Define QT_INSTALL_PREFIX in qmake
+
+* Thu Aug  1 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.5-7
+- Find correct location of qmake mkspecs even if QTDIR isn't set
+
+* Thu Jul 25 2002 Than Ngo <than@redhat.com> 3.0.5-6
+- Check file descriptor before closelock
+* Thu Jul 25 2002 Than Ngo <than@redhat.com> 3.0.5-5
+- Fixed a bug in openlock
+
+* Wed Jul 24 2002 Than Ngo <than@redhat.com> 3.0.5-4
+- Tiny tweaks to qt3 patch
+
+* Tue Jul 23 2002 Owen Taylor <otaylor@redhat.com>
+- Tiny fix to qt3.diff to not add '0' as a test character (#68964)
+
+* Mon Jul 22 2002 Tim Powers <timp@redhat.com> 3.0.5-2
+- rebuild using gcc-3.2-0.1
+
+* Mon Jul 22 2002 Than Ngo <than@redhat.com> 3.0.5-1
+- 3.0.5
+- Fixed dependencies issue
+
+* Thu Jul 18 2002 Than Ngo <than@redhat.com> 3.0.4-12
+- Added qt-clipfix from Harald Hoyer (bug #67648)
+
+* Tue Jul 16 2002 Than Ngo <than@redhat.com> 3.0.4-11
+- get rid of qt resource, it's now in redhat-artworks
+- add some define to build for 7.3
+
+* Thu Jul 11 2002 Than Ngo <than@redhat.com> 3.0.4-10
+- add missing Buildprequires desktop-file-utils
+- add patches for GB18030 (llch@redhat.com) bug #68430
+
+* Tue Jul 09 2002 Than Ngo <than@redhat.com> 3.0.4-9
+- add new desktop file for qt designer
+
+* Fri Jul  5 2002 Jakub Jelinek <jakub@redhat.com> 3.0.4-8
+- compile libXinerama.a with -fpic in Qt until XFree86 is fixed
+- make %%xft2 work even if old Xft headers aren't installed
+
+* Fri Jun 21 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Tue Jun 18 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.4-6
+- Re-enable Xft2 now that fontconfig is fixed
+- Require a version of fontconfig that works
+- Use -fPIC rather than -fpic on alpha
+
+* Tue Jun 18 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.4-5
+- Revert to Xft1 for now, Xft2 is too unstable
+- Exclude alpha for now to work around binutils bugs
+
+* Tue Jun 11 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.4-4
+- Add (and fix up) fontconfig patch
+
+* Mon Jun  3 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.4-3
+- Remove the glweak patch, it isn't needed after dropping XFree86 3.x
+
+* Thu May 23 2002 Tim Powers <timp@redhat.com>
+- automated rebuild
+
+* Sun May  5 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.4-1
+- 3.0.4
+- Make SQL plugins optional (buildtime)
+- Register with pkgconfig
+
+* Thu May 02 2002 Than Ngo <than@redhat.com> 3.0.3-12
+- qtdir /usr/lib/qt3
+- build against gcc-3.1-0.26
+- add qt-3.0.3-glweak.patch 
+
+* Wed Apr 17 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-11
+- qt3-gcc2.96 should be in qt, not qt-devel
+
+* Mon Apr 15 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-10
+- Tweaks to allow parallel installations of Qt 3.x (gcc 2.96) and Qt 3.x
+  (gcc 3.1)
+- Fix up debug spewage at Qt designer startup
+
+* Wed Apr 10 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-9
+- Spec file fixes
+
+* Wed Apr 10 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-8
+- Get rid of non-threaded version, dlopen()'ing threaded code
+  (like plugins) from non-threaded code is dangerous
+- Add some fixes from qt-copy, fixing the ksplash crash some people
+  have noticed on a first login
+- Add translation fixes from CVS
+- Patch example .pro files to build outside the Qt source tree (#63023)
+- Fix various bugs
+
+* Thu Apr 04 2002 Leon Ho <llch@redhat.com> 3.0.3-7
+- fixes for CJK - qpsprinter
+- fixes for CJK - gb18030
+
+* Fri Mar 29 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-6
+- Make sure it builds with both gcc 2.96 and 3.1
+
+* Wed Mar 28 2002 Leon Ho <llch@redhat.com> 3.0.3-5
+- fixes for CJK - qpsprinter
+
+* Wed Mar 27 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-4
+- Add CJK patches
+
+* Tue Mar 26 2002 Than Ngo <than@redhat.com> 3.0.3-3
+- fix loading kde styles
+
+* Tue Mar 19 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-1
+- Update to 3.0.3 final
+
+* Thu Mar 14 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.3-0.cvs20020314.1
+- Update to 3.0.3-pre, required for KDE3
+- force -fPIC usage
+- Remove conflict with qt2 < 2.3.2-1, the new qt2 2.3.1 is fixed and qt 2.3.2
+  is broken
+- Ship the qmake config files (so qmake works for building any 3rd party stuff,
+  e.g. aethera)
+
+* Wed Mar  6 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-2
+- Add some fixes from KDE's qt-copy CVS
+- Pluginize image formats
+
+* Mon Feb 25 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-1
+- 3.0.2 final
+
+* Tue Feb 19 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-0.cvs20020118.3
+- Add GB18030 codec patch, #60034
+- Force-build jpeg support, fixing #59775 and #59795
+
+* Sat Jan 26 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-0.cvs20020118.2
+- Build with CUPS support
+
+* Fri Jan 18 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-0.cvs20020118.1
+- Fix up /usr/bin/moc links, they should point to qt3
+
+* Mon Jan 14 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-0.cvs20020114.1
+- Build styles directly into the main library for now, there's too much broken
+  code out there depending on this ATM.
+
+* Wed Jan  9 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-0.cvs20020109.1
+- Stop excluding alpha, gcc has been fixed
+
+* Tue Jan  8 2002 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.2-0.cvs20020108.1
+- Add fixes from CVS; this fixes the "Alt + F1, arrow up, arrow up doesn't work
+  in KDE" bug
+
+* Mon Dec 17 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.1-2
+- Fix up settings search path
+- Add default qtrc allowing to use KDE 3.x Qt plugins
+- Make sure QLibrary uses RTLD_GLOBAL when dlopen()ing libraries
+
+* Thu Dec 13 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.1.0-1
+- Work around gcc bug #57467
+
+* Wed Dec 12 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- 3.0.1 final
+
+* Mon Dec 10 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.1-0.cvs20011210.1
+- Update to current (needed by KDE 3.x)
+- Rebuild with current libstdc++
+- Temporarily disable building on alpha
+- Fix build with PostgreSQL 7.2
+
+* Mon Nov 26 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-5
+- Fix up glweak
+
+* Mon Nov  5 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-4
+- Give designer, uic, moc, etc. their real names - the qt2 versions
+  have been renamed in qt2-2.3.2-1.
+  Conflict with qt2 < 2.3.2-1.
+
+* Thu Oct 25 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-3
+- Add symlink /usr/lib/qt-3.0.0 -> /usr/lib/qt3 and set QTDIR to the
+  symlink, allowing to update to 3.0.1 without breaking rpath'ed binaries
+
+* Tue Oct 16 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-1
+- 3.0.0 final
+- fix some minor specfile bugs
+- Modularize some more (image format plugins)
+- Build codecs
+
+* Tue Sep 18 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.beta5.1
+- beta5
+- Share more code between qt-x11 and qt-embedded builds
+
+* Wed Aug 29 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.beta4.1
+- beta4
+- build the Motif style directly into Qt rather than as a plugin - Qt should
+  always have at least one style...
+- replace the designer3 symlink with a shell script that sets QTDIR correctly
+  before launching designer
+- Add desktop file for designer
+
+* Mon Aug  6 2001 Tim Powers <timp@redhat.com> 3.0.0-0.beta3.4
+- explicitly include qm2ts, qmake, qtconfig in the devel package file list to avoid dangling symlinks
+
+* Thu Aug  2 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.beta3.3
+- Try yet another workaround for buildsystem breakages
+
+* Tue Jul 31 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Add another ugly workaround for build system problems, this should finally
+  get rid of the dangling symlinks
+
+* Tue Jul 31 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.beta3.2
+- Rephrase parts of the spec file, hopefully pleasing the build system
+
+* Sun Jul 29 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.beta3.1
+- beta3
+- Fix dangling symlinks
+
+* Sun Jun 24 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.beta1.2
+- Fix up QSQL Postgres classes for Postgres 7.1.x
+- Fix various bugs:
+  - QtMultilineEdit and QtTableView should actually compile
+  - Link libqsqlpsql with libpq
+  - Don't link the base library with libmysqlclient, linking the MySQL
+    module with it is sufficient
+- Add missing const qualifier
+- move the SQL drivers to separate packages to avoid dependencies
+- build and install designer plugins - converting glade files to Qt is fun. ;)
+- handle RPM_OPT_FLAGS
+
+* Tue May 22 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.beta1.1
+- 3.0 beta 1
+
+* Wed May 16 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.cvs20010516.1
+- Update, remove conflicts with Qt 2.x
+
+* Mon May 14 2001 Bernhard Rosenkraenzer <bero@redhat.com> 3.0.0-0.cvs20010514.1
+- Initial build of 3.0 branch
+
+* Fri Apr 27 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.0-6
+- Fix crashes on ia64, Patch from Bill Nottingham <notting@redhat.com>
+- Allow building qt-nox
+
+* Fri Apr 20 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.0-5
+- Make sure uic and designer use the libqui from the source tree, not
+  a previously installed one.
+  Linking uic-x11 against libqui-embedded is definitely not a feature. ;)
+- The qclipboard fix is needed for qt-x11 only, don't apply it if we're
+  building qt-embedded
+
+* Sat Apr 14 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Handle LPRng specific constructs in printcap, Bug #35937
+
+* Sun Mar 25 2001 Florian La Roche <Florian.LaRoche@redhat.de>
+- add qfont patch from Trolltech
+
+* Tue Mar 13 2001 Harald Hoyer <harald@redhat.de>
+- added patch for '@euro' language settings
+
+* Tue Mar  6 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.3.0 final
+- BuildRequires XFree86-devel >= 4.0.2 (#30486)
+
+* Mon Feb 26 2001 Than Ngo <than@redhat.com>
+- fix check_env function, so that qt does not crash if QT_XFT is not set
+- fix symlinks
+
+* Mon Feb 26 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.3.0b1
+- Add a patch to qpsprinter that handles TrueType fonts even if they come from xfs
+
+* Tue Feb 13 2001 Preston Brown <pbrown@redhat.com>
+- japanese input and clipboard fixes applied.  Changes have been sent upstream by patch authors.
+
+* Fri Feb  9 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Rebuild with new Mesa to get rid of pthreads linkage
+- Add Xft fix from KDE CVS
+
+* Wed Feb  7 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Add printing bugfix patch from Trolltech
+
+* Sat Feb  3 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.4
+- Qt Embedded: Add QVfb and VNC support
+
+* Tue Jan 16 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Don't segfault when running Qt/Embedded applications as root
+- Improve the Qt/Embedded sparc patch so we don't need the specfile hacks
+  anymore
+- Fix a bug in QPrintDialog (causing KDE Bug #18608)
+
+* Thu Jan 11 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- bzip2 source to save space
+- Qt/Embedded 2.2.3
+- Fix qte build on sparc
+
+* Wed Dec 20 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Run ldconfig in %%post and %%postun for qt-Xt
+
+* Sun Dec 17 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Build with the Xrender extension
+  (Patch from Keith Packard <keithp@keithp.com>)
+
+* Wed Dec 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.3
+
+* Tue Dec 12 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Rebuild to fix permissions on doc dir
+- Don't exclude ia64 anymore
+
+* Fri Nov 17 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Fix up uic (Patch from trolltech) 
+
+* Wed Nov 15 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Build qt-embedded
+  changes to base: fix build, fix ISO C99 compliance, fix 64bit support
+
+* Mon Nov 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.2
+
+* Tue Oct 24 2000 Than Ngo <than@redhat.com>
+- call ldconfig for updating (Bug #19687)
+- added patch from Trolltech, thanks to Rainer <rms@trolltech.com>
+
+* Wed Oct 18 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Add missing msg2qm, msgmerge, qconfig tools (Bug #18997), introduced
+  by broken Makefiles in base
+- fix up %%install so it works both with old-style and new-style fileutils
+  (fileutils <= 4.0z don't know about -L)
+
+* Fri Oct 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Disable exception handling; this speeds up KDE 2.x and reduces its
+  memory footprint by 20 MB.
+
+* Tue Oct 10 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- dereference symlinks in include
+
+* Sun Oct  8 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- fix -devel
+- update to the new version of 2.2.1 on trolltech.com; the initial tarball
+  contained broken docs
+
+* Thu Oct  5 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.1
+
+* Mon Sep 25 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Add missing uic
+
+* Thu Sep 21 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Move Qt designer to a different source RPM to get rid of a
+  circular dependency (kdelibs2->qt, qt->kdelibs2)
+- Enable MNG support
+- Don't compile (just include) examples and tutorials
+- move the static libraries to a separate package (qt-static).
+  They're HUGE, and most people won't ever need them.
+- clean up spec file
+- fix up dependencies (-devel requires base, -static requires devel,
+  Xt requires base)
+- add BuildRequires line
+
+* Tue Sep 12 2000 Than Ngo <than@redhat.com>
+- update release 2.2.0
+- changed copyright to GPL
+- added missing static libraries
+- made symbolic link for designer to load the help files correct
+- made designer and designer-kde2 as sub packages
+- added missing templates for designer
+- remove jakub patch, since the release 2.2.0 already 
+  contains this patch.
+- fixed qt again to compile with gcc-2.96
+- use make -j for building
+
+* Wed Aug 23 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Work around compiler bugs (Patch from Jakub)
+- Use relative symlinks (Bug #16750)
+
+* Mon Aug 21 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- beta2
+
+* Mon Aug 14 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- new qt-copy from KDE2 CVS
+
+* Wed Aug 9 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- official beta 1
+
+* Thu Aug 3 2000 Than Ngo <than@redhat.de>
+- rebuilt against the libpng-1.0.8
+
+* Thu Jul 27 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- rebuild (so we have it on all arches)
+
+* Tue Jul 25 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- move man pages to a more reasonable place (this fixes Bug #14126)
+- exclude ia64 for now (compiler problems!!!)
+
+* Mon Jul 24 2000 Harald Hoyer <harald@redhat.de>
+- modified connect patch to fit qt 2.2.0 beta.
+
+* Thu Jul 20 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- update to current qt-copy; this is now a qt 2.2.0 beta.
+
+* Mon Jul 17 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- update to current qt-copy in kde CVS, required
+
+* Wed Jul 12 2000 Prospector <bugzilla@redhat.com>
+- automatic rebuild
+
+* Sun Jul 11 2000 Harald Hoyer <harald@redhat.de>
+- made patch smaller and binary compatible when recompiled with 6.2
+- modified connect and moc to cope with the new g++ class layout
+
+* Sun Jul 09 2000 Than Ngo <than@redhat.de>
+- rebuilt qt with gcc-2.96-34
+
+* Fri Jul 07 2000 Than Ngo <than@redhat.de>
+- rebuilt qt with c++ 2.96
+
+* Mon Jul  3 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Fix dependancies
+
+* Sun Jul  2 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Use egcs++ for now ** FIXME
+
+* Wed Jun 28 2000 Preston Brown <pbrown@redhat.com>
+- fix up qt.sh
+
+* Sun Jun 25 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Build in jpeg and threading support
+- Fix a bug in clipboard pasting code
+
+* Wed Jun 07 2000 Preston Brown <pbrown@redhat.com>
+- fix qt.{sh,csh}
+- use new rpm macro paths
+- package man pages
+
+* Fri Jun  2 2000 Bill Nottingham <notting@redhat.com>
+- build without optimization on ia64
+
+* Mon May 29 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.1.1
+
+* Thu May 18 2000 Florian La Roche <Florian.LaRoche@redhat.com>
+- recompile with correct libstdc++
+
+* Thu Apr 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.1.0 final
+
+* Wed Apr  5 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- beta4
+- depend on libGL.so.1 rather than Mesa - XFree86 4.0 provides that
+  lib, too
+
+* Wed Mar 22 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- beta3
+
+* Tue Mar  7 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- beta2
+- fix compilation of the NSPlugin add-on
+
+* Fri Mar  3 2000 Bill Nottingham <notting@redhat.com>
+- fix %postun script
+
+* Fri Feb 18 2000 Bernhard Rosenkränzer <bero@redhat.com>
+- beta1
+- get rid of qt-ImageIO, the functionality is now in the main Qt library
+- remove qt-Network, the functionality is now in the main Qt library
+- add changes-2.1.0 to %doc
+
+* Thu Feb 17 2000 Preston Brown <pbrown@redhat.com>
+- no refcount check on postun script, we want it to happen even on upgrades
+
+* Thu Feb 10 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- new snapshot, should fix QWhatsThisButton
+- remove executable permissions from *.pro files
+
+* Mon Feb 07 2000 Preston Brown <pbrown@redhat.com>
+- strip binaries in examples, tutorial
+
+* Mon Jan 31 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- new snapshot - should fix the hotkey bug
+- Fix up the Makefiles so it compiles
+
+* Tue Jan 18 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- new snapshot - we need those QVariant fixes
+
+* Thu Jan 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- switch from glxMesa to Mesa for the GL addon
+
+* Wed Jan 5 2000 Bernhard Rosenkränzer <bero@redhat.com>
+- Fix up dependencies
+- new snapshot
+
+* Mon Jan 3 2000 Ngo Than <than@redhat.de>
+- new snapshot for Red Hat Linux 6.2
+- increase version number
+
+* Mon Dec 20 1999 Bernhard Rosenkraenzer <bero@redhat.com>
+- new snapshot
+- handle RPM_OPT_FLAGS
+
+* Mon Dec 13 1999 Bernhard Rosenkraenzer <bero@redhat.com>
+- new snapshot
+- -GL requires libGL.so.1 instead of Mesa (might as well be glxMesa
+  or some commercial OpenGL)
+- -GL BuildPrereqs /usr/X11R6/include/GL/gl.h instead of Mesa-devel
+  (might as well be glxMesa or some commercial OpenGL)
+
+* Sun Dec 05 1999 Bernhard Rosenkraenzer <bero@redhat.com>
+- update to current RSYNC version
+- remove compilation patch - it finally works out of the box
+
+* Wed Oct 27 1999 Bernhard Rosenkraenzer <bero@redhat.com>
+- update to current CVS snapshot
+- build extensions
+- add patch to fix QNetwork compilation
+
+* Sun Oct 24 1999 Bernhard Rosenkraenzer <bero@redhat.de>
+- current CVS snapshot
+- fix compilation with gcc 2.95.x
+- use install -c rather than just install to make BSD install happy
+
+* Mon Oct 11 1999 Bernhard Rosenkraenzer <bero@redhat.de>
+- 2.1.0 snapshot (for KDE2)
+- Fix typo in spec
+
+* Thu Sep 23 1999 Preston Brown <pbrown@redhat.com>
+- don't ship tutorial or example binaries
+
+* Tue Sep 21 1999 Preston Brown <pbrown@redhat.com>
+- substitution in tutorial and examples so that dependencies are correct and
+  they can be successfully rebuilt.
+- switched to completely using QTDIR.  trying to coexist with links into
+  /usr/{include,lib} and still compile with qt 1.x is very hard for
+  configure scripts to cope with.
+
+* Thu Aug 19 1999 Preston Brown <pbrown@redhat.com>
+- implemented QTDIR compatibility.
+
+* Tue Jul 20 1999 Preston Brown <pbrown@redhat.com>
+- qt 2.0.1 packaged.
+
+* Wed Jul 14 1999 Preston Brown <pbrown@redhat.com>
+- Qt 2.00 packaged.
+- examples, html documentation, tutorial moved to /usr/doc
+
+* Sat Apr 17 1999 Preston Brown <pbrown@redhat.com>
+- static library supplied in dev package.
+
+* Wed Apr 07 1999 Preston Brown <pbrown@redhat.com>
+- turn on internal GIF reading support
+
+* Tue Apr 06 1999 Preston Brown <pbrown@redhat.com>
+- strip binaries
+
+* Mon Mar 15 1999 Preston Brown <pbrown@redhat.com>
+- upgrade to qt 1.44.
+
+* Wed Feb 24 1999 Preston Brown <pbrown@redhat.com>
+- Injected new description and group.
+
+* Tue Jan 19 1999 Preston Brown <pbrown@redhat.com>
+- moved includes to /usr/include/qt
+
+* Mon Jan 04 1999 Preston Brown <pbrown@redhat.com>
+- made setup phase silent.
+
+* Fri Dec 04 1998 Preston Brown <pbrown@redhat.com>
+- upgraded to qt 1.42, released today.
+
+* Tue Dec 01 1998 Preston Brown <pbrown@redhat.com>
+- took Arnts RPM and made some minor changes for Red Hat.
