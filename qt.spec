@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 7c
+%define rel 8c
 %define beta 0
 Version: 2.3.1
 
@@ -474,6 +474,9 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Mon Dec 10 2001 Leon Ho <llch@redhat.com> 2.3.1-8c
+- Fix qt.fontguess
+
 * Thu Nov 29 2001 Leon Ho <llch@redhat.com> 2.3.1-7c
 - Fix a bug against GB18030
 
