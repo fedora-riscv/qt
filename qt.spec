@@ -74,7 +74,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 14
+Release: 14.1
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -89,12 +89,14 @@ Patch2: qt-3.0.5-nodebug.patch
 Patch5: qt-3.1.0-makefile.patch
 Patch8: qt-x11-free-3.1.0-fontdatabase.patch
 Patch9: qt-x11-free-3.1.0-lib64.patch
-Patch12: qt-x11-free-3.1.0-header.patch
 Patch13: qt-x11-free-3.1.1-monospace.patch
 Patch15: qt-x11-free-3.1.1-qmlined.patch
 Patch17: qt-x11-free-3.1.2-randr.patch
 Patch18: qt-x11-free-3.1.2-typo.patch
 Patch19: qt-x11-free-3.1.2-qt-copy.patch
+
+# security
+Patch50: qt3-qimage.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -279,15 +281,14 @@ for the Qt toolkit.
 %ifarch %{arch64}
 %patch9 -p1 -b .lib64
 %endif
-%patch12 -p1 -b .hd2
 %patch13 -p1 -b .monospace
 %patch15 -p1
 %patch17 -p1 -b .randr
 %patch18 -p1 -b .typo
 %patch19 -p1 -b .cvs
 
-# this is for qt-copy in KDE CVS
-[ -f Makefile.cvs ] && make -f Makefile.cvs
+#security
+%patch50 -p0 -b .sec
 
 %build
 export QTDIR=`/bin/pwd`
@@ -295,11 +296,6 @@ export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
 export PATH="$QTDIR/bin:$PATH"
 export QTDEST=%{qtdir}
 export SMP_MFLAGS="%{?_smp_mflags}"
-
-# turn off -g on alpha
-%ifarch alpha
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -g0"
-%endif
 
 # set some default FLAGS
 OPTFLAGS=`echo $RPM_OPT_FLAGS | sed -e s/-fno-rtti/-frtti/`
@@ -773,6 +769,9 @@ fi
 %endif
 
 %changelog
+* Thu Jul 29 2004 Than Ngo <than@redhat.com> 1:3.1.2-14.1
+- fix overflow vulnerability, thanks to trolltech
+
 * Thu Jul 31 2003 Than Ngo <than@redhat.com> 1:3.1.2-14
 - rebuilt
 
