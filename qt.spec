@@ -13,14 +13,8 @@
 # build Motif extention
 %define motif_extention 0
 
-# use Xinerame from XFree
-%define xfree_xinerame 1
-
 # pkg-config
 %define pkg_config 0
-
-# strip binaries
-%define do_strip 0
 
 # install manuals
 %define installman 1
@@ -42,6 +36,10 @@
 
 # cups support
 %define cups 1
+
+%define use_libsupc 0
+
+%define debug 0
 
 %define sover %{ver}
 
@@ -76,7 +74,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 0.9x.2
+Release: 14
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -84,24 +82,19 @@ Buildroot: %{_tmppath}/%{name}-root
 Url: http://www.troll.no
 
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
-Source1: qt.pc
-Source2: Xinerama.tar.bz2
-Source3: qtrc
+Source1: qtrc
 
 Patch1: qt-3.1.2-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
 Patch5: qt-3.1.0-makefile.patch
-Patch6: qt-x11-free-3.1.0-editor.patch
 Patch8: qt-x11-free-3.1.0-fontdatabase.patch
 Patch9: qt-x11-free-3.1.0-lib64.patch
-Patch10: qt-x11-free-3.1.0-assistant.patch
-Patch11: qt-x11-free-3.1.0-designer.patch
 Patch12: qt-x11-free-3.1.0-header.patch
 Patch13: qt-x11-free-3.1.1-monospace.patch
 Patch15: qt-x11-free-3.1.1-qmlined.patch
-Patch16: qt-x11-free-3.1.2-config.patch
 Patch17: qt-x11-free-3.1.2-randr.patch
 Patch18: qt-x11-free-3.1.2-typo.patch
+Patch19: qt-x11-free-3.1.2-qt-copy.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -282,46 +275,26 @@ for the Qt toolkit.
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
 %patch5 -p1 -b .makefile
-%patch6 -p1 -b .editor
 %patch8 -p1 -b .qfontdatabase
 %ifarch %{arch64}
 %patch9 -p1 -b .lib64
 %endif
-%patch10 -p1 -b .assistant
-%patch11 -p1 -b .designer
 %patch12 -p1 -b .hd2
 %patch13 -p1 -b .monospace
 %patch15 -p1
-%patch16 -p1 -b .config
 %patch17 -p1 -b .randr
 %patch18 -p1 -b .typo
+%patch19 -p1 -b .cvs
 
 # this is for qt-copy in KDE CVS
 [ -f Makefile.cvs ] && make -f Makefile.cvs
 
-# HACK until XFree86 is fixed
-%if ! %{xfree_xinerame}
-mkdir Xinerama
-tar xjf %{SOURCE2} -C Xinerama
-pushd Xinerama
-gcc $RPM_OPT_FLAGS -fno-use-cxa-atexit -fPIC \
-    -c -I/usr/X11R6/include/X11/extensions -I. Xinerama.c
-ar r libXinerama.a Xinerama.o
-popd
-%endif
-
 %build
-export CC=%{__cc}
-export CXX=%{__cc}
-export LINK=%{__cc}
 export QTDIR=`/bin/pwd`
 export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
 export PATH="$QTDIR/bin:$PATH"
 export QTDEST=%{qtdir}
 export SMP_MFLAGS="%{?_smp_mflags}"
-
-# clean up source tree
-find . -type d -name CVS | xargs rm -rf
 
 # turn off -g on alpha
 %ifarch alpha
@@ -329,7 +302,7 @@ RPM_OPT_FLAGS="$RPM_OPT_FLAGS -g0"
 %endif
 
 # set some default FLAGS
-OPTFLAGS=`echo $RPM_OPT_FLAGS -DGLX_GLXEXT_LEGACY |sed -e s/-fno-rtti/-frtti/`
+OPTFLAGS=`echo $RPM_OPT_FLAGS | sed -e s/-fno-rtti/-frtti/`
 OPTFLAGS="$OPTFLAGS -fno-use-cxa-atexit -fno-exceptions"
 
 # don't use rpath
@@ -345,6 +318,7 @@ perl -pi -e "s,/usr/X11R6/lib,/usr/X11R6/%{_lib},g" mkspecs/*/qmake.conf
 
 # Create a qmake target for linking without libstdc++ - avoid bloat if
 # possible...
+%if %{use_libsupc}
 pushd mkspecs
 for i in *-g++ qws/*-g++; do
    [ -d $i ] || continue
@@ -355,11 +329,19 @@ done
 popd
 perl -pi -e 's,^(.*linux.*)-g\+\+(.*),\1-gcc\2,' configure
 perl -pi -e 's,^(.*CXX.*LFLAGS.*),\1 -lsupc++,' qmake/GNUmakefile.in
+%endif
+
+# set correct permission
+[ -f config.tests/x11/xrandr.test ] && chmod 755 config.tests/x11/xrandr.test
 
 # build shared, threaded (default) libraries
 echo yes | ./configure \
   -prefix $QTDEST \
+%if %{debug}
+  -debug \
+%else
   -release \
+%endif
   -shared \
   -largefile \
   -qt-gif \
@@ -395,8 +377,7 @@ echo yes | ./configure \
   -xkb \
   -xft
 
-%define CCF CC=%{__cc} CXX=%{__cc} LINK=%{__cc}
-make %{CCF} $SMP_MFLAGS src-qmake
+make $SMP_MFLAGS src-qmake
 
 # build psql plugin
 %if %{buildpsql}
@@ -419,9 +400,9 @@ qmake -o Makefile "LIBS+=-lodbc" odbc.pro
 popd
 %endif
 
-make %{CCF} $SMP_MFLAGS src-moc
-make %{CCF} $SMP_MFLAGS sub-src
-make %{CCF} $SMP_MFLAGS sub-tools
+make $SMP_MFLAGS src-moc
+make $SMP_MFLAGS sub-src
+make $SMP_MFLAGS sub-tools
 
 # build Xt/Motif Extention
 %if %{motif_extention}
@@ -438,7 +419,11 @@ mv lib-bld lib
 mv bin-bld bin
 echo yes | ./configure \
   -prefix $QTDEST \
+%if "%{debug}" == "1"
+  -debug \
+%else
   -release \
+%endif
   -largefile \
   -static \
   -qt-gif \
@@ -474,9 +459,9 @@ echo yes | ./configure \
   -xkb \
   -xft
 
-make %{CCF} src-qmake $SMP_MFLAGS
-make %{CCF} src-moc $SMP_MFLAGS
-make %{CCF} sub-src $SMP_MFLAGS
+make src-qmake $SMP_MFLAGS
+make src-moc $SMP_MFLAGS
+make sub-src $SMP_MFLAGS
 %endif
 
 %install
@@ -488,21 +473,14 @@ export QTDEST=%{qtdir}
 
 mkdir -p $RPM_BUILD_ROOT%{qtdir}/{bin,include,lib}
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/{man1,man3}
+mkdir -p $RPM_BUILD_ROOT%{qtdir}/translations
 
-%if %{pkg_config}
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/pkgconfig
-sed -e "s,VERSION,%{version},g" %{SOURCE1} >$RPM_BUILD_ROOT%{_libdir}/pkgconfig/qt.pc
-ln -s qt.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/qt3.pc
-ln -s qt.pc $RPM_BUILD_ROOT%{_libdir}/pkgconfig/qt-3.0.pc
+%if ! %{pkg_config}
+rm -rf $RPM_BUILD_ROOT%{_libdir}/pkgconfig
 %endif
 
-# strip binaries
-rm -f bin/*.bat
-%if %{do_strip}
-for i in bin/*; do
-  strip -R .comment $i || :
-done
-%endif
+# install translation
+install -m 0644 translations/*.qm $RPM_BUILD_ROOT%{qtdir}/translations/
 
 # install tools and libraries
 rm bin/qmake
@@ -533,18 +511,6 @@ ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so.1.0
 ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so.1
 ln -sf libqui.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqui.so
 
-ln -sf libeditor.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libeditor.so.1.0
-ln -sf libeditor.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libeditor.so.1
-ln -sf libeditor.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libeditor.so
-
-ln -sf libdesigner.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libdesigner.so.1.0
-ln -sf libdesigner.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libdesigner.so.1
-ln -sf libdesigner.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libdesigner.so
-
-ln -sf libqassistantclient.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqassistantclient.so.1.0
-ln -sf libqassistantclient.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqassistantclient.so.1
-ln -sf libqassistantclient.so.1.0.0 $RPM_BUILD_ROOT%{qtdir}/lib/libqassistantclient.so
-
 # install man pages
 cp -fR doc/man/man1/* $RPM_BUILD_ROOT%{_mandir}/man1
 cp -fR doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
@@ -555,9 +521,7 @@ make -C tutorial clean
 make -C examples clean
 
 find examples -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
-find examples -type f -perm 755 | xargs strip -R .comment || :
 find tutorial -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
-find tutorial -type f -perm 755 | xargs strip -R .comment || :
 
 # Make sure the examples can be built outside the source tree.
 # Our binaries fulfill all requirements, so...
@@ -647,9 +611,12 @@ EOF
 
 # Ship qmake stuff
 # Point qmake at the *-g++ target by default, apps may use libstdc++
+%if %{use_libsupc}
 TARGET=`ls -ld mkspecs/default |awk '{ print $11; }'`
 rm mkspecs/default
 ln -s `echo $TARGET |sed -e "s,gcc,g++,"` mkspecs/default
+%endif
+
 cp -aR mkspecs $RPM_BUILD_ROOT%{qtdir}
 
 # Patch qmake to use qt-mt unconditionally
@@ -706,9 +673,6 @@ fi
 %endif
 %dir %{qtdir}/plugins
 %{qtdir}/lib/libqui.so.*
-%{qtdir}/lib/libeditor.so.*
-%{qtdir}/lib/libdesigner.so.*
-%{qtdir}/lib/libqassistantclient.so.*
 
 %files devel
 %defattr(-,root,root,-)
@@ -727,11 +691,13 @@ fi
 %{qtdir}/lib/libqt.so
 %{qtdir}/lib/libqt-mt.so
 %{qtdir}/lib/libqui.so
-%{qtdir}/lib/libdesigner.so
-%{qtdir}/lib/libqassistantclient.so
+%{qtdir}/lib/libdesigner.a
+%{qtdir}/lib/libqassistantclient.a
+%{qtdir}/lib/libeditor.a
 %if %{installman}
 %{_mandir}/*/*
 %endif
+%{qtdir}/translations
 %{_bindir}/assistant*
 %{_bindir}/moc*
 %{_bindir}/uic*
@@ -807,12 +773,43 @@ fi
 %endif
 
 %changelog
-* Tue Apr 29 2003 Than Ngo <than@redhat.com> 3.1.2-0.9x.2
+* Thu Jul 31 2003 Than Ngo <than@redhat.com> 1:3.1.2-14
+- rebuilt
+
+* Thu Jul 31 2003 Than Ngo <than@redhat.com> 1:3.1.2-13
+- rebuilt
+
+* Thu Jul  3 2003 Than Ngo <than@redhat.com> 3.1.2-12
+- rebuilt against mysql 3.23.x
+
+* Tue Jun 24 2003 Than Ngo <than@redhat.com> 3.1.2-11
+- rebuild against gcc-3.3-12 for using virtual thunk
+- remove some unneeded patch files
+- remove some uneeded defines in specfile
+
+* Tue Jun 17 2003 Than Ngo <than@redhat.com> 3.1.2-10
+- add missing translations
+
+* Wed Jun 11 2003 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Wed Jun 04 2003 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Mon May 19 2003 Than Ngo <than@redhat.com> 3.1.2-7
+- add some patches from KDE CVS qt-copy, thanks to Alexei Podtelezhnikov
+
+* Mon May  5 2003 Than Ngo <than@redhat.com> 3.1.2-5.1
+- set correct permission config scripts
+
+* Tue Apr 29 2003 Than Ngo <than@redhat.com> 3.1.2-4
 - fix typo bug in font loader
+
+* Wed Apr  9 2003 Than Ngo <than@redhat.com> 3.1.2-2
 - add xrandr extension
 
-* Wed Apr  2 2003 Than Ngo <than@redhat.com> 3.1.2-0.9x.1
-- 3.1.2 for RHL 9
+* Mon Mar  3 2003 Than Ngo <than@redhat.com> 3.1.2-1
+- 3.1.2 release
 
 * Mon Feb 17 2003 Elliot Lee <sopwith@redhat.com> 3.1.1-7
 - ppc64 support
