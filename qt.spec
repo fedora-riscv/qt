@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 4
+Release: 5
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
