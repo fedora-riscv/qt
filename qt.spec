@@ -1,10 +1,12 @@
+%define smp 0
+
 %define desktop_file 1
 %define redhat_artwork 1
 %define desktop_file_utils_version 0.2.93
 
-%define ver 3.2.3
+%define ver 3.3.1
 
-%define qt_dirname qt-3.2
+%define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
 
 # build Motif extention
@@ -38,7 +40,7 @@
 
 %define debug 0
 
-%define sover 3.2.3
+%define sover %{ver}
 
 %define styleplugins 0
 
@@ -71,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 0.2
+Release: 0.5
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -84,7 +86,10 @@ Source1: qtrc
 Patch1: qt-3.1.2-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
 Patch3: qt-3.1.0-makefile.patch
-Patch4: qt-x11-free-3.2.2-fontdatabase.patch
+Patch4: qt-x11-free-3.3.1-mono.patch
+Patch5: qt-x11-free-3.3.0-strip.patch
+Patch6: qt-x11-free-3.3.0-freetype.patch
+Patch7: qt-x11-free-3.3.1-fontdatabase.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -261,18 +266,24 @@ for the Qt toolkit.
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
 %patch3 -p1 -b .makefile
-%patch4 -p1 -b .fontdatabase
+%patch4 -p1 -b .mono
+%patch5 -p1
+%patch6 -p1 -b .ft217
+%patch7 -p1 -b .fontdatabase
 
 %build
 export QTDIR=`/bin/pwd`
 export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
 export PATH="$QTDIR/bin:$PATH"
 export QTDEST=%{qtdir}
-export SMP_MFLAGS="%{?_smp_mflags}"
+
+%if %{smp}
+   export SMP_MFLAGS="%{?_smp_mflags}"
+%endif
 
 # turn off -g on alpha
 %ifarch alpha
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -g0"
+   RPM_OPT_FLAGS="$RPM_OPT_FLAGS -g0"
 %endif
 
 # set some default FLAGS
@@ -293,16 +304,16 @@ fi
 # Create a qmake target for linking without libstdc++ - avoid bloat if
 # possible...
 %if %{use_libsupc}
-pushd mkspecs
-for i in *-g++ qws/*-g++; do
-   [ -d $i ] || continue
-   TARGET=`echo $i |sed -e 's,g++$,gcc,'`
-   cp -aR $i $TARGET
-   perl -pi -e "s,g\+\+,gcc,g;s,^(QMAKE_LIBS[[:space:]]*=.*),\1 -lsupc++,g" $TARGET/*
-done
-popd
-perl -pi -e 's,^(.*linux.*)-g\+\+(.*),\1-gcc\2,' configure
-perl -pi -e 's,^(.*CXX.*LFLAGS.*),\1 -lsupc++,' qmake/GNUmakefile.in
+   pushd mkspecs
+   for i in *-g++ qws/*-g++; do
+      [ -d $i ] || continue
+      TARGET=`echo $i |sed -e 's,g++$,gcc,'`
+      cp -aR $i $TARGET
+      perl -pi -e "s,g\+\+,gcc,g;s,^(QMAKE_LIBS[[:space:]]*=.*),\1 -lsupc++,g" $TARGET/*
+   done
+   popd
+   perl -pi -e 's,^(.*linux.*)-g\+\+(.*),\1-gcc\2,' configure
+   perl -pi -e 's,^(.*CXX.*LFLAGS.*),\1 -lsupc++,' qmake/GNUmakefile.in
 %endif
 
 # set correct permission
@@ -324,6 +335,7 @@ echo yes | ./configure \
   -system-libmng \
   -system-libjpeg \
   -no-g++-exceptions \
+  -enable-styles \
   -enable-tools \
   -enable-kernel \
   -enable-widgets \
@@ -334,6 +346,7 @@ echo yes | ./configure \
   -enable-canvas \
   -enable-table \
   -enable-xml \
+  -enable-opengl \
   -enable-sql \
   -qt-style-motif \
   %{plugins} \
@@ -344,34 +357,36 @@ echo yes | ./configure \
 %endif
   -sm \
 %if "%{xfree_xinerame}" == "0"
- -L`pwd`/Xinerama \
+  -L`pwd`/Xinerama \
 %endif
   -xinerama \
   -xrender \
   -xkb \
+  -ipv6 \
+  -dlopen-opengl \
   -xft
 
 make $SMP_MFLAGS src-qmake
 
 # build psql plugin
 %if %{buildpsql}
-pushd plugins/src/sqldrivers/psql
-qmake -o Makefile "INCLUDEPATH+=/usr/include/pgsql /usr/include/pgsql/server /usr/include/pgsql/internal" "LIBS+=-lpq" psql.pro
+   pushd plugins/src/sqldrivers/psql
+   qmake -o Makefile "INCLUDEPATH+=/usr/include/pgsql /usr/include/pgsql/server /usr/include/pgsql/internal" "LIBS+=-lpq" psql.pro
 popd
 %endif
 
 # build mysql plugin
 %if %{buildmysql}
-pushd plugins/src/sqldrivers/mysql
-qmake -o Makefile "INCLUDEPATH+=/usr/include/mysql" "LIBS+=-L%{_libdir}/mysql -lmysqlclient" mysql.pro
+   pushd plugins/src/sqldrivers/mysql
+   qmake -o Makefile "INCLUDEPATH+=/usr/include/mysql" "LIBS+=-L%{_libdir}/mysql -lmysqlclient" mysql.pro
 popd
 %endif
 
 # build odbc plugin
 %if %{buildodbc}
-pushd plugins/src/sqldrivers/odbc
-qmake -o Makefile "LIBS+=-lodbc" odbc.pro
-popd
+   pushd plugins/src/sqldrivers/odbc
+   qmake -o Makefile "LIBS+=-lodbc" odbc.pro
+   popd
 %endif
 
 make $SMP_MFLAGS src-moc
@@ -380,58 +395,62 @@ make $SMP_MFLAGS sub-tools
 
 # build Xt/Motif Extention
 %if %{motif_extention}
-make -C extensions/motif/src $SMP_MFLAGS
+   make -C extensions/motif/src $SMP_MFLAGS
 %endif
 
 # build static libraries, if requested.
 %if "%{buildstatic}" == "1"
-cp -aR lib lib-bld
-cp -aR bin bin-bld
-make clean
-rm -rf lib bin
-mv lib-bld lib
-mv bin-bld bin
-echo yes | ./configure \
-  -prefix $QTDEST \
+   cp -aR lib lib-bld
+   cp -aR bin bin-bld
+   make clean
+   rm -rf lib bin
+   mv lib-bld lib
+   mv bin-bld bin
+   echo yes | ./configure \
+   -prefix $QTDEST \
 %if "%{debug}" == "1"
-  -debug \
+   -debug \
 %else
-  -release \
+   -release \
 %endif
-  -largefile \
-  -static \
-  -qt-gif \
-  -system-zlib \
-  -system-libpng \
-  -system-libmng \
-  -system-libjpeg \
-  -no-g++-exceptions \
-  -enable-tools \
-  -enable-kernel \
-  -enable-widgets \
-  -enable-dialogs \
-  -enable-iconview \
-  -enable-workspace \
-  -enable-network \
-  -enable-canvas \
-  -enable-table \
-  -enable-xml \
-  -enable-sql \
-  -qt-style-motif \
-  %{plugins} \
-  -stl \
-  -thread \
+   -largefile \
+   -static \
+   -qt-gif \
+   -system-zlib \
+   -system-libpng \
+   -system-libmng \
+   -system-libjpeg \
+   -no-g++-exceptions \
+   -enable-styles \
+   -enable-tools \
+   -enable-kernel \
+   -enable-widgets \
+   -enable-dialogs \
+   -enable-iconview \
+   -enable-workspace \
+   -enable-network \
+   -enable-canvas \
+   -enable-table \
+   -enable-xml \
+   -enable-opengl \
+   -enable-sql \
+   -qt-style-motif \
+   %{plugins} \
+   -stl \
+   -thread \
 %if "%{cups}" == "1"
-  -cups \
+   -cups \
 %endif
-  -sm \
+   -sm \
 %if "%{xfree_xinerame}" == "0"
-  -L`pwd`/Xinerama \
+   -L`pwd`/Xinerama \
 %endif
-  -xinerama \
-  -xrender \
-  -xkb \
-  -xft
+   -xinerama \
+   -xrender \
+   -xkb \
+   -ipv6 \
+   -dlopen-opengl \
+   -xft
 
 make src-qmake $SMP_MFLAGS
 make src-moc $SMP_MFLAGS
@@ -448,7 +467,7 @@ export QTDEST=%{qtdir}
 
 make install INSTALL_ROOT=%{buildroot}
 
-for i in findtr qt20fix qtrename140 qt32castcompat ; do
+for i in findtr qt20fix qtrename140 ; do
    install bin/$i %{buildroot}%{qtdir}/bin/
 done
 
@@ -465,11 +484,11 @@ else
 fi
 
 %if ! %{pkg_config}
-rm -rf %{buildroot}%{_libdir}/pkgconfig
+   rm -rf %{buildroot}%{_libdir}/pkgconfig
 %else
-mkdir -p  %{buildroot}%{_libdir}/pkgconfig
-pushd %{buildroot}%{_libdir}/pkgconfig
-ln -sf ../%{qt_dirname}/lib/pkgconfig/* .
+   mkdir -p  %{buildroot}%{_libdir}/pkgconfig
+   pushd %{buildroot}%{_libdir}/pkgconfig
+   ln -sf ../%{qt_dirname}/lib/pkgconfig/* .
 popd
 %endif
 
@@ -530,11 +549,11 @@ fi
 
 # Add desktop file
 %if %{desktop_file}
-mkdir -p %{buildroot}%{_datadir}/applications
-cat >%{buildroot}%{_datadir}/applications/qt-designer.desktop <<EOF
+   mkdir -p %{buildroot}%{_datadir}/applications
+   cat >%{buildroot}%{_datadir}/applications/qt-designer.desktop <<EOF
 %else
-mkdir -p %{buildroot}%{_datadir}/applnk/Development
-cat >%{buildroot}%{_datadir}/applnk/Development/designer.desktop <<EOF
+   mkdir -p %{buildroot}%{_datadir}/applnk/Development
+   cat >%{buildroot}%{_datadir}/applnk/Development/designer.desktop <<EOF
 %endif
 [Desktop Entry]
 BinaryPattern=designer;
@@ -554,9 +573,9 @@ EOF
 
 # move it into redhat-artwork
 %if ! %{redhat_artwork}
-# Sane default settings
-mkdir -p %{buildroot}%{qtdir}/etc/settings
-cat >%{buildroot}%{qtdir}/etc/settings/qtrc <<"EOF"
+   # Sane default settings
+   mkdir -p %{buildroot}%{qtdir}/etc/settings
+   cat >%{buildroot}%{qtdir}/etc/settings/qtrc <<"EOF"
 [General]
 libraryPath=%{_libdir}/kde3/plugins
 style=Highcolor
@@ -569,9 +588,9 @@ EOF
 # Ship qmake stuff
 # Point qmake at the *-g++ target by default, apps may use libstdc++
 %if %{use_libsupc}
-TARGET=`ls -ld mkspecs/default |awk '{ print $11; }'`
-rm mkspecs/default
-ln -s `echo $TARGET |sed -e "s,gcc,g++,"` mkspecs/default
+   TARGET=`ls -ld mkspecs/default |awk '{ print $11; }'`
+   rm mkspecs/default
+   ln -s `echo $TARGET |sed -e "s,gcc,g++,"` mkspecs/default
 %endif
 
 cp -aR mkspecs %{buildroot}%{qtdir}
@@ -582,6 +601,8 @@ perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" %{buildroot}%{qtdir}/mkspecs/
 # don't include Makefiles of qt examples/tutorials
 find examples -name "Makefile" | xargs rm -f
 find tutorial -name "Makefile" | xargs rm -f
+
+rm -f %{buildroot}%{qtdir}/lib/*.la
 
 %clean
 rm -rf %{buildroot}
@@ -633,7 +654,6 @@ fi
 %{qtdir}/bin/assistant
 %{qtdir}/bin/qm2ts
 %{qtdir}/bin/qmake
-%{qtdir}/bin/qt32castcompat
 %{qtdir}/include
 %{qtdir}/doc
 %{qtdir}/mkspecs
@@ -643,7 +663,6 @@ fi
 %{qtdir}/lib/libeditor.a
 %{qtdir}/lib/libdesigner*.a
 %{qtdir}/lib/libqassistantclient.a
-%{qtdir}/lib/*.la
 %{qtdir}/lib/*.prl
 %if %{installman}
 %{_mandir}/*/*
@@ -727,6 +746,46 @@ fi
 %endif
 
 %changelog
+* Sun Mar 07 2004 Than Ngo <than@redhat.com> 1:3.3.1-0.5
+- disable smpflags
+
+* Fri Mar 05 2004 Than Ngo <than@redhat.com> 1:3.3.1-0.4
+- fix font alias
+
+* Thu Mar 04 2004 Than Ngo <than@redhat.com> 1:3.3.1-0.3
+- add fontdatabase fix from Trolltech
+
+* Thu Mar 04 2004 Than Ngo <than@redhat.com> 1:3.3.1-0.2
+- fix wrong symlink #117451
+
+* Tue Mar 02 2004 Elliot Lee <sopwith@redhat.com>
+- rebuilt
+
+* Mon Mar 01 2004 Than Ngo <than@redhat.com> 3.3.1-0.1
+- update to 3.3.1
+
+* Mon Feb 23 2004 Than Ngo <than@redhat.com> 3.3.0-0.4
+- add fix for building with freetype 2.1.7 or newer
+
+* Tue Feb 17 2004 Than Ngo <than@redhat.com> 3.3.0-0.3 
+- enable IPv6 support
+- use dlopen, instead of linking with OpenGL libraries directly
+- don't install backup files
+
+* Thu Feb 05 2004 Than Ngo <than@redhat.com> 1:3.3.0-0.2
+- fix fontdatabase
+- don't use strip in install script
+- fix qt default setting
+ 
+* Wed Feb 04 2004 Than Ngo <than@redhat.com> 1:3.3.0-0.1
+- 3.3.0
+
+* Fri Jan 30 2004 Than Ngo <than@redhat.com> 1:3.2.3-0.4
+- add mouse patch from CVS, bug #114647
+
+* Tue Jan 20 2004 Than Ngo <than@redhat.com> 1:3.2.3-0.3
+- rebuild
+
 * Tue Dec  2 2003 Than Ngo <than@redhat.com> 1:3.2.3-0.2
 - Added missing prl files, (report from trolltech)
 - Fixed description
