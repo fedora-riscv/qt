@@ -19,9 +19,6 @@
 # pkg-config
 %define pkg_config 1
 
-# compress tutorial and examples
-%define compress 0
-
 # install manuals
 %define installman 1
 
@@ -85,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 1
+Release: 2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -453,9 +450,15 @@ popd
 %endif
 
 # install man pages
-mkdir -p %{buildroot}%{_mandir}
-cp -fR doc/man/* %{buildroot}%{_mandir}/
-rm -rf doc/man %{buildroot}%{qtdir}/doc
+%if %{installman}
+  mkdir -p %{buildroot}%{_mandir}
+  cp -fR doc/man/* %{buildroot}%{_mandir}/
+%endif
+
+rm -rf %{buildroot}%{qtdir}/doc/*
+for x html tutorial examples ; do
+  ln -s  ../../../share/doc/%{name}-devel-%{version}/$x %{buildroot}%{qtdir}/doc/
+done
 
 # clean up
 make -C tutorial clean
@@ -554,11 +557,6 @@ find tutorial -name "Makefile" | xargs rm -f
 
 rm -f %{buildroot}%{qtdir}/lib/*.la
 
-# Compress tutorials and examples
-%if %{compress}
-  tar cfvj examples.tar.bz2 tutorial examples 
-%endif
-
 mkdir -p %{buildroot}/etc/ld.so.conf.d
 echo "%{qtdir}/lib" > %{buildroot}/etc/ld.so.conf.d/qt-%{_arch}.conf
 
@@ -637,13 +635,9 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*
 %{qtdir}/lib/pkgconfig
 %endif
-%doc doc/*
-%if %{compress}
-%doc examples.tar.bz2
-%else
+%doc doc/html
 %doc examples
 %doc tutorial
-%endif
 
 
 %if %{motif_extention}
@@ -700,6 +694,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Feb 02 2005 Than Ngo <than@redhat.com> 1:3.3.4-2
+- remove useless doc files #143949
+- fix build problem if installman is disable #146311
+- add missing html/examples/tutorial symlinks
+
 * Fri Jan 28 2005 Than Ngo <than@redhat.com> 1:3.3.4-1
 - update to 3.3.4
 - adapt many patches to qt-3.3.4
