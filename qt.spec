@@ -300,6 +300,7 @@ for the Qt toolkit.
 %patch50 -p0
 %patch51 -p0 -b .qximinputcontext_x11
 %patch52 -p1 -b .quiet
+%patch53 -p1 -b .im
 %endif
 
 %build
