@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 1
+Release: 2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -90,6 +90,7 @@ Patch5: qt-x11-free-3.3.0-strip.patch
 Patch6: qt-x11-free-3.3.0-freetype.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
 Patch8: qt-x11-free-3.3.3-qembed.patch
+Patch9: qt-x11-free-3.3.3-qmake.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.1-qfontdatabase_x11.patch
@@ -283,6 +284,7 @@ for the Qt toolkit.
 %patch6 -p1 -b .ft217
 %patch7 -p1 -b .quiet
 %patch8 -p1 -b .qembed
+%patch9 -p1 -b .qmake
 %patch10 -p1
 %patch12 -p1 -b .nostdlib
 %patch13 -p1 -b .fonts
@@ -691,6 +693,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Aug 12 2004 Than Ngo <than@redhat.com> 1:3.3.3-2
+- fix qmake broken link (#129723)
+
 * Wed Aug 11 2004 Than Ngo <than@redhat.com> 1:3.3.3-1
 - update to 3.3.3 release
 
