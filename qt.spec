@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 4
+%define rel 5
 %define beta 0
 Version: 2.3.1
 
@@ -199,7 +199,7 @@ EOF
 
 make src-moc src-mt sub-src -j $NRPROC
 %if "%{type}" == "x11"
-make -C extensions/xt/src -j $NRPROC
+make SYSCONF_CXX="g++ -fPIC" SYSCONF_CC="gcc -fPIC" -C extensions/xt/src -j $NRPROC
 %endif
 
 # build shared libraries
@@ -471,6 +471,9 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Mon Aug 27 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-5
+- Build libqxt with -fPIC (#49960)
+
 * Mon Aug 20 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-4
 - Add qt.fontguess file (fixes Japanese/Korean/Chinese)
 - Merge fixes from KDE's qt-copy CVS tree, primarily printing fixes
