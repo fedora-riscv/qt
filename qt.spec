@@ -21,9 +21,6 @@
 # install manuals
 %define installman 1
 
-# buildstatic: Build libs for static linking
-%define buildstatic 0
-
 # buildmysql: Build MySQL plugins
 %define buildmysql 1
 
@@ -38,8 +35,6 @@
 
 # cups support
 %define cups 1
-
-%define use_libsupc 0
 
 %define debug 0
 
@@ -76,7 +71,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 7
+Release: 8
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -97,6 +92,7 @@ Patch8: qt-x11-free-3.3.2-qembed.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch11: qt-x11-free-3.3.2-misc.patch
 Patch12: qt-uic-nostdlib.patch
+Patch13: qt-x11-free-3.3.1-qfontdatabase_x11.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -104,7 +100,6 @@ Prereq: fileutils
 Prefix: %{qtdir}
 
 BuildRequires: gcc-c++
-BuildRequires: libstdc++
 BuildRequires: libstdc++-devel
 BuildRequires: libmng-devel
 BuildRequires: glibc-devel
@@ -127,10 +122,6 @@ Obsoletes: %{name}-Xt
 
 %if %{desktop_file}
 BuildRequires: desktop-file-utils >= %{desktop_file_utils_version}
-%endif
-
-%if %{buildstatic}
-BuildRequires: libmng-static
 %endif
 
 %if %{buildmysql}
@@ -158,12 +149,11 @@ Summary: Development files and documentation for the Qt GUI toolkit.
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: XFree86-devel
+Requires: libpng-devel
+Requires: libjpeg-devel
+Requires: libmng-devel
 Obsoletes: qt3-devel
 Provides: qt3-devel
-%if ! %{buildstatic}
-Obsoletes: qt-static
-Obsoletes: qt3-static
-%endif
 
 %package Xt
 Summary: An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
@@ -206,14 +196,12 @@ Obsoletes: qt3-PostgreSQL
 Provides: qt3-PostgreSQL
 %endif
 
-%if %{buildstatic}
 %package static
 Summary: Version of the Qt GUI toolkit for static linking
 Group: Development/Libraries
 Requires: %{name}-devel = %{epoch}:%{version}-%{release}
 Obsoletes: qt3-static
 Provides: qt3-static
-%endif
 
 %package designer
 Summary: Interface designer (IDE) for the Qt toolkit
@@ -243,10 +231,8 @@ toolkit.
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 
-%if %{buildstatic}
 %description static
 Version of the Qt library for static linking
-%endif
 
 %description styles
 Extra styles (themes) for the Qt GUI toolkit.
@@ -280,9 +266,10 @@ for the Qt toolkit.
 %patch6 -p1 -b .ft217
 %patch7 -p1 -b .quiet
 %patch8 -p1 -b .qembed
-%patch10 -p1 -b .lib64
+%patch10 -p1
 %patch11 -p1 -b .misc
 %patch12 -p1 -b .nostdlib
+%patch13 -p1 -b .fonts
 
 %build
 export QTDIR=`/bin/pwd`
@@ -292,11 +279,6 @@ export QTDEST=%{qtdir}
 
 %if %{smp}
    export SMP_MFLAGS="%{?_smp_mflags}"
-%endif
-
-# turn off -g on alpha
-%ifarch alpha
-   RPM_OPT_FLAGS="$RPM_OPT_FLAGS -g0"
 %endif
 
 # set some default FLAGS
@@ -312,21 +294,6 @@ perl -pi -e "s,-O2,$INCLUDES $OPTFLAGS,g" mkspecs/*/qmake.conf
 if [ "%{_lib}" == "lib64" ] ; then
    perl -pi -e "s,/lib, /%{_lib},g" config.tests/unix/{checkavail,cups.test,nis.test}
 fi
-
-# Create a qmake target for linking without libstdc++ - avoid bloat if
-# possible...
-%if %{use_libsupc}
-   pushd mkspecs
-   for i in *-g++ qws/*-g++; do
-      [ -d $i ] || continue
-      TARGET=`echo $i |sed -e 's,g++$,gcc,'`
-      cp -aR $i $TARGET
-      perl -pi -e "s,g\+\+,gcc,g;s,^(QMAKE_LIBS[[:space:]]*=.*),\1 -lsupc++,g" $TARGET/*
-   done
-   popd
-   perl -pi -e 's,^(.*linux.*)-g\+\+(.*),\1-gcc\2,' configure
-   perl -pi -e 's,^(.*CXX.*LFLAGS.*),\1 -lsupc++,' qmake/GNUmakefile.in
-%endif
 
 # set correct permission
 [ -f config.tests/x11/xrandr.test ] && chmod 755 config.tests/x11/xrandr.test
@@ -415,67 +382,6 @@ make $SMP_MFLAGS sub-tools UIC="$QTDIR/bin/uic -nostdlib -L $QTDIR/plugins"
 # build Xt/Motif Extention
 %if %{motif_extention}
    make -C extensions/motif/src $SMP_MFLAGS
-%endif
-
-# build static libraries, if requested.
-%if "%{buildstatic}" == "1"
-   cp -aR lib lib-bld
-   cp -aR bin bin-bld
-   make clean
-   rm -rf lib bin
-   mv lib-bld lib
-   mv bin-bld bin
-   echo yes | ./configure \
-   -prefix $QTDEST \
-%if "%{debug}" == "1"
-   -debug \
-%else
-   -release \
-%endif
-   -largefile \
-   -static \
-   -qt-gif \
-   -system-zlib \
-   -system-libpng \
-   -system-libmng \
-   -system-libjpeg \
-   -no-g++-exceptions \
-   -enable-styles \
-   -enable-tools \
-   -enable-kernel \
-   -enable-widgets \
-   -enable-dialogs \
-   -enable-iconview \
-   -enable-workspace \
-   -enable-network \
-   -enable-canvas \
-   -enable-table \
-   -enable-xml \
-   -enable-opengl \
-   -enable-sql \
-   -qt-style-motif \
-   %{plugins} \
-   -stl \
-%if "%{buildmt}" == "1"
-   -thread \
-%endif
-%if "%{cups}" == "1"
-   -cups \
-%endif
-   -sm \
-%if "%{xfree_xinerame}" == "0"
-   -L`pwd`/Xinerama \
-%endif
-   -xinerama \
-   -xrender \
-   -xkb \
-   -ipv6 \
-   -dlopen-opengl \
-   -xft
-
-make src-qmake $SMP_MFLAGS
-make src-moc $SMP_MFLAGS
-make sub-src $SMP_MFLAGS
 %endif
 
 %install
@@ -591,15 +497,8 @@ contrast=7
 EOF
 %endif
 
-# Ship qmake stuff
-# Point qmake at the *-g++ target by default, apps may use libstdc++
-%if %{use_libsupc}
-   TARGET=`ls -ld mkspecs/default |awk '{ print $11; }'`
-   rm mkspecs/default
-   ln -s `echo $TARGET |sed -e "s,gcc,g++,"` mkspecs/default
-%endif
-
 pushd mkspecs
+rm -fr default
 if [ "%_lib" == "lib64" ]; then
    ln -sf linux-g++-64 default
 else
@@ -730,12 +629,6 @@ rm -rf %{buildroot}
 %{qtdir}/plugins/sqldrivers/libqsqlmysql*
 %endif
 
-%if %{buildstatic}
-%files static
-%defattr(-,root,root,-)
-%{qtdir}/lib/*.a
-%endif
-
 %files designer
 %defattr(-,root,root,-)
 %{_bindir}/designer*
@@ -756,6 +649,12 @@ rm -rf %{buildroot}
 %endif
 
 %changelog
+* Thu Jun 24 2004 Than Ngo <than@redhat.com> 1:3.3.2-8
+- add fontconfig fix for qfontdatabase, #123868
+- fix some buildrequires problem, #125289
+- fix dangling symlink, #125351
+- get rid of backup files
+
 * Tue Jun 15 2004 Elliot Lee <sopwith@redhat.com> 1:3.3.2-7
 - rebuilt
 
