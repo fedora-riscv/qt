@@ -71,13 +71,12 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 8
+Release: 9
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
 Buildroot: %{_tmppath}/%{name}-root
 Url: http://www.troll.no
-
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source1: qtrc
 
@@ -94,10 +93,13 @@ Patch11: qt-x11-free-3.3.2-misc.patch
 Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.1-qfontdatabase_x11.patch
 
+Prefix: %{qtdir}
+
 Prereq: /sbin/ldconfig
 Prereq: fileutils
 
-Prefix: %{qtdir}
+Requires: fontconfig >= 2.0
+Requires: /etc/ld.so.conf.d
 
 BuildRequires: gcc-c++
 BuildRequires: libstdc++-devel
@@ -116,8 +118,6 @@ BuildRequires: tar
 
 %if %{motif_extention}
 BuildRequires: openmotif-devel >= 2.2.2
-%else
-Obsoletes: %{name}-Xt
 %endif
 
 %if %{desktop_file}
@@ -136,13 +136,14 @@ BuildRequires: postgresql-devel
 BuildRequires: unixODBC-devel
 %endif
 
-Conflicts: qt2 < 2.3.1-1
-Obsoletes: qt3
-
 BuildRequires: fontconfig-devel >= 2.0
 
-Requires: fontconfig >= 2.0
-requires: /etc/ld.so.conf.d
+
+%package config
+Summary: Grapical configuration tool for programs using Qt
+Group: User Interface/Desktops
+Requires: %{name} = %{epoch}:%{version}-%{release}
+
 
 %package devel
 Summary: Development files and documentation for the Qt GUI toolkit.
@@ -152,62 +153,55 @@ Requires: XFree86-devel
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
-Obsoletes: qt3-devel
-Provides: qt3-devel
+
 
 %package Xt
 Summary: An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-Obsoletes: qt3-Xt
-Provides: qt3-Xt
+
 
 %package styles
 Summary: Extra styles for the Qt GUI toolkit.
 Group: User Interface/Desktops
 Requires: %{name} = %{epoch}:%{version}-%{release}
-Obsoletes: qt3-styles
-Provides: qt3-styles
+
 
 %if %{buildodbc}
 %package ODBC
 Summary: ODBC drivers for Qt's SQL classes.
 Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-Obsoletes: qt3-ODBC
-Provides: qt3-ODBC
 %endif
+
 
 %if %{buildmysql}
 %package MySQL
 Summary: MySQL drivers for Qt's SQL classes.
 Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-Obsoletes: qt3-MySQL
-Provides: qt3-MySQL
 %endif
+
 
 %if %{buildpsql}
 %package PostgreSQL
 Summary: PostgreSQL drivers for Qt's SQL classes.
 Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-Obsoletes: qt3-PostgreSQL
-Provides: qt3-PostgreSQL
 %endif
+
 
 %package static
 Summary: Version of the Qt GUI toolkit for static linking
 Group: Development/Libraries
 Requires: %{name}-devel = %{epoch}:%{version}-%{release}
-Obsoletes: qt3-static
-Provides: qt3-static
+
 
 %package designer
 Summary: Interface designer (IDE) for the Qt toolkit
 Group: Development/Tools
 Requires: %{name}-devel = %{epoch}:%{version}-%{release}
-Obsoletes: qt3-designer
+
 
 %description
 Qt is a GUI software toolkit which simplifies the task of writing and
@@ -219,6 +213,17 @@ Qt is written in C++ and is fully object-oriented.
 This package contains the shared library needed to run qt
 applications, as well as the README files for qt.
 
+
+%description config
+Qt is a GUI software toolkit which simplifies the task of writing and
+maintaining GUI (Graphical User Interface) applications
+for the X Window System.
+
+Qt is written in C++ and is fully object-oriented.
+
+This package contains a grapical configuration tool for programs using Qt.
+
+
 %description devel
 The qt-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
@@ -228,33 +233,41 @@ programs.
 Install qt-devel if you want to develop GUI applications using the Qt
 toolkit.
 
+
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
+
 
 %description static
 Version of the Qt library for static linking
 
+
 %description styles
 Extra styles (themes) for the Qt GUI toolkit.
+
 
 %if %{buildodbc}
 %description ODBC
 ODBC driver for Qt's SQL classes (QSQL)
 %endif
 
+
 %if %{buildmysql}
 %description MySQL
 MySQL driver for Qt's SQL classes (QSQL)
 %endif
+
 
 %if %{buildpsql}
 %description PostgreSQL
 PostgreSQL driver for Qt's SQL classes (QSQL)
 %endif
 
+
 %description designer
 The qt-designer package contains an User Interface designer tool
 for the Qt toolkit.
+
 
 %prep
 %setup -q -n %{name}-x11-free-%{version}
@@ -270,6 +283,7 @@ for the Qt toolkit.
 %patch11 -p1 -b .misc
 %patch12 -p1 -b .nostdlib
 %patch13 -p1 -b .fonts
+
 
 %build
 export QTDIR=`/bin/pwd`
@@ -538,14 +552,19 @@ rm -rf %{buildroot}
 %dir %{qtdir}/bin
 %dir %{qtdir}/lib
 %dir %{qtdir}/plugins
-%{qtdir}/bin/qtconfig
-%{_bindir}/qtconfig*
-%{qtdir}/lib/libqt*.so.*
+/etc/ld.so.conf.d/*
 %if ! %{redhat_artwork}
 %{qtdir}/etc/settings/qtrc
 %endif
 %{qtdir}/lib/libqui.so.*
-/etc/ld.so.conf.d/*
+%{qtdir}/lib/libqt*.so.*
+
+
+%files config
+%defattr(-,root,root,-)
+%{qtdir}/bin/qtconfig
+%{_bindir}/qtconfig*
+
 
 %files devel
 %defattr(-,root,root,-)
@@ -587,6 +606,7 @@ rm -rf %{buildroot}
 %{qtdir}/lib/pkgconfig
 %endif
 
+
 %doc doc/*
 %if %{compress}
 %doc examples.tar.bz2
@@ -594,6 +614,7 @@ rm -rf %{buildroot}
 %doc examples
 %doc tutorial
 %endif
+
 
 %if %{motif_extention}
 %post Xt -p /sbin/ldconfig
@@ -604,6 +625,7 @@ rm -rf %{buildroot}
 %{qtdir}/lib/libqmotif.so*
 %endif
 
+
 %if %{styleplugins}
 %files styles
 %defattr(-,root,root,-)
@@ -611,11 +633,13 @@ rm -rf %{buildroot}
 %{qtdir}/plugins/styles/*
 %endif
 
+
 %if %{buildodbc}
 %files ODBC
 %defattr(-,root,root,-)
 %{qtdir}/plugins/sqldrivers/libqsqlodbc*
 %endif
+
 
 %if %{buildpsql}
 %files PostgreSQL
@@ -623,11 +647,13 @@ rm -rf %{buildroot}
 %{qtdir}/plugins/sqldrivers/libqsqlpsql*
 %endif
 
+
 %if %{buildmysql}
 %files MySQL
 %defattr(-,root,root,-)
 %{qtdir}/plugins/sqldrivers/libqsqlmysql*
 %endif
+
 
 %files designer
 %defattr(-,root,root,-)
@@ -648,7 +674,11 @@ rm -rf %{buildroot}
 %{_datadir}/applnk/Development/*
 %endif
 
+
 %changelog
+* Tue Jun 29 2004 Than Ngo <than@redhat.com> 1:3.3.2-9
+- add sub package config, allow multi lib installation (#126643)
+
 * Thu Jun 24 2004 Than Ngo <than@redhat.com> 1:3.3.2-8
 - add fontconfig fix for qfontdatabase, #123868
 - fix some buildrequires problem, #125289
