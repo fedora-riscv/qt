@@ -455,7 +455,11 @@ popd
   cp -fR doc/man/* %{buildroot}%{_mandir}/
 %endif
 
-rm -rf %{buildroot}%{qtdir}/doc/*
+if [ -d %{buildroot}%{qtdir}/doc ] ; then
+  rm -rf %{buildroot}%{qtdir}/doc/*
+else
+  mkdir -p %{buildroot}%{qtdir}/doc
+fi
 for x in html tutorial examples ; do
   ln -s  ../../../share/doc/%{name}-devel-%{version}/$x %{buildroot}%{qtdir}/doc/
 done
@@ -619,6 +623,7 @@ rm -rf %{buildroot}
 %endif
 %{qtdir}/translations
 %{qtdir}/phrasebooks
+%{qtdir}/doc
 %{_bindir}/assistant*
 %{_bindir}/moc*
 %{_bindir}/uic*
