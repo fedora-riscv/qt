@@ -4,6 +4,8 @@
 %define redhat_artwork 1
 %define desktop_file_utils_version 0.2.93
 
+%define mysql4 1
+
 %define immodule 1
 
 %define ver 3.3.3
@@ -56,6 +58,16 @@
 %define plugin_mysql %{nil}
 %endif
 
+%if %{mysql4}
+%define mysql_include_dir %{_includedir}/mysql
+%define mysql_lib_dir %{_libdir}/mysql
+%define mysql_buildreq mysql-devel
+%else
+%define mysql_include_dir %{_includedir}/mysql3/mysql
+%define mysql_lib_dir %{_libdir}/mysql3/mysql
+%define mysql_buildreq mysqlclient10-devel
+%endif
+
 %if %{buildpsql}
 %define plugin_psql -plugin-sql-psql
 %else
@@ -73,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 15
+Release: 16
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -135,7 +147,7 @@ BuildRequires: desktop-file-utils >= %{desktop_file_utils_version}
 %endif
 
 %if %{buildmysql}
-BuildRequires: mysqlclient10-devel
+BuildRequires: %{mysql_buildreq}
 %endif
 
 %if %{buildpsql}
@@ -405,7 +417,7 @@ popd
 # build mysql plugin
 %if %{buildmysql}
    pushd plugins/src/sqldrivers/mysql
-   qmake -o Makefile "INCLUDEPATH+=%{_includedir}/mysql3/mysql" "LIBS+=-L%{_libdir}/mysql3/mysql -lmysqlclient" mysql.pro
+   qmake -o Makefile "INCLUDEPATH+=%{mysql_include_dir}" "LIBS+=-L%{mysql_lib_dir} -lmysqlclient" mysql.pro
 popd
 %endif
 
@@ -435,7 +447,7 @@ export QTDEST=%{qtdir}
 
 make install INSTALL_ROOT=%{buildroot}
 
-for i in findtr qt20fix qtrename140 lrelease lupdate; do
+for i in findtr qt20fix qtrename140 lrelease lupdate ; do
    install bin/$i %{buildroot}%{qtdir}/bin/
 done
 
@@ -601,6 +613,7 @@ rm -rf %{buildroot}
 %{qtdir}/bin/qm2ts
 %{qtdir}/bin/qmake
 %{qtdir}/bin/qembed
+%{qtdir}/bin/linguist
 %{qtdir}/bin/lupdate
 %{qtdir}/bin/lrelease
 %{qtdir}/include
@@ -625,6 +638,9 @@ rm -rf %{buildroot}
 %{_bindir}/qmake*
 %{_bindir}/qm2ts*
 %{_bindir}/qembed
+%{_bindir}/linguist
+%{_bindir}/lrelease
+%{_bindir}/lupdate
 %if %{pkg_config}
 %{_libdir}/pkgconfig/*
 %{qtdir}/lib/pkgconfig
@@ -680,16 +696,10 @@ rm -rf %{buildroot}
 %files designer
 %defattr(-,root,root,-)
 %{_bindir}/designer*
-%{_bindir}/linguist*
-%{_bindir}/lrelease*
-%{_bindir}/lupdate*
 %dir %{qtdir}/plugins/designer
 %{qtdir}/templates
 %{qtdir}/plugins/designer/*
 %{qtdir}/bin/designer
-%{qtdir}/bin/linguist
-%{qtdir}/bin/lrelease
-%{qtdir}/bin/lupdate
 %if %{desktop_file}
 %{_datadir}/applications/*.desktop
 %else
@@ -698,6 +708,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 30 2004 Than Ngo <than@redhat.com> 1:3.3.3-16
+- add sql macro
+
 * Mon Nov 29 2004 Than Ngo <than@redhat.com> 1:3.3.3-15
 - convert qdial.3qt to UTF-8 bug #140946
 
