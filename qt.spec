@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 6
+%define rel 7
 %define beta 0
 Version: 2.3.1
 
@@ -40,6 +40,7 @@ Patch51: http://www.kde.gr.jp/patch/qt-2.3.1-qclipboard-20010617.diff
 Patch52: http://www.kde.gr.jp/patch/qt-2.3.1-qstring-toDouble-i18n-20010617.diff
 Patch53: http://www.kde.gr.jp/patch/qt-2.3.1-qpsprinter-ja-20010620.diff
 Patch54: http://www.kde.gr.jp/patch/qt-2.3.1-showFullScreen-fix-20010624.diff
+Patch55: qt-2.3.1-varargs.patch
 # Patches 100-200 are for Qt-x11 only
 Patch100: qt-2.3.0-euro.patch
 Patch101: qt-2.3.1-aahack.patch
@@ -100,22 +101,12 @@ Window System. Qt is written in C++ and is fully object-oriented.
 This package contains the shared library needed to run Qt
 applications, as well as the README files for Qt.
 
-%if "%{type}" == "x11"
-%elseif "%{type}" == "embedded"
-%elseif "%{type}" == "nox"
-%endif
 %description devel
 The qt-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
 object compiler, the man pages, the HTML documentation, and example
 programs.
 
-%{_docdir}/%{name}-devel-%{version}/html/index.html, which
-%if "%{type}" == "x11"
-%elseif "%{type}" == "embedded"
-%elseif "%{type}" == "nox"
-%endif
-%if "%{type}" == "x11"
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 
@@ -152,6 +143,7 @@ rm -rf tools/designer/examples
 %patch52 -p1 -b .jp3
 %patch53 -p1 -b .jp4
 %patch54 -p1 -b .jp5
+%patch55 -p1 -b .varargs
 %endif
 
 %if "%{type}" == "x11"
@@ -471,6 +463,10 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Fri Oct 19 2001 Than Ngo <than@redhat.com> 2.3.1-7
+- fixed crash on ia64 with LANG=ja
+- fixed broken specfile
+
 * Wed Sep 12 2001 Tim Powers <timp@redhat.com>
 - rebuild with new gcc and binutils
 
