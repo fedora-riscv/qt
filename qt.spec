@@ -692,9 +692,6 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Tue Sep 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-5
-- increase release number to avoid cvs conflict
-
 * Tue Sep 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-4
 - update new immodule patch
 - fix multilib problem #132516
