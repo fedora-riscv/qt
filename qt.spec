@@ -74,7 +74,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 14.1
+Release: 14.2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -96,7 +96,7 @@ Patch18: qt-x11-free-3.1.2-typo.patch
 Patch19: qt-x11-free-3.1.2-qt-copy.patch
 
 # security
-Patch50: qt3-qimage.patch
+Patch50: qt-x11-free-3.1.2-sec.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -288,7 +288,7 @@ for the Qt toolkit.
 %patch19 -p1 -b .cvs
 
 #security
-%patch50 -p0 -b .sec
+%patch50 -p1 -b .sec
 
 %build
 export QTDIR=`/bin/pwd`
@@ -769,6 +769,9 @@ fi
 %endif
 
 %changelog
+* Thu Aug 19 2004 Than Ngo <than@redhat.com> 1:3.1.2-14.2
+- fix image buffer overflows
+
 * Thu Jul 29 2004 Than Ngo <than@redhat.com> 1:3.1.2-14.1
 - fix overflow vulnerability, thanks to trolltech
 
