@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 7
+Release: 8
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -697,6 +697,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Mar 04 2005 Than Ngo <than@redhat.com> 1:3.3.4-8
+- rebuilt against gcc-4.0.0-0.31
+
 * Tue Mar 01 2005 Than Ngo <than@redhat.com> 1:3.3.4-7
 - fix build problem with gcc4
 
