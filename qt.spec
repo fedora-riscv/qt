@@ -82,11 +82,11 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 9
+Release: 10
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
-Buildroot: %{_tmppath}/%{name}-root
+Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Url: http://www.troll.no
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source1: qtrc
@@ -103,6 +103,7 @@ Patch14: qt-x11-free-3.3.3-gl.patch
 Patch16: qt-x11-free-3.3.4-fullscreen.patch
 Patch17: qt-x11-free-3.3.4-gcc4.patch
 Patch18: qt-x11-free-3.3.4-gcc4-buildkey.patch
+Patch19: qt-3.3.3-gtkstyle.patch 
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
@@ -304,6 +305,7 @@ for the Qt toolkit.
 %patch16 -p1 -b .size
 %patch17 -p1 -b .gcc4
 %patch18 -p1 -b .key
+%patch19 -p1 -b .gtk
 
 %if %{immodule}
 %patch50 -p1
@@ -699,6 +701,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Mar 23 2005 Than Ngo <than@redhat.com> 1:3.3.4-10
+- add GtkStyle patch from Peter Backlund #141125
+
 * Fri Mar 04 2005 Than Ngo <than@redhat.com> 1:3.3.4-9
 - fix buildkey issue with gcc-4
 
