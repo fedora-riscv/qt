@@ -456,7 +456,7 @@ popd
 %endif
 
 rm -rf %{buildroot}%{qtdir}/doc/*
-for x html tutorial examples ; do
+for x in html tutorial examples ; do
   ln -s  ../../../share/doc/%{name}-devel-%{version}/$x %{buildroot}%{qtdir}/doc/
 done
 
