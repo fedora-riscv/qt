@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 12
+Release: 13
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -101,6 +101,7 @@ Patch16: qt-x11-free-3.3.3-fullscreen.patch
 Patch50: qt-x11-immodule-unified-qt3.3.3-20040910.diff.bz2
 Patch51: qximinputcontext_x11.cpp.patch
 Patch52: qt-x11-free-3.3.3-immodule-quiet.patch
+Patch53: qt-x11-free-3.3.3-immodule-qinputcontext.patch
 
 Prefix: %{qtdir}
 
@@ -690,6 +691,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Nov 19 2004 Than Ngo <than@redhat.com> 1:3.3.3-13 
+- apply patch to fix qinputcontext
+
 * Thu Nov 11 2004 Than Ngo <than@redhat.com> 1:3.3.3-12
 - link against MySQL 3
 - fix rpm conflict
