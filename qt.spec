@@ -2,16 +2,16 @@
 %define redhat_artwork 1
 %define desktop_file_utils_version 0.2.93
 
-%define ver 3.1.1
+%define ver 3.1.2
 
 %define qt_dirname qt-3.1
 %define qtdir %{_libdir}/%{qt_dirname}
 
 # 64bit arch
-%define arch64 x86_64 s390x
+%define arch64 x86_64 s390x ppc64
 
 # build Motif extention
-%define motif_extention 1
+%define motif_extention 0
 
 # use Xinerame from XFree
 %define xfree_xinerame 1
@@ -74,10 +74,9 @@
 %define plugins %{plugin_mysql} %{plugin_psql} %{plugin_odbc} %{plugins_style}
 
 Summary: The shared library for the Qt GUI toolkit.
-
 Name: qt
 Version: %{ver}
-Release: 6
+Release: 0.9x.2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -88,22 +87,21 @@ Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source1: qt.pc
 Source2: Xinerama.tar.bz2
 Source3: qtrc
-Source900: gccver.c
 
-Patch1: qt-3.1-beta2-print-CJK.patch
+Patch1: qt-3.1.2-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
-Patch3: qt-3.0.5-xim.patch
 Patch5: qt-3.1.0-makefile.patch
 Patch6: qt-x11-free-3.1.0-editor.patch
-Patch7: qt-x11-free-3.1.1-qmotif.patch
 Patch8: qt-x11-free-3.1.0-fontdatabase.patch
 Patch9: qt-x11-free-3.1.0-lib64.patch
 Patch10: qt-x11-free-3.1.0-assistant.patch
 Patch11: qt-x11-free-3.1.0-designer.patch
 Patch12: qt-x11-free-3.1.0-header.patch
 Patch13: qt-x11-free-3.1.1-monospace.patch
-Patch14: qt-x11-free-3.1.1-ansi.patch
 Patch15: qt-x11-free-3.1.1-qmlined.patch
+Patch16: qt-x11-free-3.1.2-config.patch
+Patch17: qt-x11-free-3.1.2-randr.patch
+Patch18: qt-x11-free-3.1.2-typo.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -127,6 +125,8 @@ BuildRequires: cups-devel
 
 %if %{motif_extention}
 BuildRequires: openmotif-devel >= 2.2.2
+%else
+Obsoletes: %{name}-Xt
 %endif
 
 %if %{desktop_file}
@@ -281,10 +281,8 @@ for the Qt toolkit.
 %setup -q -n qt-x11-free-%{version}
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
-%patch3 -p1 -b .xim
 %patch5 -p1 -b .makefile
 %patch6 -p1 -b .editor
-%patch7 -p1 -b .qmotif
 %patch8 -p1 -b .qfontdatabase
 %ifarch %{arch64}
 %patch9 -p1 -b .lib64
@@ -293,8 +291,10 @@ for the Qt toolkit.
 %patch11 -p1 -b .designer
 %patch12 -p1 -b .hd2
 %patch13 -p1 -b .monospace
-%patch14 -p0 -b .ansi
 %patch15 -p1
+%patch16 -p1 -b .config
+%patch17 -p1 -b .randr
+%patch18 -p1 -b .typo
 
 # this is for qt-copy in KDE CVS
 [ -f Makefile.cvs ] && make -f Makefile.cvs
@@ -311,6 +311,9 @@ popd
 %endif
 
 %build
+export CC=%{__cc}
+export CXX=%{__cc}
+export LINK=%{__cc}
 export QTDIR=`/bin/pwd`
 export LD_LIBRARY_PATH="$QTDIR/lib:$LD_LIBRARY_PATH"
 export PATH="$QTDIR/bin:$PATH"
@@ -322,7 +325,7 @@ find . -type d -name CVS | xargs rm -rf
 
 # turn off -g on alpha
 %ifarch alpha
-RPM_OPT_FLAGS="-O2 -mieee"
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -g0"
 %endif
 
 # set some default FLAGS
@@ -392,7 +395,8 @@ echo yes | ./configure \
   -xkb \
   -xft
 
-make $SMP_MFLAGS src-qmake
+%define CCF CC=%{__cc} CXX=%{__cc} LINK=%{__cc}
+make %{CCF} $SMP_MFLAGS src-qmake
 
 # build psql plugin
 %if %{buildpsql}
@@ -415,9 +419,9 @@ qmake -o Makefile "LIBS+=-lodbc" odbc.pro
 popd
 %endif
 
-make $SMP_MFLAGS src-moc
-make $SMP_MFLAGS sub-src
-make $SMP_MFLAGS sub-tools
+make %{CCF} $SMP_MFLAGS src-moc
+make %{CCF} $SMP_MFLAGS sub-src
+make %{CCF} $SMP_MFLAGS sub-tools
 
 # build Xt/Motif Extention
 %if %{motif_extention}
@@ -470,9 +474,9 @@ echo yes | ./configure \
   -xkb \
   -xft
 
-make src-qmake $SMP_MFLAGS
-make src-moc $SMP_MFLAGS
-make sub-src $SMP_MFLAGS
+make %{CCF} src-qmake $SMP_MFLAGS
+make %{CCF} src-moc $SMP_MFLAGS
+make %{CCF} sub-src $SMP_MFLAGS
 %endif
 
 %install
@@ -744,12 +748,14 @@ fi
 %doc examples
 %doc tutorial
 
+%if %{motif_extention}
 %post Xt -p /sbin/ldconfig
 %postun Xt -p /sbin/ldconfig
 
 %files Xt
 %defattr(-,root,root,-)
 %{qtdir}/lib/libqmotif.so*
+%endif
 
 %if %{styleplugins}
 %files styles
@@ -801,6 +807,16 @@ fi
 %endif
 
 %changelog
+* Tue Apr 29 2003 Than Ngo <than@redhat.com> 3.1.2-0.9x.2
+- fix typo bug in font loader
+- add xrandr extension
+
+* Wed Apr  2 2003 Than Ngo <than@redhat.com> 3.1.2-0.9x.1
+- 3.1.2 for RHL 9
+
+* Mon Feb 17 2003 Elliot Lee <sopwith@redhat.com> 3.1.1-7
+- ppc64 support
+
 * Wed Jan 29 2003 Than Ngo <than@redhat.com> 3.1.1-6
 - add missing Categories section in qt designer #82920
 
