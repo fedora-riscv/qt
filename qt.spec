@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 5
+%define rel 6
 %define beta 0
 Version: 2.3.1
 
@@ -26,7 +26,7 @@ Name: qt-%{type}
 Release: %{rel}
 Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}.tar.bz2
 %else
-Release: 0.%{beta}.%{rel}
+Release: 1.%{beta}.%{rel}
 Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}-%{beta}.tar.bz2
 %endif
 Source1: qt.fontguess
@@ -471,6 +471,9 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Wed Sep 12 2001 Tim Powers <timp@redhat.com>
+- rebuild with new gcc and binutils
+
 * Mon Aug 27 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-5
 - Build libqxt with -fPIC (#49960)
 
