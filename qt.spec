@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 3
+%define rel 4
 %define beta 0
 Version: 2.3.0
 
@@ -28,6 +28,7 @@ Patch1: qt-2.2.4-qclipboard-20010204.diff
 Patch100: qt-2.3.0-printing.patch
 Patch101: qt-2.3.0-euro.patch
 Patch102: qt-2.3.0-qfont.patch
+Patch103: qt-2.3.0-OnTheSpot.patch
 # Patches 200-300 are for Qt-embedded only
 Epoch: 1
 URL: http://www.troll.no/
@@ -142,6 +143,7 @@ rm -rf tools/designer/examples
 %patch100 -p1 -b .print
 %patch101 -p1 -b .euro
 %patch102 -p1
+%patch103 -p0 -b .onthespot
 %endif
 
 %build
@@ -447,6 +449,9 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Thu May 24 2001 Leon Ho <llch@redhat.com>
+- Patched with OnTheSpot IM Patch
+
 * Sun Mar 25 2001 Florian La Roche <Florian.LaRoche@redhat.de>
 - add qfont patch from Trolltech
 
