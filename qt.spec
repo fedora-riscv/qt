@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 6
+%define rel 7
 %define beta 0
 Version: 2.3.0
 
@@ -32,6 +32,7 @@ Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}-%{beta}.tar.bz2
 Patch0: qt-2.1.0-huge_val.patch
 Patch1: qt-2.3.0-LPRng.patch
 Patch2: qt-2.3.0-Makefiles.patch
+Patch3: qt-2.3.0-glweak.patch
 # Patches 100-200 are for Qt-x11 only
 Patch100: qt-2.3.0-printing.patch
 Patch101: qt-2.3.0-euro.patch
@@ -167,6 +168,7 @@ rm -rf tools/designer/examples
 %patch0 -p0 -b .hugeval
 %patch1 -p1 -b .lprng
 %patch2 -p1 -b .mk
+%patch3 -p1 -b .glweak
 
 %if "%{type}" == "x11"
 %patch100 -p1 -b .print
@@ -479,6 +481,9 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Tue Jun 12 2001 Harald Hoyer <harald@redhat.de> 2.3.0-7
+- added weak symbols to remove GL dependency
+
 * Fri Apr 27 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.0-6
 - Fix crashes on ia64, Patch from Bill Nottingham <notting@redhat.com>
 - Allow building qt-nox
