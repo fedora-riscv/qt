@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 13
+Release: 14
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -431,7 +431,7 @@ export QTDEST=%{qtdir}
 
 make install INSTALL_ROOT=%{buildroot}
 
-for i in findtr qt20fix qtrename140 ; do
+for i in findtr qt20fix qtrename140 lrelease lupdate; do
    install bin/$i %{buildroot}%{qtdir}/bin/
 done
 
@@ -597,6 +597,8 @@ rm -rf %{buildroot}
 %{qtdir}/bin/qm2ts
 %{qtdir}/bin/qmake
 %{qtdir}/bin/qembed
+%{qtdir}/bin/lupdate
+%{qtdir}/bin/lrelease
 %{qtdir}/include
 %{qtdir}/mkspecs
 %{qtdir}/lib/libqt*.so
@@ -692,6 +694,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 23 2004 Than Ngo <than@redhat.com> 1:3.3.3-14
+- add missing lupdate and lrelease #140230
+
 * Fri Nov 19 2004 Than Ngo <than@redhat.com> 1:3.3.3-13 
 - apply patch to fix qinputcontext
 
