@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 3
+%define rel 4
 %define beta 0
 Version: 2.3.1
 
@@ -29,9 +29,11 @@ Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}.tar.bz2
 Release: 0.%{beta}.%{rel}
 Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}-%{beta}.tar.bz2
 %endif
+Source1: qt.fontguess
 Patch0: qt-2.1.0-huge_val.patch
 Patch1: qt-2.3.1-LPRng.patch
 Patch2: qt-2.3.1-glweak.patch
+Patch3: qt-2.3.1-qtcopy.patch
 # Japanese patches
 Patch50: http://www.kde.gr.jp/patch/qt-2.3.1-xim-20010617.diff
 Patch51: http://www.kde.gr.jp/patch/qt-2.3.1-qclipboard-20010617.diff
@@ -142,6 +144,7 @@ rm -rf tools/designer/examples
 %patch0 -p0 -b .hugeval
 %patch1 -p1 -b .lprng
 %patch2 -p1 -b .glweak
+%patch3 -p1 -b .qtcopy
 
 %if "%{type}" == "x11"
 %patch50 -p1 -b .jp1
@@ -155,6 +158,10 @@ rm -rf tools/designer/examples
 %patch100 -p1 -b .euro
 %patch101 -p1 -b .aahack
 %endif
+
+# Get rid of bad RPATHs
+perl -pi -e "s|^SYSCONF_RPATH_QT.*|SYSCONF_RPATH_QT        = -Wl,-rpath,%{qtdir}/lib|g" configs/*
+
 
 %build
 find . -type d -name CVS | xargs rm -rf
@@ -348,6 +355,10 @@ else
   ln -s  ../../doc/%{name}-devel-%{version} $RPM_BUILD_ROOT%{qtdir}/doc
 fi
 
+# Install the qt.fontguess file
+mkdir -p $RPM_BUILD_ROOT/etc
+install -c -m 644 %{SOURCE1} $RPM_BUILD_ROOT/etc
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
@@ -385,6 +396,7 @@ fi
 %endif
 %dir %{qtdir}
 %dir %{qtdir}/lib
+%config(noreplace) /etc/qt.fontguess
 %if "%{type}" == "x11"
 %{qtdir}/lib/libqt.so.*
 %{qtdir}/lib/libqt-mt.so.*
@@ -459,6 +471,11 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Mon Aug 20 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-4
+- Add qt.fontguess file (fixes Japanese/Korean/Chinese)
+- Merge fixes from KDE's qt-copy CVS tree, primarily printing fixes
+- Remove rpath references to build directories (#51956)
+
 * Wed Aug  8 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-3
 - Add a hack to get nice anti-aliased fonts out of the box
 
