@@ -76,7 +76,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 4
+Release: 5
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -93,6 +93,7 @@ Patch4: qt-x11-free-3.3.1-mono.patch
 Patch5: qt-x11-free-3.3.0-strip.patch
 Patch6: qt-x11-free-3.3.0-freetype.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
+Patch8: qt-x11-free-3.3.2-qembed.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch11: qt-x11-free-3.3.2-misc.patch
 
@@ -149,6 +150,7 @@ Obsoletes: qt3
 BuildRequires: fontconfig-devel >= 2.0
 
 Requires: fontconfig >= 2.0
+requires: /etc/ld.so.conf.d
 
 %package devel
 Summary: Development files and documentation for the Qt GUI toolkit.
@@ -276,6 +278,7 @@ for the Qt toolkit.
 %patch5 -p1
 %patch6 -p1 -b .ft217
 %patch7 -p1 -b .quiet
+%patch8 -p1 -b .qembed
 %patch10 -p1 -b .lib64
 %patch11 -p1 -b .misc
 
@@ -526,8 +529,6 @@ fi
 export QTDIR
 EOF
 
-chmod 755 %{buildroot}/etc/profile.d/qt.sh
-
 cat > %{buildroot}/etc/profile.d/qt.csh <<EOF
 # Qt initialization script (csh)
 if ( \$?QTDIR ) then
@@ -536,12 +537,11 @@ endif
 setenv QTDIR %{qtdir}
 EOF
 
-chmod 755 %{buildroot}/etc/profile.d/qt.csh
+chmod 755 %{buildroot}/etc/profile.d/*
 
 mkdir -p %{buildroot}%{_bindir}
 for i in bin/*; do
 	ln -s ../%{_lib}/%{qt_dirname}/bin/`basename $i` %{buildroot}/%{_bindir}
-	ln -s `basename $i` %{buildroot}%{_bindir}/`basename $i`3
 done
 
 # make symbolic link to qt docdir
@@ -620,29 +620,15 @@ rm -f %{buildroot}%{qtdir}/lib/*.la
   tar cfvj examples.tar.bz2 tutorial examples 
 %endif
 
+mkdir -p %{buildroot}/etc/ld.so.conf.d
+echo "%{qtdir}/lib" > %{buildroot}/etc/ld.so.conf.d/qt.conf
 
 %clean
 rm -rf %{buildroot}
 
-%post
-grep -v '^%{qtdir}' /etc/ld.so.conf >/etc/ld.so.conf.new
-mv -f /etc/ld.so.conf.new /etc/ld.so.conf
-echo "%{qtdir}/lib" >> /etc/ld.so.conf
-/sbin/ldconfig
+%post -p /sbin/ldconfig
 
-%postun
-if [ $1 = 0 ]; then
-  grep -v '^%{qtdir}/lib$' /etc/ld.so.conf > /etc/ld.so.conf.new 2>/dev/null
-  mv -f /etc/ld.so.conf.new /etc/ld.so.conf
-fi
-/sbin/ldconfig
-
-%triggerpostun -- qt < 2.1.0-4.beta1
-if ! grep -q '^%{qtdir}/lib$' /etc/ld.so.conf; then
-  echo "%{qtdir}/lib" >> /etc/ld.so.conf
-fi
-/sbin/ldconfig
-
+%postun -p /sbin/ldconfig
 
 %files
 %defattr(-,root,root,-)
@@ -650,14 +636,15 @@ fi
 %dir %{qtdir}
 %dir %{qtdir}/bin
 %dir %{qtdir}/lib
+%dir %{qtdir}/plugins
 %{qtdir}/bin/qtconfig
 %{_bindir}/qtconfig*
 %{qtdir}/lib/libqt*.so.*
 %if ! %{redhat_artwork}
 %{qtdir}/etc/settings/qtrc
 %endif
-%dir %{qtdir}/plugins
 %{qtdir}/lib/libqui.so.*
+/etc/ld.so.conf.d/*
 
 %files devel
 %defattr(-,root,root,-)
@@ -670,6 +657,7 @@ fi
 %{qtdir}/bin/assistant
 %{qtdir}/bin/qm2ts
 %{qtdir}/bin/qmake
+%{qtdir}/bin/qembed
 %{qtdir}/include
 %{qtdir}/doc
 %{qtdir}/mkspecs
@@ -692,6 +680,7 @@ fi
 %{_bindir}/qtrename140*
 %{_bindir}/qmake*
 %{_bindir}/qm2ts*
+%{_bindir}/qembed
 %if %{pkg_config}
 %{_libdir}/pkgconfig/*
 %{qtdir}/lib/pkgconfig
@@ -765,6 +754,11 @@ fi
 %endif
 
 %changelog
+* Tue May 25 2004 Than Ngo <than@redhat.com> 1:3.3.2-5
+- add missing qembed tool #124052, #124052
+- get rid of unused trigger
+- add qt.conf in ld.so.conf.d -> don't change ld.so.conf #124080
+
 * Wed May 12 2004 Than Ngo <than@redhat.com> 1:3.3.2-4
 - backport some qt patches, Symbol font works again
 
