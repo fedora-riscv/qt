@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 3
+Release: 4
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -98,7 +98,8 @@ Patch14: qt-x11-free-3.3.3-gl.patch
 Patch15: qt-x11-free-3.3.3-qimage.patch
 
 # feature patches
-Patch50: qt-x11-immodule-bc-qt3.3.3.patch
+Patch50: qt-x11-immodule-unified-qt3.3.3-20040910.diff.bz2
+Patch51: qximinputcontext_x11.cpp.patch
 
 Prefix: %{qtdir}
 
@@ -294,7 +295,8 @@ for the Qt toolkit.
 %patch15 -p1 -b .image
 
 %if %{immodule}
-%patch50 -p1 -b .im
+%patch50 -p0 -b .im
+%patch51 -p0 -b .qximinputcontext_x11
 %endif
 
 %build
@@ -308,15 +310,7 @@ export QTDEST=%{qtdir}
 %endif
 
 %if %{immodule}
-  pushd include/
-  ln -s ../src/kernel/qinputcontext.h qinputcontext.h
-  ln -s ../src/input/qinputcontextfactory.h qinputcontextfactory.h
-  ln -s ../src/input/qinputcontextplugin.h qinputcontextplugin.h
-  popd
-  pushd include/private/
-  ln -s ../../src/input/qinputcontextinterface_p.h qinputcontextinterface_p.h
-  ln -s ../../src/input/qximinputcontext_p.h qximinputcontext_p.h
-  popd
+sh ./make-symlinks.sh
 %endif
 
 # set some default FLAGS
@@ -557,7 +551,7 @@ rm -f %{buildroot}%{qtdir}/lib/*.la
 %endif
 
 mkdir -p %{buildroot}/etc/ld.so.conf.d
-echo "%{qtdir}/lib" > %{buildroot}/etc/ld.so.conf.d/qt.conf
+echo "%{qtdir}/lib" > %{buildroot}/etc/ld.so.conf.d/qt-%{_arch}.conf
 
 %clean
 rm -rf %{buildroot}
@@ -697,6 +691,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-4
+- update new immodule patch
+- fix multilib problem #132516
+
 * Wed Aug 18 2004 Than Ngo <than@redhat.com> 1:3.3.3-3
 - add patch to fix dlopen issue (#126422)
 - add image handling fix
