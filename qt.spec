@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 5
+Release: 4
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -295,7 +295,7 @@ for the Qt toolkit.
 %patch15 -p1 -b .image
 
 %if %{immodule}
-%patch50 -p0 -b .im
+%patch50 -p0
 %patch51 -p0 -b .qximinputcontext_x11
 %endif
 
@@ -567,6 +567,7 @@ rm -rf %{buildroot}
 %dir %{qtdir}/bin
 %dir %{qtdir}/lib
 %dir %{qtdir}/plugins
+%{qtdir}/plugins/inputmethods
 /etc/ld.so.conf.d/*
 %if ! %{redhat_artwork}
 %{qtdir}/etc/settings/qtrc
