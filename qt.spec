@@ -4,6 +4,8 @@
 %define redhat_artwork 1
 %define desktop_file_utils_version 0.2.93
 
+%define immodule 1
+
 %define ver 3.3.2
 
 %define qt_dirname qt-3.3
@@ -71,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 9
+Release: 10
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -92,6 +94,9 @@ Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch11: qt-x11-free-3.3.2-misc.patch
 Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.1-qfontdatabase_x11.patch
+
+# feature patches
+Patch50: qt-x11-immodule-bc-qt3.3.2-20040623.diff
 
 Prefix: %{qtdir}
 
@@ -284,6 +289,9 @@ for the Qt toolkit.
 %patch12 -p1 -b .nostdlib
 %patch13 -p1 -b .fonts
 
+%if %{immodule}
+%patch50 -p1 -b .im
+%endif
 
 %build
 export QTDIR=`/bin/pwd`
@@ -293,6 +301,18 @@ export QTDEST=%{qtdir}
 
 %if %{smp}
    export SMP_MFLAGS="%{?_smp_mflags}"
+%endif
+
+%if %{immodule}
+  pushd include/
+  ln -s ../src/kernel/qinputcontext.h qinputcontext.h
+  ln -s ../src/input/qinputcontextfactory.h qinputcontextfactory.h
+  ln -s ../src/input/qinputcontextplugin.h qinputcontextplugin.h
+  popd
+  pushd include/private/
+  ln -s ../../src/input/qinputcontextinterface_p.h qinputcontextinterface_p.h
+  ln -s ../../src/input/qximinputcontext_p.h qximinputcontext_p.h
+  popd
 %endif
 
 # set some default FLAGS
@@ -308,9 +328,6 @@ perl -pi -e "s,-O2,$INCLUDES $OPTFLAGS,g" mkspecs/*/qmake.conf
 if [ "%{_lib}" == "lib64" ] ; then
    perl -pi -e "s,/lib, /%{_lib},g" config.tests/unix/{checkavail,cups.test,nis.test}
 fi
-
-# set correct permission
-[ -f config.tests/x11/xrandr.test ] && chmod 755 config.tests/x11/xrandr.test
 
 # build shared, threaded (default) libraries
 echo yes | ./configure \
@@ -676,6 +693,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jul 01 2004 Than Ngo <than@redhat.com> 1:3.3.2-10
+- add immodule for Qt
+
 * Tue Jun 29 2004 Than Ngo <than@redhat.com> 1:3.3.2-9
 - add sub package config, allow multi lib installation (#126643)
 
