@@ -6,7 +6,7 @@
 
 %define immodule 1
 
-%define ver 3.3.2
+%define ver 3.3.3
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 10
+Release: 1
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -89,14 +89,13 @@ Patch4: qt-x11-free-3.3.1-mono.patch
 Patch5: qt-x11-free-3.3.0-strip.patch
 Patch6: qt-x11-free-3.3.0-freetype.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
-Patch8: qt-x11-free-3.3.2-qembed.patch
+Patch8: qt-x11-free-3.3.3-qembed.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
-Patch11: qt-x11-free-3.3.2-misc.patch
 Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.1-qfontdatabase_x11.patch
 
 # feature patches
-Patch50: qt-x11-immodule-bc-qt3.3.2-20040623.diff
+Patch50: qt-x11-immodule-bc-qt3.3.3.patch
 
 Prefix: %{qtdir}
 
@@ -285,7 +284,6 @@ for the Qt toolkit.
 %patch7 -p1 -b .quiet
 %patch8 -p1 -b .qembed
 %patch10 -p1
-%patch11 -p1 -b .misc
 %patch12 -p1 -b .nostdlib
 %patch13 -p1 -b .fonts
 
@@ -693,6 +691,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 11 2004 Than Ngo <than@redhat.com> 1:3.3.3-1
+- update to 3.3.3 release
+
 * Thu Jul 01 2004 Than Ngo <than@redhat.com> 1:3.3.2-10
 - add immodule for Qt
 
