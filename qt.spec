@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 2
+%define rel 3
 %define beta 0
 Version: 2.3.1
 
@@ -40,6 +40,7 @@ Patch53: http://www.kde.gr.jp/patch/qt-2.3.1-qpsprinter-ja-20010620.diff
 Patch54: http://www.kde.gr.jp/patch/qt-2.3.1-showFullScreen-fix-20010624.diff
 # Patches 100-200 are for Qt-x11 only
 Patch100: qt-2.3.0-euro.patch
+Patch101: qt-2.3.1-aahack.patch
 # Patches 200-300 are for Qt-embedded only
 Epoch: 1
 URL: http://www.troll.no/
@@ -120,7 +121,7 @@ An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 %description static
 The qt-static package contains the files necessary to link
 applications to the qt GUI toolkit statically (rather than
-dynamically).  Statically linked applications don't require the
+dynamically). Statically linked applications do not require the
 library to be installed on the system running the application.
 
 %description designer
@@ -152,6 +153,7 @@ rm -rf tools/designer/examples
 
 %if "%{type}" == "x11"
 %patch100 -p1 -b .euro
+%patch101 -p1 -b .aahack
 %endif
 
 %build
@@ -457,6 +459,9 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Wed Aug  8 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-3
+- Add a hack to get nice anti-aliased fonts out of the box
+
 * Sat Jul 28 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-2
 - Add Japanese patches
 
