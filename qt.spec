@@ -1,15 +1,15 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 7
+%define rel 2
 %define beta 0
-Version: 2.3.0
+Version: 2.3.1
 
 %if "%{type}" == "x11"
 Summary: The shared library for the Qt GUI toolkit.
 %elseif "%{type}" == "embedded"
 Summary: The shared library for the Qt GUI toolkit for framebuffer devices.
 %elseif "%{type}" == "nox"
-Summary: The Qt GUI toolkit for framebuffer devices, with RTTI
+Summary: The shared library for the Qt GUI toolkit.
 %endif
 %if "%{type}" == "nox"
 %define file embedded
@@ -30,19 +30,20 @@ Release: 0.%{beta}.%{rel}
 Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}-%{beta}.tar.bz2
 %endif
 Patch0: qt-2.1.0-huge_val.patch
-Patch1: qt-2.3.0-LPRng.patch
-Patch2: qt-2.3.0-Makefiles.patch
-Patch3: qt-2.3.0-glweak.patch
+Patch1: qt-2.3.1-LPRng.patch
+Patch2: qt-2.3.1-glweak.patch
+# Japanese patches
+Patch50: http://www.kde.gr.jp/patch/qt-2.3.1-xim-20010617.diff
+Patch51: http://www.kde.gr.jp/patch/qt-2.3.1-qclipboard-20010617.diff
+Patch52: http://www.kde.gr.jp/patch/qt-2.3.1-qstring-toDouble-i18n-20010617.diff
+Patch53: http://www.kde.gr.jp/patch/qt-2.3.1-qpsprinter-ja-20010620.diff
+Patch54: http://www.kde.gr.jp/patch/qt-2.3.1-showFullScreen-fix-20010624.diff
 # Patches 100-200 are for Qt-x11 only
-Patch100: qt-2.3.0-printing.patch
-Patch101: qt-2.3.0-euro.patch
-Patch102: qt-2.3.0-qfont.patch
-Patch103: qt-2.2.4-qclipboard-20010204.diff
-Patch104: qt-2.3.0-varargs.patch
+Patch100: qt-2.3.0-euro.patch
 # Patches 200-300 are for Qt-embedded only
 Epoch: 1
 URL: http://www.troll.no/
-Copyright: GPL
+License: GPL/QPL
 Group: System Environment/Libraries
 Buildroot: %{_tmppath}/%{name}-root
 Prereq: /sbin/ldconfig
@@ -55,7 +56,7 @@ Summary: Development files and documentation for the Qt GUI toolkit.
 %elseif "%{type}" == "embedded"
 Summary: Development files and documentation for the Qt GUI toolkit for framebuffer devices.
 %elseif "%{type}" == "nox"
-Summary: Development files and documentation for Qt for framebuffer devices, with RTTI
+Summary: Development files and documentation for the Qt GUI toolkit.
 %endif
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
@@ -69,90 +70,62 @@ Requires: %{name} = %{version}-%{release}
 
 %package static
 %if "%{type}" == "x11"
-Summary: Version of the Qt GUI toolkit for static linking
+Summary: A version of the Qt GUI toolkit for static linking.
 %elseif "%{type}" == "embedded"
 Summary: Version of the Qt GUI toolkit for framebuffer devices for static linking
 %elseif "%{type}" == "nox"
-Summary: Version of the Qt GUI toolkit for fb devices for static linking, with RTTI
+Summary: A version of the Qt GUI toolkit for static linking.
 %endif
 Group: Development/Libraries
 Requires: %{name}-devel = %{version}-%{release}
 
 %package designer
 %if "%{type}" == "x11"
-Summary: Interface designer (IDE) for the Qt toolkit
+Summary: An interface designer for the Qt toolkit.
 %elseif "%{type}" == "embedded"
 Summary: Interface designer (IDE) for the Qt toolkit for framebuffer devices
 %elseif "%{type}" == "nox"
-Summary: Interface designer (IDE) for the Qt toolkit for framebuffer devices with RTTI
+Summary: An interface designer for the Qt toolkit.
 %endif
 Group: Development/Tools
 Requires: %{name}-devel = %{version}-%{release}
 
 %description
-Qt is a GUI software toolkit which simplifies the task of writing and
-maintaining GUI (Graphical User Interface) applications
+Qt is a GUI software toolkit that simplifies the task of writing and
+maintaining GUI (Graphical User Interface) applications for the X
+Window System. Qt is written in C++ and is fully object-oriented.
+This package contains the shared library needed to run Qt
+applications, as well as the README files for Qt.
+
 %if "%{type}" == "x11"
-for the X Window System.
 %elseif "%{type}" == "embedded"
-for framebuffer devices.
-
-It is meant primarily to run on embedded devices (handhelds), but can
-be used to run graphical applications without using the X Window
-System on "normal" computers, as well.
-
-This version of qt-embedded has been compiled with the full feature
-set (and memory usage). If you are developing software for an
-embedded device with little RAM, you will probably want to recompile
-it with a custom feature set.
 %elseif "%{type}" == "nox"
-for framebuffer devices.
-
-This is a version of Qt Embedded that has been patched to enable Runtime
-Type Information (RTTI). This is a feature that increases memory consumption,
-but is required for kdelibs-nox to work. This version of qt is more suitable
-for a low-end desktop than for embedded devices.
 %endif
-
-Qt is written in C++ and is fully object-oriented.
-
-This package contains the shared library needed to run %{name}
-applications, as well as the README files for %{name}.
-
 %description devel
-The %{name}-devel package contains the files necessary to develop
+The qt-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
-object compiler, the man pages, the HTML documentation and example
-programs.  See http://www.trolltech.com/products/qt.html for more
-information about Qt, or look at
+object compiler, the man pages, the HTML documentation, and example
+programs.
+
 %{_docdir}/%{name}-devel-%{version}/html/index.html, which
-provides Qt documentation in HTML format.
-
 %if "%{type}" == "x11"
-Install %{name}-devel if you want to develop GUI applications using the Qt
-toolkit.
 %elseif "%{type}" == "embedded"
-Install %{name}-devel if you want to develop GUI applications using the Qt
-toolkit for framebuffer devices.
 %elseif "%{type}" == "nox"
-Install %{name}-devel if you want to develop GUI applications using the Qt
-toolkit for framebuffer devices with RTTI.
 %endif
-
 %if "%{type}" == "x11"
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
-%endif
+
 
 %description static
-The %{name}-static package contains the files necessary to link applications
-to the %{name} GUI toolkit statically (rather than dynamically).
-Statically linked applications don't require the library to be installed
-on the system running the application.
+The qt-static package contains the files necessary to link
+applications to the qt GUI toolkit statically (rather than
+dynamically).  Statically linked applications don't require the
+library to be installed on the system running the application.
 
 %description designer
-The %{name}-designer package contains an User Interface designer tool
-for the Qt toolkit.
+The qt-designer package contains a user interface designer tool for
+the Qt toolkit.
 
 %prep
 %if "%{beta}" == "0"
@@ -167,15 +140,18 @@ find . |xargs perl -pi -e "s,-fno-rtti,-frtti,g" # We want to compile kdelibs...
 rm -rf tools/designer/examples
 %patch0 -p0 -b .hugeval
 %patch1 -p1 -b .lprng
-%patch2 -p1 -b .mk
-%patch3 -p1 -b .glweak
+%patch2 -p1 -b .glweak
 
 %if "%{type}" == "x11"
-%patch100 -p1 -b .print
-%patch101 -p1 -b .euro
-%patch102 -p1
-%patch103 -p1 -b .qclipboard
-%patch104 -p1 -b .ia64
+%patch50 -p1 -b .jp1
+%patch51 -p1 -b .jp2
+%patch52 -p1 -b .jp3
+%patch53 -p1 -b .jp4
+%patch54 -p1 -b .jp5
+%endif
+
+%if "%{type}" == "x11"
+%patch100 -p1 -b .euro
 %endif
 
 %build
@@ -481,6 +457,14 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
+* Sat Jul 28 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-2
+- Add Japanese patches
+
+* Sat Jun 16 2001 Than Ngo <than@redhat.com> 2.3.1-1
+- update to 2.3.1 release
+- remove some patch files which are included in 2.3.1
+- adapt 2 patch files for 2.3.1
+
 * Tue Jun 12 2001 Harald Hoyer <harald@redhat.de> 2.3.0-7
 - added weak symbols to remove GL dependency
 
