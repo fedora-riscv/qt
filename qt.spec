@@ -8,7 +8,7 @@
 
 %define immodule 1
 
-%define ver 3.3.3
+%define ver 3.3.4
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 16
+Release: 1
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -94,23 +94,19 @@ Url: http://www.troll.no
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source1: qtrc
 
-Patch1: qt-3.1.2-print-CJK.patch
+Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
 Patch3: qt-3.1.0-makefile.patch
 Patch5: qt-x11-free-3.3.0-strip.patch
-Patch6: qt-x11-free-3.3.0-freetype.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
 Patch8: qt-x11-free-3.3.3-qembed.patch
-Patch9: qt-x11-free-3.3.3-qmake.patch
-Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch12: qt-uic-nostdlib.patch
-Patch13: qt-x11-free-3.3.3-qfontdatabase_x11.patch
+Patch13: qt-x11-free-3.3.4-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
-Patch15: qt-x11-free-3.3.3-qimage.patch
-Patch16: qt-x11-free-3.3.3-fullscreen.patch
+Patch16: qt-x11-free-3.3.4-fullscreen.patch
 
 # feature patches
-Patch50: qt-x11-immodule-unified-qt3.3.3-20040910.diff.bz2
+Patch50: qt-x11-immodule-unified-qt3.3.4-20040910.diff.bz2
 Patch51: qximinputcontext_x11.cpp.patch
 Patch52: qt-x11-free-3.3.3-immodule-quiet.patch
 Patch53: qt-x11-free-3.3.3-immodule-qinputcontext.patch
@@ -297,19 +293,15 @@ for the Qt toolkit.
 %patch2 -p1 -b .ndebug
 %patch3 -p1 -b .makefile
 %patch5 -p1
-%patch6 -p1 -b .ft217
 %patch7 -p1 -b .quiet
 %patch8 -p1 -b .qembed
-%patch9 -p1 -b .qmake
-%patch10 -p1
 %patch12 -p1 -b .nostdlib
 %patch13 -p1 -b .fonts
 %patch14 -p1 -b .gl
-%patch15 -p1 -b .image
 %patch16 -p1 -b .size
 
 %if %{immodule}
-%patch50 -p0
+%patch50 -p1
 %patch51 -p0 -b .qximinputcontext_x11
 %patch52 -p1 -b .quiet
 %patch53 -p1 -b .im
@@ -708,6 +700,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Jan 28 2005 Than Ngo <than@redhat.com> 1:3.3.4-1
+- update to 3.3.4
+- adapt many patches to qt-3.3.4
+- drop qt-x11-free-3.3.0-freetype, qt-x11-free-3.3.3-qmake, qt-x11-free-3.3.1-lib64
+  qt-x11-free-3.3.3-qimage, which are included in new upstream
+
 * Tue Nov 30 2004 Than Ngo <than@redhat.com> 1:3.3.3-16
 - add sql macro
 
