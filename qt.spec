@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 5
+Release: 6
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -85,7 +85,6 @@ Source1: qtrc
 Patch1: qt-3.1.2-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
 Patch3: qt-3.1.0-makefile.patch
-Patch4: qt-x11-free-3.3.1-mono.patch
 Patch5: qt-x11-free-3.3.0-strip.patch
 Patch6: qt-x11-free-3.3.0-freetype.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
@@ -93,13 +92,14 @@ Patch8: qt-x11-free-3.3.3-qembed.patch
 Patch9: qt-x11-free-3.3.3-qmake.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
 Patch12: qt-uic-nostdlib.patch
-Patch13: qt-x11-free-3.3.1-qfontdatabase_x11.patch
+Patch13: qt-x11-free-3.3.3-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch15: qt-x11-free-3.3.3-qimage.patch
 
 # feature patches
 Patch50: qt-x11-immodule-unified-qt3.3.3-20040910.diff.bz2
 Patch51: qximinputcontext_x11.cpp.patch
+Patch52: qt-x11-free-3.3.3-immodule-quiet.patch
 
 Prefix: %{qtdir}
 
@@ -282,7 +282,6 @@ for the Qt toolkit.
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
 %patch3 -p1 -b .makefile
-%patch4 -p1 -b .mono
 %patch5 -p1
 %patch6 -p1 -b .ft217
 %patch7 -p1 -b .quiet
@@ -297,6 +296,7 @@ for the Qt toolkit.
 %if %{immodule}
 %patch50 -p0
 %patch51 -p0 -b .qximinputcontext_x11
+%patch52 -p1 -b .quiet
 %endif
 
 %build
@@ -692,6 +692,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 28 2004 Than Ngo <than@redhat.com> 1:3.3.3-6
+- fix font problem, bz #133578
+
 * Tue Sep 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-4
 - update new immodule patch
 - fix multilib problem #132516
