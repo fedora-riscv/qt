@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 4
+%define rel 6
 %define beta 0
 Version: 2.3.0
 
@@ -8,6 +8,13 @@ Version: 2.3.0
 Summary: The shared library for the Qt GUI toolkit.
 %elseif "%{type}" == "embedded"
 Summary: The shared library for the Qt GUI toolkit for framebuffer devices.
+%elseif "%{type}" == "nox"
+Summary: The Qt GUI toolkit for framebuffer devices, with RTTI
+%endif
+%if "%{type}" == "nox"
+%define file embedded
+%else
+%define file %{type}
 %endif
 %if "%{type}" == "x11"
 Name: qt
@@ -17,18 +24,20 @@ Name: qt-%{type}
 %endif
 %if "%{beta}" == "0"
 Release: %{rel}
-Source: ftp://ftp.troll.no/qt/source/qt-%{type}-%{version}.tar.bz2
+Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}.tar.bz2
 %else
 Release: 0.%{beta}.%{rel}
-Source: ftp://ftp.troll.no/qt/source/qt-%{type}-%{version}-%{beta}.tar.bz2
+Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}-%{beta}.tar.bz2
 %endif
 Patch0: qt-2.1.0-huge_val.patch
-Patch1: qt-2.2.4-qclipboard-20010204.diff
+Patch1: qt-2.3.0-LPRng.patch
+Patch2: qt-2.3.0-Makefiles.patch
 # Patches 100-200 are for Qt-x11 only
 Patch100: qt-2.3.0-printing.patch
 Patch101: qt-2.3.0-euro.patch
 Patch102: qt-2.3.0-qfont.patch
-Patch103: qt-2.3.0-OnTheSpot.patch
+Patch103: qt-2.2.4-qclipboard-20010204.diff
+Patch104: qt-2.3.0-varargs.patch
 # Patches 200-300 are for Qt-embedded only
 Epoch: 1
 URL: http://www.troll.no/
@@ -44,6 +53,8 @@ BuildRequires: gcc-c++, libstdc++, libstdc++-devel, libmng-devel, glibc-devel, l
 Summary: Development files and documentation for the Qt GUI toolkit.
 %elseif "%{type}" == "embedded"
 Summary: Development files and documentation for the Qt GUI toolkit for framebuffer devices.
+%elseif "%{type}" == "nox"
+Summary: Development files and documentation for Qt for framebuffer devices, with RTTI
 %endif
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
@@ -60,6 +71,8 @@ Requires: %{name} = %{version}-%{release}
 Summary: Version of the Qt GUI toolkit for static linking
 %elseif "%{type}" == "embedded"
 Summary: Version of the Qt GUI toolkit for framebuffer devices for static linking
+%elseif "%{type}" == "nox"
+Summary: Version of the Qt GUI toolkit for fb devices for static linking, with RTTI
 %endif
 Group: Development/Libraries
 Requires: %{name}-devel = %{version}-%{release}
@@ -69,6 +82,8 @@ Requires: %{name}-devel = %{version}-%{release}
 Summary: Interface designer (IDE) for the Qt toolkit
 %elseif "%{type}" == "embedded"
 Summary: Interface designer (IDE) for the Qt toolkit for framebuffer devices
+%elseif "%{type}" == "nox"
+Summary: Interface designer (IDE) for the Qt toolkit for framebuffer devices with RTTI
 %endif
 Group: Development/Tools
 Requires: %{name}-devel = %{version}-%{release}
@@ -89,6 +104,13 @@ This version of qt-embedded has been compiled with the full feature
 set (and memory usage). If you are developing software for an
 embedded device with little RAM, you will probably want to recompile
 it with a custom feature set.
+%elseif "%{type}" == "nox"
+for framebuffer devices.
+
+This is a version of Qt Embedded that has been patched to enable Runtime
+Type Information (RTTI). This is a feature that increases memory consumption,
+but is required for kdelibs-nox to work. This version of qt is more suitable
+for a low-end desktop than for embedded devices.
 %endif
 
 Qt is written in C++ and is fully object-oriented.
@@ -111,6 +133,9 @@ toolkit.
 %elseif "%{type}" == "embedded"
 Install %{name}-devel if you want to develop GUI applications using the Qt
 toolkit for framebuffer devices.
+%elseif "%{type}" == "nox"
+Install %{name}-devel if you want to develop GUI applications using the Qt
+toolkit for framebuffer devices with RTTI.
 %endif
 
 %if "%{type}" == "x11"
@@ -134,22 +159,27 @@ for the Qt toolkit.
 %else
 %setup -q -n qt-%{version}-%{beta}
 %endif
+%if "%{type}" == "nox"
+find . |xargs perl -pi -e "s,-fno-rtti,-frtti,g" # We want to compile kdelibs...
+%endif
 [ -f Makefile.cvs ] && make -f Makefile.cvs # this is for qt-copy in KDE CVS
 rm -rf tools/designer/examples
 %patch0 -p0 -b .hugeval
-%patch1 -p1 -b .qclipboard
+%patch1 -p1 -b .lprng
+%patch2 -p1 -b .mk
 
 %if "%{type}" == "x11"
 %patch100 -p1 -b .print
 %patch101 -p1 -b .euro
 %patch102 -p1
-%patch103 -p0 -b .onthespot
+%patch103 -p1 -b .qclipboard
+%patch104 -p1 -b .ia64
 %endif
 
 %build
 find . -type d -name CVS | xargs rm -rf
 export QTDIR=`/bin/pwd`
-OPTFLAGS=`echo $RPM_OPT_FLAGS |sed -e s/-fno-rtti//`
+OPTFLAGS=`echo $RPM_OPT_FLAGS |sed -e s/-fno-rtti/-frtti/`
 
 perl -pi -e "s/-O2/$OPTFLAGS -fno-exceptions/g" configs/linux* configs/gnu* configs/freebsd*
 
@@ -169,7 +199,7 @@ fi
 	-system-libpng -system-jpeg -no-g++-exceptions -thread <<EOF
 yes
 EOF
-%elseif "%{type}" == "embedded"
+%elseif "%{type}" == "embedded" || "%{type}" == "nox"
 ./configure -release -static -gif -no-sm -thread -system-zlib \
 	-system-libpng -system-libmng -system-jpeg -no-g++-exceptions \
 	-accel-voodoo3 -accel-mach64 -accel-matrox \
@@ -191,7 +221,7 @@ make -C extensions/xt/src -j $NRPROC
 	-system-libpng -system-jpeg -no-g++-exceptions -thread <<EOF
 yes
 EOF
-%elseif "%{type}" == "embedded"
+%elseif "%{type}" == "embedded" || "%{type}" == "nox"
 ./configure -release -shared -gif -no-sm -thread -system-zlib \
         -system-libpng -system-libmng -system-jpeg -no-g++-exceptions \
         -accel-voodoo3 -accel-mach64 -accel-matrox \
@@ -205,7 +235,7 @@ EOF
 make src-moc src-mt sub-src sub-tools -j $NRPROC
 %if "%{type}" == "x11"
 make -C extensions/xt/src -j $NRPROC
-%elseif "%{type}" == "embedded"
+%elseif "%{type}" == "embedded" || "%{type}" == "nox"
 make -C tools/designer -j $NRPROC
 %endif
 
@@ -295,7 +325,7 @@ chmod -R a+r $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so*
 chmod -R a+r $RPM_BUILD_ROOT%{qtdir}/lib/libqte.so*
 %endif
 
-%if "%{type}" == "embedded"
+%if "%{type}" == "embedded" || "%{type}" == "nox"
 cp -aR etc $RPM_BUILD_ROOT%{qtdir}
 %endif
 
@@ -383,7 +413,7 @@ fi
 %{qtdir}/lib/libqte-mt.so.*
 %endif
 %{qtdir}/lib/libqutil.so.*
-%if "%{type}" == "embedded"
+%if "%{type}" == "embedded" || "%{type}" == "nox"
 %dir %{qtdir}/etc
 %dir %{qtdir}/etc/fonts
 %dir %{qtdir}/etc/sounds
@@ -449,8 +479,19 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
-* Thu May 24 2001 Leon Ho <llch@redhat.com>
-- Patched with OnTheSpot IM Patch
+* Fri Apr 27 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.0-6
+- Fix crashes on ia64, Patch from Bill Nottingham <notting@redhat.com>
+- Allow building qt-nox
+
+* Fri Apr 20 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.0-5
+- Make sure uic and designer use the libqutil from the source tree, not
+  a previously installed one.
+  Linking uic-x11 against libqutil-embedded is definitely not a feature. ;)
+- The qclipboard fix is needed for qt-x11 only, don't apply it if we're
+  building qt-embedded
+
+* Sat Apr 14 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Handle LPRng specific constructs in printcap, Bug #35937
 
 * Sun Mar 25 2001 Florian La Roche <Florian.LaRoche@redhat.de>
 - add qfont patch from Trolltech
