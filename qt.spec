@@ -1,12 +1,34 @@
-%define qtdir /usr/lib/qt-%{version}
+%define qtdir %{_libdir}/%{name}-%{version}
+%define type x11
+%define rel 3
+%define beta 0
+Version: 2.3.0
 
+%if "%{type}" == "x11"
 Summary: The shared library for the Qt GUI toolkit.
+%elseif "%{type}" == "embedded"
+Summary: The shared library for the Qt GUI toolkit for framebuffer devices.
+%endif
+%if "%{type}" == "x11"
 Name: qt
-Version: 2.2.1
-Release: 5
-Source0: ftp://ftp.troll.no/qt/source/qt-x11-%{version}.tar.gz
+BuildRequires: XFree86-devel >= 4.0.2
+%else
+Name: qt-%{type}
+%endif
+%if "%{beta}" == "0"
+Release: %{rel}
+Source: ftp://ftp.troll.no/qt/source/qt-%{type}-%{version}.tar.bz2
+%else
+Release: 0.%{beta}.%{rel}
+Source: ftp://ftp.troll.no/qt/source/qt-%{type}-%{version}-%{beta}.tar.bz2
+%endif
 Patch0: qt-2.1.0-huge_val.patch
-Patch1: qt-2.2.0-gcc-296-broken.patch
+Patch1: qt-2.2.4-qclipboard-20010204.diff
+# Patches 100-200 are for Qt-x11 only
+Patch100: qt-2.3.0-printing.patch
+Patch101: qt-2.3.0-euro.patch
+Patch102: qt-2.3.0-qfont.patch
+# Patches 200-300 are for Qt-embedded only
 Epoch: 1
 URL: http://www.troll.no/
 Copyright: GPL
@@ -14,68 +36,113 @@ Group: System Environment/Libraries
 Buildroot: %{_tmppath}/%{name}-root
 Prereq: /sbin/ldconfig
 Prefix: %{qtdir}
-BuildRequires: gcc-c++, libstdc++, libstdc++-devel, libmng-devel, XFree86-devel, glibc-devel, libjpeg-devel, libpng-devel, zlib-devel, libungif-devel, libmng-static
-ExcludeArch: ia64
+BuildRequires: gcc-c++, libstdc++, libstdc++-devel, libmng-devel, glibc-devel, libjpeg-devel, libpng-devel, zlib-devel, libungif-devel, libmng-static
 
 %package devel
+%if "%{type}" == "x11"
 Summary: Development files and documentation for the Qt GUI toolkit.
+%elseif "%{type}" == "embedded"
+Summary: Development files and documentation for the Qt GUI toolkit for framebuffer devices.
+%endif
 Group: Development/Libraries
 Requires: %{name} = %{version}-%{release}
 
+%if "%{type}" == "x11"
 %package Xt
 Summary: An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 Group: System Environment/Libraries
 Requires: %{name} = %{version}-%{release}
+%endif
 
 %package static
+%if "%{type}" == "x11"
 Summary: Version of the Qt GUI toolkit for static linking
+%elseif "%{type}" == "embedded"
+Summary: Version of the Qt GUI toolkit for framebuffer devices for static linking
+%endif
 Group: Development/Libraries
 Requires: %{name}-devel = %{version}-%{release}
 
 %package designer
+%if "%{type}" == "x11"
 Summary: Interface designer (IDE) for the Qt toolkit
+%elseif "%{type}" == "embedded"
+Summary: Interface designer (IDE) for the Qt toolkit for framebuffer devices
+%endif
 Group: Development/Tools
 Requires: %{name}-devel = %{version}-%{release}
 
 %description
 Qt is a GUI software toolkit which simplifies the task of writing and
-maintaining GUI (Graphical User Interface) applications for the X
-Window System. Qt is written in C++ and is fully object-oriented.
+maintaining GUI (Graphical User Interface) applications
+%if "%{type}" == "x11"
+for the X Window System.
+%elseif "%{type}" == "embedded"
+for framebuffer devices.
 
-This package contains the shared library needed to run Qt
-applications, as well as the README files for Qt.
+It is meant primarily to run on embedded devices (handhelds), but can
+be used to run graphical applications without using the X Window
+System on "normal" computers, as well.
+
+This version of qt-embedded has been compiled with the full feature
+set (and memory usage). If you are developing software for an
+embedded device with little RAM, you will probably want to recompile
+it with a custom feature set.
+%endif
+
+Qt is written in C++ and is fully object-oriented.
+
+This package contains the shared library needed to run %{name}
+applications, as well as the README files for %{name}.
 
 %description devel
-The qt-devel package contains the files necessary to develop
+The %{name}-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
 object compiler, the man pages, the HTML documentation and example
 programs.  See http://www.trolltech.com/products/qt.html for more
 information about Qt, or look at
-%{_docdir}/qt-devel-%{version}/html/index.html, which
+%{_docdir}/%{name}-devel-%{version}/html/index.html, which
 provides Qt documentation in HTML format.
 
-Install qt-devel if you want to develop GUI applications using the Qt
+%if "%{type}" == "x11"
+Install %{name}-devel if you want to develop GUI applications using the Qt
 toolkit.
+%elseif "%{type}" == "embedded"
+Install %{name}-devel if you want to develop GUI applications using the Qt
+toolkit for framebuffer devices.
+%endif
 
+%if "%{type}" == "x11"
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
+%endif
 
 %description static
-The qt-static package contains the files necessary to link applications
-to the Qt GUI toolkit statically (rather than dynamically).
+The %{name}-static package contains the files necessary to link applications
+to the %{name} GUI toolkit statically (rather than dynamically).
 Statically linked applications don't require the library to be installed
 on the system running the application.
 
 %description designer
-The qt-designer package contains an User Interface designer tool for the Qt
-toolkit.
+The %{name}-designer package contains an User Interface designer tool
+for the Qt toolkit.
 
 %prep
-%setup -q
+%if "%{beta}" == "0"
+%setup -q -n qt-%{version}
+%else
+%setup -q -n qt-%{version}-%{beta}
+%endif
 [ -f Makefile.cvs ] && make -f Makefile.cvs # this is for qt-copy in KDE CVS
 rm -rf tools/designer/examples
 %patch0 -p0 -b .hugeval
-%patch1 -p1 -b .gcc296
+%patch1 -p1 -b .qclipboard
+
+%if "%{type}" == "x11"
+%patch100 -p1 -b .print
+%patch101 -p1 -b .euro
+%patch102 -p1
+%endif
 
 %build
 find . -type d -name CVS | xargs rm -rf
@@ -95,28 +162,56 @@ fi
 
 # build static libraries first,
 # don't build examples, tools and tutorials with static libraries here
-./configure -release -static -gif -sm -system-libmng -system-zlib \
-	-system-libpng -system-jpeg -thread <<EOF
+%if "%{type}" == "x11"
+./configure -release -static -gif -xft -sm -system-libmng -system-zlib \
+	-system-libpng -system-jpeg -no-g++-exceptions -thread <<EOF
 yes
 EOF
+%elseif "%{type}" == "embedded"
+./configure -release -static -gif -no-sm -thread -system-zlib \
+	-system-libpng -system-libmng -system-jpeg -no-g++-exceptions \
+	-accel-voodoo3 -accel-mach64 -accel-matrox \
+	-qvfb -vnc <<EOF
+yes
+5
+v,4,8,16,24,32
+EOF
+%endif
 
-make src-moc src-mt sub-src sub-tools -j $NRPROC
-make clean
+make src-moc src-mt sub-src -j $NRPROC
+%if "%{type}" == "x11"
+make -C extensions/xt/src -j $NRPROC
+%endif
 
 # build shared libraries
-./configure -release -shared -gif -sm -system-libmng -system-zlib \
-	-system-libpng -system-jpeg -thread <<EOF
+%if "%{type}" == "x11"
+./configure -release -shared -gif -xft -sm -system-libmng -system-zlib \
+	-system-libpng -system-jpeg -no-g++-exceptions -thread <<EOF
 yes
 EOF
+%elseif "%{type}" == "embedded"
+./configure -release -shared -gif -no-sm -thread -system-zlib \
+        -system-libpng -system-libmng -system-jpeg -no-g++-exceptions \
+        -accel-voodoo3 -accel-mach64 -accel-matrox \
+	-qvfb -vnc <<EOF
+yes
+5
+v,4,8,16,24,32
+EOF
+%endif
 
 make src-moc src-mt sub-src sub-tools -j $NRPROC
+%if "%{type}" == "x11"
 make -C extensions/xt/src -j $NRPROC
+%elseif "%{type}" == "embedded"
+make -C tools/designer -j $NRPROC
+%endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 export QTDIR=`/bin/pwd`
 
-mkdir -p $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/{bin,include,lib}
+mkdir -p $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/{bin,include,lib}
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/{man1,man3}
 
 # strip binaries
@@ -125,29 +220,53 @@ for i in bin/*; do
 done
 
 # install shared and static libraries
-install -m 755 bin/* $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/bin
-cp lib/libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
-cp lib/libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
-cp lib/libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
-cp lib/*.a $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
+install -m 755 bin/* $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/bin
+install -m 755 lib/* $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib
 
-ln -sf libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so.2
-ln -sf libqt.so.2 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so
-ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt-mt.so.2
-ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt-mt.so
-ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so.1.0
-ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so.1
-ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so
+%if "%{type}" == "x11"
+ln -sf libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqt.so.2.3
+ln -sf libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqt.so.2
+ln -sf libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqt.so
+ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqt-mt.so.2.3
+ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqt-mt.so.2
+ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqt-mt.so
+%else
+ln -sf libqte.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqte.so.2.3
+ln -sf libqte.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqte.so.2
+ln -sf libqte.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqte.so
+ln -sf libqte-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqte-mt.so.2.3
+ln -sf libqte-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqte-mt.so.2
+ln -sf libqte-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqte-mt.so
+%endif
+ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqutil.so.1.0
+ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqutil.so.1
+ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqutil.so
+%if "%{type}" == "x11"
+ln -sf libqxt.so.0.3.0 $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqxt.so.0.3
+ln -sf libqxt.so.0.3.0 $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqxt.so.0
+ln -sf libqxt.so.0.3.0 $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/lib/libqxt.so
+%endif
 
 # install man pages
 cp -fR src/moc/moc.1 $RPM_BUILD_ROOT%{_mandir}/man1
-cp doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
+cp -fR doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
+rm -rf doc/man
+
+%if "%{type}" != "x11"
+# Rename man pages, we don't want to conflict with the x11 Qt
+for i in $RPM_BUILD_ROOT%{_mandir}/man1/*; do
+	mv $i `echo $i |sed -e "s/\.1/-%{type}.1/"`
+done
+for i in $RPM_BUILD_ROOT%{_mandir}/man3/*; do
+	mv $i `echo $i |sed -e "s/\.3/-%{type}.3/"`
+done
+%endif
 
 # Compensate for Qt's broken Makefiles
 for i in makeqpf mergetr msg2qm qconfig; do
 	make -C tools/$i
 	strip -R .comment tools/$i/$i
-	install -m 755 tools/$i/$i $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/bin
+	install -m 755 tools/$i/$i $RPM_BUILD_ROOT%{_libdir}/%{name}-%{version}/bin
 done
 
 # clean up
@@ -159,22 +278,30 @@ find tutorial -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
 find tutorial -type f -perm 755 | xargs strip -R .comment || :
 
 for a in */*/Makefile ; do
-  sed 's-^SYSCONF_MOC.*-SYSCONF_MOC		= /usr/bin/moc-' < $a > ${a}.2
+  sed 's|^SYSCONF_MOC.*|SYSCONF_MOC		= %{qtdir}/bin/moc|' < $a > ${a}.2
   mv -v ${a}.2 $a
 done
 
 rm -f include/qt_mac.h include/qt_windows.h
 rm -f include/jri.h include/jritypes.h include/npapi.h include/npupp.h
 
-cp -frL include/. $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/include || \
-	cp -fr include/. $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/include
-chmod -R a+r $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so*
+cp -frL include/. $RPM_BUILD_ROOT%{qtdir}/include || \
+	cp -fr include/. $RPM_BUILD_ROOT%{qtdir}/include
+%if "%{type}" == "x11"
+chmod -R a+r $RPM_BUILD_ROOT%{qtdir}/lib/libqt.so*
+%else
+chmod -R a+r $RPM_BUILD_ROOT%{qtdir}/lib/libqte.so*
+%endif
+
+%if "%{type}" == "embedded"
+cp -aR etc $RPM_BUILD_ROOT%{qtdir}
+%endif
 
 mkdir -p $RPM_BUILD_ROOT/etc/profile.d
 cat > $RPM_BUILD_ROOT/etc/profile.d/qt.sh <<EOF
 # Qt initialization script (sh)
 if [ -z "\$QTDIR" ] ; then
-	QTDIR="/usr/lib/qt-%{version}"
+	QTDIR="%{qtdir}"
 fi
 export QTDIR
 EOF
@@ -186,106 +313,211 @@ cat > $RPM_BUILD_ROOT/etc/profile.d/qt.csh <<EOF
 if ( \$?QTDIR ) then
          exit
 endif
-setenv QTDIR /usr/lib/qt-%{version}
+setenv QTDIR %{qtdir}
 EOF
 
 chmod 755 $RPM_BUILD_ROOT/etc/profile.d/qt.csh
 
-mkdir -p $RPM_BUILD_ROOT%{_mandir}/man3
-mv doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
-rm -rf doc/man
-
 mkdir -p $RPM_BUILD_ROOT/usr/bin
+%if "%{type}" == "x11"
 for i in moc uic designer makeqpf mergetr msg2qm qconfig qt20fix qtrename140 findtr; do
-	ln -sf ../lib/qt-%{version}/bin/$i $RPM_BUILD_ROOT/usr/bin
+	ln -sf ../lib/%{name}-%{version}/bin/$i $RPM_BUILD_ROOT/usr/bin
 done
+%else
+for i in moc uic designer makeqpf mergetr msg2qm qconfig qt20fix qtrename140 findtr; do
+	ln -sf ../lib/%{name}-%{version}/bin/$i $RPM_BUILD_ROOT/usr/bin/$i-%{type}
+done
+%endif
 
 # make symbolic link to qt docdir
 if echo %{_docdir} | grep  share >& /dev/null ; then
-  ln -s  ../../share/doc/qt-devel-%{version} $RPM_BUILD_ROOT/usr/lib/qt-%{version}/doc
+  ln -s  ../../share/doc/%{name}-devel-%{version} $RPM_BUILD_ROOT%{qtdir}/doc
 else
-  ln -s  ../../doc/qt-devel-%{version} $RPM_BUILD_ROOT/usr/lib/qt-%{version}/doc
+  ln -s  ../../doc/%{name}-devel-%{version} $RPM_BUILD_ROOT%{qtdir}/doc
 fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 %post
-if ! grep -q '^/usr/lib/qt-%{version}/lib$' /etc/ld.so.conf; then
-  echo "/usr/lib/qt-%{version}/lib" >> /etc/ld.so.conf
-fi
+%if "%{type}" == "x11"
+grep -v '^%{_libdir}/qt-2' /etc/ld.so.conf >/etc/ld.so.conf.new
+mv -f /etc/ld.so.conf.new /etc/ld.so.conf
+%else
+grep -v '^%{_libdir}/qt-%{type}-2' /etc/ld.so.conf >/etc/ld.so.conf.new
+mv -f /etc/ld.so.conf.new /etc/ld.so.conf
+%endif
+echo "%{qtdir}/lib" >> /etc/ld.so.conf
 /sbin/ldconfig
 
 %postun
 if [ $1 = 0 ]; then
-  grep -v '^/usr/lib/qt-%{version}/lib$' /etc/ld.so.conf > /etc/ld.so.conf.new 2>/dev/null
-  cat /etc/ld.so.conf.new > /etc/ld.so.conf
-  rm -f /etc/ld.so.conf.new
-  /sbin/ldconfig
+  grep -v '^%{qtdir}/lib$' /etc/ld.so.conf > /etc/ld.so.conf.new 2>/dev/null
+  mv -f /etc/ld.so.conf.new /etc/ld.so.conf
 fi
+/sbin/ldconfig
 
 %triggerpostun -- qt < 2.1.0-4.beta1
-if ! grep -q '^/usr/lib/qt-%{version}/lib$' /etc/ld.so.conf; then
-  echo "/usr/lib/qt-%{version}/lib" >> /etc/ld.so.conf
+if ! grep -q '^%{qtdir}/lib$' /etc/ld.so.conf; then
+  echo "%{qtdir}/lib" >> /etc/ld.so.conf
 fi
 /sbin/ldconfig
 
 
 %files
 %defattr(-,root,root,-)
+%if "%{type}" == "x11"
 %doc ANNOUNCE FAQ LICENSE.QPL PORTING README* changes*
-%dir /usr/lib/qt-%{version}
-%dir /usr/lib/qt-%{version}/lib
-/usr/lib/qt-%{version}/lib/libqt.so.*
-/usr/lib/qt-%{version}/lib/libqt-mt.so.*
-/usr/lib/qt-%{version}/lib/libqutil.so.*
+%else
+%doc README* changes*
+%endif
+%dir %{qtdir}
+%dir %{qtdir}/lib
+%if "%{type}" == "x11"
+%{qtdir}/lib/libqt.so.*
+%{qtdir}/lib/libqt-mt.so.*
+%else
+%{qtdir}/lib/libqte.so.*
+%{qtdir}/lib/libqte-mt.so.*
+%endif
+%{qtdir}/lib/libqutil.so.*
+%if "%{type}" == "embedded"
+%dir %{qtdir}/etc
+%dir %{qtdir}/etc/fonts
+%dir %{qtdir}/etc/sounds
+%{qtdir}/etc/fonts/*
+%{qtdir}/etc/sounds/*
+%endif
 
 %files devel
 %defattr(-,root,root,-)
+%if "%{type}" == "x11"
 %attr(0755,root,root) %config /etc/profile.d/*
-%{_libdir}/qt-%{version}/bin/moc
-%{_libdir}/qt-%{version}/bin/uic
-%{_libdir}/qt-%{version}/bin/findtr
-%{_libdir}/qt-%{version}/bin/qt20fix
-%{_libdir}/qt-%{version}/bin/qtrename140
-%{_libdir}/qt-%{version}/bin/makeqpf
-%{_libdir}/qt-%{version}/bin/mergetr
-%{_libdir}/qt-%{version}/bin/msg2qm
-%{_libdir}/qt-%{version}/bin/qconfig
-%{_libdir}/qt-%{version}/include
-%{_libdir}/qt-%{version}/doc
-%{_libdir}/qt-%{version}/lib/libqt.so
-%{_libdir}/qt-%{version}/lib/libqt-mt.so
-%{_libdir}/qt-%{version}/lib/libqutil.so
+%endif
+%{qtdir}/bin/moc
+%{qtdir}/bin/uic
+%{qtdir}/bin/findtr
+%{qtdir}/bin/qt20fix
+%{qtdir}/bin/qtrename140
+%{qtdir}/bin/makeqpf
+%{qtdir}/bin/mergetr
+%{qtdir}/bin/msg2qm
+%{qtdir}/bin/qconfig
+%{qtdir}/include
+%{qtdir}/doc
+%if "%{type}" == "x11"
+%{qtdir}/lib/libqt.so
+%{qtdir}/lib/libqt-mt.so
+%else
+%{qtdir}/lib/libqte.so
+%{qtdir}/lib/libqte-mt.so
+%endif
+%{qtdir}/lib/libqutil.so
 %{_mandir}/*/*
-%{_bindir}/moc
-%{_bindir}/uic
-%{_bindir}/findtr
-%{_bindir}/qt20fix
-%{_bindir}/qtrename140
-%{_bindir}/makeqpf
-%{_bindir}/mergetr
-%{_bindir}/msg2qm
-%{_bindir}/qconfig
+%{_bindir}/moc*
+%{_bindir}/uic*
+%{_bindir}/findtr*
+%{_bindir}/qt20fix*
+%{_bindir}/qtrename140*
+%{_bindir}/makeqpf*
+%{_bindir}/mergetr*
+%{_bindir}/msg2qm*
+%{_bindir}/qconfig*
 
 %doc doc/*
 %doc examples
 %doc tutorial
 
+%if "%{type}" == "x11"
+%post Xt -p /sbin/ldconfig
+%postun Xt -p /sbin/ldconfig
+
 %files Xt
 %defattr(-,root,root,-)
-%{_libdir}/qt-%{version}/lib/libqxt.a
+%{qtdir}/lib/libqxt.so*
+%endif
 
 %files static
 %defattr(-,root,root,-)
-%{_libdir}/qt-%{version}/lib/*.a
+%{qtdir}/lib/*.a
 
 %files designer
 %defattr(-,root,root,-)
-%{_bindir}/designer
-%{_libdir}/qt-%{version}/bin/designer
+%{_bindir}/designer*
+%{qtdir}/bin/designer
 
 %changelog
+* Sun Mar 25 2001 Florian La Roche <Florian.LaRoche@redhat.de>
+- add qfont patch from Trolltech
+
+* Tue Mar 13 2001 Harald Hoyer <harald@redhat.de>
+- added patch for '@euro' language settings
+
+* Tue Mar  6 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.3.0 final
+- BuildRequires XFree86-devel >= 4.0.2 (#30486)
+
+* Mon Feb 26 2001 Than Ngo <than@redhat.com>
+- fix check_env function, so that qt does not crash if QT_XFT is not set
+- fix symlinks
+
+* Mon Feb 26 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.3.0b1
+- Add a patch to qpsprinter that handles TrueType fonts even if they come from xfs
+
+* Tue Feb 13 2001 Preston Brown <pbrown@redhat.com>
+- japanese input and clipboard fixes applied.  Changes have been sent upstream by patch authors.
+
+* Fri Feb  9 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Rebuild with new Mesa to get rid of pthreads linkage
+- Add Xft fix from KDE CVS
+
+* Wed Feb  7 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Add printing bugfix patch from Trolltech
+
+* Sat Feb  3 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.4
+- Qt Embedded: Add QVfb and VNC support
+
+* Tue Jan 16 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- Don't segfault when running Qt/Embedded applications as root
+- Improve the Qt/Embedded sparc patch so we don't need the specfile hacks
+  anymore
+- Fix a bug in QPrintDialog (causing KDE Bug #18608)
+
+* Thu Jan 11 2001 Bernhard Rosenkraenzer <bero@redhat.com>
+- bzip2 source to save space
+- Qt/Embedded 2.2.3
+- Fix qte build on sparc
+
+* Wed Dec 20 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Run ldconfig in %%post and %%postun for qt-Xt
+
+* Sun Dec 17 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Build with the Xrender extension
+  (Patch from Keith Packard <keithp@keithp.com>)
+
+* Wed Dec 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.3
+
+* Tue Dec 12 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Rebuild to fix permissions on doc dir
+- Don't exclude ia64 anymore
+
+* Fri Nov 17 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Fix up uic (Patch from trolltech) 
+
+* Wed Nov 15 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Build qt-embedded
+  changes to base: fix build, fix ISO C99 compliance, fix 64bit support
+
+* Mon Nov 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.2
+
+* Tue Oct 24 2000 Than Ngo <than@redhat.com>
+- call ldconfig for updating (Bug #19687)
+- added patch from Trolltech, thanks to Rainer <rms@trolltech.com>
+
 * Wed Oct 18 2000 Bernhard Rosenkraenzer <bero@redhat.com>
 - Add missing msg2qm, msgmerge, qconfig tools (Bug #18997), introduced
   by broken Makefiles in base
