@@ -1,15 +1,14 @@
-%define KDEDATE 20000721
 Name: qt
 Summary: The shared library for the Qt GUI toolkit.
 Version: 2.2.0
-Release: 0.1.%{KDEDATE}j1
-Source0: ftp://ftp.troll.no/qt/source/qt-%{version}-20000720.tar.bz2
+Release: 0.5.beta2
+Source0: ftp://ftp.troll.no/qt/source/qt-x11-%{version}-beta2.tar.gz
 # Source3 is generated from ftp://ftp.netscape.com/pub/sdk/plugin/unix/unix-sdk-3.0b5.tar.Z
 Source3: qt-nsplugin-files.tar.bz2
 Patch0: qt-2.1.0-huge_val.patch
-Patch1: qt-2.1.1-connect.patch
-Patch10:qt-2.2.0-m17n-20000728.diff
-Patch11: qt-2.2.0-codec-20000728.diff
+Patch1: qt-2.2.0-b1-compile.patch
+Patch10: qt-2.1.1-connect.patch
+Patch11: qt-bug.patch
 URL: http://www.troll.no/
 Copyright: QPL
 Group: System Environment/Libraries
@@ -20,12 +19,6 @@ ExcludeArch: ia64
 %package devel
 Summary: Development files and documentation for the Qt GUI toolkit.
 Group: Development/Libraries
-
-%package GL
-Summary: An OpenGL add-on for the Qt software toolkit.
-Group: System Environment/Libraries
-Requires: Mesa
-BuildPrereq: Mesa-devel
 
 %package NSPlugin
 Summary: An add-on for creating Netscape plug-ins using the Qt GUI toolkit.
@@ -54,11 +47,6 @@ provides Qt documentation in HTML format.
 Install qt-devel if you want to develop GUI applications using the Qt
 toolkit.
 
-%description GL
-The qt-GL package contains an OpenGL (3-D graphics) add-on for the Qt
-GUI software toolkit.  You'll need to install the Mesa 3-D graphics
-library if you want to use qt-GL.
-
 %description NSPlugin
 An add-on for developing Netscape plug-ins with the Qt GUI toolkit.
 
@@ -66,14 +54,14 @@ An add-on for developing Netscape plug-ins with the Qt GUI toolkit.
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 
 %prep
-%setup -q -n qt-copy
+%setup -q -n qt-2.2.0-beta2
+[ -e Makefile.cvs ] && make -f Makefile.cvs # this is for qt-copy in KDE CVS
 %patch0 -p0 -b .hugeval
-%patch1 -p1 -b .connect
-%patch10 -p1
-%patch11 -p1
+# %patch1 -p1 -b .bug
+# %patch10 -p1 -b .connect
+%patch11 -p1 -b .gcc296
 
 %build
-make -f Makefile.cvs
 find . -type d -name CVS | xargs rm -rf
 export QTDIR=`/bin/pwd`
 OPTFLAGS=`echo $RPM_OPT_FLAGS |sed -e s/-fno-rtti//`
@@ -84,7 +72,9 @@ OPTFLAGS=`echo $OPTFLAGS | sed -e s/-O2/-O0/`
 perl -pi -e "s/-O2/$OPTFLAGS/g" configs/linux* configs/gnu* configs/freebsd*
 
 ./configure -release -shared -gif -sm -system-zlib -system-libpng \
-	-system-jpeg -thread
+	-system-jpeg -thread <<EOF
+yes
+EOF
 
 if [ -x /usr/bin/getconf ] ; then
     NRPROC=$(/usr/bin/getconf _NPROCESSORS_ONLN)
@@ -95,14 +85,9 @@ else
     NRPROC=1
 fi  
 
-make -j $NRPROC
+make # -j $NRPROC <-- enable this once the trolls fix their Makefiles
 
-cd extensions/opengl/src
-make -j $NRPROC
-cd ../../nsplugin/src
-tar xIf %{SOURCE3}
-make -j $NRPROC 
-cd ../../xt/src
+cd extensions/xt/src
 make -j $NRPROC
 
 %install
@@ -111,16 +96,25 @@ rm -rf $RPM_BUILD_ROOT
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/{bin,include,lib}
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/{man1,man3}
 
-strip -R .comment bin/{mergetr,moc,msg2qm}
+for i in bin/*; do
+	strip -R .comment $i || :
+done
 install -m 755 bin/* $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/bin
 cp lib/libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
+cp lib/libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
+cp lib/libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
 ln -sf libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so.2
 ln -sf libqt.so.2 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so
+ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt-mt.so.2
+ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt-mt.so
+ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so.1.0
+ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so.1
+ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so
 cp -fR src/moc/moc.1 $RPM_BUILD_ROOT%{_mandir}/man1
 cp doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
 
 
-for i in libqgl.a libqnp.a libqxt.a; do
+for i in libqxt.a; do
   cp lib/$i $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
 done
 
@@ -137,6 +131,8 @@ for a in */*/Makefile ; do
 done
 
 rm -f include/qt_mac.h include/qt_windows.h
+rm -f include/jri.h include/jritypes.h include/npapi.h include/npupp.h
+
 cp -fR include/. $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/include
 chmod -R a+r $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so*
 
@@ -164,6 +160,11 @@ chmod 755 $RPM_BUILD_ROOT/etc/profile.d/qt.csh
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/man3
 mv doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
 rm -rf doc/man
+
+mkdir -p $RPM_BUILD_ROOT/usr/bin
+for i in moc uic designer; do
+	ln -sf ../lib/qt-%{version}/bin/$i $RPM_BUILD_ROOT/usr/bin
+done
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -194,8 +195,9 @@ fi
 %doc ANNOUNCE FAQ LICENSE.QPL PORTING README README.QT changes-2.1.0
 %dir /usr/lib/qt-%{version}
 %dir /usr/lib/qt-%{version}/lib
-/usr/lib/qt-%{version}/lib/libqt.so.%{version}
-/usr/lib/qt-%{version}/lib/libqt.so.2
+/usr/lib/qt-%{version}/lib/libqt.so.*
+/usr/lib/qt-%{version}/lib/libqt-mt.so.*
+/usr/lib/qt-%{version}/lib/libqutil.so.*
 
 %files devel
 %defattr(-,root,root,-)
@@ -203,24 +205,38 @@ fi
 %{_libdir}/qt-%{version}/bin
 %{_libdir}/qt-%{version}/include
 %{_libdir}/qt-%{version}/lib/libqt.so
+%{_libdir}/qt-%{version}/lib/libqt-mt.so
+%{_libdir}/qt-%{version}/lib/libqutil.so
+/usr/bin/*
 %{_mandir}/*/*
 %doc doc/*
 %doc examples
 %doc tutorial
-
-%files GL
-%defattr(-,root,root,-)
-%{_libdir}/qt-%{version}/lib/libqgl.a
-
-%files NSPlugin
-%defattr(-,root,root,-)
-%{_libdir}/qt-%{version}/lib/libqnp.a
 
 %files Xt
 %defattr(-,root,root,-)
 %{_libdir}/qt-%{version}/lib/libqxt.a
 
 %changelog
+* Wed Aug 23 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Work around compiler bugs (Patch from Jakub)
+- Use relative symlinks (Bug #16750)
+
+* Mon Aug 21 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- beta2
+
+* Mon Aug 14 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- new qt-copy from KDE2 CVS
+
+* Wed Aug 9 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- official beta 1
+
+* Thu Aug 3 2000 Than Ngo <than@redhat.de>
+- rebuilt against the libpng-1.0.8
+
+* Thu Jul 27 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- rebuild (so we have it on all arches)
+
 * Tue Jul 25 2000 Bernhard Rosenkraenzer <bero@redhat.com>
 - move man pages to a more reasonable place (this fixes Bug #14126)
 - exclude ia64 for now (compiler problems!!!)
