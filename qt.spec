@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 2
+Release: 3
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -343,6 +343,7 @@ fi
 # build shared, threaded (default) libraries
 echo yes | ./configure \
   -prefix $QTDEST \
+  -docdir %{_docdir}/qt-devel-%{version}/ \
 %if %{_lib} == lib64
   -platform linux-g++-64 \
 %else
@@ -455,25 +456,17 @@ popd
   cp -fR doc/man/* %{buildroot}%{_mandir}/
 %endif
 
-if [ -d %{buildroot}%{qtdir}/doc ] ; then
-  rm -rf %{buildroot}%{qtdir}/doc/*
-else
-  mkdir -p %{buildroot}%{qtdir}/doc
-fi
-for x in html tutorial examples ; do
-  ln -s  ../../../share/doc/%{name}-devel-%{version}/$x %{buildroot}%{qtdir}/doc/
-done
-
 # clean up
 make -C tutorial clean
 make -C examples clean
 
-find examples -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
-find tutorial -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
-
 # Make sure the examples can be built outside the source tree.
 # Our binaries fulfill all requirements, so...
 perl -pi -e "s,^DEPENDPATH.*,,g;s,^REQUIRES.*,,g" `find examples -name "*.pro"`
+
+# don't include Makefiles of qt examples/tutorials
+find examples -name "Makefile" | xargs rm -f
+find tutorial -name "Makefile" | xargs rm -f
 
 for a in */*/Makefile ; do
   sed 's|^SYSCONF_MOC.*|SYSCONF_MOC		= %{qtdir}/bin/moc|' < $a > ${a}.2
@@ -555,10 +548,6 @@ cp -aR mkspecs %{buildroot}%{qtdir}
 # Patch qmake to use qt-mt unconditionally
 perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" %{buildroot}%{qtdir}/mkspecs/*/qmake.conf
 
-# don't include Makefiles of qt examples/tutorials
-find examples -name "Makefile" | xargs rm -f
-find tutorial -name "Makefile" | xargs rm -f
-
 rm -f %{buildroot}%{qtdir}/lib/*.la
 
 mkdir -p %{buildroot}/etc/ld.so.conf.d
@@ -623,7 +612,6 @@ rm -rf %{buildroot}
 %endif
 %{qtdir}/translations
 %{qtdir}/phrasebooks
-%{qtdir}/doc
 %{_bindir}/assistant*
 %{_bindir}/moc*
 %{_bindir}/uic*
@@ -643,7 +631,6 @@ rm -rf %{buildroot}
 %doc doc/html
 %doc examples
 %doc tutorial
-
 
 %if %{motif_extention}
 %post Xt -p /sbin/ldconfig
@@ -699,6 +686,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Feb 10 2005 Than Ngo <than@redhat.com> 3.3.4-3 
+- fix rpm file conflict
+
 * Wed Feb 02 2005 Than Ngo <than@redhat.com> 1:3.3.4-2
 - remove useless doc files #143949
 - fix build problem if installman is disable #146311
