@@ -18,7 +18,7 @@
 %define pkg_config 1
 
 # compress tutorial and examples
-%define compress 1
+%define compress 0
 
 # install manuals
 %define installman 1
@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 7
+Release: 8
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -694,6 +694,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Oct 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-8
+- don't compress examples/tutorial
+
 * Thu Oct 07 2004 Than Ngo <than@redhat.com> 1:3.3.3-7
 - fix build problem without qt immodule #134918
 
