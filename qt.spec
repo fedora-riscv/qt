@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 5
+Release: 6
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -695,6 +695,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Feb 28 2005 Than Ngo <than@redhat.com> 1:3.3.4-6
+- rebuilt against gcc-4
+
 * Tue Feb 22 2005 Than Ngo <than@redhat.com> 1:3.3.4-5
 - fix application crash when input methode not available (bug #140658)
 - remove .moc/.obj
