@@ -596,7 +596,6 @@ rm -rf %{buildroot}
 %{qtdir}/bin/qmake
 %{qtdir}/bin/qembed
 %{qtdir}/include
-%{qtdir}/doc
 %{qtdir}/mkspecs
 %{qtdir}/lib/libqt*.so
 %{qtdir}/lib/libqui.so
