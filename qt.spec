@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 8
+Release: 9
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -120,7 +120,7 @@ BuildRequires: libungif-devel
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: findutils
-BuildRequires: XFree86-devel >= 4.3
+BuildRequires: xorg-x11-devel >= 4.3
 BuildRequires: cups-devel
 BuildRequires: tar
 
@@ -157,7 +157,7 @@ Requires: %{name} = %{epoch}:%{version}-%{release}
 Summary: Development files and documentation for the Qt GUI toolkit.
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-Requires: XFree86-devel
+Requires: xorg-x11-devel
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
@@ -694,6 +694,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Oct 31 2004 Than Ngo <than@redhat.com> 1:3.3.3-9
+- require xorg-x11-devel instead XFree86-devel
+
 * Thu Oct 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-8
 - don't compress examples/tutorial
 
