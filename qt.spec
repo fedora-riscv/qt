@@ -1,6 +1,6 @@
 %define qtdir %{_libdir}/%{name}-%{version}
 %define type x11
-%define rel 7
+%define rel 7c
 %define beta 0
 Version: 2.3.1
 
@@ -26,7 +26,7 @@ Name: qt-%{type}
 Release: %{rel}
 Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}.tar.bz2
 %else
-Release: 1.%{beta}.%{rel}
+Release: 0.%{beta}.%{rel}
 Source: ftp://ftp.troll.no/qt/source/qt-%{file}-%{version}-%{beta}.tar.bz2
 %endif
 Source1: qt.fontguess
@@ -40,7 +40,8 @@ Patch51: http://www.kde.gr.jp/patch/qt-2.3.1-qclipboard-20010617.diff
 Patch52: http://www.kde.gr.jp/patch/qt-2.3.1-qstring-toDouble-i18n-20010617.diff
 Patch53: http://www.kde.gr.jp/patch/qt-2.3.1-qpsprinter-ja-20010620.diff
 Patch54: http://www.kde.gr.jp/patch/qt-2.3.1-showFullScreen-fix-20010624.diff
-Patch55: qt-2.3.1-varargs.patch
+# Simplified Chinese patches
+Patch60: qt-2.3.1-GB18030.patch
 # Patches 100-200 are for Qt-x11 only
 Patch100: qt-2.3.0-euro.patch
 Patch101: qt-2.3.1-aahack.patch
@@ -101,12 +102,22 @@ Window System. Qt is written in C++ and is fully object-oriented.
 This package contains the shared library needed to run Qt
 applications, as well as the README files for Qt.
 
+%if "%{type}" == "x11"
+%elseif "%{type}" == "embedded"
+%elseif "%{type}" == "nox"
+%endif
 %description devel
 The qt-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
 object compiler, the man pages, the HTML documentation, and example
 programs.
 
+%{_docdir}/%{name}-devel-%{version}/html/index.html, which
+%if "%{type}" == "x11"
+%elseif "%{type}" == "embedded"
+%elseif "%{type}" == "nox"
+%endif
+%if "%{type}" == "x11"
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 
@@ -143,7 +154,7 @@ rm -rf tools/designer/examples
 %patch52 -p1 -b .jp3
 %patch53 -p1 -b .jp4
 %patch54 -p1 -b .jp5
-%patch55 -p1 -b .varargs
+%patch60 -p1 -b .gb18030
 %endif
 
 %if "%{type}" == "x11"
@@ -463,12 +474,12 @@ fi
 %{qtdir}/bin/designer
 
 %changelog
-* Fri Oct 19 2001 Than Ngo <than@redhat.com> 2.3.1-7
-- fixed crash on ia64 with LANG=ja
-- fixed broken specfile
+* Thu Nov 29 2001 Leon Ho <llch@redhat.com> 2.3.1-7c
+- Fix a bug against GB18030
 
-* Wed Sep 12 2001 Tim Powers <timp@redhat.com>
-- rebuild with new gcc and binutils
+* Fri Oct 26 2001 Leon Ho <llch@redhat.com> 2.3.1-6c
+- Applied patch for GBK conversion subclasses for GB18030
+- Modified CIDFonts to suit ghostscript
 
 * Mon Aug 27 2001 Bernhard Rosenkraenzer <bero@redhat.com> 2.3.1-5
 - Build libqxt with -fPIC (#49960)
