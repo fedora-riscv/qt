@@ -1,10 +1,10 @@
-%define smp 0
+%define smp 1
 
 %define desktop_file 1
 %define redhat_artwork 1
 %define desktop_file_utils_version 0.2.93
 
-%define ver 3.3.1
+%define ver 3.3.2
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -14,6 +14,9 @@
 
 # pkg-config
 %define pkg_config 1
+
+# compress tutorial and examples
+%define compress 1
 
 # install manuals
 %define installman 1
@@ -73,7 +76,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 0.8
+Release: 2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -89,9 +92,9 @@ Patch3: qt-3.1.0-makefile.patch
 Patch4: qt-x11-free-3.3.1-mono.patch
 Patch5: qt-x11-free-3.3.0-strip.patch
 Patch6: qt-x11-free-3.3.0-freetype.patch
-Patch7: qt-x11-free-3.3.1-fontdatabase.patch
-Patch8: 0034-qclipboard_recursion_fix.patch
-Patch9: qt-3.x-Xft.patch
+Patch10: qt-x11-free-3.3.1-lib64.patch
+Patch12: qt-x11-free-3.3.1-qfontengine.patch
+Patch13: qt-x11-free-3.3.1-unknownscriptfix.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -112,6 +115,7 @@ BuildRequires: sed
 BuildRequires: findutils
 BuildRequires: XFree86-devel >= 4.3
 BuildRequires: cups-devel
+BuildRequires: tar
 
 %if %{motif_extention}
 BuildRequires: openmotif-devel >= 2.2.2
@@ -271,9 +275,9 @@ for the Qt toolkit.
 %patch4 -p1 -b .mono
 %patch5 -p1
 %patch6 -p1 -b .ft217
-%patch7 -p0 -b .fontdatabase
-%patch8 -p0 -b .qclipboard
-%patch9 -p1 -b .dpi
+%patch10 -p1 -b .lib64
+%patch12 -p1 -b .qfontengine
+%patch13 -p1 -b .unknownscript
 
 %build
 export QTDIR=`/bin/pwd`
@@ -300,8 +304,7 @@ perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 perl -pi -e "s,-O2,$INCLUDES $OPTFLAGS,g" mkspecs/*/qmake.conf
 
 # set correct lib path
-if [ "%{_lib}" = lib64 ] ; then
-   perl -pi -e "s,/usr/X11R6/lib,/usr/X11R6/%{_lib},g" mkspecs/*/qmake.conf
+if [ "%{_lib}" == "lib64" ] ; then
    perl -pi -e "s,/lib, /%{_lib},g" config.tests/unix/{checkavail,cups.test,nis.test}
 fi
 
@@ -326,6 +329,11 @@ fi
 # build shared, threaded (default) libraries
 echo yes | ./configure \
   -prefix $QTDEST \
+%if %{_lib} == lib64
+  -platform linux-g++-64 \
+%else
+  -platform linux-g++ \
+%endif
 %if %{debug}
   -debug \
 %else
@@ -538,9 +546,9 @@ done
 
 # make symbolic link to qt docdir
 if echo %{_docdir} | grep  share >& /dev/null ; then
-  ln -s  ../../share/doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
+  ln -s  ../../../share/doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
 else
-  ln -s  ../../doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
+  ln -s  ../../../doc/%{name}-devel-%{version} %{buildroot}%{qtdir}/doc
 fi
 
 # Add desktop file
@@ -589,6 +597,13 @@ EOF
    ln -s `echo $TARGET |sed -e "s,gcc,g++,"` mkspecs/default
 %endif
 
+pushd mkspecs
+if [ "%_lib" == "lib64" ]; then
+   ln -sf linux-g++-64 default
+else
+   ln -sf linux-g++ default
+fi
+popd
 cp -aR mkspecs %{buildroot}%{qtdir}
 
 # Patch qmake to use qt-mt unconditionally
@@ -599,6 +614,12 @@ find examples -name "Makefile" | xargs rm -f
 find tutorial -name "Makefile" | xargs rm -f
 
 rm -f %{buildroot}%{qtdir}/lib/*.la
+
+# Compress tutorials and examples
+%if %{compress}
+  tar cfvj examples.tar.bz2 tutorial examples 
+%endif
+
 
 %clean
 rm -rf %{buildroot}
@@ -677,8 +698,12 @@ fi
 %endif
 
 %doc doc/*
+%if %{compress}
+%doc examples.tar.bz2
+%else
 %doc examples
 %doc tutorial
+%endif
 
 %if %{motif_extention}
 %post Xt -p /sbin/ldconfig
@@ -740,6 +765,18 @@ fi
 %endif
 
 %changelog
+* Tue May 04 2004 Than Ngo <than@redhat.com> 1:3.3.2-2
+- fix broken symlink at qt document, bug #121652
+
+* Thu Apr 29 2004 Than Ngo <than@redhat.com> 3.3.2-1
+- update to 3.3.2
+
+* Thu Apr 22 2004 Than Ngo <than@redhat.com> 3.3.1-1
+- add cvs backport
+- fix lib64 issue, #121052
+- fix CJK font display, bug #121017, #120542, thanks to Leon Ho
+- compress tutorial/examples
+
 * Fri Mar 26 2004 Than Ngo <than@redhat.com> 3.3.1-0.8
 - fixed symlinks issue, #117572
 
