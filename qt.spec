@@ -30,8 +30,8 @@
 # buildodbc: Build ODBC plugins
 %define buildodbc 1
 
-# buildnomt: Build libs without threading support
-%define buildnomt 0
+# buildmt: Build libs with threading support
+%define buildmt 1
 
 # cups support
 %define cups 1
@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 0.5
+Release: 0.8
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -90,6 +90,8 @@ Patch4: qt-x11-free-3.3.1-mono.patch
 Patch5: qt-x11-free-3.3.0-strip.patch
 Patch6: qt-x11-free-3.3.0-freetype.patch
 Patch7: qt-x11-free-3.3.1-fontdatabase.patch
+Patch8: 0034-qclipboard_recursion_fix.patch
+Patch9: qt-3.x-Xft.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -269,7 +271,9 @@ for the Qt toolkit.
 %patch4 -p1 -b .mono
 %patch5 -p1
 %patch6 -p1 -b .ft217
-%patch7 -p1 -b .fontdatabase
+%patch7 -p0 -b .fontdatabase
+%patch8 -p0 -b .qclipboard
+%patch9 -p1 -b .dpi
 
 %build
 export QTDIR=`/bin/pwd`
@@ -351,7 +355,9 @@ echo yes | ./configure \
   -qt-style-motif \
   %{plugins} \
   -stl \
+%if %{buildmt}
   -thread \
+%endif
 %if %{cups}
   -cups \
 %endif
@@ -437,7 +443,9 @@ make $SMP_MFLAGS sub-tools
    -qt-style-motif \
    %{plugins} \
    -stl \
+%if "%{buildmt}" == "1"
    -thread \
+%endif
 %if "%{cups}" == "1"
    -cups \
 %endif
@@ -470,18 +478,6 @@ make install INSTALL_ROOT=%{buildroot}
 for i in findtr qt20fix qtrename140 ; do
    install bin/$i %{buildroot}%{qtdir}/bin/
 done
-
-sover=%{sover}
-if [ -e %{buildroot}%{qtdir}/lib/libqt.so.%{sover} ]; then
-   ln -sf libqt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%??}
-   ln -sf libqt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%%.*}
-   ln -sf libqt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so
-else
-   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.%{sover}
-   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%??}
-   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so.${sover%%.*}
-   ln -sf libqt-mt.so.%{sover} %{buildroot}%{qtdir}/lib/libqt.so
-fi
 
 %if ! %{pkg_config}
    rm -rf %{buildroot}%{_libdir}/pkgconfig
@@ -635,8 +631,7 @@ fi
 %dir %{qtdir}/lib
 %{qtdir}/bin/qtconfig
 %{_bindir}/qtconfig*
-%{qtdir}/lib/libqt.so.*
-%{qtdir}/lib/libqt-mt.so.*
+%{qtdir}/lib/libqt*.so.*
 %if ! %{redhat_artwork}
 %{qtdir}/etc/settings/qtrc
 %endif
@@ -657,8 +652,7 @@ fi
 %{qtdir}/include
 %{qtdir}/doc
 %{qtdir}/mkspecs
-%{qtdir}/lib/libqt.so
-%{qtdir}/lib/libqt-mt.so
+%{qtdir}/lib/libqt*.so
 %{qtdir}/lib/libqui.so
 %{qtdir}/lib/libeditor.a
 %{qtdir}/lib/libdesigner*.a
@@ -746,6 +740,16 @@ fi
 %endif
 
 %changelog
+* Fri Mar 26 2004 Than Ngo <than@redhat.com> 3.3.1-0.8
+- fixed symlinks issue, #117572
+
+* Thu Mar 25 2004 Than Ngo <than@redhat.com> 3.3.1-0.7
+- add Trolltech patch, fix dpi setting issue
+
+* Tue Mar 23 2004 Than Ngo <than@redhat.com> 3.3.1-0.6
+- add 0034-qclipboard_recursion_fix.patch from CVS, #118368
+- add better qt-x11-free-3.3.1-fontdatabase.patch
+
 * Sun Mar 07 2004 Than Ngo <than@redhat.com> 1:3.3.1-0.5
 - disable smpflags
 
