@@ -76,7 +76,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 2
+Release: 4
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -92,9 +92,9 @@ Patch3: qt-3.1.0-makefile.patch
 Patch4: qt-x11-free-3.3.1-mono.patch
 Patch5: qt-x11-free-3.3.0-strip.patch
 Patch6: qt-x11-free-3.3.0-freetype.patch
+Patch7: qt-x11-free-3.3.2-quiet.patch
 Patch10: qt-x11-free-3.3.1-lib64.patch
-Patch12: qt-x11-free-3.3.1-qfontengine.patch
-Patch13: qt-x11-free-3.3.1-unknownscriptfix.patch
+Patch11: qt-x11-free-3.3.2-misc.patch
 
 Prereq: /sbin/ldconfig
 Prereq: fileutils
@@ -275,9 +275,9 @@ for the Qt toolkit.
 %patch4 -p1 -b .mono
 %patch5 -p1
 %patch6 -p1 -b .ft217
+%patch7 -p1 -b .quiet
 %patch10 -p1 -b .lib64
-%patch12 -p1 -b .qfontengine
-%patch13 -p1 -b .unknownscript
+%patch11 -p1 -b .misc
 
 %build
 export QTDIR=`/bin/pwd`
@@ -765,6 +765,12 @@ fi
 %endif
 
 %changelog
+* Wed May 12 2004 Than Ngo <than@redhat.com> 1:3.3.2-4
+- backport some qt patches, Symbol font works again
+
+* Mon May 10 2004 Than Ngo <than@redhat.com> 1:3.3.2-3
+- fixed annoying warning
+
 * Tue May 04 2004 Than Ngo <than@redhat.com> 1:3.3.2-2
 - fix broken symlink at qt document, bug #121652
 
