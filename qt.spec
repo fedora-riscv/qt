@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 9
+Release: 10
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -694,6 +694,14 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 02 2004 Than Ngo <than@redhat.com> 1:3.3.3-10
+- rebuilt
+
+* Tue Nov 02 2004 Than Ngo <than@redhat.com> 1:3.3.3-9
+- remove unused patch
+- set XIMInputStyle=On The Spot
+- require xorg-x11-devel instead XFree86-devel
+
 * Sun Oct 31 2004 Than Ngo <than@redhat.com> 1:3.3.3-9
 - require xorg-x11-devel instead XFree86-devel
 
