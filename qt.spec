@@ -73,7 +73,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 4
+Release: 5
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -691,6 +691,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-5
+- increase release number to avoid cvs conflict
+
 * Tue Sep 14 2004 Than Ngo <than@redhat.com> 1:3.3.3-4
 - update new immodule patch
 - fix multilib problem #132516
