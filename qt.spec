@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 4
+Release: 5
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -102,11 +102,15 @@ Patch13: qt-x11-free-3.3.4-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch16: qt-x11-free-3.3.4-fullscreen.patch
 
-# feature patches
+# immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
 Patch51: qximinputcontext_x11.cpp.patch
 Patch52: qt-x11-free-3.3.3-immodule-quiet.patch
 Patch53: qt-x11-free-3.3.3-immodule-qinputcontext.patch
+Patch54: qt-x11-free-3.3.4-immodule-xim.patch
+
+# qt-copy patches
+Patch100: 0048-qclipboard_hack_80072.patch
 
 Prefix: %{qtdir}
 
@@ -302,7 +306,10 @@ for the Qt toolkit.
 %patch51 -p0 -b .qximinputcontext_x11
 %patch52 -p1 -b .quiet
 %patch53 -p1 -b .im
+%patch54 -p1 -b .xim
 %endif
+
+%patch100 -p0 -b .klipper
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -466,6 +473,8 @@ perl -pi -e "s,^DEPENDPATH.*,,g;s,^REQUIRES.*,,g" `find examples -name "*.pro"`
 
 # don't include Makefiles of qt examples/tutorials
 find examples -name "Makefile" | xargs rm -f
+find examples -name "*.obj" | xargs rm -rf
+find examples -name "*.moc" | xargs rm -rf
 find tutorial -name "Makefile" | xargs rm -f
 
 for a in */*/Makefile ; do
@@ -686,6 +695,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Feb 22 2005 Than Ngo <than@redhat.com> 1:3.3.4-5
+- fix application crash when input methode not available (bug #140658)
+- remove .moc/.obj
+- add qt-copy patch to fix KDE #80072
+
 * Fri Feb 11 2005 Than Ngo <than@redhat.com> 1:3.3.4-4
 - update qt-x11-immodule-unified patch
 
