@@ -333,7 +333,7 @@ OPTFLAGS="$RPM_OPT_FLAGS"
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 
 # set correct FLAGS
-perl -pi -e "s,-O2,$INCLUDES $OPTFLAGS,g" mkspecs/*/qmake.conf
+perl -pi -e "s|-O2|$INCLUDES $OPTFLAGS|g" mkspecs/*/qmake.conf
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -686,7 +686,7 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Thu Feb 10 2005 Than Ngo <than@redhat.com> 3.3.4-3 
+* Thu Feb 10 2005 Than Ngo <than@redhat.com> 1:3.3.4-3 
 - fix rpm file conflict
 
 * Wed Feb 02 2005 Than Ngo <than@redhat.com> 1:3.3.4-2
