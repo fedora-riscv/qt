@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 6
+Release: 7
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -101,6 +101,7 @@ Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.4-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch16: qt-x11-free-3.3.4-fullscreen.patch
+Patch17: qt-x11-free-3.3.4-gcc4.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
@@ -300,6 +301,7 @@ for the Qt toolkit.
 %patch13 -p1 -b .fonts
 %patch14 -p1 -b .gl
 %patch16 -p1 -b .size
+%patch17 -p1 -b .gcc4
 
 %if %{immodule}
 %patch50 -p1
@@ -695,6 +697,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Mar 01 2005 Than Ngo <than@redhat.com> 1:3.3.4-7
+- fix build problem with gcc4
+
 * Mon Feb 28 2005 Than Ngo <than@redhat.com> 1:3.3.4-6
 - rebuilt against gcc-4
 
