@@ -1,32 +1,41 @@
-Name: qt
+%define qtdir /usr/lib/qt-%{version}
+
 Summary: The shared library for the Qt GUI toolkit.
-Version: 2.2.0
-Release: 0.5.beta2
-Source0: ftp://ftp.troll.no/qt/source/qt-x11-%{version}-beta2.tar.gz
-# Source3 is generated from ftp://ftp.netscape.com/pub/sdk/plugin/unix/unix-sdk-3.0b5.tar.Z
-Source3: qt-nsplugin-files.tar.bz2
+Name: qt
+Version: 2.2.1
+Release: 5
+Source0: ftp://ftp.troll.no/qt/source/qt-x11-%{version}.tar.gz
 Patch0: qt-2.1.0-huge_val.patch
-Patch1: qt-2.2.0-b1-compile.patch
-Patch10: qt-2.1.1-connect.patch
-Patch11: qt-bug.patch
+Patch1: qt-2.2.0-gcc-296-broken.patch
+Epoch: 1
 URL: http://www.troll.no/
-Copyright: QPL
+Copyright: GPL
 Group: System Environment/Libraries
 Buildroot: %{_tmppath}/%{name}-root
 Prereq: /sbin/ldconfig
+Prefix: %{qtdir}
+BuildRequires: gcc-c++, libstdc++, libstdc++-devel, libmng-devel, XFree86-devel, glibc-devel, libjpeg-devel, libpng-devel, zlib-devel, libungif-devel, libmng-static
 ExcludeArch: ia64
 
 %package devel
 Summary: Development files and documentation for the Qt GUI toolkit.
 Group: Development/Libraries
-
-%package NSPlugin
-Summary: An add-on for creating Netscape plug-ins using the Qt GUI toolkit.
-Group: System Environment/Libraries
+Requires: %{name} = %{version}-%{release}
 
 %package Xt
 Summary: An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 Group: System Environment/Libraries
+Requires: %{name} = %{version}-%{release}
+
+%package static
+Summary: Version of the Qt GUI toolkit for static linking
+Group: Development/Libraries
+Requires: %{name}-devel = %{version}-%{release}
+
+%package designer
+Summary: Interface designer (IDE) for the Qt toolkit
+Group: Development/Tools
+Requires: %{name}-devel = %{version}-%{release}
 
 %description
 Qt is a GUI software toolkit which simplifies the task of writing and
@@ -40,41 +49,40 @@ applications, as well as the README files for Qt.
 The qt-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
 object compiler, the man pages, the HTML documentation and example
-programs.  See http://www.troll.no/products/qt.html for more
-information about Qt, or look at /usr/lib/qt/html/index.html, which
+programs.  See http://www.trolltech.com/products/qt.html for more
+information about Qt, or look at
+%{_docdir}/qt-devel-%{version}/html/index.html, which
 provides Qt documentation in HTML format.
 
 Install qt-devel if you want to develop GUI applications using the Qt
 toolkit.
 
-%description NSPlugin
-An add-on for developing Netscape plug-ins with the Qt GUI toolkit.
-
 %description Xt
 An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
 
+%description static
+The qt-static package contains the files necessary to link applications
+to the Qt GUI toolkit statically (rather than dynamically).
+Statically linked applications don't require the library to be installed
+on the system running the application.
+
+%description designer
+The qt-designer package contains an User Interface designer tool for the Qt
+toolkit.
+
 %prep
-%setup -q -n qt-2.2.0-beta2
-[ -e Makefile.cvs ] && make -f Makefile.cvs # this is for qt-copy in KDE CVS
+%setup -q
+[ -f Makefile.cvs ] && make -f Makefile.cvs # this is for qt-copy in KDE CVS
+rm -rf tools/designer/examples
 %patch0 -p0 -b .hugeval
-# %patch1 -p1 -b .bug
-# %patch10 -p1 -b .connect
-%patch11 -p1 -b .gcc296
+%patch1 -p1 -b .gcc296
 
 %build
 find . -type d -name CVS | xargs rm -rf
 export QTDIR=`/bin/pwd`
 OPTFLAGS=`echo $RPM_OPT_FLAGS |sed -e s/-fno-rtti//`
-OPTFLAGS=`echo $OPTFLAGS |sed -e s/-fno-exceptions//`
-%ifarch ia64
-OPTFLAGS=`echo $OPTFLAGS | sed -e s/-O2/-O0/`
-%endif
-perl -pi -e "s/-O2/$OPTFLAGS/g" configs/linux* configs/gnu* configs/freebsd*
 
-./configure -release -shared -gif -sm -system-zlib -system-libpng \
-	-system-jpeg -thread <<EOF
-yes
-EOF
+perl -pi -e "s/-O2/$OPTFLAGS -fno-exceptions/g" configs/linux* configs/gnu* configs/freebsd*
 
 if [ -x /usr/bin/getconf ] ; then
     NRPROC=$(/usr/bin/getconf _NPROCESSORS_ONLN)
@@ -83,26 +91,46 @@ if [ -x /usr/bin/getconf ] ; then
     fi
 else
     NRPROC=1
-fi  
+fi
 
-make # -j $NRPROC <-- enable this once the trolls fix their Makefiles
+# build static libraries first,
+# don't build examples, tools and tutorials with static libraries here
+./configure -release -static -gif -sm -system-libmng -system-zlib \
+	-system-libpng -system-jpeg -thread <<EOF
+yes
+EOF
 
-cd extensions/xt/src
-make -j $NRPROC
+make src-moc src-mt sub-src sub-tools -j $NRPROC
+make clean
+
+# build shared libraries
+./configure -release -shared -gif -sm -system-libmng -system-zlib \
+	-system-libpng -system-jpeg -thread <<EOF
+yes
+EOF
+
+make src-moc src-mt sub-src sub-tools -j $NRPROC
+make -C extensions/xt/src -j $NRPROC
 
 %install
 rm -rf $RPM_BUILD_ROOT
+export QTDIR=`/bin/pwd`
 
 mkdir -p $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/{bin,include,lib}
 mkdir -p $RPM_BUILD_ROOT%{_mandir}/{man1,man3}
 
+# strip binaries
 for i in bin/*; do
-	strip -R .comment $i || :
+  strip -R .comment $i || :
 done
+
+# install shared and static libraries
 install -m 755 bin/* $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/bin
 cp lib/libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
 cp lib/libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
 cp lib/libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
+cp lib/*.a $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
+
 ln -sf libqt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so.2
 ln -sf libqt.so.2 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so
 ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt-mt.so.2
@@ -110,14 +138,19 @@ ln -sf libqt-mt.so.%{version} $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt-
 ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so.1.0
 ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so.1
 ln -sf libqutil.so.1.0.0 $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqutil.so
+
+# install man pages
 cp -fR src/moc/moc.1 $RPM_BUILD_ROOT%{_mandir}/man1
 cp doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
 
-
-for i in libqxt.a; do
-  cp lib/$i $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib
+# Compensate for Qt's broken Makefiles
+for i in makeqpf mergetr msg2qm qconfig; do
+	make -C tools/$i
+	strip -R .comment tools/$i/$i
+	install -m 755 tools/$i/$i $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/bin
 done
 
+# clean up
 make -C tutorial clean
 make -C examples clean
 find examples -name Makefile | xargs perl -pi -e 's|\.\./\.\.|\$\(QTDIR\)|'
@@ -133,7 +166,8 @@ done
 rm -f include/qt_mac.h include/qt_windows.h
 rm -f include/jri.h include/jritypes.h include/npapi.h include/npupp.h
 
-cp -fR include/. $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/include
+cp -frL include/. $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/include || \
+	cp -fr include/. $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/include
 chmod -R a+r $RPM_BUILD_ROOT%{_libdir}/qt-%{version}/lib/libqt.so*
 
 mkdir -p $RPM_BUILD_ROOT/etc/profile.d
@@ -162,9 +196,16 @@ mv doc/man/man3/* $RPM_BUILD_ROOT%{_mandir}/man3
 rm -rf doc/man
 
 mkdir -p $RPM_BUILD_ROOT/usr/bin
-for i in moc uic designer; do
+for i in moc uic designer makeqpf mergetr msg2qm qconfig qt20fix qtrename140 findtr; do
 	ln -sf ../lib/qt-%{version}/bin/$i $RPM_BUILD_ROOT/usr/bin
 done
+
+# make symbolic link to qt docdir
+if echo %{_docdir} | grep  share >& /dev/null ; then
+  ln -s  ../../share/doc/qt-devel-%{version} $RPM_BUILD_ROOT/usr/lib/qt-%{version}/doc
+else
+  ln -s  ../../doc/qt-devel-%{version} $RPM_BUILD_ROOT/usr/lib/qt-%{version}/doc
+fi
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -192,7 +233,7 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc ANNOUNCE FAQ LICENSE.QPL PORTING README README.QT changes-2.1.0
+%doc ANNOUNCE FAQ LICENSE.QPL PORTING README* changes*
 %dir /usr/lib/qt-%{version}
 %dir /usr/lib/qt-%{version}/lib
 /usr/lib/qt-%{version}/lib/libqt.so.*
@@ -202,13 +243,31 @@ fi
 %files devel
 %defattr(-,root,root,-)
 %attr(0755,root,root) %config /etc/profile.d/*
-%{_libdir}/qt-%{version}/bin
+%{_libdir}/qt-%{version}/bin/moc
+%{_libdir}/qt-%{version}/bin/uic
+%{_libdir}/qt-%{version}/bin/findtr
+%{_libdir}/qt-%{version}/bin/qt20fix
+%{_libdir}/qt-%{version}/bin/qtrename140
+%{_libdir}/qt-%{version}/bin/makeqpf
+%{_libdir}/qt-%{version}/bin/mergetr
+%{_libdir}/qt-%{version}/bin/msg2qm
+%{_libdir}/qt-%{version}/bin/qconfig
 %{_libdir}/qt-%{version}/include
+%{_libdir}/qt-%{version}/doc
 %{_libdir}/qt-%{version}/lib/libqt.so
 %{_libdir}/qt-%{version}/lib/libqt-mt.so
 %{_libdir}/qt-%{version}/lib/libqutil.so
-/usr/bin/*
 %{_mandir}/*/*
+%{_bindir}/moc
+%{_bindir}/uic
+%{_bindir}/findtr
+%{_bindir}/qt20fix
+%{_bindir}/qtrename140
+%{_bindir}/makeqpf
+%{_bindir}/mergetr
+%{_bindir}/msg2qm
+%{_bindir}/qconfig
+
 %doc doc/*
 %doc examples
 %doc tutorial
@@ -217,7 +276,64 @@ fi
 %defattr(-,root,root,-)
 %{_libdir}/qt-%{version}/lib/libqxt.a
 
+%files static
+%defattr(-,root,root,-)
+%{_libdir}/qt-%{version}/lib/*.a
+
+%files designer
+%defattr(-,root,root,-)
+%{_bindir}/designer
+%{_libdir}/qt-%{version}/bin/designer
+
 %changelog
+* Wed Oct 18 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Add missing msg2qm, msgmerge, qconfig tools (Bug #18997), introduced
+  by broken Makefiles in base
+- fix up %%install so it works both with old-style and new-style fileutils
+  (fileutils <= 4.0z don't know about -L)
+
+* Fri Oct 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Disable exception handling; this speeds up KDE 2.x and reduces its
+  memory footprint by 20 MB.
+
+* Tue Oct 10 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- dereference symlinks in include
+
+* Sun Oct  8 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- fix -devel
+- update to the new version of 2.2.1 on trolltech.com; the initial tarball
+  contained broken docs
+
+* Thu Oct  5 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- 2.2.1
+
+* Mon Sep 25 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Add missing uic
+
+* Thu Sep 21 2000 Bernhard Rosenkraenzer <bero@redhat.com>
+- Move Qt designer to a different source RPM to get rid of a
+  circular dependency (kdelibs2->qt, qt->kdelibs2)
+- Enable MNG support
+- Don't compile (just include) examples and tutorials
+- move the static libraries to a separate package (qt-static).
+  They're HUGE, and most people won't ever need them.
+- clean up spec file
+- fix up dependencies (-devel requires base, -static requires devel,
+  Xt requires base)
+- add BuildRequires line
+
+* Tue Sep 12 2000 Than Ngo <than@redhat.com>
+- update release 2.2.0
+- changed copyright to GPL
+- added missing static libraries
+- made symbolic link for designer to load the help files correct
+- made designer and designer-kde2 as sub packages
+- added missing templates for designer
+- remove jakub patch, since the release 2.2.0 already 
+  contains this patch.
+- fixed qt again to compile with gcc-2.96
+- use make -j for building
+
 * Wed Aug 23 2000 Bernhard Rosenkraenzer <bero@redhat.com>
 - Work around compiler bugs (Patch from Jakub)
 - Use relative symlinks (Bug #16750)
