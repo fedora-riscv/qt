@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 10
+Release: 11
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -554,8 +554,10 @@ pushd mkspecs
 rm -fr default
 if [ "%_lib" == "lib64" ]; then
    ln -sf linux-g++-64 default
+   rm -f linux-g++-64/linux-g++-64
 else
    ln -sf linux-g++ default
+   rm -f linux-g++/linux-g++
 fi
 popd
 cp -aR mkspecs %{buildroot}%{qtdir}
@@ -701,6 +703,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Apr 13 2005 Than Ngo <than@redhat.com> 1:3.3.4-11
+- remove bad symlink #154086
+- built with PostgresSQL 8.0.2
+
 * Wed Mar 23 2005 Than Ngo <than@redhat.com> 1:3.3.4-10
 - add GtkStyle patch from Peter Backlund #141125
 
