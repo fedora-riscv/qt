@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 11
+Release: 12
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -550,21 +550,11 @@ contrast=7
 EOF
 %endif
 
-pushd mkspecs
-rm -fr default
-if [ "%_lib" == "lib64" ]; then
-   ln -sf linux-g++-64 default
-   rm -f linux-g++-64/linux-g++-64
-else
-   ln -sf linux-g++ default
-   rm -f linux-g++/linux-g++
-fi
-popd
-cp -aR mkspecs %{buildroot}%{qtdir}
-
 # Patch qmake to use qt-mt unconditionally
 perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" %{buildroot}%{qtdir}/mkspecs/*/qmake.conf
 
+# remove broken links
+rm -f %{buildroot}%{qtdir}/mkspecs/default/linux-g++*
 rm -f %{buildroot}%{qtdir}/lib/*.la
 
 mkdir -p %{buildroot}/etc/ld.so.conf.d
@@ -703,6 +693,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Apr 14 2005 Than Ngo <than@redhat.com> 1:3.3.4-12
+- fix bad symlink #154086
+
 * Wed Apr 13 2005 Than Ngo <than@redhat.com> 1:3.3.4-11
 - remove bad symlink #154086
 - built with PostgresSQL 8.0.2
