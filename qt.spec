@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 12
+Release: 13
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -335,12 +335,7 @@ export QTDEST=%{qtdir}
    sh ./make-symlinks.sh
 %endif
 
-# set some default FLAGS
-%ifarch ia64
-OPTFLAGS="-O0"
-%else
-OPTFLAGS="$RPM_OPT_FLAGS"
-%endif
+OPTFLAGS="$(echo $RPM_OPT_FLAGS | sed -e 's,-O2,-O0,')"
 
 # don't use rpath
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
@@ -693,6 +688,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed May 18 2005 Than Ngo <than@redhat.com> 1:3.3.4-13
+- rebuild
+
 * Thu Apr 14 2005 Than Ngo <than@redhat.com> 1:3.3.4-12
 - fix bad symlink #154086
 
