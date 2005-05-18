@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 13
+Release: 14
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -104,6 +104,7 @@ Patch16: qt-x11-free-3.3.4-fullscreen.patch
 Patch17: qt-x11-free-3.3.4-gcc4.patch
 Patch18: qt-x11-free-3.3.4-gcc4-buildkey.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
+Patch20: qt-x11-free-3.3.4-qtlocale.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
@@ -306,6 +307,7 @@ for the Qt toolkit.
 %patch17 -p1 -b .gcc4
 %patch18 -p1 -b .key
 %patch19 -p1 -b .gtk
+%patch20 -p1 -b .use_fcvt
 
 %if %{immodule}
 %patch50 -p1
@@ -335,13 +337,13 @@ export QTDEST=%{qtdir}
    sh ./make-symlinks.sh
 %endif
 
-OPTFLAGS="$(echo $RPM_OPT_FLAGS | sed -e 's,-O2,-O0,')"
+# OPTFLAGS="$(echo $RPM_OPT_FLAGS | sed -e 's,-O2,-O0,')"
 
 # don't use rpath
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 
 # set correct FLAGS
-perl -pi -e "s|-O2|$INCLUDES $OPTFLAGS|g" mkspecs/*/qmake.conf
+perl -pi -e "s|-O2|$INCLUDES $RPM_OPT_FLAGS|g" mkspecs/*/qmake.conf
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -688,6 +690,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed May 18 2005 Than Ngo <than@redhat.com> 1:3.3.4-14
+- apply patch to use ecvt, fcvt (thanks to Jakub)
+- fix a bug in printing of postscript #156977
+
 * Wed May 18 2005 Than Ngo <than@redhat.com> 1:3.3.4-13
 - rebuild
 
