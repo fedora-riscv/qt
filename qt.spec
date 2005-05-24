@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 14
+Release: 15
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -307,7 +307,7 @@ for the Qt toolkit.
 %patch17 -p1 -b .gcc4
 %patch18 -p1 -b .key
 %patch19 -p1 -b .gtk
-%patch20 -p1 -b .use_fcvt
+%patch20 -p1 -b .gcc4
 
 %if %{immodule}
 %patch50 -p1
@@ -690,6 +690,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue May 24 2005 Than Ngo <than@redhat.com> 1:3.3.4-15
+- add better fix for #156977, thanks to trolltech
+
 * Wed May 18 2005 Than Ngo <than@redhat.com> 1:3.3.4-14
 - apply patch to use ecvt, fcvt (thanks to Jakub)
 - fix a bug in printing of postscript #156977
