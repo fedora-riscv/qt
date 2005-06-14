@@ -112,6 +112,7 @@ Patch51: qximinputcontext_x11.cpp.patch
 Patch52: qt-x11-free-3.3.3-immodule-quiet.patch
 Patch53: qt-x11-free-3.3.3-immodule-qinputcontext.patch
 Patch54: qt-x11-free-3.3.4-immodule-xim.patch
+Patch55: qt-x11-free-3.3.4-imm-key.patch
 
 # qt-copy patches
 Patch100: 0048-qclipboard_hack_80072.patch
@@ -315,6 +316,7 @@ for the Qt toolkit.
 %patch52 -p1 -b .quiet
 %patch53 -p1 -b .im
 %patch54 -p1 -b .xim
+%patch55 -p1 -b .key
 %endif
 
 %patch100 -p0 -b .klipper
