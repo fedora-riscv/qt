@@ -692,6 +692,7 @@ rm -rf %{buildroot}
 %changelog
 * Tue May 24 2005 Than Ngo <than@redhat.com> 1:3.3.4-15
 - add better fix for #156977, thanks to trolltech
+- apply patch to fix keyReleaseEvent problem #156572
 
 * Wed May 18 2005 Than Ngo <than@redhat.com> 1:3.3.4-14
 - apply patch to use ecvt, fcvt (thanks to Jakub)
