@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 15
+Release: 16
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -694,7 +694,7 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Mon Jun 27 2005 Than Ngo <than@redhat.com> 3.3.4-15
+* Mon Jun 27 2005 Than Ngo <than@redhat.com> 1:3.3.4-15
 - apply patch to fix Rendering for Punjabii, thanks to Trolltech #156504
 
 * Tue May 24 2005 Than Ngo <than@redhat.com> 1:3.3.4-15
