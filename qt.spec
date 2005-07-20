@@ -82,7 +82,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 16
+Release: 17
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -106,6 +106,7 @@ Patch18: qt-x11-free-3.3.4-gcc4-buildkey.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
 Patch20: qt-x11-free-3.3.4-qtlocale.patch
 Patch21: qt-x11-free-3.3.3-Punjabi.patch
+Patch22: qt-x11-free-3.3.4-assistant_de.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
@@ -311,6 +312,7 @@ for the Qt toolkit.
 %patch19 -p1 -b .gtk
 %patch20 -p1 -b .gcc4
 %patch21 -p1 -b .punjabi
+%patch22 -p1 -b .trans
 
 %if %{immodule}
 %patch50 -p1
@@ -694,7 +696,10 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Mon Jun 27 2005 Than Ngo <than@redhat.com> 1:3.3.4-15
+* Wed Jul 20 2005 Than Ngo <than@redhat.com> 1:3.3.4-17
+- fix German translation of the Qt Assistent #161558
+
+* Mon Jun 27 2005 Than Ngo <than@redhat.com> 1:3.3.4-16
 - apply patch to fix Rendering for Punjabii, thanks to Trolltech #156504
 
 * Tue May 24 2005 Than Ngo <than@redhat.com> 1:3.3.4-15
