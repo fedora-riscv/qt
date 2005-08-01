@@ -37,6 +37,9 @@
 # cups support
 %define cups 1
 
+# visibility
+%define enable_hidden_visibility 1
+
 %define debug 0
 
 %define sover %{ver}
@@ -82,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 17
+Release: 18
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -107,6 +110,7 @@ Patch19: qt-3.3.3-gtkstyle.patch
 Patch20: qt-x11-free-3.3.4-qtlocale.patch
 Patch21: qt-x11-free-3.3.3-Punjabi.patch
 Patch22: qt-x11-free-3.3.4-assistant_de.patch
+Patch23: qt-visibility.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
@@ -313,6 +317,10 @@ for the Qt toolkit.
 %patch20 -p1 -b .gcc4
 %patch21 -p1 -b .punjabi
 %patch22 -p1 -b .trans
+
+%if %{enable_hidden_visibility}
+%patch23 -p1 -b .hidden_visibility
+%endif
 
 %if %{immodule}
 %patch50 -p1
@@ -696,6 +704,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Aug 01 2005 Than Ngo <than@redhat.com> 1:3.3.4-18
+- add visibility patch
+
 * Wed Jul 20 2005 Than Ngo <than@redhat.com> 1:3.3.4-17
 - fix German translation of the Qt Assistent #161558
 
