@@ -38,7 +38,7 @@
 %define cups 1
 
 # visibility
-%define enable_hidden_visibility 1
+%define enable_hidden_visibility 0
 
 %define debug 0
 
@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 18
+Release: 19
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -103,13 +103,7 @@ Patch8: qt-x11-free-3.3.3-qembed.patch
 Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.4-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
-Patch16: qt-x11-free-3.3.4-fullscreen.patch
-Patch17: qt-x11-free-3.3.4-gcc4.patch
-Patch18: qt-x11-free-3.3.4-gcc4-buildkey.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
-Patch20: qt-x11-free-3.3.4-qtlocale.patch
-Patch21: qt-x11-free-3.3.3-Punjabi.patch
-Patch22: qt-x11-free-3.3.4-assistant_de.patch
 Patch23: qt-visibility.patch
 
 # immodule patches
@@ -121,7 +115,18 @@ Patch54: qt-x11-free-3.3.4-immodule-xim.patch
 Patch55: qt-x11-free-3.3.4-imm-key.patch
 
 # qt-copy patches
-Patch100: 0048-qclipboard_hack_80072.patch
+Patch100: 0038-dragobject-dont-prefer-unknown.patch
+Patch101: 0047-fix-kmenu-width.diff
+Patch102: 0048-qclipboard_hack_80072.patch
+Patch103: 0051-qtoolbar_77047.patch
+Patch104: 0062-qlistbox-crash.patch
+
+# upstream patches
+Patch200: qt-x11-free-3.3.4-assistant_de.patch
+Patch201: qt-x11-free-3.3.3-Punjabi.patch
+patch202: qt-x11-free-3.3.4-gcc4-buildkey.patch
+Patch203: qt-x11-free-3.3.4-qtlocale.patch
+Patch204: qt-x11-free-3.3.4-fullscreen.patch
 
 Prefix: %{qtdir}
 
@@ -310,13 +315,7 @@ for the Qt toolkit.
 %patch12 -p1 -b .nostdlib
 %patch13 -p1 -b .fonts
 %patch14 -p1 -b .gl
-%patch16 -p1 -b .size
-%patch17 -p1 -b .gcc4
-%patch18 -p1 -b .key
 %patch19 -p1 -b .gtk
-%patch20 -p1 -b .gcc4
-%patch21 -p1 -b .punjabi
-%patch22 -p1 -b .trans
 
 %if %{enable_hidden_visibility}
 %patch23 -p1 -b .hidden_visibility
@@ -704,6 +703,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 10 2005 Than Ngo <than@redhat.com> 1:3.3.4-19
+- apply patch to fix wrong K menu width, #165510
+
 * Mon Aug 01 2005 Than Ngo <than@redhat.com> 1:3.3.4-18
 - add visibility patch
 
