@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 19
+Release: 20
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -330,7 +330,17 @@ for the Qt toolkit.
 %patch55 -p1 -b .key
 %endif
 
-%patch100 -p0 -b .klipper
+%patch100 -p0 -b .0038-dragobject-dont-prefer-unknown
+%patch101 -p0 -b .0047-fix-kmenu-width
+%patch102 -p0 -b .0048-qclipboard_hack_80072
+%patch103 -p0 -b .0051-qtoolbar_77047
+%patch104 -p0 -b .0062-qlistbox-crash
+
+%patch200 -p1 -b .assistant-translation
+%patch201 -p1 -b .Punjabi
+%patch202 -p1 -b .gcc4-buildkey
+%patch203 -p1 -b .qtlocale
+%patch204 -p1 -b .fullscreen
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -703,6 +713,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 10 2005 Than Ngo <than@redhat.com> 1:3.3.4-20
+- apply missing patches
+
 * Wed Aug 10 2005 Than Ngo <than@redhat.com> 1:3.3.4-19
 - apply patch to fix wrong K menu width, #165510
 
