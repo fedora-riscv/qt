@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 20
+Release: 21
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -127,6 +127,7 @@ Patch201: qt-x11-free-3.3.3-Punjabi.patch
 patch202: qt-x11-free-3.3.4-gcc4-buildkey.patch
 Patch203: qt-x11-free-3.3.4-qtlocale.patch
 Patch204: qt-x11-free-3.3.4-fullscreen.patch
+Patch205: qt-x11-free-3.3.4-gcc4.patch
 
 Prefix: %{qtdir}
 
@@ -341,6 +342,7 @@ for the Qt toolkit.
 %patch202 -p1 -b .gcc4-buildkey
 %patch203 -p1 -b .qtlocale
 %patch204 -p1 -b .fullscreen
+%patch205 -p1 -b .gcc4
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -713,6 +715,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Aug 15 2005 Than Ngo <than@redhat.com> 1:3.3.4-21
+- fix gcc4 build problem
+
 * Wed Aug 10 2005 Than Ngo <than@redhat.com> 1:3.3.4-20
 - apply missing patches
 
