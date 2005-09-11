@@ -8,7 +8,7 @@
 
 %define immodule 1
 
-%define ver 3.3.4
+%define ver 3.3.5
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 22
+Release: 1
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -104,31 +104,28 @@ Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.4-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
+Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
 Patch23: qt-visibility.patch
 
 # immodule patches
-Patch50: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
-Patch51: qximinputcontext_x11.cpp.patch
-Patch52: qt-x11-free-3.3.3-immodule-quiet.patch
-Patch53: qt-x11-free-3.3.3-immodule-qinputcontext.patch
-Patch54: qt-x11-free-3.3.4-immodule-xim.patch
-Patch55: qt-x11-free-3.3.4-imm-key.patch
+Patch50: qt-x11-immodule-unified-qt3.3.4-20041203-pre.patch
+Patch51: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
+Patch52: qt-x11-immodule-unified-qt3.3.4-20041203-post.patch
+Patch53: qximinputcontext_x11.cpp.patch
+Patch54: qt-x11-free-3.3.3-immodule-quiet.patch
+Patch55: qt-x11-free-3.3.3-immodule-qinputcontext.patch
+Patch56: qt-x11-free-3.3.4-immodule-xim.patch
+Patch57: qt-x11-free-3.3.4-imm-key.patch
 
 # qt-copy patches
 Patch100: 0038-dragobject-dont-prefer-unknown.patch
 Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0051-qtoolbar_77047.patch
-Patch104: 0062-qlistbox-crash.patch
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-assistant_de.patch
-Patch201: qt-x11-free-3.3.3-Punjabi.patch
-patch202: qt-x11-free-3.3.4-gcc4-buildkey.patch
-Patch203: qt-x11-free-3.3.4-qtlocale.patch
-Patch204: qt-x11-free-3.3.4-fullscreen.patch
-Patch205: qt-x11-free-3.3.4-gcc4.patch
-Patch206: qt-x11-free-3.3.4-qlistview-99428.patch
+Patch201: qt-x11-free-3.3.4-fullscreen.patch
 
 Prefix: %{qtdir}
 
@@ -318,33 +315,31 @@ for the Qt toolkit.
 %patch13 -p1 -b .fonts
 %patch14 -p1 -b .gl
 %patch19 -p1 -b .gtk
+%patch20 -p1 -b .gcc4-buildkey
 
 %if %{enable_hidden_visibility}
 %patch23 -p1 -b .hidden_visibility
 %endif
 
 %if %{immodule}
-%patch50 -p1
-%patch51 -p0 -b .qximinputcontext_x11
-%patch52 -p1 -b .quiet
-%patch53 -p1 -b .im
-%patch54 -p1 -b .xim
-%patch55 -p1 -b .key
+bunzip2 -c %{_sourcedir}/qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2 > qt-x11-immodule-unified-qt3.3.4-20041203.diff
+patch -p0 < %{_sourcedir}/qt-x11-immodule-unified-qt3.3.4-20041203-pre.patch
+patch -p1 < qt-x11-immodule-unified-qt3.3.4-20041203.diff
+%patch52 -p1 -b .immodule-unified-qt3.3.4-20041203-post
+%patch53 -p0 -b .qximinputcontext_x11
+%patch54 -p1 -b .quiet
+%patch55 -p1 -b .im
+%patch56 -p1 -b .xim
+%patch57 -p1 -b .key
 %endif
 
 %patch100 -p0 -b .0038-dragobject-dont-prefer-unknown
 %patch101 -p0 -b .0047-fix-kmenu-width
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0051-qtoolbar_77047
-%patch104 -p0 -b .0062-qlistbox-crash
 
 %patch200 -p1 -b .assistant-translation
-%patch201 -p1 -b .Punjabi
-%patch202 -p1 -b .gcc4-buildkey
-%patch203 -p1 -b .qtlocale
-%patch204 -p1 -b .fullscreen
-%patch205 -p1 -b .gcc4
-%patch206 -p1 -b .qlistview-99428
+%patch201 -p1 -b .fullscreen
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -398,7 +393,7 @@ echo yes | ./configure \
   -system-libpng \
   -system-libmng \
   -system-libjpeg \
-  -no-g++-exceptions \
+  -no-exceptions \
   -enable-styles \
   -enable-tools \
   -enable-kernel \
@@ -422,9 +417,6 @@ echo yes | ./configure \
   -cups \
 %endif
   -sm \
-%if "%{xfree_xinerame}" == "0"
-  -L`pwd`/Xinerama \
-%endif
   -xinerama \
   -xrender \
   -xkb \
@@ -513,7 +505,7 @@ for a in */*/Makefile ; do
 done
 
 mkdir -p %{buildroot}/etc/profile.d
-cat > %{buildroot}/etc/profile.d/qt.sh <<EOF
+cat > %{buildroot}/etc/profile.d/%{name}.sh <<EOF
 # Qt initialization script (sh)
 if [ -z "\$QTDIR" ] ; then
 	QTDIR="%{qtdir}"
@@ -521,7 +513,7 @@ fi
 export QTDIR
 EOF
 
-cat > %{buildroot}/etc/profile.d/qt.csh <<EOF
+cat > %{buildroot}/etc/profile.d/%{name}.csh <<EOF
 # Qt initialization script (csh)
 if ( \$?QTDIR ) then
          exit
@@ -539,10 +531,10 @@ done
 # Add desktop file
 %if %{desktop_file}
    mkdir -p %{buildroot}%{_datadir}/applications
-   cat >%{buildroot}%{_datadir}/applications/qt-designer.desktop <<EOF
+   cat >%{buildroot}%{_datadir}/applications/%{name}-designer.desktop <<EOF
 %else
    mkdir -p %{buildroot}%{_datadir}/applnk/Development
-   cat >%{buildroot}%{_datadir}/applnk/Development/designer.desktop <<EOF
+   cat >%{buildroot}%{_datadir}/applnk/Development/%{name}-designer.desktop <<EOF
 %endif
 [Desktop Entry]
 BinaryPattern=designer;
@@ -717,6 +709,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Sep 11 2005 Than Ngo <than@redhat.com> 1:3.3.5-1
+- update to 3.3.5
+
 * Mon Aug 22 2005 Than Ngo <than@redhat.com> 1:3.3.4-22
 - apply upstream patch to fix kmail folder selector #166430
 
