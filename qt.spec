@@ -93,6 +93,7 @@ Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Url: http://www.troll.no
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source1: qtrc
+Source2: assistant_de.qm
 
 Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
@@ -344,6 +345,9 @@ patch -p1 < qt-x11-immodule-unified-qt3.3.4-20041203.diff
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
 mv doc/man/man3/qdial.3qt_ doc/man/man3/qdial.3qt
+
+# de translation
+cp %{SOURCE2} tools/assistant/
 
 %build
 export QTDIR=`/bin/pwd`
@@ -709,6 +713,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 20 2005 Than Ngo <than@redhat.com> 1:3.3.5-2
+- German translation of the Qt Assistent #161558
+
 * Sun Sep 11 2005 Than Ngo <than@redhat.com> 1:3.3.5-1
 - update to 3.3.5
 
