@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 1
+Release: 2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -107,6 +107,7 @@ Patch14: qt-x11-free-3.3.3-gl.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
 Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
 Patch23: qt-visibility.patch
+Patch24: qt-x11-free-3.3.5-uic.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.4-20041203-pre.patch
@@ -321,6 +322,8 @@ for the Qt toolkit.
 %if %{enable_hidden_visibility}
 %patch23 -p1 -b .hidden_visibility
 %endif
+
+%patch24 -p1 -b .uic
 
 %if %{immodule}
 bunzip2 -c %{_sourcedir}/qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2 > qt-x11-immodule-unified-qt3.3.4-20041203.diff
@@ -715,6 +718,7 @@ rm -rf %{buildroot}
 %changelog
 * Tue Sep 20 2005 Than Ngo <than@redhat.com> 1:3.3.5-2
 - German translation of the Qt Assistent #161558
+- add uic workaround
 
 * Sun Sep 11 2005 Than Ngo <than@redhat.com> 1:3.3.5-1
 - update to 3.3.5
