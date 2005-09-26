@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 2
+Release: 3
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -516,8 +516,10 @@ cat > %{buildroot}/etc/profile.d/%{name}.sh <<EOF
 # Qt initialization script (sh)
 if [ -z "\$QTDIR" ] ; then
 	QTDIR="%{qtdir}"
+	QTINC="%{qtdir}/include"
+	QTLIB="%{qtdir}/lib"
 fi
-export QTDIR
+export QTDIR QTINC QTLIB
 EOF
 
 cat > %{buildroot}/etc/profile.d/%{name}.csh <<EOF
@@ -526,6 +528,8 @@ if ( \$?QTDIR ) then
          exit
 endif
 setenv QTDIR %{qtdir}
+setenv QTINC %{qtdir}/include
+setenv QTLIB %{qtdir}/lib
 EOF
 
 chmod 755 %{buildroot}/etc/profile.d/*
@@ -716,6 +720,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Sep 26 2005 Than Ngo <than@redhat.com> 1:3.3.5-3 
+- export QTINC/QTLIB, thanks to Rex Dieter (#169132)
+
 * Tue Sep 20 2005 Than Ngo <than@redhat.com> 1:3.3.5-2
 - German translation of the Qt Assistent #161558
 - add uic workaround
