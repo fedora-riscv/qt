@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 3
+Release: 4
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -128,6 +128,7 @@ Patch103: 0051-qtoolbar_77047.patch
 # upstream patches
 Patch200: qt-x11-free-3.3.4-assistant_de.patch
 Patch201: qt-x11-free-3.3.4-fullscreen.patch
+Patch202: qt-x11-free-3.3.5-warning.patch
 
 Prefix: %{qtdir}
 
@@ -344,6 +345,7 @@ patch -p1 < qt-x11-immodule-unified-qt3.3.4-20041203.diff
 
 %patch200 -p1 -b .assistant-translation
 %patch201 -p1 -b .fullscreen
+%patch202 -p1 -b .warning
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -720,6 +722,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Sep 27 2005 Than Ngo <than@redhat.com> 1:3.3.5-4
+- apply patch to fix gcc warnings
+
 * Mon Sep 26 2005 Than Ngo <than@redhat.com> 1:3.3.5-3 
 - export QTINC/QTLIB, thanks to Rex Dieter (#169132)
 
