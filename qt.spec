@@ -323,7 +323,7 @@ for the Qt toolkit.
 %patch24 -p1 -b .uic
 
 %if %{immodule}
-%patch50 -p1 -b .im
+%patch50 -p1
 %patch51 -p1 -b .build
 %patch54 -p1 -b .quiet
 %patch57 -p1 -b .key
