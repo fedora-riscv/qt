@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 4
+Release: 5
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -110,13 +110,9 @@ Patch23: qt-visibility.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
 
 # immodule patches
-Patch50: qt-x11-immodule-unified-qt3.3.4-20041203-pre.patch
-Patch51: qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2
-Patch52: qt-x11-immodule-unified-qt3.3.4-20041203-post.patch
-Patch53: qximinputcontext_x11.cpp.patch
-Patch54: qt-x11-free-3.3.3-immodule-quiet.patch
-Patch55: qt-x11-free-3.3.3-immodule-qinputcontext.patch
-Patch56: qt-x11-free-3.3.4-immodule-xim.patch
+Patch50: qt-x11-immodule-unified-qt3.3.5-20051012.diff.bz2
+Patch51: qt-x11-immodule-unified-qt3.3.5-20051012-build.patch
+Patch54: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 Patch57: qt-x11-free-3.3.4-imm-key.patch
 
 # qt-copy patches
@@ -327,14 +323,9 @@ for the Qt toolkit.
 %patch24 -p1 -b .uic
 
 %if %{immodule}
-bunzip2 -c %{_sourcedir}/qt-x11-immodule-unified-qt3.3.4-20041203.diff.bz2 > qt-x11-immodule-unified-qt3.3.4-20041203.diff
-patch -p0 < %{_sourcedir}/qt-x11-immodule-unified-qt3.3.4-20041203-pre.patch
-patch -p1 < qt-x11-immodule-unified-qt3.3.4-20041203.diff
-%patch52 -p1 -b .immodule-unified-qt3.3.4-20041203-post
-%patch53 -p0 -b .qximinputcontext_x11
+%patch50 -p1 -b .im
+%patch51 -p1 -b .build
 %patch54 -p1 -b .quiet
-%patch55 -p1 -b .im
-%patch56 -p1 -b .xim
 %patch57 -p1 -b .key
 %endif
 
@@ -722,6 +713,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Oct 13 2005 Than Ngo <than@redhat.com> 1:3.3.5-5
+- update qt-x11-immodule-unified-qt3.3.5-20051012
+- disable some debug messages
+- apply patch to fix build problem with the new immodule patch
+
 * Tue Sep 27 2005 Than Ngo <than@redhat.com> 1:3.3.5-4
 - apply patch to fix gcc warnings
 
