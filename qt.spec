@@ -111,7 +111,6 @@ Patch24: qt-x11-free-3.3.5-uic.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.5-20051018.diff.bz2
-Patch51: qt-x11-immodule-unified-qt3.3.5-20051012-build.patch
 Patch54: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 Patch57: qt-x11-free-3.3.4-imm-key.patch
 
@@ -324,7 +323,6 @@ for the Qt toolkit.
 
 %if %{immodule}
 %patch50 -p1
-%patch51 -p1 -b .build
 %patch54 -p1 -b .quiet
 %patch57 -p1 -b .key
 %endif
