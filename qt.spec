@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 5
+Release: 6
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -110,7 +110,7 @@ Patch23: qt-visibility.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
 
 # immodule patches
-Patch50: qt-x11-immodule-unified-qt3.3.5-20051012.diff.bz2
+Patch50: qt-x11-immodule-unified-qt3.3.5-20051018.diff.bz2
 Patch51: qt-x11-immodule-unified-qt3.3.5-20051012-build.patch
 Patch54: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 Patch57: qt-x11-free-3.3.4-imm-key.patch
@@ -713,6 +713,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Oct 24 2005 Than Ngo <than@redhat.com> 3.3.5-6
+- update qt-x11-immodule-unified-qt3.3.5-20051018.diff
+- remove unneeded qt-x11-immodule-unified-qt3.3.5-20051012-build.patch
+
 * Thu Oct 13 2005 Than Ngo <than@redhat.com> 1:3.3.5-5
 - update qt-x11-immodule-unified-qt3.3.5-20051012
 - disable some debug messages
