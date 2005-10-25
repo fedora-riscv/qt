@@ -85,18 +85,6 @@ diff -Nur qt-x11-free-3.3.5.orig/plugins/src/inputmethods/simple/qsimpleinputcon
  
      // match exactly
      commitChar( p->value );
-diff -Nur qt-x11-free-3.3.5.orig/plugins/src/inputmethods/xim/qximinputcontext_x11.cpp qt-x11-free-3.3.5/plugins/src/inputmethods/xim/qximinputcontext_x11.cpp
---- qt-x11-free-3.3.5.orig/plugins/src/inputmethods/xim/qximinputcontext_x11.cpp	2005-10-13 16:09:36.000000000 +0200
-+++ qt-x11-free-3.3.5/plugins/src/inputmethods/xim/qximinputcontext_x11.cpp	2005-10-13 16:09:31.000000000 +0200
-@@ -742,7 +742,7 @@
- 
- void QXIMInputContext::close( const QString &errMsg )
- {
--    qDebug( errMsg );
-+    // qDebug( errMsg );
-     emit deletionRequested();
- }
- 
 diff -Nur qt-x11-free-3.3.5.orig/src/kernel/qinputcontext.cpp qt-x11-free-3.3.5/src/kernel/qinputcontext.cpp
 --- qt-x11-free-3.3.5.orig/src/kernel/qinputcontext.cpp	2005-10-13 16:09:37.000000000 +0200
 +++ qt-x11-free-3.3.5/src/kernel/qinputcontext.cpp	2005-10-13 16:09:31.000000000 +0200
@@ -123,4 +111,24 @@ diff -Nur qt-x11-free-3.3.5.orig/src/kernel/qinputcontext.cpp qt-x11-free-3.3.5/
 +		(const char*)text.local8Bit() ); */
  	event = new QIMComposeEvent( type, text, cursorPosition, selLength );
      }
+ 
+--- qt-x11-free-3.3.5/plugins/src/inputmethods/xim/qximinputcontext_x11.cpp.quiet	2005-10-13 19:00:56.000000000 +0200
++++ qt-x11-free-3.3.5/plugins/src/inputmethods/xim/qximinputcontext_x11.cpp	2005-10-25 15:36:43.000000000 +0200
+@@ -356,7 +356,7 @@
+ #if !defined(QT_NO_XIM)
+     fontsetRefCount++;
+     if (! qt_xim) {
+-	qWarning("QInputContext: no input method context available");
++	// qWarning("QInputContext: no input method context available");
+ 	return;
+     }
+ 
+@@ -742,7 +742,7 @@
+ 
+ void QXIMInputContext::close( const QString &errMsg )
+ {
+-    qDebug( errMsg );
++    // qDebug( errMsg );
+     emit deletionRequested();
+ }
  

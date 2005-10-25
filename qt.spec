@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 6
+Release: 7
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -711,7 +711,10 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Mon Oct 24 2005 Than Ngo <than@redhat.com> 3.3.5-6
+* Tue Oct 25 2005 Than Ngo <than@redhat.com> 1:3.3.5-7
+- update qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
+
+* Mon Oct 24 2005 Than Ngo <than@redhat.com> 1:3.3.5-6
 - update qt-x11-immodule-unified-qt3.3.5-20051018.diff
 - remove unneeded qt-x11-immodule-unified-qt3.3.5-20051012-build.patch
 
