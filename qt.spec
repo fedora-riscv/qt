@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 8
+Release: 9
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -387,7 +387,8 @@ perl -pi -e "s|-O2|$INCLUDES $RPM_OPT_FLAGS|g" mkspecs/*/qmake.conf
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
-   perl -pi -e "s,/lib, /%{_lib},g" config.tests/unix/{checkavail,cups.test,nis.test}
+  perl -pi -e "s,/usr/lib /lib,/usr/%{_lib} /%{_lib},g" config.tests/{unix,x11}/*.test
+  perl -pi -e "s,/lib /usr/lib,/%{_lib} /usr/%{_lib},g" config.tests/{unix,x11}/*.test
 fi
 
 # build shared, threaded (default) libraries
@@ -731,6 +732,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 08 2005 Than Ngo <than@redhat.com> 1:3.3.5-9 
+- fix for modular X
+
 * Tue Nov 08 2005 Than Ngo <than@redhat.com> 1:3.3.5-8
 - get rid of xorg-x11-devel, fix for modular X
 
