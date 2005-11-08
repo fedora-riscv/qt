@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 7
+Release: 8
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -144,9 +144,19 @@ BuildRequires: libungif-devel
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: findutils
-BuildRequires: xorg-x11-devel
 BuildRequires: cups-devel
 BuildRequires: tar
+BuildRequires: freetype-devel
+BuildRequires: fontconfig-devel
+BuildRequires: libXrender-devel
+BuildRequires: libXrandr-devel
+BuildRequires: libXcursor-devel
+BuildRequires: libXinerama-devel
+BuildRequires: libXft-devel
+BuildRequires: libXext-devel
+BuildRequires: libX11-devel
+BuildRequires: libSM-devel
+BuildRequires: libICE-devel
 
 %if %{motif_extention}
 BuildRequires: openmotif-devel >= 2.2.2
@@ -181,7 +191,17 @@ Requires: %{name} = %{epoch}:%{version}-%{release}
 Summary: Development files and documentation for the Qt GUI toolkit.
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-Requires: xorg-x11-devel
+Requires: freetype-devel
+Requires: fontconfig-devel
+Requires: libXrender-devel
+Requires: libXrandr-devel
+Requires: libXcursor-devel
+Requires: libXinerama-devel
+Requires: libXft-devel
+Requires: libXext-devel
+Requires: libX11-devel
+Requires: libSM-devel
+Requires: libICE-devel
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
@@ -711,6 +731,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Nov 08 2005 Than Ngo <than@redhat.com> 1:3.3.5-8
+- get rid of xorg-x11-devel, fix for modular X
+
 * Tue Oct 25 2005 Than Ngo <than@redhat.com> 1:3.3.5-7
 - update qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 
