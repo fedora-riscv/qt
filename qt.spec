@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 9
+Release: 10
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -119,6 +119,7 @@ Patch100: 0038-dragobject-dont-prefer-unknown.patch
 Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0051-qtoolbar_77047.patch
+Patch104: 0056-khotkeys_input_84434.patch
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-assistant_de.patch
@@ -351,6 +352,7 @@ for the Qt toolkit.
 %patch101 -p0 -b .0047-fix-kmenu-width
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0051-qtoolbar_77047
+%patch104 -p0 -b .0056-khotkeys_input_84434
 
 %patch200 -p1 -b .assistant-translation
 %patch201 -p1 -b .fullscreen
@@ -732,6 +734,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Sun Nov 13 2005 Than Ngo <than@redhat.com> 1:3.3.5-10
+- workaround for keyboard input action in KHotKeys
+
 * Tue Nov 08 2005 Than Ngo <than@redhat.com> 1:3.3.5-9 
 - fix for modular X
 
