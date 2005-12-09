@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 10
+Release: 10.1
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -734,6 +734,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
+- rebuilt
+
 * Sun Nov 13 2005 Than Ngo <than@redhat.com> 1:3.3.5-10
 - workaround for keyboard input action in KHotKeys
 
