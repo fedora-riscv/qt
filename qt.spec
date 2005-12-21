@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 10.1
+Release: 11
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -158,6 +158,8 @@ BuildRequires: libXext-devel
 BuildRequires: libX11-devel
 BuildRequires: libSM-devel
 BuildRequires: libICE-devel
+BuildRequires: libXt-devel
+BuildRequires: xorg-x11-proto-devel
 
 %if %{motif_extention}
 BuildRequires: openmotif-devel >= 2.2.2
@@ -203,6 +205,8 @@ Requires: libXext-devel
 Requires: libX11-devel
 Requires: libSM-devel
 Requires: libICE-devel
+Requires: libXt-devel
+Requires: xorg-x11-proto-devel
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
@@ -734,9 +738,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Dec 21 2005 Than Ngo <than@redhat.com> 1:3.3.5-11 
+- BuildRequires on libXt-devel/xorg-x11-proto-devel
+ 
 * Fri Dec 09 2005 Jesse Keating <jkeating@redhat.com>
 - rebuilt
-
+ 
 * Sun Nov 13 2005 Than Ngo <than@redhat.com> 1:3.3.5-10
 - workaround for keyboard input action in KHotKeys
 
