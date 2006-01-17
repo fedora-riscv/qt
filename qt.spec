@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 11
+Release: 12
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -160,6 +160,8 @@ BuildRequires: libSM-devel
 BuildRequires: libICE-devel
 BuildRequires: libXt-devel
 BuildRequires: xorg-x11-proto-devel
+BuildRequires: mesa-libGL-devel
+BuildRequires: mesa-libGLU-devel
 
 %if %{motif_extention}
 BuildRequires: openmotif-devel >= 2.2.2
@@ -738,6 +740,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jan 17 2006 Than Ngo <than@redhat.com> 1:3.3.5-12
+- add BuildRequires on mesa-libGL-devel
+
 * Wed Dec 21 2005 Than Ngo <than@redhat.com> 1:3.3.5-11 
 - BuildRequires on libXt-devel/xorg-x11-proto-devel
  
