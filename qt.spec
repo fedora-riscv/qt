@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 12.1
+Release: 12.2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -740,6 +740,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 1:3.3.5-12.2
+- bump again for double-long bug on ppc(64)
+
 * Tue Feb 07 2006 Jesse Keating <jkeating@redhat.com> - 1:3.3.5-12.1
 - rebuilt for new gcc4.1 snapshot and glibc changes
 
