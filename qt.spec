@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 12.2
+Release: 13
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -111,8 +111,10 @@ Patch24: qt-x11-free-3.3.5-uic.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.5-20051018.diff.bz2
+Patch51: fix-im-crash-on-exit.diff
+Patch52: fix-key-release-event-with-imm.diff
+Patch53: qt-x11-immodule-fix-inputcontext-crash.diff
 Patch54: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
-Patch57: qt-x11-free-3.3.4-imm-key.patch
 
 # qt-copy patches
 Patch100: 0038-dragobject-dont-prefer-unknown.patch
@@ -350,8 +352,10 @@ for the Qt toolkit.
 
 %if %{immodule}
 %patch50 -p1
+%patch51 -p0 -b .im-crash-on-exit
+%patch52 -p0 -b .key-release-event
+%patch53 -p0 -b .inputcontext-crash
 %patch54 -p1 -b .quiet
-%patch57 -p1 -b .key
 %endif
 
 %patch100 -p0 -b .0038-dragobject-dont-prefer-unknown
@@ -740,6 +744,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Feb 27 2006 Than Ngo <than@redhat.com> 1:3.3.5-13
+- add set of fixes for the immodule patch, thanks to Dirk Müller
+
 * Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 1:3.3.5-12.2
 - bump again for double-long bug on ppc(64)
 
