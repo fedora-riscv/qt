@@ -111,8 +111,8 @@ Patch24: qt-x11-free-3.3.5-uic.patch
 
 # immodule patches
 Patch50: qt-x11-immodule-unified-qt3.3.5-20051018.diff.bz2
-Patch51: fix-im-crash-on-exit.diff
-Patch52: fix-key-release-event-with-imm.diff
+Patch51: fix-key-release-event-with-imm.diff
+Patch52: fix-im-crash-on-exit.diff
 Patch53: qt-x11-immodule-fix-inputcontext-crash.diff
 Patch54: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 
@@ -352,8 +352,8 @@ for the Qt toolkit.
 
 %if %{immodule}
 %patch50 -p1
-%patch51 -p0 -b .im-crash-on-exit
-%patch52 -p0 -b .key-release-event
+%patch51 -p0 -b .key-release-event
+%patch52 -p0 -b .im-crash-on-exit
 %patch53 -p0 -b .inputcontext-crash
 %patch54 -p1 -b .quiet
 %endif
