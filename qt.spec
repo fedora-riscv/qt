@@ -8,7 +8,7 @@
 
 %define immodule 1
 
-%define ver 3.3.5
+%define ver 3.3.6
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 13
+Release: 1
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -93,7 +93,6 @@ Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Url: http://www.troll.no
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source1: qtrc
-Source2: assistant_de.qm
 
 Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
@@ -110,23 +109,19 @@ Patch23: qt-visibility.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
 
 # immodule patches
-Patch50: qt-x11-immodule-unified-qt3.3.5-20051018.diff.bz2
-Patch51: fix-key-release-event-with-imm.diff
-Patch52: fix-im-crash-on-exit.diff
-Patch53: qt-x11-immodule-fix-inputcontext-crash.diff
-Patch54: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
+Patch50: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-pre.patch
+Patch51: qt-x11-immodule-unified-qt3.3.5-20060318.diff.bz2
+Patch52: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-post.patch
+Patch53: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 
 # qt-copy patches
 Patch100: 0038-dragobject-dont-prefer-unknown.patch
 Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
-Patch103: 0051-qtoolbar_77047.patch
-Patch104: 0056-khotkeys_input_84434.patch
+Patch103: 0056-khotkeys_input_84434.patch
 
 # upstream patches
-Patch200: qt-x11-free-3.3.4-assistant_de.patch
-Patch201: qt-x11-free-3.3.4-fullscreen.patch
-Patch202: qt-x11-free-3.3.5-warning.patch
+Patch200: qt-x11-free-3.3.4-fullscreen.patch
 
 Prefix: %{qtdir}
 
@@ -351,29 +346,22 @@ for the Qt toolkit.
 %patch24 -p1 -b .uic
 
 %if %{immodule}
-%patch50 -p1
-%patch51 -p0 -b .key-release-event
-%patch52 -p0 -b .im-crash-on-exit
-%patch53 -p0 -b .inputcontext-crash
-%patch54 -p1 -b .quiet
+%patch50 -p1 -b .pre
+%patch51 -p1
+%patch52 -p1 -b .post
+%patch53 -p1 -b .quiet
 %endif
 
 %patch100 -p0 -b .0038-dragobject-dont-prefer-unknown
 %patch101 -p0 -b .0047-fix-kmenu-width
 %patch102 -p0 -b .0048-qclipboard_hack_80072
-%patch103 -p0 -b .0051-qtoolbar_77047
-%patch104 -p0 -b .0056-khotkeys_input_84434
+%patch103 -p0 -b .0056-khotkeys_input_84434
 
-%patch200 -p1 -b .assistant-translation
-%patch201 -p1 -b .fullscreen
-%patch202 -p1 -b .warning
+%patch200 -p1 -b .fullscreen
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
 mv doc/man/man3/qdial.3qt_ doc/man/man3/qdial.3qt
-
-# de translation
-cp %{SOURCE2} tools/assistant/
 
 %build
 export QTDIR=`/bin/pwd`
@@ -744,6 +732,14 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Mar 20 2006 Than Ngo <than@redhat.com> 1:3.3.6-1
+- update to 3.3.6
+- adapt qt-x11-immodule-unified-qt3.3.5-20060318 to qt-3.3.6
+- remove set of fixes for the immodule patch, included in qt-x11-immodule-unified-qt3.3.5-20060318
+- remove 0051-qtoolbar_77047.patch, qt-x11-free-3.3.4-assistant_de.patch,
+  qt-x11-free-3.3.5-warning.patch, included in new upstream
+
+
 * Mon Feb 27 2006 Than Ngo <than@redhat.com> 1:3.3.5-13
 - add set of fixes for the immodule patch, thanks to Dirk Müller
 
