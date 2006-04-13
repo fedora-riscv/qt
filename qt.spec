@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 1
+Release: 2
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -377,13 +377,17 @@ export QTDEST=%{qtdir}
    sh ./make-symlinks.sh
 %endif
 
-# OPTFLAGS="$(echo $RPM_OPT_FLAGS | sed -e 's,-O2,-O0,')"
+# set correct X11 prefix
+perl -pi -e "s,QMAKE_LIBDIR_X11.*,QMAKE_LIBDIR_X11\t=," mkspecs/*/qmake.conf
+perl -pi -e "s,QMAKE_INCDIR_X11.*,QMAKE_INCDIR_X11\t=," mkspecs/*/qmake.conf
+perl -pi -e "s,QMAKE_INCDIR_OPENGL.*,QMAKE_INCDIR_OPENGL\t=," mkspecs/*/qmake.conf
+perl -pi -e "s,QMAKE_LIBDIR_OPENGL.*,QMAKE_LIBDIR_OPENGL\t=," mkspecs/*/qmake.conf
 
 # don't use rpath
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 
 # set correct FLAGS
-perl -pi -e "s|-O2|$INCLUDES $RPM_OPT_FLAGS|g" mkspecs/*/qmake.conf
+perl -pi -e "s|-O2|$INCLUDES %{optflags}|g" mkspecs/*/qmake.conf
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -732,6 +736,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Apr 13 2006 Than Ngo <than@redhat.com> 1:3.3.6-2
+- fix xorg prefix #188510
+
 * Mon Mar 20 2006 Than Ngo <than@redhat.com> 1:3.3.6-1
 - update to 3.3.6
 - adapt qt-x11-immodule-unified-qt3.3.5-20060318 to qt-3.3.6
