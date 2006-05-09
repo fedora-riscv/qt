@@ -85,7 +85,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 2
+Release: 3
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -190,7 +190,7 @@ Requires: %{name} = %{epoch}:%{version}-%{release}
 
 
 %package devel
-Summary: Development files and documentation for the Qt GUI toolkit.
+Summary: Development files for the Qt GUI toolkit.
 Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 Requires: freetype-devel
@@ -209,6 +209,12 @@ Requires: xorg-x11-proto-devel
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
+
+
+%package devel-docs
+Summary: Documentation for the Qt GUI toolkit.
+Group: Development/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
 
 
 %package Xt
@@ -283,11 +289,15 @@ This package contains a grapical configuration tool for programs using Qt.
 %description devel
 The qt-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
-object compiler, the man pages, the HTML documentation and example
-programs.
+object compiler.
 
 Install qt-devel if you want to develop GUI applications using the Qt
 toolkit.
+
+
+%description devel-docs
+The qt-devel-docs package contains the man pages, the HTML documentation and
+example programs.
 
 
 %description Xt
@@ -657,9 +667,6 @@ rm -rf %{buildroot}
 %{qtdir}/lib/libdesigner*.a
 %{qtdir}/lib/libqassistantclient.a
 %{qtdir}/lib/*.prl
-%if %{installman}
-%{_mandir}/*/*
-%endif
 %{qtdir}/translations
 %{qtdir}/phrasebooks
 %{_bindir}/assistant*
@@ -678,9 +685,17 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*
 %{qtdir}/lib/pkgconfig
 %endif
+
+
+%files docs
+%defattr(-,root,root,-)
 %doc doc/html
 %doc examples
 %doc tutorial
+%if %{installman}
+%{_mandir}/*/*
+%endif
+
 
 %if %{motif_extention}
 %post Xt -p /sbin/ldconfig
@@ -736,6 +751,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue May 09 2006 Than Ngo <than@redhat.com> 1:3.3.6-3 
+- add subpackage qt-devel-docs #191099
+
 * Thu Apr 13 2006 Than Ngo <than@redhat.com> 1:3.3.6-2
 - fix xorg prefix #188510
 
