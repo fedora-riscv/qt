@@ -687,7 +687,7 @@ rm -rf %{buildroot}
 %endif
 
 
-%files docs
+%files devel-docs
 %defattr(-,root,root,-)
 %doc doc/html
 %doc examples
