@@ -12,6 +12,7 @@
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
+%define qt_docdir %{_docdir}/qt-devel-%{ver}
 
 # build Motif extention
 %define motif_extention 0
@@ -408,7 +409,7 @@ fi
 # build shared, threaded (default) libraries
 echo yes | ./configure \
   -prefix $QTDEST \
-  -docdir %{_docdir}/qt-devel-%{version}/ \
+  -docdir %{qt_docdir} \
 %if %{_lib} == lib64
   -platform linux-g++-64 \
 %else
@@ -689,7 +690,7 @@ rm -rf %{buildroot}
 
 %files devel-docs
 %defattr(-,root,root,-)
-%doc doc/html
+%doc %{qt_docdir}/html
 %doc examples
 %doc tutorial
 %if %{installman}
