@@ -617,7 +617,6 @@ rm -rf %{buildroot}
 %files config
 %defattr(-,root,root,-)
 %{qtdir}/bin/qtconfig
-%{_bindir}/qtconfig*
 
 
 %files devel
@@ -700,7 +699,6 @@ rm -rf %{buildroot}
 
 %files designer
 %defattr(-,root,root,-)
-%{_bindir}/designer*
 %dir %{qtdir}/plugins/designer
 %{qtdir}/templates
 %{qtdir}/plugins/designer/*
