@@ -94,6 +94,8 @@ Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Url: http://www.troll.no
 Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source1: qtrc
+Source2: qt.sh
+Source3: qt.csh
 
 Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
@@ -211,7 +213,7 @@ Requires: xorg-x11-proto-devel
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
-
+Requires: pkgconfig
 
 %package devel-docs
 Summary: Documentation for the Qt GUI toolkit.
@@ -506,14 +508,10 @@ for i in findtr qt20fix qtrename140 lrelease lupdate ; do
    install bin/$i %{buildroot}%{qtdir}/bin/
 done
 
-%if ! %{pkg_config}
-   rm -rf %{buildroot}%{_libdir}/pkgconfig
-%else
-   mkdir -p  %{buildroot}%{_libdir}/pkgconfig
-   pushd %{buildroot}%{_libdir}/pkgconfig
-   ln -sf ../%{qt_dirname}/lib/pkgconfig/* .
+mkdir -p  %{buildroot}%{_libdir}/pkgconfig
+pushd %{buildroot}%{_libdir}/pkgconfig
+ln -sf ../%{qt_dirname}/lib/pkgconfig/* .
 popd
-%endif
 
 # install man pages
 %if %{installman}
@@ -541,27 +539,7 @@ for a in */*/Makefile ; do
 done
 
 mkdir -p %{buildroot}/etc/profile.d
-cat > %{buildroot}/etc/profile.d/%{name}.sh <<EOF
-# Qt initialization script (sh)
-if [ -z "\$QTDIR" ] ; then
-	QTDIR="%{qtdir}"
-	QTINC="%{qtdir}/include"
-	QTLIB="%{qtdir}/lib"
-fi
-export QTDIR QTINC QTLIB
-EOF
-
-cat > %{buildroot}/etc/profile.d/%{name}.csh <<EOF
-# Qt initialization script (csh)
-if ( \$?QTDIR ) then
-         exit
-endif
-setenv QTDIR %{qtdir}
-setenv QTINC %{qtdir}/include
-setenv QTLIB %{qtdir}/lib
-EOF
-
-chmod 755 %{buildroot}/etc/profile.d/*
+install -m 755 %{SOURCE2} %{SOURCE3} %{buildroot}/etc/profile.d/
 
 mkdir -p %{buildroot}%{_bindir}
 for i in bin/*; do
@@ -672,22 +650,8 @@ rm -rf %{buildroot}
 %{qtdir}/lib/*.prl
 %{qtdir}/translations
 %{qtdir}/phrasebooks
-%{_bindir}/assistant*
-%{_bindir}/moc*
-%{_bindir}/uic*
-%{_bindir}/findtr*
-%{_bindir}/qt20fix*
-%{_bindir}/qtrename140*
-%{_bindir}/qmake*
-%{_bindir}/qm2ts*
-%{_bindir}/qembed
-%{_bindir}/linguist
-%{_bindir}/lrelease
-%{_bindir}/lupdate
-%if %{pkg_config}
 %{_libdir}/pkgconfig/*
 %{qtdir}/lib/pkgconfig
-%endif
 
 
 %files devel-docs
