@@ -541,11 +541,6 @@ done
 mkdir -p %{buildroot}/etc/profile.d
 install -m 755 %{SOURCE2} %{SOURCE3} %{buildroot}/etc/profile.d/
 
-mkdir -p %{buildroot}%{_bindir}
-for i in bin/*; do
-	ln -s ../%{_lib}/%{qt_dirname}/bin/`basename $i` %{buildroot}/%{_bindir}
-done
-
 # Add desktop file
 %if %{desktop_file}
    mkdir -p %{buildroot}%{_datadir}/applications
