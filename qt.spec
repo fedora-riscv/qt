@@ -86,7 +86,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 3
+Release: 4
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -108,6 +108,7 @@ Patch19: qt-3.3.3-gtkstyle.patch
 Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
 Patch23: qt-visibility.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
+Patch25: qt-x11-free-3.3.6-uic-multilib.patch
 
 # immodule patches
 Patch50: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-pre.patch
@@ -355,6 +356,7 @@ for the Qt toolkit.
 %endif
 
 %patch24 -p1 -b .uic
+%patch25 -p1 -b .uic-multilib
 
 %if %{immodule}
 %patch50 -p1 -b .pre
@@ -752,6 +754,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon May 15 2006 Than Ngo <than@redhat.com> 1:3.3.6-4
+- fix multilib issue 
+
 * Tue May 09 2006 Than Ngo <than@redhat.com> 1:3.3.6-3 
 - add subpackage qt-devel-docs #191099
 
