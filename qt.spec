@@ -86,7 +86,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 4
+Release: 5
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -160,6 +160,7 @@ BuildRequires: libX11-devel
 BuildRequires: libSM-devel
 BuildRequires: libICE-devel
 BuildRequires: libXt-devel
+BuildRequires: libXmu-devel
 BuildRequires: xorg-x11-proto-devel
 BuildRequires: mesa-libGL-devel
 BuildRequires: mesa-libGLU-devel
@@ -711,6 +712,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue May 16 2006 Than Ngo <than@redhat.com> 1:3.3.6-5 
+- fix #191895, BR libXmu-devel
+
 * Mon May 15 2006 Than Ngo <than@redhat.com> 1:3.3.6-4
 - fix multilib issue 
 
