@@ -403,7 +403,11 @@ perl -pi -e "s,QMAKE_LIBDIR_OPENGL.*,QMAKE_LIBDIR_OPENGL\t=," mkspecs/*/qmake.co
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 
 # set correct FLAGS
-perl -pi -e "s|-O2|$INCLUDES %{optflags}|g" mkspecs/*/qmake.conf
+%if ! %{debug}
+disable_warning="-DQT_NO_CHECK"
+%endif
+
+perl -pi -e "s|-O2|$INCLUDES %{optflags} $disable_warning|g" mkspecs/*/qmake.conf
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -714,6 +718,7 @@ rm -rf %{buildroot}
 %changelog
 * Tue May 16 2006 Than Ngo <than@redhat.com> 1:3.3.6-5 
 - fix #191895, BR libXmu-devel
+- disable warnings if debug is off
 
 * Mon May 15 2006 Than Ngo <than@redhat.com> 1:3.3.6-4
 - fix multilib issue 
