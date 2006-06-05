@@ -86,7 +86,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 5
+Release: 6
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -104,7 +104,7 @@ Patch5: qt-x11-free-3.3.0-strip.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
 Patch8: qt-x11-free-3.3.3-qembed.patch
 Patch12: qt-uic-nostdlib.patch
-Patch13: qt-x11-free-3.3.4-qfontdatabase_x11.patch
+Patch13: qt-x11-free-3.3.6-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
 Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
@@ -215,6 +215,8 @@ Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
 Requires: pkgconfig
+Requires: mesa-libGL-devel
+Requires: mesa-libGLU-devel
 
 %package devel-docs
 Summary: Documentation for the Qt GUI toolkit.
@@ -716,6 +718,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jun 05 2006 Than Ngo <than@redhat.com> 1:3.3.6-6
+- qt-devel requires on mesa-libGLU-devel mesa-libGU-devel
+
 * Tue May 16 2006 Than Ngo <than@redhat.com> 1:3.3.6-5 
 - fix #191895, BR libXmu-devel
 - disable warnings if debug is off
