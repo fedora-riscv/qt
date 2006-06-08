@@ -86,7 +86,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 6
+Release: 7
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -718,6 +718,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jun 08 2006 Than Ngo <than@redhat.com> 1:3.3.6-7
+- fix utf8 issue in changelog
+
 * Mon Jun 05 2006 Than Ngo <than@redhat.com> 1:3.3.6-6
 - qt-devel requires on mesa-libGLU-devel mesa-libGU-devel
 
@@ -743,7 +746,7 @@ rm -rf %{buildroot}
 
 
 * Mon Feb 27 2006 Than Ngo <than@redhat.com> 1:3.3.5-13
-- add set of fixes for the immodule patch, thanks to Dirk Müller
+- add set of fixes for the immodule patch, thanks to Dirk MÃ¼ller
 
 * Fri Feb 10 2006 Jesse Keating <jkeating@redhat.com> - 1:3.3.5-12.2
 - bump again for double-long bug on ppc(64)
@@ -1642,7 +1645,7 @@ rm -rf %{buildroot}
 * Fri Mar  3 2000 Bill Nottingham <notting@redhat.com>
 - fix %postun script
 
-* Fri Feb 18 2000 Bernhard Rosenkränzer <bero@redhat.com>
+* Fri Feb 18 2000 Bernhard Rosenkrï¿½zer <bero@redhat.com>
 - beta1
 - get rid of qt-ImageIO, the functionality is now in the main Qt library
 - remove qt-Network, the functionality is now in the main Qt library
@@ -1668,7 +1671,7 @@ rm -rf %{buildroot}
 * Thu Jan 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
 - switch from glxMesa to Mesa for the GL addon
 
-* Wed Jan 5 2000 Bernhard Rosenkränzer <bero@redhat.com>
+* Wed Jan 5 2000 Bernhard Rosenkrï¿½zer <bero@redhat.com>
 - Fix up dependencies
 - new snapshot
 
