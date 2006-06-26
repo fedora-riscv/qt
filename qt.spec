@@ -86,7 +86,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: %{ver}
-Release: 7
+Release: 8
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -100,7 +100,7 @@ Source3: qt.csh
 Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
 Patch3: qt-3.1.0-makefile.patch
-Patch5: qt-x11-free-3.3.0-strip.patch
+Patch5: qt-x11-free-3.3.6-strip.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
 Patch8: qt-x11-free-3.3.3-qembed.patch
 Patch12: qt-uic-nostdlib.patch
@@ -117,6 +117,7 @@ Patch50: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-pre.patch
 Patch51: qt-x11-immodule-unified-qt3.3.5-20060318.diff.bz2
 Patch52: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-post.patch
 Patch53: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
+Patch54: qt-x11-free-3.3.6-fix-key-release-event-with-imm.diff
 
 # qt-copy patches
 Patch100: 0038-dragobject-dont-prefer-unknown.patch
@@ -368,6 +369,7 @@ for the Qt toolkit.
 %patch51 -p1
 %patch52 -p1 -b .post
 %patch53 -p1 -b .quiet
+%patch54 -p1 -b .fix-key-release-event-with-imm
 %endif
 
 %patch100 -p0 -b .0038-dragobject-dont-prefer-unknown
@@ -720,6 +722,8 @@ rm -rf %{buildroot}
 %changelog
 * Thu Jun 08 2006 Than Ngo <than@redhat.com> 1:3.3.6-7
 - fix utf8 issue in changelog
+- fix #195410, don't strip binaries/libraries
+- fix #156572, keyReleaseEvent issue
 
 * Mon Jun 05 2006 Than Ngo <than@redhat.com> 1:3.3.6-6
 - qt-devel requires on mesa-libGLU-devel mesa-libGU-devel
