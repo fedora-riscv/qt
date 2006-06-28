@@ -497,7 +497,6 @@ rm -rf %{buildroot}
 %{qtdir}/plugins/designer/*
 %{qtdir}/bin/designer
 %{_datadir}/applications/*.desktop
-%endif
 
 
 %changelog
