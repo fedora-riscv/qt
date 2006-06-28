@@ -1,101 +1,16 @@
-%define smp 1
-
-%define desktop_file 1
-%define redhat_artwork 1
-%define desktop_file_utils_version 0.2.93
-
-%define mysql4 1
-
-%define immodule 1
-
-%define ver 3.3.6
-
-%define qt_dirname qt-3.3
-%define qtdir %{_libdir}/%{qt_dirname}
-%define qt_docdir %{_docdir}/qt-devel-%{ver}
-
-# build Motif extention
-%define motif_extention 0
-
-# pkg-config
-%define pkg_config 1
-
-# install manuals
-%define installman 1
-
-# buildmysql: Build MySQL plugins
-%define buildmysql 1
-
-# buildpsql: Build Postgres plugins
-%define buildpsql 1
-
-# buildodbc: Build ODBC plugins
-%define buildodbc 1
-
-# buildmt: Build libs with threading support
-%define buildmt 1
-
-# cups support
-%define cups 1
-
-# visibility
-%define enable_hidden_visibility 0
-
-%define debug 0
-
-%define sover %{ver}
-
-%define styleplugins 0
-
-%if %{styleplugins}
-%define plugins_style -plugin-style-cde -plugin-style-motifplus -plugin-style-platinum -plugin-style-sgi -plugin-style-windows -plugin-style-compact -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
-%else
-%define plugins_style -qt-style-cde -qt-style-motifplus -qt-style-platinum -qt-style-sgi -qt-style-windows -qt-style-compact -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
-%endif
-
-%if %{buildmysql}
-%define plugin_mysql -plugin-sql-mysql
-%else
-%define plugin_mysql %{nil}
-%endif
-
-%if %{mysql4}
-%define mysql_include_dir %{_includedir}/mysql
-%define mysql_lib_dir %{_libdir}/mysql
-%define mysql_buildreq mysql-devel
-%else
-%define mysql_include_dir %{_includedir}/mysql3/mysql
-%define mysql_lib_dir %{_libdir}/mysql3/mysql
-%define mysql_buildreq mysqlclient10-devel
-%endif
-
-%if %{buildpsql}
-%define plugin_psql -plugin-sql-psql
-%else
-%define plugin_psql %{nil}
-%endif
-
-%if %{buildodbc}
-%define plugin_odbc -plugin-sql-odbc
-%else
-%define plugin_odbc %{nil}
-%endif
-
-%define plugins %{plugin_mysql} %{plugin_psql} %{plugin_odbc} %{plugins_style}
-
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
-Version: %{ver}
-Release: 8
+Version: 3.3.6
+Release: 9
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
 Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
 Url: http://www.troll.no
-Source: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
-Source1: qtrc
+Source0: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source2: qt.sh
 Source3: qt.csh
+Source4: designer3.desktop
 
 Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
@@ -108,7 +23,6 @@ Patch13: qt-x11-free-3.3.6-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
 Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
-Patch23: qt-visibility.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
 Patch25: qt-x11-free-3.3.6-uic-multilib.patch
 
@@ -118,6 +32,7 @@ Patch51: qt-x11-immodule-unified-qt3.3.5-20060318.diff.bz2
 Patch52: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-post.patch
 Patch53: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 Patch54: qt-x11-free-3.3.6-fix-key-release-event-with-imm.diff
+Patch55: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-resetinputcontext.patch
 
 # qt-copy patches
 Patch100: 0038-dragobject-dont-prefer-unknown.patch
@@ -128,11 +43,31 @@ Patch103: 0056-khotkeys_input_84434.patch
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
 
-Prefix: %{qtdir}
+%define qt_dirname qt-3.3
+%define qtdir %{_libdir}/%{qt_dirname}
+%define qt_docdir %{_docdir}/qt-devel-%{version}
 
-Prereq: /sbin/ldconfig
-Prereq: fileutils
+%define smp 1
+%define immodule 1
+%define debug 0
 
+# MySQL plugins
+%define plugin_mysql -plugin-sql-mysql
+%define mysql_include_dir %{_includedir}/mysql
+%define mysql_lib_dir %{_libdir}/mysql
+
+# Postgres plugins
+%define plugin_psql -plugin-sql-psql
+
+# ODBC plugins
+%define plugin_odbc -plugin-sql-odbc
+
+%define plugins_style -qt-style-cde -qt-style-motifplus -qt-style-platinum -qt-style-sgi -qt-style-windows -qt-style-compact -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
+%define plugins %{plugin_mysql} %{plugin_psql} %{plugin_odbc} %{plugins_style}
+
+Requires(post): /sbin/ldconfig
+Requires(postun): /sbin/ldconfig
+Requires: fileutils
 Requires: fontconfig >= 2.0
 Requires: /etc/ld.so.conf.d
 
@@ -143,7 +78,7 @@ BuildRequires: glibc-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libpng-devel
 BuildRequires: zlib-devel
-BuildRequires: libungif-devel
+BuildRequires: giflib-devel
 BuildRequires: perl
 BuildRequires: sed
 BuildRequires: findutils
@@ -165,28 +100,10 @@ BuildRequires: libXmu-devel
 BuildRequires: xorg-x11-proto-devel
 BuildRequires: mesa-libGL-devel
 BuildRequires: mesa-libGLU-devel
-
-%if %{motif_extention}
-BuildRequires: openmotif-devel >= 2.2.2
-%endif
-
-%if %{desktop_file}
-BuildRequires: desktop-file-utils >= %{desktop_file_utils_version}
-%endif
-
-%if %{buildmysql}
-BuildRequires: %{mysql_buildreq}
-%endif
-
-%if %{buildpsql}
+BuildRequires: desktop-file-utils
+BuildRequires: mysql-devel
 BuildRequires: postgresql-devel
-%endif
-
-%if %{buildodbc}
 BuildRequires: unixODBC-devel
-%endif
-
-BuildRequires: fontconfig-devel >= 2.0
 
 
 %package config
@@ -225,46 +142,22 @@ Group: Development/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 
 
-%package Xt
-Summary: An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
-Group: System Environment/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
-
-
-%package styles
-Summary: Extra styles for the Qt GUI toolkit.
-Group: User Interface/Desktops
-Requires: %{name} = %{epoch}:%{version}-%{release}
-
-
-%if %{buildodbc}
 %package ODBC
 Summary: ODBC drivers for Qt's SQL classes.
 Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-%endif
 
 
-%if %{buildmysql}
 %package MySQL
 Summary: MySQL drivers for Qt's SQL classes.
 Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-%endif
 
 
-%if %{buildpsql}
 %package PostgreSQL
 Summary: PostgreSQL drivers for Qt's SQL classes.
 Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
-%endif
-
-
-%package static
-Summary: Version of the Qt GUI toolkit for static linking
-Group: Development/Libraries
-Requires: %{name}-devel = %{epoch}:%{version}-%{release}
 
 
 %package designer
@@ -308,34 +201,16 @@ The qt-devel-docs package contains the man pages, the HTML documentation and
 example programs.
 
 
-%description Xt
-An Xt (X Toolkit) compatibility add-on for the Qt GUI toolkit.
-
-
-%description static
-Version of the Qt library for static linking
-
-
-%description styles
-Extra styles (themes) for the Qt GUI toolkit.
-
-
-%if %{buildodbc}
 %description ODBC
 ODBC driver for Qt's SQL classes (QSQL)
-%endif
 
 
-%if %{buildmysql}
 %description MySQL
 MySQL driver for Qt's SQL classes (QSQL)
-%endif
 
 
-%if %{buildpsql}
 %description PostgreSQL
 PostgreSQL driver for Qt's SQL classes (QSQL)
-%endif
 
 
 %description designer
@@ -356,11 +231,6 @@ for the Qt toolkit.
 %patch14 -p1 -b .gl
 %patch19 -p1 -b .gtk
 %patch20 -p1 -b .gcc4-buildkey
-
-%if %{enable_hidden_visibility}
-%patch23 -p1 -b .hidden_visibility
-%endif
-
 %patch24 -p1 -b .uic
 %patch25 -p1 -b .uic-multilib
 
@@ -370,6 +240,7 @@ for the Qt toolkit.
 %patch52 -p1 -b .post
 %patch53 -p1 -b .quiet
 %patch54 -p1 -b .fix-key-release-event-with-imm
+%patch55 -p1 -b .resetinputcontext
 %endif
 
 %patch100 -p0 -b .0038-dragobject-dont-prefer-unknown
@@ -408,7 +279,7 @@ perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 
 # set correct FLAGS
 %if ! %{debug}
-disable_warning="-DQT_NO_CHECK"
+  disable_warning="-DQT_NO_CHECK"
 %endif
 
 perl -pi -e "s|-O2|$INCLUDES %{optflags} $disable_warning|g" mkspecs/*/qmake.conf
@@ -457,12 +328,8 @@ echo yes | ./configure \
   -qt-style-motif \
   %{plugins} \
   -stl \
-%if %{buildmt}
   -thread \
-%endif
-%if %{cups}
   -cups \
-%endif
   -sm \
   -xinerama \
   -xrender \
@@ -474,34 +341,23 @@ echo yes | ./configure \
 make $SMP_MFLAGS src-qmake
 
 # build psql plugin
-%if %{buildpsql}
-   pushd plugins/src/sqldrivers/psql
-   qmake -o Makefile "INCLUDEPATH+=%{_includedir}/pgsql %{_includedir}/pgsql/server %{_includedir}/pgsql/internal" "LIBS+=-lpq" psql.pro
+pushd plugins/src/sqldrivers/psql
+qmake -o Makefile "INCLUDEPATH+=%{_includedir}/pgsql %{_includedir}/pgsql/server %{_includedir}/pgsql/internal" "LIBS+=-lpq" psql.pro
 popd
-%endif
 
 # build mysql plugin
-%if %{buildmysql}
-   pushd plugins/src/sqldrivers/mysql
-   qmake -o Makefile "INCLUDEPATH+=%{mysql_include_dir}" "LIBS+=-L%{mysql_lib_dir} -lmysqlclient" mysql.pro
+pushd plugins/src/sqldrivers/mysql
+qmake -o Makefile "INCLUDEPATH+=%{mysql_include_dir}" "LIBS+=-L%{mysql_lib_dir} -lmysqlclient" mysql.pro
 popd
-%endif
 
 # build odbc plugin
-%if %{buildodbc}
-   pushd plugins/src/sqldrivers/odbc
-   qmake -o Makefile "LIBS+=-lodbc" odbc.pro
-   popd
-%endif
+pushd plugins/src/sqldrivers/odbc
+qmake -o Makefile "LIBS+=-lodbc" odbc.pro
+popd
 
 make $SMP_MFLAGS src-moc
 make $SMP_MFLAGS sub-src
 make $SMP_MFLAGS sub-tools UIC="$QTDIR/bin/uic -nostdlib -L $QTDIR/plugins"
-
-# build Xt/Motif Extention
-%if %{motif_extention}
-   make -C extensions/motif/src $SMP_MFLAGS
-%endif
 
 %install
 rm -rf %{buildroot}
@@ -523,10 +379,8 @@ ln -sf ../%{qt_dirname}/lib/pkgconfig/* .
 popd
 
 # install man pages
-%if %{installman}
-  mkdir -p %{buildroot}%{_mandir}
-  cp -fR doc/man/* %{buildroot}%{_mandir}/
-%endif
+mkdir -p %{buildroot}%{_mandir}
+cp -fR doc/man/* %{buildroot}%{_mandir}/
 
 # clean up
 make -C tutorial clean
@@ -551,42 +405,8 @@ mkdir -p %{buildroot}/etc/profile.d
 install -m 755 %{SOURCE2} %{SOURCE3} %{buildroot}/etc/profile.d/
 
 # Add desktop file
-%if %{desktop_file}
-   mkdir -p %{buildroot}%{_datadir}/applications
-   cat >%{buildroot}%{_datadir}/applications/%{name}-designer.desktop <<EOF
-%else
-   mkdir -p %{buildroot}%{_datadir}/applnk/Development
-   cat >%{buildroot}%{_datadir}/applnk/Development/%{name}-designer.desktop <<EOF
-%endif
-[Desktop Entry]
-BinaryPattern=designer;
-Name=Qt Designer
-GenericName=Interface Designer
-Exec=designer
-Icon=designer
-InitialPreference=5
-MapNotify=true
-MimeType=application/x-designer
-Terminal=false
-Encoding=UTF-8
-Type=Application
-Categories=Application;Development;X-Red-Hat-Extra;
-X-Desktop-File-Install-Version=0.3
-EOF
-
-# move it into redhat-artwork
-%if ! %{redhat_artwork}
-   # Sane default settings
-   mkdir -p %{buildroot}%{qtdir}/etc/settings
-   cat >%{buildroot}%{qtdir}/etc/settings/qtrc <<"EOF"
-[General]
-libraryPath=%{_libdir}/kde3/plugins
-style=Highcolor
-
-[KDE]
-contrast=7
-EOF
-%endif
+mkdir -p %{buildroot}%{_datadir}/applications
+install -m 644 %{SOURCE4} %{buildroot}%{_datadir}/applications/%{name}-designer.desktop
 
 # Patch qmake to use qt-mt unconditionally
 perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" %{buildroot}%{qtdir}/mkspecs/*/qmake.conf
@@ -616,17 +436,12 @@ rm -rf %{buildroot}
 %{qtdir}/plugins/inputmethods
 %endif
 /etc/ld.so.conf.d/*
-%if ! %{redhat_artwork}
-%{qtdir}/etc/settings/qtrc
-%endif
 %{qtdir}/lib/libqui.so.*
 %{qtdir}/lib/libqt*.so.*
-
 
 %files config
 %defattr(-,root,root,-)
 %{qtdir}/bin/qtconfig
-
 
 %files devel
 %defattr(-,root,root,-)
@@ -656,55 +471,24 @@ rm -rf %{buildroot}
 %{_libdir}/pkgconfig/*
 %{qtdir}/lib/pkgconfig
 
-
 %files devel-docs
 %defattr(-,root,root,-)
 %doc %{qt_docdir}/html
 %doc examples
 %doc tutorial
-%if %{installman}
 %{_mandir}/*/*
-%endif
 
-
-%if %{motif_extention}
-%post Xt -p /sbin/ldconfig
-%postun Xt -p /sbin/ldconfig
-
-%files Xt
-%defattr(-,root,root,-)
-%{qtdir}/lib/libqmotif.so*
-%endif
-
-
-%if %{styleplugins}
-%files styles
-%defattr(-,root,root,-)
-%dir %{qtdir}/plugins/styles
-%{qtdir}/plugins/styles/*
-%endif
-
-
-%if %{buildodbc}
 %files ODBC
 %defattr(-,root,root,-)
 %{qtdir}/plugins/sqldrivers/libqsqlodbc*
-%endif
 
-
-%if %{buildpsql}
 %files PostgreSQL
 %defattr(-,root,root,-)
 %{qtdir}/plugins/sqldrivers/libqsqlpsql*
-%endif
 
-
-%if %{buildmysql}
 %files MySQL
 %defattr(-,root,root,-)
 %{qtdir}/plugins/sqldrivers/libqsqlmysql*
-%endif
-
 
 %files designer
 %defattr(-,root,root,-)
@@ -712,14 +496,17 @@ rm -rf %{buildroot}
 %{qtdir}/templates
 %{qtdir}/plugins/designer/*
 %{qtdir}/bin/designer
-%if %{desktop_file}
 %{_datadir}/applications/*.desktop
-%else
-%{_datadir}/applnk/Development/*
 %endif
 
 
 %changelog
+* Wed Jun 28 2006 Than Ngo <than@redhat.com> 1:3.3.6-9
+- fix #183302, IM preedit issue in kbabel
+
+* Mon Jun 26 2006 Than Ngo <than@redhat.com> 1:3.3.6-8
+- rebuilt
+
 * Thu Jun 08 2006 Than Ngo <than@redhat.com> 1:3.3.6-7
 - fix utf8 issue in changelog
 - fix #195410, don't strip binaries/libraries
