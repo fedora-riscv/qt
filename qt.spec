@@ -1,11 +1,11 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.6
-Release: 9
+Release: 10
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
-Buildroot: %{_tmppath}/%{name}-%{version}-%{release}-root
+BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Url: http://www.troll.no
 Source0: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source2: qt.sh
@@ -42,6 +42,7 @@ Patch103: 0056-khotkeys_input_84434.patch
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
+Patch201: qt-x11-free-3.3.6-arabic_fonts.patch
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -249,6 +250,7 @@ for the Qt toolkit.
 %patch103 -p0 -b .0056-khotkeys_input_84434
 
 %patch200 -p1 -b .fullscreen
+%patch201 -p1 -b .arabic_fonts
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -373,10 +375,8 @@ for i in findtr qt20fix qtrename140 lrelease lupdate ; do
    install bin/$i %{buildroot}%{qtdir}/bin/
 done
 
-mkdir -p  %{buildroot}%{_libdir}/pkgconfig
-pushd %{buildroot}%{_libdir}/pkgconfig
-ln -sf ../%{qt_dirname}/lib/pkgconfig/* .
-popd
+mkdir -p %{buildroot}%{_libdir}/pkgconfig/
+mv %{buildroot}%{qtdir}/lib/pkgconfig/*.pc %{buildroot}%{_libdir}/pkgconfig/
 
 # install man pages
 mkdir -p %{buildroot}%{_mandir}
@@ -469,7 +469,6 @@ rm -rf %{buildroot}
 %{qtdir}/translations
 %{qtdir}/phrasebooks
 %{_libdir}/pkgconfig/*
-%{qtdir}/lib/pkgconfig
 
 %files devel-docs
 %defattr(-,root,root,-)
@@ -500,6 +499,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jun 29 2006 Than Ngo <than@redhat.com> 1:3.3.6-10
+- apply patch from Lars, fixes Qt 3.3.6 for Arabic fonts
+
 * Wed Jun 28 2006 Than Ngo <than@redhat.com> 1:3.3.6-9
 - fix #183302, IM preedit issue in kbabel
 
