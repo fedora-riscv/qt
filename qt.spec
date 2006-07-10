@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.6
-Release: 10
+Release: 11
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -39,10 +39,11 @@ Patch100: 0038-dragobject-dont-prefer-unknown.patch
 Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0056-khotkeys_input_84434.patch
+Patch104: 0069-fix-minsize.patch
+Patch105: 0070-fix-broken-fonts.patch
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
-Patch201: qt-x11-free-3.3.6-arabic_fonts.patch
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -248,9 +249,9 @@ for the Qt toolkit.
 %patch101 -p0 -b .0047-fix-kmenu-width
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0056-khotkeys_input_84434
-
+%patch104 -p0 -b .0069-fix-minsize
+%patch105 -p0 -b .0070-fix-broken-fonts
 %patch200 -p1 -b .fullscreen
-%patch201 -p1 -b .arabic_fonts
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -279,12 +280,7 @@ perl -pi -e "s,QMAKE_LIBDIR_OPENGL.*,QMAKE_LIBDIR_OPENGL\t=," mkspecs/*/qmake.co
 # don't use rpath
 perl -pi -e "s|-Wl,-rpath,| |" mkspecs/*/qmake.conf
 
-# set correct FLAGS
-%if ! %{debug}
-  disable_warning="-DQT_NO_CHECK"
-%endif
-
-perl -pi -e "s|-O2|$INCLUDES %{optflags} $disable_warning|g" mkspecs/*/qmake.conf
+perl -pi -e "s|-O2|$INCLUDES %{optflags}|g" mkspecs/*/qmake.conf
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -499,6 +495,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Jul 10 2006 Than Ngo <than@redhat.com> 1:3.3.6-11
+- apply upstream patches, fix arabic fonts issue, and
+  problems with missing minimum size when richtext
+  labels are used
+
 * Thu Jun 29 2006 Than Ngo <than@redhat.com> 1:3.3.6-10
 - apply patch from Lars, fixes Qt 3.3.6 for Arabic fonts
 
