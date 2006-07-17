@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.6
-Release: 11.1
+Release: 12
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -495,7 +495,10 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - sh: line 0: fg: no job control
+* Mon Jul 17 2006 Than Ngo <than@redhat.com> 1:3.3.6-12
+- rebuild
+
+* Wed Jul 12 2006 Jesse Keating <jkeating@redhat.com> - 1:3.3.6-11.1
 - rebuild
 
 * Mon Jul 10 2006 Than Ngo <than@redhat.com> 1:3.3.6-11
