@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.6
-Release: 12
+Release: 13
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -11,6 +11,9 @@ Source0: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
 Source2: qt.sh
 Source3: qt.csh
 Source4: designer3.desktop
+Source5: assistant3.desktop
+Source6: linguist3.desktop
+Source7: qtconfig3.desktop
 
 Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
@@ -73,8 +76,7 @@ Requires: fileutils
 Requires: fontconfig >= 2.0
 Requires: /etc/ld.so.conf.d
 
-BuildRequires: gcc-c++
-BuildRequires: libstdc++-devel
+BuildRequires: desktop-file-utils
 BuildRequires: libmng-devel
 BuildRequires: glibc-devel
 BuildRequires: libjpeg-devel
@@ -400,9 +402,13 @@ done
 mkdir -p %{buildroot}/etc/profile.d
 install -m 755 %{SOURCE2} %{SOURCE3} %{buildroot}/etc/profile.d/
 
-# Add desktop file
+# Add desktop files
 mkdir -p %{buildroot}%{_datadir}/applications
-install -m 644 %{SOURCE4} %{buildroot}%{_datadir}/applications/%{name}-designer.desktop
+desktop-file-install \
+  --dir %{buildroot}%{_datadir}/applications \
+  --vendor="%{name}" \
+  --add-category="X-Fedora" \
+  %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7}
 
 # Patch qmake to use qt-mt unconditionally
 perl -pi -e "s,-lqt ,-lqt-mt ,g;s,-lqt$,-lqt-mt,g" %{buildroot}%{qtdir}/mkspecs/*/qmake.conf
@@ -413,6 +419,13 @@ rm -f %{buildroot}%{qtdir}/lib/*.la
 
 mkdir -p %{buildroot}/etc/ld.so.conf.d
 echo "%{qtdir}/lib" > %{buildroot}/etc/ld.so.conf.d/qt-%{_arch}.conf
+
+# install icons
+mkdir %{buildroot}%{_datadir}/pixmaps
+install -m 644 tools/assistant/images/qt.png %{buildroot}%{_datadir}/pixmaps/qtconfig3.png
+install -m 644 tools/assistant/images/designer.png %{buildroot}%{_datadir}/pixmaps/designer3.png
+install -m 644 tools/assistant/images/assistant.png %{buildroot}%{_datadir}/pixmaps/assistant3.png
+install -m 644 tools/assistant/images/linguist.png %{buildroot}%{_datadir}/pixmaps/linguist3.png
 
 %clean
 rm -rf %{buildroot}
@@ -438,6 +451,8 @@ rm -rf %{buildroot}
 %files config
 %defattr(-,root,root,-)
 %{qtdir}/bin/qtconfig
+%{_datadir}/applications/*qtconfig*.desktop
+%{_datadir}/pixmaps/qtconfig3.png
 
 %files devel
 %defattr(-,root,root,-)
@@ -465,6 +480,10 @@ rm -rf %{buildroot}
 %{qtdir}/translations
 %{qtdir}/phrasebooks
 %{_libdir}/pkgconfig/*
+%{_datadir}/applications/*linguist*.desktop
+%{_datadir}/applications/*assistant*.desktop
+%{_datadir}/pixmaps/linguist3.png
+%{_datadir}/pixmaps/assistant3.png
 
 %files devel-docs
 %defattr(-,root,root,-)
@@ -491,10 +510,14 @@ rm -rf %{buildroot}
 %{qtdir}/templates
 %{qtdir}/plugins/designer/*
 %{qtdir}/bin/designer
-%{_datadir}/applications/*.desktop
+%{_datadir}/applications/*designer*.desktop
+%{_datadir}/pixmaps/designer3.png
 
 
 %changelog
+* Thu Aug 31 2006 Than Ngo <than@redhat.com> 1:3.3.6-13
+- add missing desktop files
+
 * Mon Jul 17 2006 Than Ngo <than@redhat.com> 1:3.3.6-12
 - rebuild
 
