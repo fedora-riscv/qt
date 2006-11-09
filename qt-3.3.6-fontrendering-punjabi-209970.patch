@@ -1,0 +1,11 @@
+--- qt-x11-free-3.3.6/src/kernel/qscriptengine_x11.cpp.bak	2006-10-18 17:55:23.000000000 +0800
++++ qt-x11-free-3.3.6/src/kernel/qscriptengine_x11.cpp	2006-10-19 11:22:13.226804056 +0800
+@@ -217,7 +217,7 @@
+     Other, Other, Other, Other,
+     Other, Other, Other, Other,
+ 
+-    StressMark, StressMark, Other, Other,
++    StressMark, StressMark, Consonant, Consonant,
+     Other, Other, Other, Other,
+     Other, Other, Other, Other,
+     Other, Other, Other, Other,

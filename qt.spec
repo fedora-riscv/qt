@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
-Version: 3.3.6
-Release: 13
+Version: 3.3.7
+Release: 1%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -27,7 +27,14 @@ Patch14: qt-x11-free-3.3.3-gl.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
 Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
-Patch25: qt-x11-free-3.3.6-uic-multilib.patch
+Patch25: qt-x11-free-3.3.7-uic-multilib.patch
+Patch26: qt-3.3.6-fontrendering-punjabi-209970.patch
+Patch27: qt-3.3.6-fontrendering-ml_IN-209097.patch
+Patch28: qt-3.3.6-fontrendering-or_IN-209098.patch
+Patch29: qt-3.3.6-fontrendering-as_IN-209972.patch
+Patch30: qt-3.3.6-fontrendering-bn_IN-209975.patch
+Patch31: qt-3.3.6-fontrendering-te_IN-211259.patch
+Patch32: qt-3.3.6-fontrendering-as_IN-211436.patch
 
 # immodule patches
 Patch50: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-pre.patch
@@ -143,7 +150,7 @@ Requires: mesa-libGLU-devel
 %package devel-docs
 Summary: Documentation for the Qt GUI toolkit.
 Group: Development/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: %{name}-devel = %{epoch}:%{version}-%{release}
 
 
 %package ODBC
@@ -237,6 +244,13 @@ for the Qt toolkit.
 %patch20 -p1 -b .gcc4-buildkey
 %patch24 -p1 -b .uic
 %patch25 -p1 -b .uic-multilib
+%patch26 -p1 -b .fontrendering-punjabi-bz#209970
+%patch27 -p1 -b .fontrendering-ml_IN-bz#209097
+%patch28 -p1 -b .fontrendering-or_IN-bz#209098
+%patch29 -p1 -b .fontrendering-as_IN-bz#209972
+%patch30 -p1 -b .fontrendering-bn_IN-bz#209975
+%patch31 -p1 -b .fontrendering-te_IN-bz#211259
+%patch32 -p1 -b .fontrendering-as_IN-bz211436
 
 %if %{immodule}
 %patch50 -p1 -b .pre
@@ -484,10 +498,10 @@ rm -rf %{buildroot}
 %{_datadir}/applications/*assistant*.desktop
 %{_datadir}/pixmaps/linguist3.png
 %{_datadir}/pixmaps/assistant3.png
+%doc %{qt_docdir}/html
 
 %files devel-docs
 %defattr(-,root,root,-)
-%doc %{qt_docdir}/html
 %doc examples
 %doc tutorial
 %{_mandir}/*/*
@@ -515,6 +529,18 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Nov 09 2006 Than Ngo <than@redhat.com> 1:3.3.7-1.fc6
+- update to 3.3.7
+- fix #209097, ml_IN font rendering
+- fix #209970, pa font rendering
+- fix #209098, or_IN font rendering
+- fix #209972, as_IN font rendering
+- fix #209975, bn_IN font rendering
+- fix #211259, te_IN font rendering
+- fix #211436, as_IN font rendering
+  thanks Sachin Tawniya, LingNing Zhang for the fixes
+- move html files to devel
+
 * Thu Aug 31 2006 Than Ngo <than@redhat.com> 1:3.3.6-13
 - add missing desktop files
 
