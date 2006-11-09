@@ -74,8 +74,11 @@ Patch200: qt-x11-free-3.3.4-fullscreen.patch
 # ODBC plugins
 %define plugin_odbc -plugin-sql-odbc
 
+# sqlite plugins
+%define plugin_sqlite -plugin-sql-sqlite
+
 %define plugins_style -qt-style-cde -qt-style-motifplus -qt-style-platinum -qt-style-sgi -qt-style-windows -qt-style-compact -qt-imgfmt-png -qt-imgfmt-jpeg -qt-imgfmt-mng
-%define plugins %{plugin_mysql} %{plugin_psql} %{plugin_odbc} %{plugins_style}
+%define plugins %{plugin_mysql} %{plugin_psql} %{plugin_odbc} %{plugin_sqlite} %{plugins_style}
 
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
@@ -115,7 +118,7 @@ BuildRequires: desktop-file-utils
 BuildRequires: mysql-devel
 BuildRequires: postgresql-devel
 BuildRequires: unixODBC-devel
-
+BuildRequires: sqlite-devel
 
 %package config
 Summary: Grapical configuration tool for programs using Qt
@@ -171,6 +174,12 @@ Group: System Environment/Libraries
 Requires: %{name} = %{epoch}:%{version}-%{release}
 
 
+%package sqlite
+Summary: sqlite drivers for Qt's SQL classes.
+Group: System Environment/Libraries
+Requires: %{name} = %{epoch}:%{version}-%{release}
+
+
 %package designer
 Summary: Interface designer (IDE) for the Qt toolkit
 Group: Development/Tools
@@ -222,6 +231,10 @@ MySQL driver for Qt's SQL classes (QSQL)
 
 %description PostgreSQL
 PostgreSQL driver for Qt's SQL classes (QSQL)
+
+
+%description sqlite
+sqlite driver for Qt's SQL classes (QSQL)
 
 
 %description designer
@@ -353,6 +366,11 @@ echo yes | ./configure \
   -xft
 
 make $SMP_MFLAGS src-qmake
+
+# build sqlite plugin
+pushd plugins/src/sqldrivers/sqlite
+qmake -o Makefile sqlite.pro
+popd
 
 # build psql plugin
 pushd plugins/src/sqldrivers/psql
@@ -506,17 +524,21 @@ rm -rf %{buildroot}
 %doc tutorial
 %{_mandir}/*/*
 
+%files sqlite
+%defattr(-,root,root,-)
+%{qtdir}/plugins/sqldrivers/libqsqlite.so
+
 %files ODBC
 %defattr(-,root,root,-)
-%{qtdir}/plugins/sqldrivers/libqsqlodbc*
+%{qtdir}/plugins/sqldrivers/libqsqlodbc.so
 
 %files PostgreSQL
 %defattr(-,root,root,-)
-%{qtdir}/plugins/sqldrivers/libqsqlpsql*
+%{qtdir}/plugins/sqldrivers/libqsqlpsql.so
 
 %files MySQL
 %defattr(-,root,root,-)
-%{qtdir}/plugins/sqldrivers/libqsqlmysql*
+%{qtdir}/plugins/sqldrivers/libqsqlmysql.so
 
 %files designer
 %defattr(-,root,root,-)
@@ -540,6 +562,7 @@ rm -rf %{buildroot}
 - fix #211436, as_IN font rendering
   thanks Sachin Tawniya, LingNing Zhang for the fixes
 - move html files to devel
+- add sqlite plugin
 
 * Thu Aug 31 2006 Than Ngo <than@redhat.com> 1:3.3.6-13
 - add missing desktop files
