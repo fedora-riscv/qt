@@ -18,6 +18,7 @@ Source7: qtconfig3.desktop
 Patch1: qt-3.3.4-print-CJK.patch
 Patch2: qt-3.0.5-nodebug.patch
 Patch3: qt-3.1.0-makefile.patch
+Patch4: qt-x11-free-3.3.7-umask.patch
 Patch5: qt-x11-free-3.3.6-strip.patch
 Patch7: qt-x11-free-3.3.2-quiet.patch
 Patch8: qt-x11-free-3.3.3-qembed.patch
@@ -247,6 +248,7 @@ for the Qt toolkit.
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
 %patch3 -p1 -b .makefile
+%patch4 -p1 -b .umask
 %patch5 -p1
 %patch7 -p1 -b .quiet
 %patch8 -p1 -b .qembed
@@ -563,6 +565,7 @@ rm -rf %{buildroot}
   thanks Sachin Tawniya, LingNing Zhang for the fixes
 - move html files to devel
 - add sqlite plugin
+- fix #189012, qt settings should be readable for other
 
 * Thu Aug 31 2006 Than Ngo <than@redhat.com> 1:3.3.6-13
 - add missing desktop files
