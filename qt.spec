@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -35,7 +35,10 @@ Patch28: qt-3.3.6-fontrendering-or_IN-209098.patch
 Patch29: qt-3.3.6-fontrendering-as_IN-209972.patch
 Patch30: qt-3.3.6-fontrendering-bn_IN-209975.patch
 Patch31: qt-3.3.6-fontrendering-te_IN-211259.patch
-Patch32: qt-3.3.6-fontrendering-as_IN-211436.patch
+Patch32: qt-3.3.6-fontrendering-214371.patch
+Patch33: qt-3.3.6-fontrendering-#214570.patch
+Patch34: qt-3.3.6-fontrendering-ml_IN-209974.patch
+Patch35: qt-3.3.6-fontrendering-ml_IN-217657.patch
 
 # immodule patches
 Patch50: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-pre.patch
@@ -265,7 +268,10 @@ for the Qt toolkit.
 %patch29 -p1 -b .fontrendering-as_IN-bz#209972
 %patch30 -p1 -b .fontrendering-bn_IN-bz#209975
 %patch31 -p1 -b .fontrendering-te_IN-bz#211259
-%patch32 -p1 -b .fontrendering-as_IN-bz211436
+%patch32 -p1 -b .fontrendering-bz#214371
+%patch33 -p1 -b .fontrendering-#214570
+%patch34 -p1 -b .fontrendering-#209974
+%patch35 -p1 -b .fontrendering-ml_IN-217657
 
 %if %{immodule}
 %patch50 -p1 -b .pre
@@ -553,6 +559,13 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Dec 06 2006 Than Ngo <than@redhat.com> - 1:3.3.7-2.fc7
+- Resolves: bz#214371, bn_IN font rendering
+- Resolves: bz#217657, ml_IN issue with cursor position
+- Resolves: bz#217638, regression bug in qt
+- Resolves: bz#209974, Vowel position set properly
+- Resolves: bz#214570, Rendering is not fine for 'RA' 09B0
+
 * Thu Nov 09 2006 Than Ngo <than@redhat.com> 1:3.3.7-1.fc6
 - update to 3.3.7
 - fix #209097, ml_IN font rendering
