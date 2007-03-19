@@ -1,0 +1,40 @@
+--- qt-x11-free-3.3.8/src/widgets/qtextedit.cpp.im	2007-03-19 10:19:10.000000000 +0100
++++ qt-x11-free-3.3.8/src/widgets/qtextedit.cpp	2007-03-19 10:19:47.000000000 +0100
+@@ -5059,6 +5059,10 @@
+ 
+ void QTextEdit::setDocument( QTextDocument *dc )
+ {
++    if ( dc == 0 ) {
++        qWarning( "Q3TextEdit::setDocument() called with null Q3TextDocument pointer" );
++        return;
++    }
+     if ( dc == doc )
+ 	return;
+     resetInputContext();
+--- qt-x11-free-3.3.8/src/widgets/qlineedit.cpp.im	2007-03-19 10:20:03.000000000 +0100
++++ qt-x11-free-3.3.8/src/widgets/qlineedit.cpp	2007-03-19 10:22:11.000000000 +0100
+@@ -457,10 +457,10 @@
+     \property QLineEdit::text
+     \brief the line edit's text
+ 
+-    Setting this property clears the selection, clears the undo/redo
+-    history, moves the cursor to the end of the line and resets the
+-    \c modified property to FALSE. The text is not validated when
+-    inserted with setText().
++    Note that setting this property clears the selection, clears the
++    undo/redo history, moves the cursor to the end of the line and
++    resets the \c modified property to FALSE. The text is not
++    validated when inserted with setText().
+ 
+     The text is truncated to maxLength() length.
+ 
+@@ -1014,6 +1014,9 @@
+ /*!
+     Selects text from position \a start and for \a length characters.
+ 
++    Note that this function sets the cursor's position to the end of
++    the selection regardless of its current position.
++
+     \sa deselect() selectAll() getSelection() cursorForward() cursorBackward()
+ */
+ 

@@ -1,0 +1,83 @@
+--- qt-x11-free-3.3.8/src/kernel/qwidget_x11.cpp	2007-02-02 15:01:13.000000000 +0100
++++ qt-x11-free-3.3.7/src/kernel/qwidget_x11.cpp	2006-10-19 16:25:16.000000000 +0200
+@@ -1442,7 +1442,16 @@
+     QWidget *tlw = topLevelWidget();
+     if ( tlw->isVisible() && !tlw->topData()->embedded && !qt_deferred_map_contains(tlw) ) {
+ 	XSetInputFocus( x11Display(), tlw->winId(), RevertToNone, qt_x_time);
+-        focusInputContext();
++
++#ifndef QT_NO_XIM
++	// trigger input context creation if it hasn't happened already
++	createInputContext();
++
++	if (tlw->topData()->xic) {
++	    QInputContext *qic = (QInputContext *) tlw->topData()->xic;
++	    qic->setFocus();
++	}
++#endif
+     }
+ }
+ 
+@@ -2717,16 +2726,14 @@
+ {
+ #ifndef QT_NO_XIM
+     QWidget *tlw = topLevelWidget();
+-    if (!tlw->isPopup() || isInputMethodEnabled()) {
+-        QTLWExtra *topdata = tlw->topData();
++    QTLWExtra *topdata = tlw->topData();
+ 
+-        // trigger input context creation if it hasn't happened already
+-        createInputContext();
++    // trigger input context creation if it hasn't happened already
++    createInputContext();
+ 
+-        if (topdata->xic) {
+-            QInputContext *qic = (QInputContext *) topdata->xic;
+-            qic->setFocus();
+-        }
++    if (topdata->xic) {
++	QInputContext *qic = (QInputContext *) topdata->xic;
++	qic->setFocus();
+     }
+ #endif // QT_NO_XIM
+ }
+--- qt-x11-free-3.3.8/src/widgets/qtextedit.cpp	2007-02-02 15:01:23.000000000 +0100
++++ qt-x11-free-3.3.7/src/widgets/qtextedit.cpp	2006-10-19 16:25:34.000000000 +0200
+@@ -4972,10 +4972,6 @@
+ 
+ void QTextEdit::setDocument( QTextDocument *dc )
+ {
+-    if ( dc == 0 ) {
+-        qWarning( "Q3TextEdit::setDocument() called with null Q3TextDocument pointer" );
+-        return;
+-    }
+     if ( dc == doc )
+ 	return;
+     resetInputContext();
+--- qt-x11-free-3.3.8/src/widgets/qlineedit.cpp	2007-02-02 15:01:24.000000000 +0100
++++ qt-x11-free-3.3.7/src/widgets/qlineedit.cpp	2006-10-19 16:25:36.000000000 +0200
+@@ -446,10 +446,10 @@
+     \property QLineEdit::text
+     \brief the line edit's text
+ 
+-    Note that setting this property clears the selection, clears the
+-    undo/redo history, moves the cursor to the end of the line and
+-    resets the \c modified property to FALSE. The text is not
+-    validated when inserted with setText().
++    Setting this property clears the selection, clears the undo/redo
++    history, moves the cursor to the end of the line and resets the
++    \c modified property to FALSE. The text is not validated when
++    inserted with setText().
+ 
+     The text is truncated to maxLength() length.
+ 
+@@ -1002,9 +1002,6 @@
+ /*!
+     Selects text from position \a start and for \a length characters.
+ 
+-    Note that this function sets the cursor's position to the end of
+-    the selection regardless of its current position.
+-
+     \sa deselect() selectAll() getSelection() cursorForward() cursorBackward()
+ */
+ 

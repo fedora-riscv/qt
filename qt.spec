@@ -40,9 +40,9 @@ Patch34: qt-3.3.6-fontrendering-ml_IN-209974.patch
 Patch35: qt-3.3.6-fontrendering-ml_IN-217657.patch
 
 # immodule patches
-Patch50: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-pre.patch
+Patch50: qt-x11-free-3.3.8-qt-x11-immodule-unified-qt3.3.7-20061229-pre.patch
 Patch51: qt-x11-immodule-unified-qt3.3.7-20061229.diff.bz2
-Patch52: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-post.patch
+Patch52: qt-x11-free-3.3.8-qt-x11-immodule-unified-qt3.3.7-20061229-post.patch
 Patch53: qt-x11-immodule-unified-qt3.3.5-20051012-quiet.patch
 Patch54: qt-x11-free-3.3.6-fix-key-release-event-with-imm.diff
 Patch55: qt-x11-free-3.3.6-qt-x11-immodule-unified-qt3.3.5-20060318-resetinputcontext.patch
@@ -52,8 +52,6 @@ Patch100: 0038-dragobject-dont-prefer-unknown.patch
 Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0056-khotkeys_input_84434.patch
-Patch104: 0069-fix-minsize.patch
-Patch105: 0070-fix-broken-fonts.patch
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
@@ -284,8 +282,6 @@ for the Qt toolkit.
 %patch101 -p0 -b .0047-fix-kmenu-width
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0056-khotkeys_input_84434
-%patch104 -p0 -b .0069-fix-minsize
-%patch105 -p0 -b .0070-fix-broken-fonts
 %patch200 -p1 -b .fullscreen
 
 # convert to UTF-8
@@ -557,7 +553,7 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Mon Mar 19 2007 Than Ngo <than@redhat.com> 1:3.3.8-1
+* Mon Mar 19 2007 Than Ngo <than@redhat.com> 1:3.3.8-1.fc7
 - update to 3.3.8
 
 * Wed Dec 06 2006 Than Ngo <than@redhat.com> - 1:3.3.7-2.fc7
