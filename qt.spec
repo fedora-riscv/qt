@@ -52,6 +52,7 @@ Patch100: 0038-dragobject-dont-prefer-unknown.patch
 Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0056-khotkeys_input_84434.patch
+Patch104: qt-font-default-subst.diff
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
@@ -282,6 +283,7 @@ for the Qt toolkit.
 %patch101 -p0 -b .0047-fix-kmenu-width
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0056-khotkeys_input_84434
+%patch104 -p0 -b .qt-font-default-subst
 %patch200 -p1 -b .fullscreen
 
 # convert to UTF-8
