@@ -113,6 +113,7 @@ BuildRequires: libSM-devel
 BuildRequires: libICE-devel
 BuildRequires: libXt-devel
 BuildRequires: libXmu-devel
+BuildRequires: libXi-devel
 BuildRequires: xorg-x11-proto-devel
 BuildRequires: mesa-libGL-devel
 BuildRequires: mesa-libGLU-devel
