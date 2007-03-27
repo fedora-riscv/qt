@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -367,7 +367,8 @@ echo yes | ./configure \
   -xkb \
   -ipv6 \
   -dlopen-opengl \
-  -xft
+  -xft \
+  -tablet
 
 make $SMP_MFLAGS src-qmake
 
@@ -555,6 +556,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Mar 27 2007 Than Ngo <than@redhat.com> 1:3.3.8-2.fc7
+- enable tablet support
+
 * Mon Mar 19 2007 Than Ngo <than@redhat.com> 1:3.3.8-1.fc7
 - update to 3.3.8
 
