@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 2%{?dist}
+Release: 3%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -53,6 +53,9 @@ Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0056-khotkeys_input_84434.patch
 Patch104: qt-font-default-subst.diff
+patch105: 0073-xinerama-aware-qpopup.patch
+Patch106: 0076-fix-qprocess.diff
+Patch107: 0077-utf8-decoder-fixes.diff
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
@@ -285,6 +288,10 @@ for the Qt toolkit.
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0056-khotkeys_input_84434
 %patch104 -p0 -b .qt-font-default-subst
+%patch105 -p0 -b .0073-xinerama-aware-qpopup
+%patch106 -p0 -b .0076-fix-qprocess
+%patch107 -p0 -b .0077-utf8-decoder-fixes
+
 %patch200 -p1 -b .fullscreen
 
 # convert to UTF-8
@@ -557,6 +564,12 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Apr 02 2007 Than Ngo <than@redhat.com> - 1:3.3.8-3.fc7
+- apply patches to fix
+   Qt UTF-8 overlong sequence decoding vulnerability
+   QPopupMenu aware of Xinerama
+   a regression in QProgress::writeToStdin()
+
 * Tue Mar 27 2007 Than Ngo <than@redhat.com> 1:3.3.8-2.fc7
 - enable tablet support
 
