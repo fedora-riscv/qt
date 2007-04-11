@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 3%{?dist}
+Release: 4%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -32,10 +32,10 @@ Patch25: qt-x11-free-3.3.8-uic-multilib.patch
 Patch26: qt-3.3.6-fontrendering-punjabi-209970.patch
 Patch27: qt-3.3.6-fontrendering-ml_IN-209097.patch
 Patch28: qt-3.3.6-fontrendering-or_IN-209098.patch
-Patch29: qt-3.3.6-fontrendering-as_IN-209972.patch
+Patch29: qt-3.3.8-fontrendering-as_IN-209972.patch
 Patch31: qt-3.3.6-fontrendering-te_IN-211259.patch
 Patch32: qt-3.3.6-fontrendering-214371.patch
-Patch33: qt-3.3.6-fontrendering-#214570.patch
+Patch33: qt-3.3.8-fontrendering-#214570.patch
 Patch34: qt-3.3.6-fontrendering-ml_IN-209974.patch
 Patch35: qt-3.3.6-fontrendering-ml_IN-217657.patch
 
@@ -564,6 +564,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Apr 11 2007 Than Ngo <than@redhat.com> - 1:3.3.8-4.fc7
+- adjust qt-3.3.8-fontrendering-as_IN-209972.patch and
+  qt-3.3.8-fontrendering-#214570.patch for qt-3.3.8
+
 * Mon Apr 02 2007 Than Ngo <than@redhat.com> - 1:3.3.8-3.fc7
 - apply patches to fix
    Qt UTF-8 overlong sequence decoding vulnerability
