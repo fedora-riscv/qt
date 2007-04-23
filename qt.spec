@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 4%{?dist}
+Release: 5%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -38,6 +38,7 @@ Patch32: qt-3.3.6-fontrendering-214371.patch
 Patch33: qt-3.3.8-fontrendering-#214570.patch
 Patch34: qt-3.3.6-fontrendering-ml_IN-209974.patch
 Patch35: qt-3.3.6-fontrendering-ml_IN-217657.patch
+Patch36: qt-3.3.6-fontrendering-gu-228451.patch
 
 # immodule patches
 Patch50: qt-x11-free-3.3.8-qt-x11-immodule-unified-qt3.3.7-20061229-pre.patch
@@ -273,6 +274,7 @@ for the Qt toolkit.
 %patch33 -p1 -b .fontrendering-#214570
 %patch34 -p1 -b .fontrendering-#209974
 %patch35 -p1 -b .fontrendering-ml_IN-217657
+%patch36 -p1 -b .fontrendering-gu-228451
 
 %if %{immodule}
 %patch50 -p1 -b .pre
@@ -564,6 +566,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Apr 23 2007 Than Ngo <than@redhat.com> - 1:3.3.8-5.fc7
+- apply patch to fix fontrendering problem in gu_IN #228451
+
 * Wed Apr 11 2007 Than Ngo <than@redhat.com> - 1:3.3.8-4.fc7
 - adjust qt-3.3.8-fontrendering-as_IN-209972.patch and
   qt-3.3.8-fontrendering-#214570.patch for qt-3.3.8
