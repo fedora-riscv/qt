@@ -571,7 +571,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Thu Jun 14 2007 Than Ngo <than@redhat.com> -  1:3.3.8-5.fc7.1
-- backport to fix #bz243722, Applications using qt-mysql crash if database is
+- backport to fix #bz243722, bz#244148, Applications using qt-mysql crash if database is
   removed before QApplication is destroyed
 
 * Mon Apr 23 2007 Than Ngo <than@redhat.com> - 1:3.3.8-5.fc7
