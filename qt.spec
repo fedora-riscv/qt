@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 5%{?dist}
+Release: 7%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -61,6 +61,10 @@ Patch107: 0077-utf8-decoder-fixes.diff
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
+Patch201: qt-x11-free-3.3.8-bz#243722-mysql.patch
+
+# security patces
+Patch300: qt3-CVE-2007-3388.patch
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -297,6 +301,10 @@ for the Qt toolkit.
 %patch107 -p0 -b .0077-utf8-decoder-fixes
 
 %patch200 -p1 -b .fullscreen
+%patch201 -p1 -b .bz#243722-mysql
+
+# security patches
+%patch300 -p1 -b .CVE-2007-3388
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -568,6 +576,11 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Aug 28 2007 Than Ngo <than@redhat.com> - 1:3.3.8-7
+- CVE-2007-3388 qt3 format string flaw
+- backport to fix #bz243722, bz#244148, Applications using qt-mysql crash if database is
+  removed before QApplication is destroyed
+
 * Mon Apr 23 2007 Than Ngo <than@redhat.com> - 1:3.3.8-5.fc7
 - apply patch to fix fontrendering problem in gu_IN #228451,#228452
 
