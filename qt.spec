@@ -464,7 +464,6 @@ mkdir -p %{buildroot}%{_datadir}/applications
 desktop-file-install \
   --dir %{buildroot}%{_datadir}/applications \
   --vendor="%{name}" \
-  --add-category="X-Fedora" \
   %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7}
 
 # Patch qmake to use qt-mt unconditionally
@@ -580,6 +579,7 @@ rm -rf %{buildroot}
 - CVE-2007-3388 qt3 format string flaw
 - backport to fix #bz243722, bz#244148, Applications using qt-mysql crash if database is
   removed before QApplication is destroyed
+- cleanup desktop files
 
 * Mon Apr 23 2007 Than Ngo <than@redhat.com> - 1:3.3.8-5.fc7
 - apply patch to fix fontrendering problem in gu_IN #228451,#228452

@@ -6,4 +6,4 @@ Icon=qtconfig3
 Terminal=false
 Encoding=UTF-8
 Type=Application
-Categories=Qt;Application;AdvancedSettings;Settings;
+Categories=Qt;Settings;
