@@ -57,7 +57,6 @@ Patch103: 0056-khotkeys_input_84434.patch
 Patch104: qt-font-default-subst.diff
 patch105: 0073-xinerama-aware-qpopup.patch
 Patch106: 0076-fix-qprocess.diff
-Patch107: 0077-utf8-decoder-fixes.diff
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
@@ -299,7 +298,6 @@ for the Qt toolkit.
 %patch104 -p0 -b .qt-font-default-subst
 %patch105 -p0 -b .0073-xinerama-aware-qpopup
 %patch106 -p0 -b .0076-fix-qprocess
-%patch107 -p0 -b .0077-utf8-decoder-fixes
 
 %patch200 -p1 -b .fullscreen
 %patch201 -p1 -b .bz#243722-mysql
@@ -579,7 +577,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Wed Aug 29 2007 Than Ngo <than@redhat.com> - 1:3.3.8-6.fc7.1
-- CVE-2007-0242, UTF8 improper character expansion
+- cleanup security patch
 
 * Tue Aug 28 2007 Than Ngo <than@redhat.com> - 1:3.3.8-6.fc7
 - CVE-2007-3388 qt3 format string flaw
