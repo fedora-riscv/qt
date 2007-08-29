@@ -65,6 +65,7 @@ Patch201: qt-x11-free-3.3.8-bz#243722-mysql.patch
 
 # security patces
 Patch300: qt3-CVE-2007-3388.patch
+Patch301: utf8-bug-qt3-CVE-2007-0242.diff
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
