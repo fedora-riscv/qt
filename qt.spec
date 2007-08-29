@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 7%{?dist}
+Release: 7%{?dist}.1
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -305,6 +305,7 @@ for the Qt toolkit.
 
 # security patches
 %patch300 -p1 -b .CVE-2007-3388
+%patch301 -p0 -b .CVE-2007-0242
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -575,6 +576,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Aug 29 2007 Than Ngo <than@redhat.com> - 1:3.3.8-7.fc7.1
+- CVE-2007-0242
+
 * Tue Aug 28 2007 Than Ngo <than@redhat.com> - 1:3.3.8-7
 - CVE-2007-3388 qt3 format string flaw
 - backport to fix #bz243722, bz#244148, Applications using qt-mysql crash if database is
