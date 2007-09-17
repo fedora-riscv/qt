@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 7%{?dist}.1
+Release: 8%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -57,7 +57,6 @@ Patch103: 0056-khotkeys_input_84434.patch
 Patch104: qt-font-default-subst.diff
 patch105: 0073-xinerama-aware-qpopup.patch
 Patch106: 0076-fix-qprocess.diff
-Patch107: 0077-utf8-decoder-fixes.diff
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
@@ -66,6 +65,7 @@ Patch201: qt-x11-free-3.3.8-bz#243722-mysql.patch
 # security patces
 Patch300: qt3-CVE-2007-3388.patch
 Patch301: utf8-bug-qt3-CVE-2007-0242.diff
+Patch302: qt-3.3.6-bz#292941-CVE-2007-4137.patch
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -299,7 +299,6 @@ for the Qt toolkit.
 %patch104 -p0 -b .qt-font-default-subst
 %patch105 -p0 -b .0073-xinerama-aware-qpopup
 %patch106 -p0 -b .0076-fix-qprocess
-%patch107 -p0 -b .0077-utf8-decoder-fixes
 
 %patch200 -p1 -b .fullscreen
 %patch201 -p1 -b .bz#243722-mysql
@@ -307,6 +306,7 @@ for the Qt toolkit.
 # security patches
 %patch300 -p1 -b .CVE-2007-3388
 %patch301 -p0 -b .CVE-2007-0242
+%patch302 -p0 -b .CVE-2007-4137
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -577,6 +577,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Sep 17 2007 Than Ngo <than@redhat.com> - 3.3.8-8
+- CVE-2007-4137
+
 * Wed Aug 29 2007 Than Ngo <than@redhat.com> - 1:3.3.8-7.fc7.1
 - CVE-2007-0242
 
