@@ -578,8 +578,8 @@ rm -rf %{buildroot}
 
 
 %changelog
-* Mo Sep 17 2007 Than Ngo <than@redhat.com> - 1:3.3.8-7
-- CVE-2007-4137
+* Mon Sep 17 2007 Than Ngo <than@redhat.com> - 1:3.3.8-7
+- bz292941, CVE-2007-4137
 
 * Wed Aug 29 2007 Than Ngo <than@redhat.com> - 1:3.3.8-6.fc7.1
 - cleanup security patch
