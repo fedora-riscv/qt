@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 8%{?dist}
+Release: 9%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -57,6 +57,10 @@ Patch103: 0056-khotkeys_input_84434.patch
 Patch104: qt-font-default-subst.diff
 patch105: 0073-xinerama-aware-qpopup.patch
 Patch106: 0076-fix-qprocess.diff
+Patch107: 0079-compositing-types.patch
+Patch108: 0080-net-wm-sync-request-2.patch
+Patch109: 0082-fix-qdatetime-fromstring.diff
+Patch110: 0084-compositing-properties.patch
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
@@ -299,6 +303,10 @@ for the Qt toolkit.
 %patch104 -p0 -b .qt-font-default-subst
 %patch105 -p0 -b .0073-xinerama-aware-qpopup
 %patch106 -p0 -b .0076-fix-qprocess
+%patch107 -p0 -b .0079-compositing-types
+%patch108 -p0 -b .0080-net-wm-sync-request
+%patch109 -p0 -b .0082-fix-qdatetime-fromstring
+%patch110 -p0 -b .0084-compositing-properties
 
 %patch200 -p1 -b .fullscreen
 %patch201 -p1 -b .bz#243722-mysql
@@ -499,6 +507,7 @@ rm -rf %{buildroot}
 %dir %{qtdir}/bin
 %dir %{qtdir}/lib
 %dir %{qtdir}/plugins
+%dir %{qtdir}/plugins/styles
 %if %{immodule}
 %{qtdir}/plugins/inputmethods
 %endif
@@ -577,6 +586,10 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Oct 04 2007 Than Ngo <than@redhat.com> - 3.3.8-9
+- rh#309091, qt should provide %%{qtdir}/plugins/styles
+- rh#276521, qt-copy patches 0079, 0080, 0082 and 0084
+
 * Mon Sep 17 2007 Than Ngo <than@redhat.com> - 3.3.8-8
 - CVE-2007-4137
 
