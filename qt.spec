@@ -493,6 +493,9 @@ install -m 644 tools/assistant/images/designer.png %{buildroot}%{_datadir}/pixma
 install -m 644 tools/assistant/images/assistant.png %{buildroot}%{_datadir}/pixmaps/assistant3.png
 install -m 644 tools/assistant/images/linguist.png %{buildroot}%{_datadir}/pixmaps/linguist3.png
 
+# own style directory
+mkdir -p %{buildroot}%{qtdir}/plugins/styles
+
 %clean
 rm -rf %{buildroot}
 
