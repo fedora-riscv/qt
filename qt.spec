@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8
-Release: 9%{?dist}
+Release: 10%{?dist}
 Epoch: 1
 License: GPL/QPL
 Group: System Environment/Libraries
@@ -138,7 +138,7 @@ BuildRequires: unixODBC-devel
 BuildRequires: sqlite-devel
 
 %package config
-Summary: Grapical configuration tool for programs using Qt
+Summary: Graphical configuration tool for programs using Qt
 Group: User Interface/Desktops
 Requires: %{name} = %{epoch}:%{version}-%{release}
 
@@ -221,7 +221,7 @@ for the X Window System.
 
 Qt is written in C++ and is fully object-oriented.
 
-This package contains a grapical configuration tool for programs using Qt.
+This package contains a graphical configuration tool for programs using Qt.
 
 
 %description devel
@@ -589,6 +589,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Wed Nov  7 2007 Stepan Kasal <skasal@redhat.com> - 3.3.8-10
+- rh#239216, fix a typo in qt-config description
+
 * Thu Oct 04 2007 Than Ngo <than@redhat.com> - 3.3.8-9
 - rh#309091, qt should provide %%{qtdir}/plugins/styles
 - rh#276521, qt-copy patches 0079, 0080, 0082 and 0084
