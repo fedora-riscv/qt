@@ -1,0 +1,11 @@
+--- qscriptengine_x11.cpp.bak	2007-10-31 15:17:06.000000000 +0800
++++ qscriptengine_x11.cpp	2007-10-31 16:42:24.000000000 +0800
+@@ -226,7 +226,7 @@
+     Invalid, VowelMark, VowelMark, VowelMark,
+     Invalid, IndependentVowel, IndependentVowel, IndependentVowel,
+     IndependentVowel, IndependentVowel, IndependentVowel, IndependentVowel,
+-    Invalid, IndependentVowel, Invalid, IndependentVowel,
++    IndependentVowel, IndependentVowel, Invalid, IndependentVowel,
+ 
+     IndependentVowel, IndependentVowel, Invalid, IndependentVowel,
+     IndependentVowel, Consonant, Consonant, Consonant,
