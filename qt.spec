@@ -40,7 +40,6 @@ Patch34: qt-3.3.6-fontrendering-ml_IN-209974.patch
 Patch35: qt-3.3.6-fontrendering-ml_IN-217657.patch
 Patch36: qt-3.3.6-fontrendering-gu-228451.patch
 Patch37: qt-3.3.6-fontrendering-gu-228452.patch
-Patch38: qt-3.3.8-fontrendering-gu_IN-228453.patch
 
 # immodule patches
 Patch50: qt-x11-free-3.3.8-qt-x11-immodule-unified-qt3.3.7-20061229-pre.patch
@@ -291,7 +290,6 @@ for the Qt toolkit.
 %patch35 -p1 -b .fontrendering-ml_IN-217657
 %patch36 -p1 -b .fontrendering-gu-228451
 %patch37 -p1 -b .fontrendering-gu-228452
-%patch38 -p1 -b .fonndering-gu_IN-228453
 
 %if %{immodule}
 %patch50 -p1 -b .pre
@@ -596,7 +594,6 @@ rm -rf %{buildroot}
 
 %changelog
 * Mon Nov 26 2007 Than Ngo <than@redhat.com> 3.3.8-11
-- rh#228453, Independent Vowel is treated as Dependent vowel, thanks to LingNing Zhang
 - add Provides: qt3 = %%version-%%release
 
 * Wed Nov  7 2007 Stepan Kasal <skasal@redhat.com> - 3.3.8-10
