@@ -7,7 +7,7 @@ License: GPLv3
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Url: http://www.troll.no
-Source0: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
+Source0: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.gz
 Source2: qt.sh
 Source3: qt.csh
 Source4: designer3.desktop
