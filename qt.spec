@@ -3,7 +3,7 @@ Name: qt
 Version: 3.3.8b
 Release: 1%{?dist}
 Epoch: 1
-License: GPLv2 or GPLv3
+License: QPL or GPLv2 or GPLv3
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Url: http://www.troll.no
@@ -566,7 +566,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Thu Jan 24 2008 Than Ngo <than@redhat.com> 3.3.8b-1
-- License: GPLv2 or GPLv3
+- License: QPL or GPLv2 or GPLv3
 - merged in 3.3.8b -> drop following patches:
     * qt-3.3.6-fontrendering-punjabi-209970.patch
     * qt-3.3.6-fontrendering-or_IN-209098.patch
