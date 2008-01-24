@@ -482,7 +482,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc FAQ LICENSE.QPL README* changes*
+%doc FAQ LICENSE* README* changes*
 %dir %{qtdir}
 %dir %{qtdir}/bin
 %dir %{qtdir}/lib
