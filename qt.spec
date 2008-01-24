@@ -1,13 +1,13 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
-Version: 3.3.8
-Release: 7%{?dist}
+Version: 3.3.8b
+Release: 1%{?dist}
 Epoch: 1
-License: GPL/QPL
+License: GPLv2 or GPLv3
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Url: http://www.troll.no
-Source0: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.bz2
+Source0: ftp://ftp.troll.no/qt/source/qt-x11-free-%{version}.tar.gz
 Source2: qt.sh
 Source3: qt.csh
 Source4: designer3.desktop
@@ -578,6 +578,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jan 24 2008 Than Ngo <than@redhat.com> 3.3.8b-1
+- License: GPLv2 or GPLv3
+
 * Mon Sep 17 2007 Than Ngo <than@redhat.com> - 1:3.3.8-7
 - bz292941, CVE-2007-4137
 
