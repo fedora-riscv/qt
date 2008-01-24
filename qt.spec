@@ -28,7 +28,7 @@ Patch14: qt-x11-free-3.3.3-gl.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
 Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
-Patch25: qt-x11-free-3.3.8-uic-multilib.patch
+Patch25: qt-x11-free-3.3.8b-uic-multilib.patch
 Patch26: qt-3.3.6-fontrendering-punjabi-209970.patch
 Patch27: qt-3.3.6-fontrendering-ml_IN-209097.patch
 Patch28: qt-3.3.6-fontrendering-or_IN-209098.patch
