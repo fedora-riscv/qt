@@ -29,16 +29,13 @@ Patch19: qt-3.3.3-gtkstyle.patch
 Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
 Patch25: qt-x11-free-3.3.8b-uic-multilib.patch
-Patch26: qt-3.3.6-fontrendering-punjabi-209970.patch
 Patch27: qt-3.3.6-fontrendering-ml_IN-209097.patch
-Patch28: qt-3.3.6-fontrendering-or_IN-209098.patch
 Patch29: qt-3.3.8-fontrendering-as_IN-209972.patch
 Patch31: qt-3.3.6-fontrendering-te_IN-211259.patch
 Patch32: qt-3.3.6-fontrendering-214371.patch
 Patch33: qt-3.3.8-fontrendering-#214570.patch
 Patch34: qt-3.3.6-fontrendering-ml_IN-209974.patch
 Patch35: qt-3.3.6-fontrendering-ml_IN-217657.patch
-Patch36: qt-3.3.6-fontrendering-gu-228451.patch
 Patch37: qt-3.3.6-fontrendering-gu-228452.patch
 
 # immodule patches
@@ -54,22 +51,13 @@ Patch100: 0038-dragobject-dont-prefer-unknown.patch
 Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0056-khotkeys_input_84434.patch
-Patch104: qt-font-default-subst.diff
 patch105: 0073-xinerama-aware-qpopup.patch
-Patch106: 0076-fix-qprocess.diff
 Patch107: 0079-compositing-types.patch
 Patch108: 0080-net-wm-sync-request-2.patch
-Patch109: 0082-fix-qdatetime-fromstring.diff
 Patch110: 0084-compositing-properties.patch
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
-Patch201: qt-x11-free-3.3.8-bz#243722-mysql.patch
-
-# security patces
-Patch300: qt3-CVE-2007-3388.patch
-Patch301: utf8-bug-qt3-CVE-2007-0242.diff
-Patch302: qt-3.3.6-bz#292941-CVE-2007-4137.patch
 
 %define qt_dirname qt-3.3
 %define qtdir %{_libdir}/%{qt_dirname}
@@ -275,18 +263,16 @@ for the Qt toolkit.
 %patch20 -p1 -b .gcc4-buildkey
 %patch24 -p1 -b .uic
 %patch25 -p1 -b .uic-multilib
-%patch26 -p1 -b .fontrendering-punjabi-bz#209970
 %patch27 -p1 -b .fontrendering-ml_IN-bz#209097
-%patch28 -p1 -b .fontrendering-or_IN-bz#209098
 %patch29 -p1 -b .fontrendering-as_IN-bz#209972
 %patch31 -p1 -b .fontrendering-te_IN-bz#211259
 %patch32 -p1 -b .fontrendering-bz#214371
 %patch33 -p1 -b .fontrendering-#214570
 %patch34 -p1 -b .fontrendering-#209974
 %patch35 -p1 -b .fontrendering-ml_IN-217657
-%patch36 -p1 -b .fontrendering-gu-228451
 %patch37 -p1 -b .fontrendering-gu-228452
 
+# immodule patches
 %if %{immodule}
 %patch50 -p1 -b .pre
 %patch51 -p1
@@ -296,25 +282,18 @@ for the Qt toolkit.
 %patch55 -p1 -b .resetinputcontext
 %endif
 
+# qt-copy patches
 %patch100 -p0 -b .0038-dragobject-dont-prefer-unknown
 %patch101 -p0 -b .0047-fix-kmenu-width
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0056-khotkeys_input_84434
-%patch104 -p0 -b .qt-font-default-subst
 %patch105 -p0 -b .0073-xinerama-aware-qpopup
-%patch106 -p0 -b .0076-fix-qprocess
 %patch107 -p0 -b .0079-compositing-types
 %patch108 -p0 -b .0080-net-wm-sync-request
-%patch109 -p0 -b .0082-fix-qdatetime-fromstring
 %patch110 -p0 -b .0084-compositing-properties
 
+# upstream patches
 %patch200 -p1 -b .fullscreen
-%patch201 -p1 -b .bz#243722-mysql
-
-# security patches
-%patch300 -p1 -b .CVE-2007-3388
-%patch301 -p0 -b .CVE-2007-0242
-%patch302 -p0 -b .CVE-2007-4137
 
 # convert to UTF-8
 iconv -f iso-8859-1 -t utf-8 < doc/man/man3/qdial.3qt > doc/man/man3/qdial.3qt_
@@ -591,6 +570,17 @@ rm -rf %{buildroot}
 %changelog
 * Thu Jan 24 2008 Than Ngo <than@redhat.com> - 3.3.8b-1
 - License: GPLv2 or GPLv3 
+- merged in 3.3.8b -> drop following patches:
+    * qt-3.3.6-fontrendering-punjabi-209970.patch
+    * qt-3.3.6-fontrendering-or_IN-209098.patch
+    * qt-3.3.6-fontrendering-gu-228451.patch
+    * qt-font-default-subst.diff
+    * 0076-fix-qprocess.diff
+    * 0082-fix-qdatetime-fromstring.diff
+    * qt-x11-free-3.3.8-bz#243722-mysql.patch
+    * qt3-CVE-2007-3388.patch
+    * utf8-bug-qt3-CVE-2007-0242.diff
+    * qt-3.3.6-bz#292941-CVE-2007-4137.patch
 
 * Thu Oct 04 2007 Than Ngo <than@redhat.com> - 3.3.8-9
 - rh#309091, qt should provide %%{qtdir}/plugins/styles
