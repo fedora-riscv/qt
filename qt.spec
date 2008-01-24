@@ -1,9 +1,9 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8b
-Release: 2%{?dist}
+Release: 3%{?dist}
 Epoch: 1
-License: GPLv2 or GPLv3
+License: QPL or GPLv2 or GPLv3
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Url: http://www.troll.no
@@ -488,7 +488,7 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root,-)
-%doc FAQ LICENSE.QPL README* changes*
+%doc FAQ LICENSE* README* changes*
 %dir %{qtdir}
 %dir %{qtdir}/bin
 %dir %{qtdir}/lib
@@ -572,6 +572,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Thu Jan 24 2008 Than Ngo <than@redhat.com> 3.3.8b-3
+- add LICENSE.GPL2/GPL3
+
 * Thu Jan 24 2008 Than Ngo <than@redhat.com> 3.3.8b-2
 - License: GPLv2 or GPLv3
 - merged in 3.3.8b -> drop following patches:
