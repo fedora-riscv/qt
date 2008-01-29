@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8b
-Release: 1%{?dist}
+Release: 2%{?dist}
 Epoch: 1
 License: QPL or GPLv2 or GPLv3
 Group: System Environment/Libraries
@@ -565,6 +565,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Jan 29 2008 Than Ngo <than@redhat.com> 3.3.8b-2
+- fix assistant description
+
 * Thu Jan 24 2008 Than Ngo <than@redhat.com> 3.3.8b-1
 - License: QPL or GPLv2 or GPLv3
 - merged in 3.3.8b -> drop following patches:
