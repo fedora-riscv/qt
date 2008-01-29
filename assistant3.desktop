@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Qt3 Assistant 
-Comment=Add translations to Qt3 applications
+Comment=A tool for presenting on-line documentation
 Exec=assistant
 Icon=assistant3
 Terminal=false
