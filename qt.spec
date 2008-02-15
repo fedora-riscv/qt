@@ -37,6 +37,7 @@ Patch33: qt-3.3.8-fontrendering-#214570.patch
 Patch34: qt-3.3.6-fontrendering-ml_IN-209974.patch
 Patch35: qt-3.3.6-fontrendering-ml_IN-217657.patch
 Patch37: qt-3.3.6-fontrendering-gu-228452.patch
+Patch38: qt-x11-free-3.3.8b-gcc43.patch
 
 # immodule patches
 Patch50: qt-x11-free-3.3.8-qt-x11-immodule-unified-qt3.3.7-20061229-pre.patch
@@ -275,6 +276,7 @@ for the Qt toolkit.
 %patch34 -p1 -b .fontrendering-#209974
 %patch35 -p1 -b .fontrendering-ml_IN-217657
 %patch37 -p1 -b .fontrendering-gu-228452
+%patch38 -p1 -b .gcc34
 
 # immodule patches
 %if %{immodule}
