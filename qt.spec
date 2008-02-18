@@ -575,7 +575,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Mon Feb 18 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 3.3.8b-5
-- fix buildkey for GCC 4.3
+- fix buildkey for GCC 4.3 (#433235)
 
 * Mon Feb 11 2008 Than Ngo <than@redhat.com> 3.3.8b-4
 - rebuild for GCC 4.3
