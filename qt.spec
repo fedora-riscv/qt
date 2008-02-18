@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8b
-Release: 4%{?dist}
+Release: 5%{?dist}
 Epoch: 1
 License: QPL or GPLv2 or GPLv3
 Group: System Environment/Libraries
@@ -26,7 +26,7 @@ Patch12: qt-uic-nostdlib.patch
 Patch13: qt-x11-free-3.3.6-qfontdatabase_x11.patch
 Patch14: qt-x11-free-3.3.3-gl.patch
 Patch19: qt-3.3.3-gtkstyle.patch 
-Patch20: qt-x11-free-3.3.5-gcc4-buildkey.patch
+Patch20: qt-x11-free-3.3.8b-gcc4-buildkey.patch
 Patch24: qt-x11-free-3.3.5-uic.patch
 Patch25: qt-x11-free-3.3.8b-uic-multilib.patch
 Patch27: qt-3.3.6-fontrendering-ml_IN-209097.patch
@@ -574,6 +574,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Mon Feb 18 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 3.3.8b-5
+- fix buildkey for GCC 4.3
+
 * Mon Feb 11 2008 Than Ngo <than@redhat.com> 3.3.8b-4
 - rebuild for GCC 4.3
 
