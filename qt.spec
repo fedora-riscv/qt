@@ -1,7 +1,7 @@
 Summary: The shared library for the Qt GUI toolkit.
 Name: qt
 Version: 3.3.8b
-Release: 5%{?dist}
+Release: 6%{?dist}
 Epoch: 1
 License: QPL or GPLv2 or GPLv3
 Group: System Environment/Libraries
@@ -90,6 +90,7 @@ Requires(postun): /sbin/ldconfig
 Requires: fileutils
 Requires: fontconfig >= 2.0
 Requires: /etc/ld.so.conf.d
+Requires: pkgconfig
 
 Provides: qt3 = %version-%release
 
@@ -154,7 +155,6 @@ Requires: xorg-x11-proto-devel
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: libmng-devel
-Requires: pkgconfig
 Requires: mesa-libGL-devel
 Requires: mesa-libGLU-devel
 
@@ -499,6 +499,7 @@ rm -rf %{buildroot}
 %if %{immodule}
 %{qtdir}/plugins/inputmethods
 %endif
+%attr(0755,root,root) %config /etc/profile.d/*
 /etc/ld.so.conf.d/*
 %{qtdir}/lib/libqui.so.*
 %{qtdir}/lib/libqt*.so.*
@@ -511,7 +512,6 @@ rm -rf %{buildroot}
 
 %files devel
 %defattr(-,root,root,-)
-%attr(0755,root,root) %config /etc/profile.d/*
 %{qtdir}/bin/moc
 %{qtdir}/bin/uic
 %{qtdir}/bin/findtr
@@ -574,6 +574,9 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Fri Mar 07 2008 Than Ngo <than@redhat.com> 3.3.8b-6
+- move qt.[c]sh in main package (#221000)
+
 * Mon Feb 18 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 3.3.8b-5
 - fix buildkey for GCC 4.3 (#433235)
 
