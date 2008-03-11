@@ -52,9 +52,12 @@ Patch101: 0047-fix-kmenu-width.diff
 Patch102: 0048-qclipboard_hack_80072.patch
 Patch103: 0056-khotkeys_input_84434.patch
 patch105: 0073-xinerama-aware-qpopup.patch
+patch106: 0076-fix-qprocess.diff
 Patch107: 0079-compositing-types.patch
 Patch108: 0080-net-wm-sync-request-2.patch
+Patch109: 0081-format-string-fixes.diff
 Patch110: 0084-compositing-properties.patch
+Patch111: 0088-fix-xinput-clash.diff
 
 # upstream patches
 Patch200: qt-x11-free-3.3.4-fullscreen.patch
@@ -293,9 +296,12 @@ for the Qt toolkit.
 %patch102 -p0 -b .0048-qclipboard_hack_80072
 %patch103 -p0 -b .0056-khotkeys_input_84434
 %patch105 -p0 -b .0073-xinerama-aware-qpopup
+%patch106 -p0 -b .0076-fix-qprocess.diff
 %patch107 -p0 -b .0079-compositing-types
 %patch108 -p0 -b .0080-net-wm-sync-request
+%patch109 -p0 -b .0081-format-string-fixes
 %patch110 -p0 -b .0084-compositing-properties
+%patch111 -p0 -b .0088-fix-xinput-clash
 
 # upstream patches
 %patch200 -p1 -b .fullscreen
@@ -576,6 +582,9 @@ rm -rf %{buildroot}
 %changelog
 * Fri Mar 07 2008 Than Ngo <than@redhat.com> 3.3.8b-6
 - move qt.[c]sh in main package (#221000)
+- 0088-fix-xinput-clash.diff, fix compile errors with Xmd.h
+- 0076-fix-qprocess.diff, fix a regression in QProgress::writeToStdin()
+- 0081-format-string-fixes.diff, fix various format string errors on Qt 3.x code base
 
 * Mon Feb 18 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 3.3.8b-5
 - fix buildkey for GCC 4.3 (#433235)
