@@ -1,8 +1,17 @@
-Summary: The shared library for the Qt GUI toolkit.
+Summary: The shared library for the Qt 3 GUI toolkit
+%if 0
+#if 0%{?fedora} > 8
+Name: qt3
+Obsoletes: qt < 1:%{version}-%{release}
+Provides: qt = 1:%{version}-%{release}
+%else
 Name: qt
-Version: 3.3.8b
-Release: 7%{?dist}
 Epoch: 1
+Obsoletes: qt3 < %{version}-%{release}
+Provides: qt3 = %{version}-%{release}
+%endif
+Version: 3.3.8b
+Release: 8%{?dist}
 License: QPL or GPLv2 or GPLv3
 Group: System Environment/Libraries
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -93,8 +102,6 @@ Requires: fontconfig >= 2.0
 Requires: /etc/ld.so.conf.d
 Requires: pkgconfig
 
-Provides: qt3 = %version-%release
-
 BuildRequires: desktop-file-utils
 BuildRequires: libmng-devel
 BuildRequires: glibc-devel
@@ -130,16 +137,25 @@ BuildRequires: postgresql-devel
 BuildRequires: unixODBC-devel
 BuildRequires: sqlite-devel
 
+
 %package config
-Summary: Graphical configuration tool for programs using Qt
+Summary: Graphical configuration tool for programs using Qt 3
 Group: User Interface/Desktops
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}:%{version}-%{release}
+
+%if "%{name}" == "qt"
+Obsoletes: qt3-config < %{version}-%{release}
+Provides:  qt3-config = %{version}-%{release}
+%else
+Obsoletes: qt-config < 1:%{version}-%{release}
+Provides:  qt-config = 1:%{version}-%{release}
+%endif
 
 
 %package devel
-Summary: Development files for the Qt GUI toolkit.
+Summary: Development files for the Qt 3 GUI toolkit
 Group: Development/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}:%{version}-%{release}
 Requires: freetype-devel
 Requires: fontconfig-devel
 Requires: libXrender-devel
@@ -159,42 +175,97 @@ Requires: libmng-devel
 Requires: mesa-libGL-devel
 Requires: mesa-libGLU-devel
 
-Provides: qt3-devel = %version-%release
+%if "%{name}" == "qt"
+Obsoletes: qt3-devel < %{version}-%{release}
+Provides:  qt3-devel = %{version}-%{release}
+%else
+Obsoletes: qt-devel < 1:%{version}-%{release}
+Provides:  qt-devel = 1:%{version}-%{release}
+%endif
+
 
 %package devel-docs
-Summary: Documentation for the Qt GUI toolkit.
+Summary: Documentation for the Qt 3 GUI toolkit
 Group: Development/Libraries
-Requires: %{name}-devel = %{epoch}:%{version}-%{release}
+Requires: %{name}-devel = %{?epoch:%{epoch}:}:%{version}-%{release}
+
+%if "%{name}" == "qt"
+Obsoletes: qt3-devel-docs < %{version}-%{release}
+Provides:  qt3-devel-docs = %{version}-%{release}
+%else
+Obsoletes: qt-devel-docs < 1:%{version}-%{release}
+Provides:  qt-devel-docs = 1:%{version}-%{release}
+%endif
 
 
 %package ODBC
-Summary: ODBC drivers for Qt's SQL classes.
+Summary: ODBC drivers for Qt 3's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}:%{version}-%{release}
+
+%if "%{name}" == "qt"
+Obsoletes: qt3-ODBC < %{version}-%{release}
+Provides:  qt3-ODBC = %{version}-%{release}
+%else
+Obsoletes: qt-ODBC < 1:%{version}-%{release}
+Provides:  qt-ODBC = 1:%{version}-%{release}
+%endif
 
 
 %package MySQL
-Summary: MySQL drivers for Qt's SQL classes.
+Summary: MySQL drivers for Qt 3's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}:%{version}-%{release}
+
+%if "%{name}" == "qt"
+Obsoletes: qt3-MySQL < %{version}-%{release}
+Provides:  qt3-MySQL = %{version}-%{release}
+%else
+Obsoletes: qt-MySQL < 1:%{version}-%{release}
+Provides:  qt-MySQL = 1:%{version}-%{release}
+%endif
 
 
 %package PostgreSQL
-Summary: PostgreSQL drivers for Qt's SQL classes.
+Summary: PostgreSQL drivers for Qt 3's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}:%{version}-%{release}
+
+%if "%{name}" == "qt"
+Obsoletes: qt3-PostgreSQL < %{version}-%{release}
+Provides:  qt3-PostgreSQL = %{version}-%{release}
+%else
+Obsoletes: qt-PostgreSQL < 1:%{version}-%{release}
+Provides:  qt-PostgreSQL = 1:%{version}-%{release}
+%endif
 
 
 %package sqlite
-Summary: sqlite drivers for Qt's SQL classes.
+Summary: sqlite drivers for Qt 3's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{epoch}:%{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}:%{version}-%{release}
+
+%if "%{name}" == "qt"
+Obsoletes: qt3-sqlite < %{version}-%{release}
+Provides:  qt3-sqlite = %{version}-%{release}
+%else
+Obsoletes: qt-sqlite < 1:%{version}-%{release}
+Provides:  qt-sqlite = 1:%{version}-%{release}
+%endif
 
 
 %package designer
-Summary: Interface designer (IDE) for the Qt toolkit
+Summary: Interface designer (IDE) for the Qt 3 toolkit
 Group: Development/Tools
-Requires: %{name}-devel = %{epoch}:%{version}-%{release}
+Requires: %{name}-devel = %{?epoch:%{epoch}:}:%{version}-%{release}
+
+%if "%{name}" == "qt"
+Obsoletes: qt3-designer < %{version}-%{release}
+Provides:  qt3-designer = %{version}-%{release}
+%else
+Obsoletes: qt-designer < 1:%{version}-%{release}
+Provides:  qt-designer = 1:%{version}-%{release}
+%endif
 
 
 %description
@@ -204,8 +275,8 @@ for the X Window System.
 
 Qt is written in C++ and is fully object-oriented.
 
-This package contains the shared library needed to run qt
-applications, as well as the README files for qt.
+This package contains the shared library needed to run Qt 3
+applications, as well as the README files for Qt 3.
 
 
 %description config
@@ -215,46 +286,46 @@ for the X Window System.
 
 Qt is written in C++ and is fully object-oriented.
 
-This package contains a graphical configuration tool for programs using Qt.
+This package contains a graphical configuration tool for programs using Qt 3.
 
 
 %description devel
-The qt-devel package contains the files necessary to develop
+The %{name}-devel package contains the files necessary to develop
 applications using the Qt GUI toolkit: the header files, the Qt meta
 object compiler.
 
-Install qt-devel if you want to develop GUI applications using the Qt
+Install %{name}-devel if you want to develop GUI applications using the Qt 3
 toolkit.
 
 
 %description devel-docs
-The qt-devel-docs package contains the man pages, the HTML documentation and
-example programs.
+The %{name}-devel-docs package contains the man pages, the HTML documentation and
+example programs for Qt 3.
 
 
 %description ODBC
-ODBC driver for Qt's SQL classes (QSQL)
+ODBC driver for Qt 3's SQL classes (QSQL)
 
 
 %description MySQL
-MySQL driver for Qt's SQL classes (QSQL)
+MySQL driver for Qt 3's SQL classes (QSQL)
 
 
 %description PostgreSQL
-PostgreSQL driver for Qt's SQL classes (QSQL)
+PostgreSQL driver for Qt 3's SQL classes (QSQL)
 
 
 %description sqlite
-sqlite driver for Qt's SQL classes (QSQL)
+sqlite driver for Qt 3's SQL classes (QSQL)
 
 
 %description designer
-The qt-designer package contains an User Interface designer tool
-for the Qt toolkit.
+The %{name}-designer package contains an User Interface designer tool
+for the Qt 3 toolkit.
 
 
 %prep
-%setup -q -n %{name}-x11-free-%{version}
+%setup -q -n qt-x11-free-%{version}
 %patch1 -p1 -b .cjk
 %patch2 -p1 -b .ndebug
 %patch3 -p1 -b .makefile
@@ -460,7 +531,7 @@ install -m 755 %{SOURCE2} %{SOURCE3} %{buildroot}/etc/profile.d/
 mkdir -p %{buildroot}%{_datadir}/applications
 desktop-file-install \
   --dir %{buildroot}%{_datadir}/applications \
-  --vendor="%{name}" \
+  --vendor="qt" \
   %{SOURCE4} %{SOURCE5} %{SOURCE6} %{SOURCE7}
 
 # Patch qmake to use qt-mt unconditionally
@@ -576,6 +647,13 @@ rm -rf %{buildroot}
 
 
 %changelog
+* Tue Mar 11 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 3.3.8b-8
+- prepare for rename to qt3 on Fedora >= 9 (not enabled yet)
+- add Provides and Obsoletes everywhere
+- update summaries and descriptions
+- remove dots at end of Summary tags
+- fix non-UTF-8 characters
+
 * Tue Mar 11 2008 Than Ngo <than@redhat.com> 3.3.8b-7
 - 0088-fix-xinput-clash.diff, fix compile errors with Xmd.h
 
@@ -1622,7 +1700,7 @@ rm -rf %{buildroot}
 * Fri Mar  3 2000 Bill Nottingham <notting@redhat.com>
 - fix %postun script
 
-* Fri Feb 18 2000 Bernhard Rosenkr�zer <bero@redhat.com>
+* Fri Feb 18 2000 Bernhard Rosenkränzer <bero@redhat.com>
 - beta1
 - get rid of qt-ImageIO, the functionality is now in the main Qt library
 - remove qt-Network, the functionality is now in the main Qt library
@@ -1648,7 +1726,7 @@ rm -rf %{buildroot}
 * Thu Jan 13 2000 Bernhard Rosenkraenzer <bero@redhat.com>
 - switch from glxMesa to Mesa for the GL addon
 
-* Wed Jan 5 2000 Bernhard Rosenkr�zer <bero@redhat.com>
+* Wed Jan 5 2000 Bernhard Rosenkränzer <bero@redhat.com>
 - Fix up dependencies
 - new snapshot
 
