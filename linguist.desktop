@@ -1,8 +1,8 @@
 [Desktop Entry]
-Name=Qt3 Linguist 
-Comment=Add translations to Qt3 applications
-Exec=linguist
-Icon=linguist3
+Name=Qt4 Linguist 
+Comment=Add translations to Qt4 applications
+Exec=linguist-qt4
+Icon=linguist4
 MimeType=application/x-linguist;
 Terminal=false
 Encoding=UTF-8
