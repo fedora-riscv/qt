@@ -1,0 +1,11 @@
+--- qt-x11-opensource-src-4.3.0beta/tools/assistant/lib/qassistantclient.cpp.assistant4	2007-03-19 15:15:06.000000000 -0500
++++ qt-x11-opensource-src-4.3.0beta/tools/assistant/lib/qassistantclient.cpp	2007-03-21 14:02:59.000000000 -0500
+@@ -172,7 +172,7 @@
+     : QObject( parent ), host ( QLatin1String("localhost") )
+ {
+     if ( path.isEmpty() )
+-        assistantCommand = QLatin1String("assistant");
++        assistantCommand = QLatin1String("assistant-qt4");
+     else {
+         QFileInfo fi( path );
+         if ( fi.isDir() )
