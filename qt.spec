@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -153,7 +153,7 @@ handling.
 %package devel
 Summary: Development files for the Qt toolkit
 Group: Development/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11 
 Requires: %{x_deps}
 Requires: libpng-devel
@@ -174,7 +174,7 @@ Qt Linguist
 %package doc
 Summary: API documentation, demos and example programs for %{name}
 Group: Documentation
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-assistant
 %if "%{name}" != "qt4"
 Obsoletes: qt4-doc < %{version}-%{release}
@@ -188,7 +188,7 @@ Qt Assistant, Qt Demo
 %package odbc 
 Summary: ODBC driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-ODBC < %{version}-%{release}
 Provides:  qt4-ODBC = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -202,7 +202,7 @@ Provides:  qt4-odbc = %{version}-%{release}
 %package mysql 
 Summary: MySQL driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-MySQL < %{version}-%{release}
 Provides:  qt4-MySQL = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -216,7 +216,7 @@ Provides:  qt4-mysql = %{version}-%{release}
 %package postgresql 
 Summary: PostgreSQL driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-PostgreSQL < %{version}-%{release}
 Provides:  qt4-PostgreSQL = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -230,7 +230,7 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %package sqlite 
 Summary: SQLite driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-SQLite < %{version}-%{release}
 Provides:  qt4-SQLite = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -245,7 +245,7 @@ Provides:  qt4-sqlite = %{version}-%{release}
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
 Provides: %{name}-assistant = %{version}-%{release}
-Requires: %{name} = %{version}-%{release}
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: redhat-rpm-config rpm
 %if "%{name}" != "qt4"
 Obsoletes: qt4-x11 < %{version}-%{release}
@@ -693,6 +693,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Mar 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-7
+- fix Requires of main package to include Epoch (thanks to Christopher Aillon)
+
 * Wed Mar 12 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-6
 - rename to qt on Fedora >= 9
 
