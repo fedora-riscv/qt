@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -244,7 +244,10 @@ Provides:  qt4-sqlite = %{version}-%{release}
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
+Provides: qt4-assistant = %{version}-%{release}
+%if "%{name}" != "qt4"
 Provides: %{name}-assistant = %{version}-%{release}
+%endif
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: redhat-rpm-config rpm
 %if "%{name}" != "qt4"
@@ -693,6 +696,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sun Mar 23 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-8
+- -x11: add missing Provides: qt4-assistant when building as qt
+
 * Thu Mar 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-7
 - fix Requires of main package to include Epoch (thanks to Christopher Aillon)
 
