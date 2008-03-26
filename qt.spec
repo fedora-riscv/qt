@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
