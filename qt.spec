@@ -36,6 +36,7 @@ Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
 # strict aliasing violations in tool classes
 Patch3: qt-43-aliasing.diff
 Patch4: qt-x11-opensource-src-4.3.4-aliasing.patch
+Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
 
 ## qt-copy patches
 %define qt_copy 20080305
@@ -281,6 +282,7 @@ test -x apply_patches && ./apply_patches
 # don't use -b on mkspec files, else they get installed too.
 %patch2 -p1
 %patch4 -p1
+%patch5 -p1 -b .bz#437440-as_IN-437440
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -696,6 +698,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Mar 26 2008 Than Ngo <than@redhat.com> 4.3.4-9
+- apply patch bz#437440 to fix [as-IN] Consonant combination issue, thanks to Pravin Satpute
+
 * Sun Mar 23 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-8
 - -x11: add missing Provides: qt4-assistant when building as qt
 

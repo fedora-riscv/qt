@@ -1,0 +1,26 @@
+--- qt-x11-opensource-src-4.3.4/src/gui/text/qscriptengine.cpp	2008-02-19 23:17:19.000000000 +0530
++++ qt-x11-opensource-src-4.3.4/src/gui/text/qscriptengine.cpp_mod	2008-03-26 12:02:54.000000000 +0530
+@@ -2174,7 +2174,7 @@ static const unsigned char indicPosition
+     None, None, None, None,
+     None, None, None, None,
+ 
+-    None, None, None, None,
++    Below, None, None, None,
+     None, None, None, None,
+     None, None, None, None,
+     None, None, None, None,
+@@ -2814,9 +2814,13 @@ static bool indic_shape_syllable(QOpenTy
+     int script = item->script;
+     Q_ASSERT(script >= QUnicodeTables::Devanagari && script <= QUnicodeTables::Sinhala);
+     const unsigned short script_base = 0x0900 + 0x80*(script-QUnicodeTables::Devanagari);
+-    const unsigned short ra = script_base + 0x30;
++    unsigned short ra = script_base + 0x30;
+     const unsigned short halant = script_base + 0x4d;
+     const unsigned short nukta = script_base + 0x3c;
++	if(script==14)
++	{
++		ra= script_base + 0x70;
++	}
+ 
+     int len = item->length;
+     IDEBUG(">>>>> indic shape: from=%d, len=%d invalid=%d", item->from, item->length, invalid);
