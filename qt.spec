@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -37,6 +37,8 @@ Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
 Patch3: qt-43-aliasing.diff
 Patch4: qt-x11-opensource-src-4.3.4-aliasing.patch
 Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
+# look for OpenSSL using versioned sonames
+Patch6: qt-x11-opensource-src-4.3.4-openssl.patch
 
 ## qt-copy patches
 %define qt_copy 20080305
@@ -283,6 +285,12 @@ test -x apply_patches && ./apply_patches
 %patch2 -p1
 %patch4 -p1
 %patch5 -p1 -b .bz#437440-as_IN-437440
+%patch6 -p1 -b .openssl
+# SHLIB_VERSION_NUMBER is wrong on F8 and older
+# 0.9.8b is the version in both F7 and F8
+%if 0%{?fedora} < 9
+sed -i -e 's/SHLIB_VERSION_NUMBER/"0.9.8b"/g' src/network/qsslsocket_openssl_symbols.cpp
+%endif
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -698,6 +706,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Apr 02 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-10
+- look for OpenSSL using versioned sonames (#432271)
+
 * Wed Mar 26 2008 Than Ngo <than@redhat.com> 4.3.4-9
 - apply patch bz#437440 to fix [as-IN] Consonant combination issue, thanks to Pravin Satpute
 
