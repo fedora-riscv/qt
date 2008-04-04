@@ -1,0 +1,12 @@
+diff -up qt-all-opensource-src-4.4.0-rc1/tools/assistant/compat/lib/qassistantclient.cpp.assistant4 qt-all-opensource-src-4.4.0-rc1/tools/assistant/compat/lib/qassistantclient.cpp
+--- qt-all-opensource-src-4.4.0-rc1/tools/assistant/compat/lib/qassistantclient.cpp.assistant4	2008-04-02 11:34:02.000000000 -0500
++++ qt-all-opensource-src-4.4.0-rc1/tools/assistant/compat/lib/qassistantclient.cpp	2008-04-04 14:42:21.000000000 -0500
+@@ -211,7 +211,7 @@ QAssistantClient::QAssistantClient( cons
+ #endif
+ 
+     if ( path.isEmpty() )
+-        assistantCommand = assistant;
++        assistantCommand = assistant-qt4;
+     else {
+         QFileInfo fi( path );
+         if ( fi.isDir() )

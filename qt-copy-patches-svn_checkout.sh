@@ -7,8 +7,8 @@ set -x
 rm -rf $EXPORT_DIR
 
 # app
-svn export --non-recursive svn://anonsvn.kde.org/home/kde/branches/qt/4.3 $EXPORT_DIR/
-svn export svn://anonsvn.kde.org/home/kde/branches/qt/4.3/patches $EXPORT_DIR/patches
+svn export --non-recursive svn://anonsvn.kde.org/home/kde/trunk/qt-copy $EXPORT_DIR/
+svn export svn://anonsvn.kde.org/home/kde/trunk/qt-copy/patches $EXPORT_DIR/patches
 
 pushd $EXPORT_DIR
 rm -f ../qt-copy-patches-${DATE}svn.tar.bz2
