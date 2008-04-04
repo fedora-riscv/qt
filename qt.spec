@@ -32,8 +32,6 @@ Source4: Trolltech.conf
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparc
 Source5: qconfig-multilib.h
 
-# search-for/use assistant-qt4 instead of (possibly qt3's) assistant in $PATH 
-Patch1: qt-all-opensource-src-4.4.0-rc1-assistant_qt4.patch 
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
 Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
@@ -305,7 +303,6 @@ echo "0208" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
-%patch1 -p1 -b .assistant_qt4
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
 %patch2 -p1
