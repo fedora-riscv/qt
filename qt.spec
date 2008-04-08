@@ -307,7 +307,7 @@ test -x apply_patches && ./apply_patches
 # multilib hacks no longer required
 %patch2 -p1
 # FIXME?
-#patch5 -p1 -b .bz#437440-as_IN-437440
+%patch5 -p1 -b .bz#437440-as_IN-437440
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -787,6 +787,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %changelog
 * Tue Apr 08 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-0.4.rc1
 - updated patch for #437440 ([as-IN] Consonant combination issue) by Pravin Satpute
+- actually enable the patch
 
 * Fri Apr 04 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.3.rc1
 - qt-4.4.0-rc1
