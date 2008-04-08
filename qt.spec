@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -706,6 +706,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Apr 08 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-11
+- updated patch for #437440 ([as-IN] Consonant combination issue) by Pravin Satpute
+
 * Wed Apr 02 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-10
 - look for OpenSSL using versioned sonames (#432271)
 
