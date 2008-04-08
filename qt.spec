@@ -34,7 +34,7 @@ Source5: qconfig-multilib.h
 
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
-Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
+Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 
 ## qt-copy patches
 #define qt_copy 20080404
@@ -787,7 +787,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %changelog
 * Tue Apr 08 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-0.4.rc1
 - updated patch for #437440 ([as-IN] Consonant combination issue) by Pravin Satpute
-- actually enable the patch
+- port the patch to Qt 4.4 (the code moved to harfbuzz) and reenable it
 
 * Fri Apr 04 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.3.rc1
 - qt-4.4.0-rc1
