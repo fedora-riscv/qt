@@ -11,7 +11,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 0.4.%{pre_tag}%{?dist}
+Release: 0.5.%{pre_tag}%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -167,6 +167,10 @@ Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: pkgconfig
+# -openssl-linked ? -- Rex
+#Requires: openssl-devel
+# -dbus-linked ? -- Rex
+#Requires: dbus-devel
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -420,7 +424,7 @@ desktop-file-install \
 # strip extraneous dirs/libraries -- Rex
 # safe ones
 glib2_libs=$(pkg-config --libs glib-2.0 gthread-2.0)
-for dep in -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} -lmng -ljpeg -lpng -lm -lz \
+for dep in -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} -lmng -ljpeg -lpng -lm -lz -lssl -lcrypto \
   -L%{_builddir}/qt-x11%{?preview}-all-opensource-src-%{version}%{?pre}/lib ; do
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la ||:
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
@@ -785,6 +789,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Apr 24 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.5.rc1
+- strip -lssl -lcrypto from *.pc files too
+
 * Tue Apr 08 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-0.4.rc1
 - updated patch for #437440 ([as-IN] Consonant combination issue) by Pravin Satpute
 - port the patch to Qt 4.4 (the code moved to harfbuzz) and reenable it
