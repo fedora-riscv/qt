@@ -167,6 +167,7 @@ Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: pkgconfig
+# we strip these from the .pc files to avoid the bogus deps
 # -openssl-linked ? -- Rex
 #Requires: openssl-devel
 # -dbus-linked ? -- Rex
