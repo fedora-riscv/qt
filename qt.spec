@@ -11,7 +11,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 0.5.%{pre_tag}%{?dist}
+Release: 0.6.%{pre_tag}%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -37,7 +37,7 @@ Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 
 ## qt-copy patches
-#define qt_copy 20080404
+%define qt_copy 20080429
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -66,7 +66,7 @@ Source31: hi48-app-qt4-logo.png
 %define sqlite -plugin-sql-sqlite
 # FIXME: building -no-phonon currently busted, build fails -- Rex
 #define phonon -phonon -gstreamer
-#define webkit -webkit
+%define webkit -webkit
 
 # undefine to disable these
 #define nas -system-nas-sound
@@ -167,6 +167,10 @@ Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: pkgconfig
+%if 0%{?webkit:1}
+Obsoletes: WebKit-qt-devel < 1.0.0-1
+Provides:  WebKit-qt-devel = 1.0.0-1
+%endif
 # we strip these from the .pc files to avoid the bogus deps
 # -openssl-linked ? -- Rex
 #Requires: openssl-devel
@@ -264,25 +268,22 @@ Provides:  qt4-sqlite = %{version}-%{release}
 %description sqlite 
 %{summary}.
 
-%package webkit-devel
-Summary: WebKit development files for %{name}
-Group: System Environment/Libraries
-# FIXME
-Conflicts: WebKit-qt-devel
-Requires: %{name}-devel = %{version}-%{release}
-
-%description webkit-devel
-%{summary}.
-
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
+%if 0%{?webkit:1}
+Obsoletes: WebKit-qt < 1.0.0-1
+Provides:  WebKit-qt = 1.0.0-1
+%endif
 Provides: qt4-assistant = %{version}-%{release}
 %if "%{name}" != "qt4"
 Provides: %{name}-assistant = %{version}-%{release}
 %endif
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+%if "%{_qt4_bindir}" != "%{_bindir}"
+# if using qt4-wrapper.sh
 Requires: redhat-rpm-config rpm
+%endif
 %if "%{name}" != "qt4"
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
@@ -301,9 +302,9 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 %if 0%{?qt_copy:1}
 # 204,206,208 don't apply atm, some/most of these are already included -- Rex
-echo "0204" >> patches/DISABLED
-echo "0206" >> patches/DISABLED
-echo "0208" >> patches/DISABLED
+#echo "0204" >> patches/DISABLED
+#echo "0206" >> patches/DISABLED
+#echo "0208" >> patches/DISABLED
 
 test -x apply_patches && ./apply_patches
 %endif
@@ -311,7 +312,6 @@ test -x apply_patches && ./apply_patches
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
 %patch2 -p1
-# FIXME?
 %patch5 -p1 -b .bz#437440-as_IN-437440
 
 # drop -fexceptions from $RPM_OPT_FLAGS
@@ -501,9 +501,15 @@ rm -f %{buildroot}%{_qt4_libdir}/lib*.la
 %endif
 
 # qt4.(sh|csh), currently unused
-#install -p -m755 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4-%{_arch}.sh
-#install -p -m755 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4-%{_arch}.csh
-#sed -i -e "s|@@QMAKESPEC@@|%{platform}|" %{buildroot}/etc/profile.d/qt4-%{_arch}.*
+%if 0
+install -p -m755 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4.sh
+install -p -m755 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4.csh
+sed -i \
+  -e "s|@@QT4DIR@@|%{_qt4_prefix}|" \
+  -e "s|@@QT4DOCDIR@@|%{_qt4_docdir}|" \
+  %{buildroot}/etc/profile.d/qt4.*
+%endif
+
 
 %if "%{_qt4_libdir}" != "%{_libdir}"
   mkdir -p %{buildroot}/etc/ld.so.conf.d
@@ -545,7 +551,7 @@ Description: Qt Configuration
 Version: %{version}
 EOF
 
-# rpm macros
+ rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_version %{version}
@@ -601,6 +607,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %doc LICENSE.GPL2 GPL_EXCEPTION*.TXT
 %doc LICENSE.GPL3
 %doc LICENSE.QPL
+#config /etc/profile.d/qt4.*
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -674,7 +681,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %files devel
 %defattr(-,root,root,-)
-#config /etc/profile.d/*
 %{_qt4_bindir}/lrelease*
 %{_qt4_bindir}/lupdate*
 %{_qt4_bindir}/moc*
@@ -702,8 +708,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %dir %{_qt4_headerdir}/
 %endif
 %{_qt4_headerdir}/*
-%{?webkit:%exclude %{_qt4_headerdir}/Qt/QtWebKit/}
-%{?webkit:%exclude %{_qt4_headerdir}/QtWebKit/}
 %{?phonon:%exclude %{_qt4_headerdir}/phonon/}
 %{?phonon:%exclude %{_qt4_headerdir}/Qt/phonon*}
 %{_qt4_datadir}/mkspecs/
@@ -716,7 +720,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQt*.a
 %{_qt4_libdir}/libQt*.prl
 %{_libdir}/pkgconfig/*.pc
-%{?webkit:%exclude %{_libdir}/pkgconfig/QtWebKit.pc}
 %{?phonon:%exclude %{_libdir}/pkgconfig/phonon.pc}
 # Qt designer
 %{_qt4_bindir}/designer*
@@ -755,15 +758,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libphonon.prl
 %endif
 
-%if 0%{?webkit:1}
-%files webkit-devel
-%defattr(-,root,root,-)
-%{_libdir}/pkgconfig/QtWebKit.pc
-%{_qt4_headerdir}/Qt/QtWebKit/
-%{_qt4_headerdir}/QtWebKit/
-%{_qt4_libdir}/libQtWebKit.so
-%endif
-
 %if "%{?odbc}" == "-plugin-sql-odbc"
 %files odbc 
 %defattr(-,root,root,-)
@@ -790,6 +784,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Apr 29 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.6.rc1
+- -webkit (include in -x11 subpkg), drop separate -webkit-devel
+- omit qt4-wrapper.sh deps (since it's not used atm)
+- qt-copy-patches-20080429
+- Obsoletes/Provides: WebKit-qt(-devel) <|= 1.0.0-1  (#442200)
+
 * Thu Apr 24 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.5.rc1
 - strip -lssl -lcrypto from *.pc files too
 
