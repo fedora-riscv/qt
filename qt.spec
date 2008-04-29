@@ -551,7 +551,7 @@ Description: Qt Configuration
 Version: %{version}
 EOF
 
- rpm macros
+# rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_version %{version}
