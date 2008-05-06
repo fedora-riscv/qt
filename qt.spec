@@ -1,8 +1,8 @@
 
 # Fedora Review: http://bugzilla.redhat.com/188180
 
-%define pre_tag rc1
-%define pre -%{pre_tag}
+#define pre_tag rc1
+#define pre -%{pre_tag}
 
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
@@ -11,13 +11,13 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 0.6.%{pre_tag}%{?dist}
+Release: 1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-all-opensource-src-%{version}%{?pre}.tar.bz2
+Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if "%{name}" != "qt4"
@@ -295,17 +295,12 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 %prep
 %if "%{?snap:1}" == "1"
-%setup -q -n qt-all-opensource-src-%{vesion}-%{snap}
+%setup -q -n qt-x11-opensource-src-%{vesion}-%{snap}
 %else
-%setup -q -n qt-all-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
+%setup -q -n qt-x11-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
 %endif
 
 %if 0%{?qt_copy:1}
-# 204,206,208 don't apply atm, some/most of these are already included -- Rex
-#echo "0204" >> patches/DISABLED
-#echo "0206" >> patches/DISABLED
-#echo "0208" >> patches/DISABLED
-
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -784,6 +779,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue May 06 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-1
+- qt-4.4.0
+
 * Tue Apr 29 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.6.rc1
 - -webkit (include in -x11 subpkg), drop separate -webkit-devel
 - omit qt4-wrapper.sh deps (since it's not used atm)
