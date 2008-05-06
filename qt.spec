@@ -17,7 +17,7 @@ Release: 1%{?dist}
 License: GPLv3 or GPLv2 with exceptions or QPL
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre}.tar.gz
+Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if "%{name}" != "qt4"
