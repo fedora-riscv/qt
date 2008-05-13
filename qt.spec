@@ -630,6 +630,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_bindir}/qdbus
 %{_bindir}/qdbuscpp2xml
 %{_bindir}/qdbusxml2cpp
+%{_bindir}/xmlpatterns
 %endif
 %{_qt4_bindir}/qdbus
 %{_qt4_bindir}/qdbuscpp2xml
@@ -699,6 +700,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_bindir}/uic*
 %{_bindir}/designer*
 %{_bindir}/linguist*
+%{_bindir}/qcollectiongenerator
+%{_bindir}/qhelpconverter
+%{_bindir}/qhelpgenerator
 %endif
 %if "%{_qt4_headerdir}" != "%{_includedir}"
 %dir %{_qt4_headerdir}/
