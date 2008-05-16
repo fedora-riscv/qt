@@ -11,7 +11,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -37,7 +37,7 @@ Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 
 ## qt-copy patches
-%define qt_copy 20080429
+%define qt_copy 20080516
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -784,6 +784,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri May 16 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-3
+- qt-copy-patches-20080516
+
 * Tue May 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-2
 - revert _qt4_bindir change for now, needs more work (#446167)
 
