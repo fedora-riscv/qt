@@ -6,7 +6,7 @@ diff -up qt-x11-opensource-src-4.3.4/src/corelib/tools/qvector.h.BAD qt-x11-open
      int alloc;
      int size;
 -#if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
-+#if defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
++#if defined(QT_ARCH_SPARC) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
      // workaround for bug in gcc 3.4.2
      uint sharable;
      uint capacity;
@@ -15,7 +15,7 @@ diff -up qt-x11-opensource-src-4.3.4/src/corelib/tools/qvector.h.BAD qt-x11-open
      int alloc;
      int size;
 -#if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
-+#if defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
++#if defined(QT_ARCH_SPARC) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
      // workaround for bug in gcc 3.4.2
      uint sharable;
      uint capacity;
