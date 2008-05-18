@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -709,6 +709,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sun May 18 2008 Tom "spot" Callaway <tcallawa@redhat.com> 4.3.4-13
+- fix sparc64 multilib header
+
 * Sat May 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> 4.3.4-12
 - fix sparc64 compile, the 64bit sparc conditional in src/corelib/tools/qvector.h 
   applies to linux as well as solaris
