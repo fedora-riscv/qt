@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -39,6 +39,8 @@ Patch4: qt-x11-opensource-src-4.3.4-aliasing.patch
 Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
 # look for OpenSSL using versioned sonames
 Patch6: qt-x11-opensource-src-4.3.4-openssl.patch
+# Fix sparc64 compile
+Patch7: qt4-sparc64-qvector.patch
 
 ## qt-copy patches
 %define qt_copy 20080305
@@ -286,6 +288,7 @@ test -x apply_patches && ./apply_patches
 %patch4 -p1
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch6 -p1 -b .openssl
+%patch7 -p1 -b .sparc64
 # SHLIB_VERSION_NUMBER is wrong on F8 and older
 # 0.9.8b is the version in both F7 and F8
 %if 0%{?fedora} < 9
@@ -706,6 +709,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat May 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> 4.3.4-12
+- fix sparc64 compile, the 64bit sparc conditional in src/corelib/tools/qvector.h 
+  applies to linux as well as solaris
+
 * Tue Apr 08 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-11
 - updated patch for #437440 ([as-IN] Consonant combination issue) by Pravin Satpute
 

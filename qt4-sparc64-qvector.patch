@@ -1,0 +1,21 @@
+diff -up qt-x11-opensource-src-4.3.4/src/corelib/tools/qvector.h.BAD qt-x11-opensource-src-4.3.4/src/corelib/tools/qvector.h
+--- qt-x11-opensource-src-4.3.4/src/corelib/tools/qvector.h.BAD	2008-05-17 21:05:34.000000000 -0400
++++ qt-x11-opensource-src-4.3.4/src/corelib/tools/qvector.h	2008-05-17 21:05:55.000000000 -0400
+@@ -65,7 +65,7 @@ struct Q_CORE_EXPORT QVectorData
+     QBasicAtomic ref;
+     int alloc;
+     int size;
+-#if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
++#if defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
+     // workaround for bug in gcc 3.4.2
+     uint sharable;
+     uint capacity;
+@@ -85,7 +85,7 @@ struct QVectorTypedData
+     QBasicAtomic ref;
+     int alloc;
+     int size;
+-#if defined(Q_OS_SOLARIS) && defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
++#if defined(Q_CC_GNU) && defined(__LP64__) && defined(QT_BOOTSTRAPPED)
+     // workaround for bug in gcc 3.4.2
+     uint sharable;
+     uint capacity;
