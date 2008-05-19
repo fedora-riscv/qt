@@ -11,7 +11,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -35,6 +35,8 @@ Source5: qconfig-multilib.h
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
+# kill hardcoded font substitutions (#447298)
+Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 
 ## qt-copy patches
 %define qt_copy 20080516
@@ -309,6 +311,7 @@ test -x apply_patches && ./apply_patches
 # multilib hacks no longer required
 %patch2 -p1
 %patch5 -p1 -b .bz#437440-as_IN-437440
+%patch8 -p1 -b .font-aliases
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -784,6 +787,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon May 19 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-4
+- don't hardcode incorrect font substitutions (#447298)
+
 * Fri May 16 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-3
 - qt-copy-patches-20080516
 
