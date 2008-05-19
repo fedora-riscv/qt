@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.4
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -41,6 +41,8 @@ Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
 Patch6: qt-x11-opensource-src-4.3.4-openssl.patch
 # Fix sparc64 compile
 Patch7: qt4-sparc64-qvector.patch
+# kill hardcoded font substitutions (#447298)
+Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 
 ## qt-copy patches
 %define qt_copy 20080305
@@ -288,12 +290,13 @@ test -x apply_patches && ./apply_patches
 %patch4 -p1
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch6 -p1 -b .openssl
-%patch7 -p1 -b .sparc64
 # SHLIB_VERSION_NUMBER is wrong on F8 and older
 # 0.9.8b is the version in both F7 and F8
 %if 0%{?fedora} < 9
 sed -i -e 's/SHLIB_VERSION_NUMBER/"0.9.8b"/g' src/network/qsslsocket_openssl_symbols.cpp
 %endif
+%patch7 -p1 -b .sparc64
+%patch8 -p1 -b .font-aliases
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -709,6 +712,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon May 19 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-14
+- don't hardcode incorrect font substitutions (#447298)
+
 * Sun May 18 2008 Tom "spot" Callaway <tcallawa@redhat.com> 4.3.4-13
 - fix sparc64 multilib header
 
