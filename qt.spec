@@ -7,8 +7,8 @@ Name:    qt
 %else
 Name:    qt4
 %endif
-Version: 4.3.4
-Release: 14%{?dist}
+Version: 4.3.5
+Release: 1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -33,9 +33,6 @@ Source5: qconfig-multilib.h
 Patch1: qt-x11-opensource-src-4.3.0-qassistant-qt4.patch
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
-# strict aliasing violations in tool classes
-Patch3: qt-43-aliasing.diff
-Patch4: qt-x11-opensource-src-4.3.4-aliasing.patch
 Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
 # look for OpenSSL using versioned sonames
 Patch6: qt-x11-opensource-src-4.3.4-openssl.patch
@@ -45,7 +42,7 @@ Patch7: qt4-sparc64-qvector.patch
 Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 
 ## qt-copy patches
-%define qt_copy 20080305
+%define qt_copy 20080528
 Source1: qt-copy-patches-svn_checkout.sh
 Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -274,20 +271,15 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 %endif
 
 %if 0%{?qt_copy:1}
-# 204,206,208 don't apply atm, some/most of these are already included -- Rex
-echo "0204" >> patches/DISABLED
-echo "0206" >> patches/DISABLED
-echo "0208" >> patches/DISABLED
+# dome don't apply atm, some/most of these are already included -- Rex
+echo "0176" >> patches/DISABLED
 
 test -x apply_patches && ./apply_patches
-%else
-%patch3 -p0
 %endif
 
 %patch1 -p1 -b .assistant4
 # don't use -b on mkspec files, else they get installed too.
 %patch2 -p1
-%patch4 -p1
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch6 -p1 -b .openssl
 # SHLIB_VERSION_NUMBER is wrong on F8 and older
@@ -712,6 +704,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed May 28 2008 Rex Dieter <rdieter@fedoraproject.org> 4.3.5-1
+- qt-x11-opensource-src-4.3.5
+- qt-copy 20080528 patches
+
 * Mon May 19 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-14
 - don't hardcode incorrect font substitutions (#447298)
 
