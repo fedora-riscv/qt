@@ -11,7 +11,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -42,7 +42,7 @@ Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 
 ## qt-copy patches
-%define qt_copy 20080516
+%define qt_copy 20080606
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -112,7 +112,6 @@ BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
 BuildRequires: libpng-devel
 BuildRequires: libtiff-devel
-BuildRequires: libungif-devel
 BuildRequires: freetype-devel
 BuildRequires: zlib-devel
 BuildRequires: glib2-devel
@@ -146,11 +145,9 @@ BuildRequires: krb5-devel libxslt-devel openssl-devel pam-devel readline-devel z
 BuildRequires: unixODBC-devel
 %endif
 
-%if "%{?sqlite:1}" != "-no-sql-sqlite"
-%if 0%{?fedora} > 2
+%if "%{?sqlite}" != "-no-sql-sqlite"
 %define _system_sqlite -system-sqlite
 BuildRequires: sqlite-devel
-%endif
 %endif
 
 Obsoletes: qt4-config < %{version}-%{release}
@@ -635,14 +632,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %if 0%{?dbus:1}
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qdbus
-%{_bindir}/qdbuscpp2xml
-%{_bindir}/qdbusxml2cpp
-%{_bindir}/xmlpatterns
 %endif
 %{_qt4_bindir}/qdbus
-%{_qt4_bindir}/qdbuscpp2xml
-%{_qt4_bindir}/qdbusxml2cpp
-%{_qt4_bindir}/xmlpatterns
 %{_qt4_libdir}/libQtDBus.so.*
 %endif
 %{_qt4_libdir}/libQtNetwork.so.*
@@ -650,6 +641,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtSql.so.*
 %{_qt4_libdir}/libQtTest.so.*
 %{_qt4_libdir}/libQtXml.so.*
+%{_qt4_libdir}/libQtXmlPatterns.so.*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
 %{_qt4_translationdir}/
@@ -667,7 +659,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtOpenGL.so.*
 %{_qt4_libdir}/libQtSvg.so.*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
-%{_qt4_libdir}/libQtXmlPatterns.so.*
 %{?phonon:%{_qt4_libdir}/libphonon.so.*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/designer
@@ -694,8 +685,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_bindir}/rcc*
 %{_qt4_bindir}/uic*
 %{_qt4_bindir}/qcollectiongenerator
+%{_qt4_bindir}/qdbuscpp2xml
+%{_qt4_bindir}/qdbusxml2cpp
 %{_qt4_bindir}/qhelpconverter
 %{_qt4_bindir}/qhelpgenerator
+%{_qt4_bindir}/xmlpatterns
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
@@ -708,8 +702,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_bindir}/designer*
 %{_bindir}/linguist*
 %{_bindir}/qcollectiongenerator
+%{_bindir}/qdbuscpp2xml
+%{_bindir}/qdbusxml2cpp
 %{_bindir}/qhelpconverter
 %{_bindir}/qhelpgenerator
+%{_bindir}/xmlpatterns
 %endif
 %if "%{_qt4_headerdir}" != "%{_includedir}"
 %dir %{_qt4_headerdir}/
@@ -791,6 +788,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Jun 06 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-6
+- qt-copy-patches-20080606
+- drop BR: libungif-devel (not used)
+- move libQtXmlPatters, -x11 -> main
+- move qdbuscpp2xml, qdbusxml2cpp, xmlpatters, -x11 -> -devel
+
 * Tue May 27 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-5
 - under GNOME, default to QGtkStyle if available
 
