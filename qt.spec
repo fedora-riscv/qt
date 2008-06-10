@@ -11,7 +11,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -788,6 +788,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Jun 10 2008 Than Ngo <than@redhat.com> 4.4.0-7
+- fix #450310, multilib issue 
+
 * Fri Jun 06 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-6
 - qt-copy-patches-20080606
 - drop BR: libungif-devel (not used)
