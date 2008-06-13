@@ -11,7 +11,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -48,7 +48,6 @@ Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
 %{?qt_copy:Provides: qt4-copy = %{qt_copy}}
 
-Source10: qt4-wrapper.sh
 Source11: qt4.sh
 Source12: qt4.csh
 
@@ -446,29 +445,9 @@ rm -rf %{buildroot}%{_qt4_prefix}/doc
 ln -s  ../../share/doc/qt4 %{buildroot}%{_qt4_prefix}/doc
 %endif
 
-%if "%{_qt4_bindir}" == "%{_bindir}"
-# compat symlink
-  rm -rf %{buildroot}%{_qt4_prefix}/bin
-#  ln -s %{_bindir} %{buildroot}%{_qt4_prefix}/bin
-  ln -s ../../bin %{buildroot}%{_qt4_prefix}/bin
-%endif
 
-# Make bindir symlinks
-pushd %{buildroot}%{_qt4_bindir}
-for i in *; do
-  case "${i}" in
-    assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
-      LINK="${i}-qt4"
-      ln -s "${i}" "%{buildroot}%{_qt4_bindir}/${LINK}"
-      ;;
-    *)
-      LINK="${i}"
-      ;;
-  esac
-%if "%{_qt4_bindir}" != "%{_bindir}"
-  install -p -m755 -D %{SOURCE10} %{buildroot}%{_bindir}/${LINK}
-%endif
-done
+pushd %{buildroot}%{_bindir}/
+  ln -s ../%{_lib}/qt4/bin/* .
 popd
 
 # _debug lib symlinks (see bug #196513)
@@ -527,9 +506,6 @@ for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
   install -p -m644 -D ${icon} %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/linguist4.png
 done
-# qtconfig icon (it's 50x50 actually, it's pretty generic as-is anyway, use qt4-logo instead -- Rex )
-#install -p -m644 -D tools/qtconfig/images/appicon.png \
-#                    %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qtconfig4.png
 
 # Qt.pc
 cat >%{buildroot}%{_libdir}/pkgconfig/Qt.pc<<EOF
@@ -788,6 +764,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Jun 13 2008 Than Ngo <than@redhat.com> -  4.4.0-8
+- drop qt wrapper, make symlinks to /usr/bin
+
 * Tue Jun 10 2008 Than Ngo <than@redhat.com> 4.4.0-7
 - fix #450310, multilib issue 
 
