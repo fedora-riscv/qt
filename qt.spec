@@ -451,6 +451,7 @@ for i in * ; do
   mv $i ../../../bin/
   ln -s ../../../bin/$i .
 done
+popd
 
 # _debug lib symlinks (see bug #196513)
 pushd %{buildroot}%{_qt4_libdir}
