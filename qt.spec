@@ -1,9 +1,6 @@
 
 # Fedora Review: http://bugzilla.redhat.com/188180
 
-#define pre_tag rc1
-#define pre -%{pre_tag}
-
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
 Name:    qt
@@ -17,7 +14,7 @@ Release: 8%{?dist}
 License: GPLv3 or GPLv2 with exceptions or QPL
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre}.tar.bz2
+Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if "%{name}" != "qt4"
@@ -84,7 +81,6 @@ BuildRequires: dbus-devel >= 0.62
 
 # See http://bugzilla.redhat.com/196901
 %define _qt4_prefix %{_libdir}/qt4
-#define _qt4_bindir %{_bindir}
 %define _qt4_bindir %{_qt4_prefix}/bin
 # _qt4_datadir is not multilib clean, and hacks to workaround that breaks stuff.
 #define _qt4_datadir %{_datadir}/qt4
@@ -282,10 +278,6 @@ Provides: qt4-assistant = %{version}-%{release}
 Provides: %{name}-assistant = %{version}-%{release}
 %endif
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-%if "%{_qt4_bindir}" != "%{_bindir}"
-# if using qt4-wrapper.sh
-Requires: redhat-rpm-config rpm
-%endif
 %if "%{name}" != "qt4"
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
@@ -446,6 +438,7 @@ ln -s  ../../share/doc/qt4 %{buildroot}%{_qt4_prefix}/doc
 %endif
 
 # let rpm handle binaries conflicts
+mkdir %{buildroot}%{_bindir}
 pushd %{buildroot}%{_qt4_bindir}
 for i in * ; do
   mv $i ../../../bin/
