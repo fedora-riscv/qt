@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Qt4 Demo 
 Comment=Show Qt4 demos and programming examples
-Exec=qtdemo-qt4
+Exec=qtdemo
 Icon=qt4-logo
 Terminal=false
 Encoding=UTF-8
