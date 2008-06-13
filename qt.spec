@@ -445,10 +445,12 @@ rm -rf %{buildroot}%{_qt4_prefix}/doc
 ln -s  ../../share/doc/qt4 %{buildroot}%{_qt4_prefix}/doc
 %endif
 
-
-pushd %{buildroot}%{_bindir}/
-  ln -s ../%{_lib}/qt4/bin/* .
-popd
+# let rpm handle binaries conflicts
+pushd %{buildroot}%{_qt4_bindir}
+for i in * ; do
+  mv $i ../../../bin/
+  ln -s ../../../bin/$i .
+done
 
 # _debug lib symlinks (see bug #196513)
 pushd %{buildroot}%{_qt4_libdir}
