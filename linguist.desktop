@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Qt4 Linguist 
 Comment=Add translations to Qt4 applications
-Exec=linguist
+Exec=linguist-qt4
 Icon=linguist4
 MimeType=application/x-linguist;
 Terminal=false

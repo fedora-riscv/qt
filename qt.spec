@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -441,8 +441,17 @@ ln -s  ../../share/doc/qt4 %{buildroot}%{_qt4_prefix}/doc
 mkdir %{buildroot}%{_bindir}
 pushd %{buildroot}%{_qt4_bindir}
 for i in * ; do
-  mv $i ../../../bin/
-  ln -s ../../../bin/$i .
+  case "${i}" in
+    assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
+      mv $i ../../../bin/${i}-qt4
+      ln -s ../../../bin/${i}-qt4 .
+      ln -s ../../../bin/${i}-qt4 $i
+      ;;
+    *)
+      mv $i ../../../bin/
+      ln -s ../../../bin/$i .
+      ;;
+  esac
 done
 popd
 
@@ -760,7 +769,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
-* Fri Jun 13 2008 Than Ngo <than@redhat.com> -  4.4.0-8
+* Sat Jun 14 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-9
+- restore -qt4 suffixes
+
+* Fri Jun 13 2008 Than Ngo <than@redhat.com> 4.4.0-8
 - drop qt wrapper, make symlinks to /usr/bin
 
 * Tue Jun 10 2008 Than Ngo <than@redhat.com> 4.4.0-7

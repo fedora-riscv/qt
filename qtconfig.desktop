@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=Qt4 Config 
 Comment=Configure Qt4 behavior, styles, fonts
-Exec=qtconfig
+Exec=qtconfig-qt4
 Icon=qt4-logo
 Terminal=false
 Encoding=UTF-8
