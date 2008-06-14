@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -416,8 +416,8 @@ desktop-file-install \
 # strip extraneous dirs/libraries -- Rex
 # safe ones
 glib2_libs=$(pkg-config --libs glib-2.0 gthread-2.0)
-for dep in -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} -lmng -ljpeg -lpng -lm -lz -lssl -lcrypto \
-  -L%{_builddir}/qt-x11%{?preview}-all-opensource-src-%{version}%{?pre}/lib ; do
+for dep in -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} -lmng -ljpeg -lpng -lm -lz -lssl -lcrypto -lsqlite3 \
+  -L%{_builddir}/qt-x11%{?preview}-opensource-src-%{version}%{?pre}/lib -L/usr/X11R6/%{_lib} ; do
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la ||:
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/*.prl
@@ -769,6 +769,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat Jun 14 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-10
+- strip -lsqlite3 from .pc files (#451490)
+
 * Sat Jun 14 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-9
 - restore -qt4 suffixes
 
