@@ -1,4 +1,4 @@
-! /bin/bash
+#! /bin/bash
 #
 # In multilib environments there is a preferred architecture, 64 bit over 32 bit in x86_64,
 # 32 bit over 64 bit in ppc64. When a conflict is found between two packages corresponding
