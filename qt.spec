@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.3.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -40,6 +40,8 @@ Patch6: qt-x11-opensource-src-4.3.4-openssl.patch
 Patch7: qt4-sparc64-qvector.patch
 # kill hardcoded font substitutions (#447298)
 Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
+# 
+Patch9: qt-x11-fix-combobox-window-type.patch
 
 ## qt-copy patches
 %define qt_copy 20080528
@@ -289,6 +291,7 @@ sed -i -e 's/SHLIB_VERSION_NUMBER/"0.9.8b"/g' src/network/qsslsocket_openssl_sym
 %endif
 %patch7 -p1 -b .sparc64
 %patch8 -p1 -b .font-aliases
+%patch9 -p0 -b .fix-combobox-window-type
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -704,6 +707,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Jun 16 2008 Rex Dieter <rdieter@fedoraproject.org> 4.3.5-2
+- fix-combobox-window-type patch (maniac103)
+
 * Wed May 28 2008 Rex Dieter <rdieter@fedoraproject.org> 4.3.5-1
 - qt-x11-opensource-src-4.3.5
 - qt-copy 20080528 patches

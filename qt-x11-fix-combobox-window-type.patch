@@ -1,0 +1,25 @@
+--- src/gui/widgets/qcombobox.cpp.orig	2008-06-05 09:29:49.000000000 +0200
++++ src/gui/widgets/qcombobox.cpp	2008-06-05 09:30:56.000000000 +0200
+@@ -339,10 +339,6 @@
+             combo->update();
+         }
+     }
+-#ifdef Q_WS_X11
+-    x11SetWindowType( X11WindowTypeCombo );
+-    x11SetWindowTransient( combo->topLevelWidget());
+-#endif
+ }
+ 
+ void QComboBoxPrivateContainer::resizeEvent(QResizeEvent *e)
+@@ -419,6 +415,11 @@
+     layout->insertSpacing(0, 0);
+     layout->addSpacing(0);
+     updateTopBottomMargin();
++
++#ifdef Q_WS_X11
++    x11SetWindowType(X11WindowTypeCombo);
++    x11SetWindowTransient(combo->topLevelWidget());
++#endif
+ }
+ 
+ void QComboBoxPrivateContainer::scrollItemView(int action)
