@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -666,8 +666,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_bindir}/rcc*
 %{_qt4_bindir}/uic*
 %{_qt4_bindir}/qcollectiongenerator
+%if 0%{?dbus:1}
 %{_qt4_bindir}/qdbuscpp2xml
 %{_qt4_bindir}/qdbusxml2cpp
+%endif
 %{_qt4_bindir}/qhelpconverter
 %{_qt4_bindir}/qhelpgenerator
 %{_qt4_bindir}/xmlpatterns
@@ -683,8 +685,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_bindir}/designer*
 %{_bindir}/linguist*
 %{_bindir}/qcollectiongenerator
+%if 0%{?dbus:1}
 %{_bindir}/qdbuscpp2xml
 %{_bindir}/qdbusxml2cpp
+%endif
 %{_bindir}/qhelpconverter
 %{_bindir}/qhelpgenerator
 %{_bindir}/xmlpatterns
@@ -769,6 +773,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Jun 23 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-11
+- fix dbus conditional (#452487)
+
 * Sat Jun 14 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-10
 - strip -lsqlite3 from .pc files (#451490)
 
