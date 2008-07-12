@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -39,7 +39,7 @@ Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 
 ## qt-copy patches
-%define qt_copy 20080606
+%define qt_copy 20080711
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -773,6 +773,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Jul 11 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-12
+- qt-copy-patches-20080711
+
 * Mon Jun 23 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-11
 - fix dbus conditional (#452487)
 
