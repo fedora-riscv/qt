@@ -16,7 +16,7 @@
 # include <QtCore/qconfig-s390x.h>
 #elif defined(__s390__)
 # include <QtCore/qconfig-s390.h> 
-#elif defined(__sparc64__)
+#elif defined(__sparc__) && defined (__arch64__)
 # include <QtCore/qconfig-sparc64.h>
 #elif defined(__sparc__)
 # include <QtCore/qconfig-sparc.h>
