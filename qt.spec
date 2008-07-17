@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -773,6 +773,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Jul 17 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-13
+- (re)fix qconfig-multilib.h for sparc64
+
 * Fri Jul 11 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-12
 - qt-copy-patches-20080711
 
