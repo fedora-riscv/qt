@@ -1,6 +1,7 @@
---- qt-x11-opensource-src-4.3.4/src/gui/text/qscriptengine.cpp	2008-02-19 23:17:19.000000000 +0530
-+++ qscriptengine.cpp_mod	2008-04-01 17:39:48.000000000 +0530
-@@ -2174,7 +2174,7 @@ static const unsigned char indicPosition
+diff -ur qt-all-opensource-src-4.4.0-rc1/src/3rdparty/harfbuzz/src/harfbuzz-indic.cpp qt-all-opensource-src-4.4.0-rc1-as_IN-437440/src/3rdparty/harfbuzz/src/harfbuzz-indic.cpp
+--- qt-all-opensource-src-4.4.0-rc1/src/3rdparty/harfbuzz/src/harfbuzz-indic.cpp	2008-04-02 18:33:48.000000000 +0200
++++ qt-all-opensource-src-4.4.0-rc1-as_IN-437440/src/3rdparty/harfbuzz/src/harfbuzz-indic.cpp	2008-04-08 04:37:45.000000000 +0200
+@@ -552,7 +552,7 @@
      None, None, None, None,
      None, None, None, None,
  
@@ -9,17 +10,17 @@
      None, None, None, None,
      None, None, None, None,
      None, None, None, None,
-@@ -2814,7 +2814,7 @@ static bool indic_shape_syllable(QOpenTy
-     int script = item->script;
-     Q_ASSERT(script >= QUnicodeTables::Devanagari && script <= QUnicodeTables::Sinhala);
-     const unsigned short script_base = 0x0900 + 0x80*(script-QUnicodeTables::Devanagari);
+@@ -1169,7 +1169,7 @@
+     HB_Script script = item->item.script;
+     assert(script >= HB_Script_Devanagari && script <= HB_Script_Sinhala);
+     const unsigned short script_base = 0x0900 + 0x80*(script-HB_Script_Devanagari);
 -    const unsigned short ra = script_base + 0x30;
 +    unsigned short ra = script_base + 0x30;
      const unsigned short halant = script_base + 0x4d;
      const unsigned short nukta = script_base + 0x3c;
- 
-@@ -2856,6 +2856,19 @@ static bool indic_shape_syllable(QOpenTy
-         unsigned short *uc = reordered.data();
+     bool control = false;
+@@ -1212,6 +1212,19 @@
+         HB_UChar16 *uc = reordered;
          bool beginsWithRa = false;
  
 +	// Exception in Bengali Script
@@ -31,7 +32,7 @@
 +        // To handle this exception we need to change ra to from const to normal variable 
 +        // and aslo need to change ra to 'Base+0x70' whenever we will get assamese language
 +	//character in data
-+	if((script == QUnicodeTables::Bengali) && (*uc==0x09F0)){
++	if((script == HB_Script_Bengali) && (*uc==0x09F0)){
 +	  ra  = script_base + 0x70;
 +	}
 +

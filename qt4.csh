@@ -1,8 +1,8 @@
 # Qt4 initialization script (csh)
 
-if ( $?QMAKESPEC ) then
+if ( $?QT4DIR ) then
    exit
 endif
 
-setenv QMAKESPEC @@QMAKESPEC@@ 
-
+setenv QT4DIR `/usr/bin/pkg-config --variable=prefix Qt` 
+setenv QT4DOCDIR `/usr/bin/pkg-config --variable=docdir Qt` 

@@ -1,0 +1,18 @@
+diff -ur qt-x11-opensource-src-4.4.0/src/gui/kernel/qapplication_x11.cpp qt-x11-opensource-src-4.4.0-qgtkstyle/src/gui/kernel/qapplication_x11.cpp
+--- qt-x11-opensource-src-4.4.0/src/gui/kernel/qapplication_x11.cpp	2008-04-28 15:11:18.000000000 +0200
++++ qt-x11-opensource-src-4.4.0-qgtkstyle/src/gui/kernel/qapplication_x11.cpp	2008-05-27 05:43:57.000000000 +0200
+@@ -2262,9 +2262,11 @@
+                 QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("windows"));
+             break;
+         case DE_GNOME:
+-            if (X11->use_xrender)
+-                QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("cleanlooks"));
+-            else
++            if (X11->use_xrender) {
++                QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("gtk"));
++                if (!QApplicationPrivate::app_style)
++                    QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("cleanlooks"));
++            } else
+                 QApplicationPrivate::app_style = QStyleFactory::create(QLatin1String("windows"));
+             break;
+         case DE_CDE:

@@ -7,14 +7,14 @@ Name:    qt
 %else
 Name:    qt4
 %endif
-Version: 4.3.5
-Release: 2%{?dist}
+Version: 4.4.0
+Release: 12%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
+Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if "%{name}" != "qt4"
@@ -29,28 +29,22 @@ Source4: Trolltech.conf
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparc
 Source5: qconfig-multilib.h
 
-# search for assistant-qt4 instead of (qt3's) assistant in $PATH 
-Patch1: qt-x11-opensource-src-4.3.0-qassistant-qt4.patch
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
-Patch5: qt-x11-opensource-src-4.3.4-as_IN-437440.patch
-# look for OpenSSL using versioned sonames
-Patch6: qt-x11-opensource-src-4.3.4-openssl.patch
-# Fix sparc64 compile
-Patch7: qt4-sparc64-qvector.patch
+Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # kill hardcoded font substitutions (#447298)
 Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
-# 
-Patch9: qt-x11-fix-combobox-window-type.patch
+# under GNOME, default to QGtkStyle if available
+# (otherwise fall back to QCleanlooksStyle)
+Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 
 ## qt-copy patches
-%define qt_copy 20080528
+%define qt_copy 20080711
 Source1: qt-copy-patches-svn_checkout.sh
-Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2
+%{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
 %{?qt_copy:Provides: qt4-copy = %{qt_copy}}
 
-Source10: qt4-wrapper.sh
 Source11: qt4.sh
 Source12: qt4.csh
 
@@ -68,14 +62,20 @@ Source31: hi48-app-qt4-logo.png
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
 %define mysql -plugin-sql-mysql
-%define odbc -plugin-sql-odbc 
-%define psql -plugin-sql-psql 
-%define sqlite -plugin-sql-sqlite 
+%define odbc -plugin-sql-odbc
+%define psql -plugin-sql-psql
+%define sqlite -plugin-sql-sqlite
+# FIXME: building -no-phonon currently busted, build fails -- Rex
+#define phonon -phonon -gstreamer
+%define webkit -webkit
 
 # undefine to disable these
-%define nas -system-nas-sound
+#define nas -system-nas-sound
 %if 0%{?fedora} > 4 || 0%{?rhel} > 4
-%define qdbus -qdbus
+# link dbus
+%define dbus -dbus-linked
+# dlopen dbus
+#define dbus -dbus
 BuildRequires: dbus-devel >= 0.62
 %endif
 
@@ -107,11 +107,11 @@ BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
 BuildRequires: libpng-devel
 BuildRequires: libtiff-devel
-BuildRequires: libungif-devel
 BuildRequires: freetype-devel
 BuildRequires: zlib-devel
 BuildRequires: glib2-devel
 BuildRequires: openssl-devel
+%{?phonon:BuildRequires: gstreamer-devel >= 0.10.12, gstreamer-plugins-base-devel}
 
 ## In theory, should be as simple as:
 #define x_deps libGL-devel libGLU-devel
@@ -132,17 +132,17 @@ BuildRequires: mysql-devel >= 4.0
 
 %if "%{?psql}" != "-no-sql-psql"
 BuildRequires: postgresql-devel
+# added deps to workaround http://bugzilla.redhat.com/440673
+BuildRequires: krb5-devel libxslt-devel openssl-devel pam-devel readline-devel zlib-devel
 %endif
 
 %if "%{?odbc}" != "-no-sql-odbc"
 BuildRequires: unixODBC-devel
 %endif
 
-%if "%{?sqlite:1}" != "-no-sql-sqlite"
-%if 0%{?fedora} > 2
+%if "%{?sqlite}" != "-no-sql-sqlite"
 %define _system_sqlite -system-sqlite
 BuildRequires: sqlite-devel
-%endif
 %endif
 
 Obsoletes: qt4-config < %{version}-%{release}
@@ -165,6 +165,15 @@ Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: pkgconfig
+%if 0%{?webkit:1}
+Obsoletes: WebKit-qt-devel < 1.0.0-1
+Provides:  WebKit-qt-devel = 1.0.0-1
+%endif
+# we strip these from the .pc files to avoid the bogus deps
+# -openssl-linked ? -- Rex
+#Requires: openssl-devel
+# -dbus-linked ? -- Rex
+#Requires: dbus-devel
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -219,6 +228,16 @@ Provides:  qt4-mysql = %{version}-%{release}
 %description mysql 
 %{summary}.
 
+%package phonon-devel
+Summary: Phonon development files for %{name}
+Group: Development/Libraries
+Requires: %{name}-devel = %{version}-%{release}
+# FIXME
+Conflicts: kdelibs4-devel < 4.1
+
+%description phonon-devel
+%{summary}.
+
 %package postgresql 
 Summary: PostgreSQL driver for Qt's SQL classes
 Group: System Environment/Libraries
@@ -250,12 +269,15 @@ Provides:  qt4-sqlite = %{version}-%{release}
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
+%if 0%{?webkit:1}
+Obsoletes: WebKit-qt < 1.0.0-1
+Provides:  WebKit-qt = 1.0.0-1
+%endif
 Provides: qt4-assistant = %{version}-%{release}
 %if "%{name}" != "qt4"
 Provides: %{name}-assistant = %{version}-%{release}
 %endif
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: redhat-rpm-config rpm
 %if "%{name}" != "qt4"
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
@@ -267,31 +289,21 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 %prep
 %if "%{?snap:1}" == "1"
-%setup -q -n qt-x11%{?preview}-opensource-src-%{version}-%{snap}
+%setup -q -n qt-x11-opensource-src-%{vesion}-%{snap}
 %else
-%setup -q -n qt-x11%{?preview}-opensource-src-%{version}%{?beta} %{?qt_copy:-a 2}
+%setup -q -n qt-x11-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
 %endif
 
 %if 0%{?qt_copy:1}
-# dome don't apply atm, some/most of these are already included -- Rex
-echo "0176" >> patches/DISABLED
-
 test -x apply_patches && ./apply_patches
 %endif
 
-%patch1 -p1 -b .assistant4
 # don't use -b on mkspec files, else they get installed too.
+# multilib hacks no longer required
 %patch2 -p1
 %patch5 -p1 -b .bz#437440-as_IN-437440
-%patch6 -p1 -b .openssl
-# SHLIB_VERSION_NUMBER is wrong on F8 and older
-# 0.9.8b is the version in both F7 and F8
-%if 0%{?fedora} < 9
-sed -i -e 's/SHLIB_VERSION_NUMBER/"0.9.8b"/g' src/network/qsslsocket_openssl_symbols.cpp
-%endif
-%patch7 -p1 -b .sparc64
 %patch8 -p1 -b .font-aliases
-%patch9 -p0 -b .fix-combobox-window-type
+%patch9 -p1 -b .qgtkstyle
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -352,11 +364,11 @@ fi
   -release \
   -shared \
   -cups \
-  -no-exceptions \
   -fontconfig \
   -largefile \
   -qt-gif \
   -no-rpath \
+  -reduce-relocations \
   -no-separate-debug-info \
   -sm \
   -stl \
@@ -374,8 +386,12 @@ fi
   -xrender \
   -xkb \
   -glib \
-  -openssl \
-  %{?qdbus} %{!?qdbus:-no-qdbus} \
+  -openssl-linked \
+  -xmlpatterns \
+  %{?phonon} %{!?phonon:-no-phonon } \
+  %{?dbus} %{!?dbus:-no-dbus} \
+  %{?phonon} %{!?phonon:-no-phonon -no-gstreamer} \
+  %{?webkit} %{!?webkit:-no-webkit } \
   %{?nas} %{!?nas:-no-nas-sound} \
   %{?mysql} \
   %{?psql} \
@@ -400,8 +416,8 @@ desktop-file-install \
 # strip extraneous dirs/libraries -- Rex
 # safe ones
 glib2_libs=$(pkg-config --libs glib-2.0 gthread-2.0)
-for dep in -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} -lmng -ljpeg -lpng -lm -lz \
-  -L%{_builddir}/qt-x11%{?preview}-opensource-src-%{version}%{?beta:-%{beta}}/lib ; do
+for dep in -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} -lmng -ljpeg -lpng -lm -lz -lssl -lcrypto -lsqlite3 \
+  -L%{_builddir}/qt-x11%{?preview}-opensource-src-%{version}%{?pre}/lib -L/usr/X11R6/%{_lib} ; do
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la ||:
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/*.prl
@@ -415,28 +431,29 @@ done
 # nuke dandling reference(s) to %buildroot
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
 
+%if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
 # -doc make symbolic link to _qt4_docdir
 rm -rf %{buildroot}%{_qt4_prefix}/doc
 ln -s  ../../share/doc/qt4 %{buildroot}%{_qt4_prefix}/doc
-
-## Make symlinks in %%_bindir
-%if "%{_bindir}" != "%{_qt4_bindir}"
-  mkdir -p %{buildroot}%{_bindir}
-  pushd %{buildroot}%{_qt4_bindir}
-  for i in *; do
-    case "${i}" in
-      assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
-        LINK="${i}-qt4"
-        ln -s "${i}" "%{buildroot}%{_qt4_bindir}/${LINK}"
-        ;;
-      *)
-        LINK="${i}"
-        ;;
-    esac
-    install -p -m755 -D %{SOURCE10} %{buildroot}%{_bindir}/${LINK}
-  done
-  popd
 %endif
+
+# let rpm handle binaries conflicts
+mkdir %{buildroot}%{_bindir}
+pushd %{buildroot}%{_qt4_bindir}
+for i in * ; do
+  case "${i}" in
+    assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
+      mv $i ../../../bin/${i}-qt4
+      ln -s ../../../bin/${i}-qt4 .
+      ln -s ../../../bin/${i}-qt4 $i
+      ;;
+    *)
+      mv $i ../../../bin/
+      ln -s ../../../bin/$i .
+      ;;
+  esac
+done
+popd
 
 # _debug lib symlinks (see bug #196513)
 pushd %{buildroot}%{_qt4_libdir}
@@ -468,9 +485,15 @@ rm -f %{buildroot}%{_qt4_libdir}/lib*.la
 %endif
 
 # qt4.(sh|csh), currently unused
-#install -p -m755 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4-%{_arch}.sh
-#install -p -m755 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4-%{_arch}.csh
-#sed -i -e "s|@@QMAKESPEC@@|%{platform}|" %{buildroot}/etc/profile.d/qt4-%{_arch}.*
+%if 0
+install -p -m755 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4.sh
+install -p -m755 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4.csh
+sed -i \
+  -e "s|@@QT4DIR@@|%{_qt4_prefix}|" \
+  -e "s|@@QT4DOCDIR@@|%{_qt4_docdir}|" \
+  %{buildroot}/etc/profile.d/qt4.*
+%endif
+
 
 %if "%{_qt4_libdir}" != "%{_libdir}"
   mkdir -p %{buildroot}/etc/ld.so.conf.d
@@ -488,9 +511,6 @@ for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
   install -p -m644 -D ${icon} %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/linguist4.png
 done
-# qtconfig icon (it's 50x50 actually, it's pretty generic as-is anyway, use qt4-logo instead -- Rex )
-#install -p -m644 -D tools/qtconfig/images/appicon.png \
-#                    %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qtconfig4.png
 
 # Qt.pc
 cat >%{buildroot}%{_libdir}/pkgconfig/Qt.pc<<EOF
@@ -564,16 +584,21 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %files
 %defattr(-,root,root,-)
 %doc README* 
-%{!?beta:%doc OPENSOURCE-NOTICE.TXT}
+%{!?snap:%doc OPENSOURCE-NOTICE.TXT}
 %doc LICENSE.GPL2 GPL_EXCEPTION*.TXT
 %doc LICENSE.GPL3
 %doc LICENSE.QPL
+#config /etc/profile.d/qt4.*
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
 %endif
 %dir %{_qt4_prefix}
+%if "%{_qt4_bindir}" == "%{_bindir}"
+%{_qt4_prefix}/bin
+%else
 %dir %{_qt4_bindir}
+%endif
 %if "%{_qt4_datadir}" != "%{_datadir}/qt4"
 %dir %{_datadir}/qt4
 %else
@@ -585,13 +610,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %config(noreplace) %{_qt4_sysconfdir}/Trolltech.conf
 %{_qt4_datadir}/phrasebooks/
 %{_qt4_libdir}/libQtCore.so.*
-%if "%{?qdbus}" == "-qdbus"
+%if 0%{?dbus:1}
+%if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qdbus
-%{_bindir}/qdbuscpp2xml
-%{_bindir}/qdbusxml2cpp
+%endif
 %{_qt4_bindir}/qdbus
-%{_qt4_bindir}/qdbuscpp2xml
-%{_qt4_bindir}/qdbusxml2cpp
 %{_qt4_libdir}/libQtDBus.so.*
 %endif
 %{_qt4_libdir}/libQtNetwork.so.*
@@ -599,6 +622,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtSql.so.*
 %{_qt4_libdir}/libQtTest.so.*
 %{_qt4_libdir}/libQtXml.so.*
+%{_qt4_libdir}/libQtXmlPatterns.so.*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
 %{_qt4_translationdir}/
@@ -608,26 +632,31 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_sysconfdir}/rpm/macros.*
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
+%{_qt4_libdir}/libQtCLucene.so.*
 %{_qt4_libdir}/libQtDesigner.so.*
 %{_qt4_libdir}/libQtDesignerComponents.so.*
 %{_qt4_libdir}/libQtGui.so.*
+%{_qt4_libdir}/libQtHelp.so.*
 %{_qt4_libdir}/libQtOpenGL.so.*
 %{_qt4_libdir}/libQtSvg.so.*
+%{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
+%{?phonon:%{_qt4_libdir}/libphonon.so.*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/designer
 %exclude %{_qt4_plugindir}/sqldrivers
+%if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
-%{_bindir}/qdbusviewer
+%{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qt*config*
+%endif
 %{_qt4_bindir}/assistant*
-%{_qt4_bindir}/qdbusviewer
+%{?dbus:%{_qt4_bindir}/qdbusviewer}
 %{_qt4_bindir}/qt*config*
 %{_datadir}/applications/*qtconfig*.desktop
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %files devel
 %defattr(-,root,root,-)
-#config /etc/profile.d/*
 %{_qt4_bindir}/lrelease*
 %{_qt4_bindir}/lupdate*
 %{_qt4_bindir}/moc*
@@ -636,6 +665,15 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_bindir}/qt3to4
 %{_qt4_bindir}/rcc*
 %{_qt4_bindir}/uic*
+%{_qt4_bindir}/qcollectiongenerator
+%if 0%{?dbus:1}
+%{_qt4_bindir}/qdbuscpp2xml
+%{_qt4_bindir}/qdbusxml2cpp
+%endif
+%{_qt4_bindir}/qhelpconverter
+%{_qt4_bindir}/qhelpgenerator
+%{_qt4_bindir}/xmlpatterns
+%if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
 %{_bindir}/pixeltool*
@@ -644,26 +682,40 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_bindir}/qt3to4
 %{_bindir}/rcc*
 %{_bindir}/uic*
+%{_bindir}/designer*
+%{_bindir}/linguist*
+%{_bindir}/qcollectiongenerator
+%if 0%{?dbus:1}
+%{_bindir}/qdbuscpp2xml
+%{_bindir}/qdbusxml2cpp
+%endif
+%{_bindir}/qhelpconverter
+%{_bindir}/qhelpgenerator
+%{_bindir}/xmlpatterns
+%endif
 %if "%{_qt4_headerdir}" != "%{_includedir}"
 %dir %{_qt4_headerdir}/
 %endif
 %{_qt4_headerdir}/*
+%{?phonon:%exclude %{_qt4_headerdir}/phonon/}
+%{?phonon:%exclude %{_qt4_headerdir}/Qt/phonon*}
 %{_qt4_datadir}/mkspecs/
+%if "%{_qt4_datadir}" != "%{_qt4_prefix}"
 %{_qt4_prefix}/mkspecs/
+%endif
 %{_qt4_datadir}/q3porting.xml
 %{_qt4_libdir}/libQt*.so
 # remaining static lib: libQtUiTools.a 
 %{_qt4_libdir}/libQt*.a
 %{_qt4_libdir}/libQt*.prl
 %{_libdir}/pkgconfig/*.pc
+%{?phonon:%exclude %{_libdir}/pkgconfig/phonon.pc}
 # Qt designer
-%{_bindir}/designer*
 %{_qt4_bindir}/designer*
 %{_qt4_plugindir}/designer/
 %{_datadir}/applications/*designer*.desktop
 # Qt Linguist
 %{_qt4_bindir}/linguist*
-%{_bindir}/linguist*
 %{_datadir}/applications/*linguist*.desktop
 %{_datadir}/icons/hicolor/*/apps/linguist4.*
 
@@ -671,6 +723,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %defattr(-,root,root,-)
 %dir %{_qt4_docdir}/
 %{_qt4_docdir}/html
+%{_qt4_docdir}/qch/
+%{_qt4_docdir}/src/
 %{_qt4_prefix}/doc
 %{_qt4_demosdir}/
 %{_qt4_examplesdir}/
@@ -678,8 +732,20 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_datadir}/applications/*assistant*.desktop
 # Qt Demo
 %{_qt4_bindir}/qt*demo*
+%if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qt*demo*
+%endif
 %{_datadir}/applications/*qtdemo*.desktop
+
+%if 0%{?phonon:1}
+%files phonon-devel
+%defattr(-,root,root,-)
+%{_libdir}/pkgconfig/phonon.pc
+%{_qt4_headerdir}/phonon/
+%{_qt4_headerdir}/Qt/phonon*
+%{_qt4_libdir}/libphonon.so
+%{_qt4_libdir}/libphonon.prl
+%endif
 
 %if "%{?odbc}" == "-plugin-sql-odbc"
 %files odbc 
@@ -707,25 +773,67 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
-* Mon Jun 16 2008 Rex Dieter <rdieter@fedoraproject.org> 4.3.5-2
-- fix-combobox-window-type patch (maniac103)
+* Fri Jul 11 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-12
+- qt-copy-patches-20080711
 
-* Wed May 28 2008 Rex Dieter <rdieter@fedoraproject.org> 4.3.5-1
-- qt-x11-opensource-src-4.3.5
-- qt-copy 20080528 patches
+* Mon Jun 23 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-11
+- fix dbus conditional (#452487)
 
-* Mon May 19 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-14
+* Sat Jun 14 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-10
+- strip -lsqlite3 from .pc files (#451490)
+
+* Sat Jun 14 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-9
+- restore -qt4 suffixes
+
+* Fri Jun 13 2008 Than Ngo <than@redhat.com> 4.4.0-8
+- drop qt wrapper, make symlinks to /usr/bin
+
+* Tue Jun 10 2008 Than Ngo <than@redhat.com> 4.4.0-7
+- fix #450310, multilib issue 
+
+* Fri Jun 06 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-6
+- qt-copy-patches-20080606
+- drop BR: libungif-devel (not used)
+- move libQtXmlPatters, -x11 -> main
+- move qdbuscpp2xml, qdbusxml2cpp, xmlpatters, -x11 -> -devel
+
+* Tue May 27 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-5
+- under GNOME, default to QGtkStyle if available
+
+* Mon May 19 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-4
 - don't hardcode incorrect font substitutions (#447298)
 
-* Sun May 18 2008 Tom "spot" Callaway <tcallawa@redhat.com> 4.3.4-13
-- fix sparc64 multilib header
+* Fri May 16 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-3
+- qt-copy-patches-20080516
 
-* Sat May 17 2008 Tom "spot" Callaway <tcallawa@redhat.com> 4.3.4-12
-- fix sparc64 compile, the 64bit sparc conditional in src/corelib/tools/qvector.h 
-  applies to linux as well as solaris
+* Tue May 13 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-2
+- revert _qt4_bindir change for now, needs more work (#446167)
 
-* Tue Apr 08 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-11
+* Tue May 06 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-1
+- qt-4.4.0
+
+* Tue Apr 29 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.6.rc1
+- -webkit (include in -x11 subpkg), drop separate -webkit-devel
+- omit qt4-wrapper.sh deps (since it's not used atm)
+- qt-copy-patches-20080429
+- Obsoletes/Provides: WebKit-qt(-devel) <|= 1.0.0-1  (#442200)
+
+* Thu Apr 24 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.5.rc1
+- strip -lssl -lcrypto from *.pc files too
+
+* Tue Apr 08 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.4.0-0.4.rc1
 - updated patch for #437440 ([as-IN] Consonant combination issue) by Pravin Satpute
+- port the patch to Qt 4.4 (the code moved to harfbuzz) and reenable it
+
+* Fri Apr 04 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-0.3.rc1
+- qt-4.4.0-rc1
+- -xmlpatterns (and drop -no-exceptions)
+- -reduce-relocations, -dbus-linked, -openssl-linked
+- -no-nas
+- -no-phonon (-no-gstreamer), -no-webkit (for now, at least until
+  conflicts with WebKit-qt and kdelibs4 are sorted out)
+- %%_qt4_bindir -> %%_bindir, avoid qt4-wrapper hackage (#277581, #422291)
+- qtconfig.desktop: NoDisplay=true (#244879)
 
 * Wed Apr 02 2008 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.3.4-10
 - look for OpenSSL using versioned sonames (#432271)
