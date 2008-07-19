@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 13%{?dist}.1
+Release: 14%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -69,8 +69,8 @@ Source31: hi48-app-qt4-logo.png
 #define phonon -phonon -gstreamer
 %define webkit -webkit
 
-# undefine to disable these
 #define nas -system-nas-sound
+%define nas -no-nas-sound
 %if 0%{?fedora} > 4 || 0%{?rhel} > 4
 # link dbus
 %define dbus -dbus-linked
@@ -122,7 +122,7 @@ BuildRequires: openssl-devel
 %endif
 BuildRequires: %{x_deps}
 
-%if "%{?nas}" == "-system-nas-sound"
+%if "%{?nas}" != "-no-nas-sound"
 BuildRequires: nas-devel
 %endif
 
@@ -392,7 +392,7 @@ fi
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?phonon} %{!?phonon:-no-phonon -no-gstreamer} \
   %{?webkit} %{!?webkit:-no-webkit } \
-  %{?nas} %{!?nas:-no-nas-sound} \
+  %{?nas} \
   %{?mysql} \
   %{?psql} \
   %{?odbc} \
@@ -538,7 +538,7 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
-%%_qt4_datadir %%{_datadir}/qt4
+%%_qt4_datadir %%{_qt4_prefix}
 %%_qt4_demosdir %%{_qt4_prefix}/demos
 %%_qt4_docdir %%{_docdir}/qt4
 %%_qt4_examples %%{_qt4_prefix}/examples
@@ -547,7 +547,7 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_plugindir %%{_qt4_prefix}/plugins
 %%_qt4_qmake %%{_qt4_bindir}/qmake
 %%_qt4_sysconfdir %%{_sysconfdir}
-%%_qt4_translationdir %%{_qt4_datadir}/translations
+%%_qt4_translationdir %%{_datadir}/qt4/translations 
 EOF
 
 # create/own %%_qt4_plugindir/styles
@@ -773,6 +773,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat Jul 19 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-14
+- macros.qt4: fix %%_qt4_datadir, %%_qt4_translationdir
+
 * Thu Jul 17 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-13
 - (re)fix qconfig-multilib.h for sparc64
 
