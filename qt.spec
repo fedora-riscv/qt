@@ -774,7 +774,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %changelog
 * Sat Jul 19 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-14
-- macros.qt4: fix %%_qt4_datadir
+- macros.qt4: fix %%_qt4_datadir, %%_qt4_translationdir
 
 * Thu Jul 17 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-13
 - (re)fix qconfig-multilib.h for sparc64
