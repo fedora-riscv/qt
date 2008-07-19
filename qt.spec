@@ -69,8 +69,8 @@ Source31: hi48-app-qt4-logo.png
 #define phonon -phonon -gstreamer
 %define webkit -webkit
 
-# undefine to disable these
 #define nas -system-nas-sound
+%define nas -no-nas-sound
 %if 0%{?fedora} > 4 || 0%{?rhel} > 4
 # link dbus
 %define dbus -dbus-linked
@@ -122,7 +122,7 @@ BuildRequires: openssl-devel
 %endif
 BuildRequires: %{x_deps}
 
-%if "%{?nas}" == "-system-nas-sound"
+%if "%{?nas}" != "-no-nas-sound"
 BuildRequires: nas-devel
 %endif
 
@@ -392,7 +392,7 @@ fi
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?phonon} %{!?phonon:-no-phonon -no-gstreamer} \
   %{?webkit} %{!?webkit:-no-webkit } \
-  %{?nas} %{!?nas:-no-nas-sound} \
+  %{?nas} \
   %{?mysql} \
   %{?psql} \
   %{?odbc} \
