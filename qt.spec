@@ -547,7 +547,7 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_plugindir %%{_qt4_prefix}/plugins
 %%_qt4_qmake %%{_qt4_bindir}/qmake
 %%_qt4_sysconfdir %%{_sysconfdir}
-%%_qt4_translationdir %%{_qt4_datadir}/translations
+%%_qt4_translationdir %%{_datadir}/qt4/translations 
 EOF
 
 # create/own %%_qt4_plugindir/styles
