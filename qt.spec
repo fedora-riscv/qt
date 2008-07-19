@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -538,7 +538,7 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
-%%_qt4_datadir %%{_datadir}/qt4
+%%_qt4_datadir %%{_qt4_prefix}
 %%_qt4_demosdir %%{_qt4_prefix}/demos
 %%_qt4_docdir %%{_docdir}/qt4
 %%_qt4_examples %%{_qt4_prefix}/examples
@@ -773,6 +773,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat Jul 19 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-14
+- macros.qt4: fix %%_qt4_datadir
+
 * Thu Jul 17 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-13
 - (re)fix qconfig-multilib.h for sparc64
 
