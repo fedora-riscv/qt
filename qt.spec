@@ -288,11 +288,7 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 
 %prep
-%if "%{?snap:1}" == "1"
-%setup -q -n qt-x11-opensource-src-%{vesion}-%{snap}
-%else
 %setup -q -n qt-x11-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
-%endif
 
 %if 0%{?qt_copy:1}
 test -x apply_patches && ./apply_patches
@@ -584,7 +580,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %files
 %defattr(-,root,root,-)
 %doc README* 
-%{!?snap:%doc OPENSOURCE-NOTICE.TXT}
 %doc LICENSE.GPL2 GPL_EXCEPTION*.TXT
 %doc LICENSE.GPL3
 %doc LICENSE.QPL
