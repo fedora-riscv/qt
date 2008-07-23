@@ -8,7 +8,7 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.0
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -39,7 +39,7 @@ Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 
 ## qt-copy patches
-%define qt_copy 20080711
+%define qt_copy 20080723
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -65,8 +65,6 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
-# FIXME: building -no-phonon currently busted, build fails -- Rex
-#define phonon -phonon -gstreamer
 %define webkit -webkit
 
 #define nas -system-nas-sound
@@ -111,7 +109,6 @@ BuildRequires: freetype-devel
 BuildRequires: zlib-devel
 BuildRequires: glib2-devel
 BuildRequires: openssl-devel
-%{?phonon:BuildRequires: gstreamer-devel >= 0.10.12, gstreamer-plugins-base-devel}
 
 ## In theory, should be as simple as:
 #define x_deps libGL-devel libGLU-devel
@@ -226,16 +223,6 @@ Provides:  qt4-mysql = %{version}-%{release}
 %endif
 
 %description mysql 
-%{summary}.
-
-%package phonon-devel
-Summary: Phonon development files for %{name}
-Group: Development/Libraries
-Requires: %{name}-devel = %{version}-%{release}
-# FIXME
-Conflicts: kdelibs4-devel < 4.1
-
-%description phonon-devel
 %{summary}.
 
 %package postgresql 
@@ -366,6 +353,7 @@ fi
   -no-rpath \
   -reduce-relocations \
   -no-separate-debug-info \
+  -no-phonon -no-gstreamer \
   -sm \
   -stl \
   -system-libmng \
@@ -384,9 +372,7 @@ fi
   -glib \
   -openssl-linked \
   -xmlpatterns \
-  %{?phonon} %{!?phonon:-no-phonon } \
   %{?dbus} %{!?dbus:-no-dbus} \
-  %{?phonon} %{!?phonon:-no-phonon -no-gstreamer} \
   %{?webkit} %{!?webkit:-no-webkit } \
   %{?nas} \
   %{?mysql} \
@@ -635,7 +621,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtOpenGL.so.*
 %{_qt4_libdir}/libQtSvg.so.*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
-%{?phonon:%{_qt4_libdir}/libphonon.so.*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/designer
 %exclude %{_qt4_plugindir}/sqldrivers
@@ -692,8 +677,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %dir %{_qt4_headerdir}/
 %endif
 %{_qt4_headerdir}/*
-%{?phonon:%exclude %{_qt4_headerdir}/phonon/}
-%{?phonon:%exclude %{_qt4_headerdir}/Qt/phonon*}
 %{_qt4_datadir}/mkspecs/
 %if "%{_qt4_datadir}" != "%{_qt4_prefix}"
 %{_qt4_prefix}/mkspecs/
@@ -704,7 +687,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQt*.a
 %{_qt4_libdir}/libQt*.prl
 %{_libdir}/pkgconfig/*.pc
-%{?phonon:%exclude %{_libdir}/pkgconfig/phonon.pc}
 # Qt designer
 %{_qt4_bindir}/designer*
 %{_qt4_plugindir}/designer/
@@ -732,16 +714,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %endif
 %{_datadir}/applications/*qtdemo*.desktop
 
-%if 0%{?phonon:1}
-%files phonon-devel
-%defattr(-,root,root,-)
-%{_libdir}/pkgconfig/phonon.pc
-%{_qt4_headerdir}/phonon/
-%{_qt4_headerdir}/Qt/phonon*
-%{_qt4_libdir}/libphonon.so
-%{_qt4_libdir}/libphonon.prl
-%endif
-
 %if "%{?odbc}" == "-plugin-sql-odbc"
 %files odbc 
 %defattr(-,root,root,-)
@@ -768,6 +740,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Jul 23 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-16
+- qt-copy-patches-20080723 (kde#162793)
+- omit deprecated phonon bits
+
 * Sat Jul 19 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-15
 - fix/workaround spec syntax 
 
