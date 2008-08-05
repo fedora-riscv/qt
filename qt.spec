@@ -7,8 +7,8 @@ Name:    qt
 %else
 Name:    qt4
 %endif
-Version: 4.4.0
-Release: 16%{?dist}
+Version: 4.4.1
+Release: 1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -39,7 +39,7 @@ Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 
 ## qt-copy patches
-%define qt_copy 20080723
+%define qt_copy 20080805
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -740,6 +740,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Aug 05 2008 Than Ngo <than@redhat.com> -  4.4.1-1
+- 4.4.1
+
 * Wed Jul 23 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-16
 - qt-copy-patches-20080723 (kde#162793)
 - omit deprecated phonon bits
