@@ -7,8 +7,8 @@ Name:    qt
 %else
 Name:    qt4
 %endif
-Version: 4.4.1
-Release: 1%{?dist}
+Version: 4.4.0
+Release: 17%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -39,7 +39,7 @@ Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 
 ## qt-copy patches
-%define qt_copy 20080805
+%define qt_copy 20080723
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -144,8 +144,12 @@ BuildRequires: sqlite-devel
 
 Obsoletes: qt4-config < %{version}-%{release}
 Provides: qt4-config = %{version}-%{release}
-## libQtScript Obsoletes libqsa ?
-# Obsoletes: qt4-qsa 
+Obsoletes: qt4-sqlite < %{version}-%{release}
+Provides: qt4-sqlite = %{version}-%{release}
+%if "%{name}" == "qt"
+Obsoletes: qt-sqlite < %{version}-%{release}
+Provides: qt-sqlite = %{version}-%{release}
+%endif
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -237,20 +241,6 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %endif
 
 %description postgresql 
-%{summary}.
-
-%package sqlite 
-Summary: SQLite driver for Qt's SQL classes
-Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes: qt4-SQLite < %{version}-%{release}
-Provides:  qt4-SQLite = %{version}-%{release}
-%if "%{name}" != "qt4"
-Obsoletes: qt4-sqlite < %{version}-%{release}
-Provides:  qt4-sqlite = %{version}-%{release}
-%endif
-
-%description sqlite 
 %{summary}.
 
 %package x11
@@ -606,6 +596,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtXmlPatterns.so.*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
+%{_qt4_plugindir}/sqldrivers/libqsqlite*
 %{_qt4_translationdir}/
 
 %files x11 
@@ -732,16 +723,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_plugindir}/sqldrivers/libqsqlmysql*
 %endif
 
-%if "%{?sqlite}" == "-plugin-sql-sqlite"
-%files sqlite 
-%defattr(-,root,root,-)
-%{_qt4_plugindir}/sqldrivers/libqsqlite*
-%endif
-
 
 %changelog
-* Tue Aug 05 2008 Than Ngo <than@redhat.com> -  4.4.1-1
-- 4.4.1
+* Tue Aug 05 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-17
+- fold -sqlite subpkg into main (#454930)
 
 * Wed Jul 23 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-16
 - qt-copy-patches-20080723 (kde#162793)
