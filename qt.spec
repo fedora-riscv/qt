@@ -8,10 +8,10 @@ Name:    qt
 Name:    qt4
 %endif
 Version: 4.4.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
-License: GPLv3 or GPLv2 with exceptions or QPL
+License: GPLv3 with exceptions or GPLv2 with exceptions
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
@@ -726,6 +726,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Aug 06 2008 Than Ngo <than@redhat.com> -  4.4.1-2
+- fix license tag
+
 * Tue Aug 05 2008 Than Ngo <than@redhat.com> -  4.4.1-1
 - 4.4.1
 
