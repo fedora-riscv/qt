@@ -560,7 +560,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %doc README* 
 %doc LICENSE.GPL2 GPL_EXCEPTION*.TXT
 %doc LICENSE.GPL3
-%doc LICENSE.QPL
 #config /etc/profile.d/qt4.*
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
