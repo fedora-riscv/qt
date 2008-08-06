@@ -7,8 +7,8 @@ Name:    qt
 %else
 Name:    qt4
 %endif
-Version: 4.4.0
-Release: 17%{?dist}
+Version: 4.4.1
+Release: 1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 or GPLv2 with exceptions or QPL
@@ -37,9 +37,10 @@ Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 # under GNOME, default to QGtkStyle if available
 # (otherwise fall back to QCleanlooksStyle)
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
+Patch10: qt-x11-opensource-src-4.4.1-systray.patch
 
 ## qt-copy patches
-%define qt_copy 20080723
+%define qt_copy 20080805
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -277,6 +278,7 @@ test -x apply_patches && ./apply_patches
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch8 -p1 -b .font-aliases
 %patch9 -p1 -b .qgtkstyle
+%patch10 -p1 -b .systray
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -558,7 +560,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %doc README* 
 %doc LICENSE.GPL2 GPL_EXCEPTION*.TXT
 %doc LICENSE.GPL3
-%doc LICENSE.QPL
 #config /etc/profile.d/qt4.*
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
@@ -725,6 +726,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Aug 05 2008 Than Ngo <than@redhat.com> -  4.4.1-1
+- 4.4.1
+
 * Tue Aug 05 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.0-17
 - fold -sqlite subpkg into main (#454930)
 
