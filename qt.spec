@@ -4,6 +4,7 @@
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
 Name:    qt
+Epoch:   1
 %else
 Name:    qt4
 %endif
@@ -18,7 +19,6 @@ Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if "%{name}" != "qt4"
-Epoch: 1
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %endif
@@ -148,8 +148,8 @@ Provides: qt4-config = %{version}-%{release}
 Obsoletes: qt4-sqlite < %{version}-%{release}
 Provides: qt4-sqlite = %{version}-%{release}
 %if "%{name}" == "qt"
-Obsoletes: qt-sqlite < %{version}-%{release}
-Provides: qt-sqlite = %{version}-%{release}
+Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}%{version}-%{release}
+Provides: qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 
 %description 
@@ -726,8 +726,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
-* Wed Aug 06 2008 Than Ngo <than@redhat.com> - 4.4.1-2
-- fix License tag
+* Wed Aug 06 2008 Than Ngo <than@redhat.com> -  4.4.1-2
+- fix license tag
+- fix Obsoletes: qt-sqlite (missing epoch)
 
 * Tue Aug 05 2008 Than Ngo <than@redhat.com> -  4.4.1-1
 - 4.4.1
