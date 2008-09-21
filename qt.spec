@@ -8,8 +8,8 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.4.1
-Release: 3%{?dist}
+Version: 4.4.2
+Release: 1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -41,7 +41,7 @@ Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.1-systray.patch
 
 ## qt-copy patches
-%define qt_copy 20080908
+%define qt_copy 20080920
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -270,10 +270,9 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 %setup -q -n qt-x11-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
 
 %if 0%{?qt_copy:1}
-# Mac(?)-specific, doesn't apply
 echo "0242" >> patches/DISABLED
-# already(?) applied to 4.4.1
-echo "0244" >> patches/DISABLED
+echo "0250" >> patches/DISABLED
+echo "0251" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -734,6 +733,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat Sep 20 2008 Than Ngo <than@redhat.com> 4.4.2-1
+- 4.4.2
+
 * Mon Sep 08 2008 Rex Dieter <rdieter@fedoraproject.org> - 4.4.1-3
 - apply QMAKEPATH portion of multilib patch only if needed
 - qt-copy-patches-20080908
