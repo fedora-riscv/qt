@@ -8,8 +8,8 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.4.1
-Release: 2%{?dist}
+Version: 4.4.2
+Release: 1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -30,17 +30,17 @@ Source4: Trolltech.conf
 Source5: qconfig-multilib.h
 
 # multilib hacks 
-Patch2: qt-x11-opensource-src-4.2.2-multilib.patch
+Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
+Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # kill hardcoded font substitutions (#447298)
 Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 # under GNOME, default to QGtkStyle if available
 # (otherwise fall back to QCleanlooksStyle)
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
-Patch10: qt-x11-opensource-src-4.4.1-systray.patch
 
 ## qt-copy patches
-%define qt_copy 20080805
+%define qt_copy 20080920
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -269,16 +269,21 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 %setup -q -n qt-x11-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
 
 %if 0%{?qt_copy:1}
+echo "0242" >> patches/DISABLED
+echo "0250" >> patches/DISABLED
+echo "0251" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
 %patch2 -p1
+%if "%{_qt4_datadir}" != "%{_qt4_prefix}"
+%patch3 -p1 -b .multilib-QMAKEPATH
+%endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch8 -p1 -b .font-aliases
 %patch9 -p1 -b .qgtkstyle
-%patch10 -p1 -b .systray
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -726,6 +731,13 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat Sep 20 2008 Than Ngo <than@redhat.com> 4.4.2-1
+- 4.4.2
+
+* Mon Sep 08 2008 Rex Dieter <rdieter@fedoraproject.org> - 4.4.1-3
+- apply QMAKEPATH portion of multilib patch only if needed
+- qt-copy-patches-20080908
+
 * Wed Aug 06 2008 Than Ngo <than@redhat.com> -  4.4.1-2
 - fix license tag
 - fix Obsoletes: qt-sqlite (missing epoch)
