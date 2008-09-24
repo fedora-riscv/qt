@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -38,7 +38,6 @@ Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 # under GNOME, default to QGtkStyle if available
 # (otherwise fall back to QCleanlooksStyle)
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
-Patch10: qt-x11-opensource-src-4.4.1-systray.patch
 
 ## qt-copy patches
 %define qt_copy 20080920
@@ -285,7 +284,6 @@ test -x apply_patches && ./apply_patches
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch8 -p1 -b .font-aliases
 %patch9 -p1 -b .qgtkstyle
-%patch10 -p1 -b .systray
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -733,6 +731,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Sep 24 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.2-2
+- omit systray patch (for now)
+
 * Sat Sep 20 2008 Than Ngo <than@redhat.com> 4.4.2-1
 - 4.4.2
 
