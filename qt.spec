@@ -8,8 +8,8 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.4.2
-Release: 2%{?dist}
+Version: 4.4.3
+Release: 1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -731,6 +731,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sun Sep 28 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-1
+- 4.4.3
+
 * Wed Sep 24 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.2-2
 - omit systray patch (for now)
 
