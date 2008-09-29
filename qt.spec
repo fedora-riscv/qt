@@ -26,7 +26,7 @@ Provides: qt4 = %{version}-%{release}
 Source4: Trolltech.conf
 
 # See http://bugzilla.redhat.com/223663
-%define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparc
+%define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 Source5: qconfig-multilib.h
 
 # multilib hacks 
