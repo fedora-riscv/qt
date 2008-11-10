@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 2%{?dist}
+Release: 4%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -41,7 +41,7 @@ Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.3-im.patch
 
 ## qt-copy patches
-%define qt_copy 20080920
+%define qt_copy 20081110
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -733,6 +733,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Nov 10 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-4
+- qt-copy-pathes-20081110
+
+* Mon Nov 10 2008 Than Ngo <than@redhat.com> 4.4.3-3
+- apply 0256-fix-recursive-backingstore-sync-crash.diff
+
 * Thu Nov 06 2008 Than Ngo <than@redhat.com> 4.4.3-2
 - bz#468814, immodule selection behavior is unpredictable without QT_IM_MODULE,
   patch from Peng Wu
