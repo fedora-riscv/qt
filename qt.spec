@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -46,7 +46,6 @@ Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
 %{?qt_copy:Provides: qt4-copy = %{qt_copy}}
-Patch100: 0256-fix-recursive-backingstore-sync-crash.diff
 
 Source11: qt4.sh
 Source12: qt4.csh
@@ -275,8 +274,6 @@ echo "0242" >> patches/DISABLED
 echo "0250" >> patches/DISABLED
 echo "0251" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
-%else
-%patch100 -p0
 %endif
 
 # don't use -b on mkspec files, else they get installed too.
@@ -736,8 +733,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Nov 11 2008 Than Ngo <than@redhat.com> 4.4.3-5
+- drop 0256-fix-recursive-backingstore-sync-crash.diff, it's
+  included in qt-copy-pathes-20081110
+
 * Mon Nov 10 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-4
-- qt-copy-pathes-20081110
+- qt-copy-patches-20081110
 
 * Mon Nov 10 2008 Than Ngo <than@redhat.com> 4.4.3-3
 - apply 0256-fix-recursive-backingstore-sync-crash.diff
