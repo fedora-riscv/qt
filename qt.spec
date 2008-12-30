@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 6%{?dist}
+Release: 8%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -41,7 +41,7 @@ Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.3-im.patch
 
 ## qt-copy patches
-%define qt_copy 20081112
+%define qt_copy 20081225 
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -111,6 +111,7 @@ BuildRequires: freetype-devel
 BuildRequires: zlib-devel
 BuildRequires: glib2-devel
 BuildRequires: openssl-devel
+BuildRequires: pkgconfig
 
 ## In theory, should be as simple as:
 #define x_deps libGL-devel libGLU-devel
@@ -733,6 +734,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Dec 30 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-8
+- qt-copy-patches-20081225
+
+* Fri Dec 12 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-7
+- rebuild for pkgconfig deps
+
 * Wed Nov 12 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-6
 - qt-copy-patches-20081112
 
