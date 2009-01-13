@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 8%{?dist}
+Release: 10%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -33,15 +33,13 @@ Source5: qconfig-multilib.h
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
-# kill hardcoded font substitutions (#447298)
-Patch8: qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch
 # under GNOME, default to QGtkStyle if available
 # (otherwise fall back to QCleanlooksStyle)
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.3-im.patch
 
 ## qt-copy patches
-%define qt_copy 20081225 
+%define qt_copy 20090112
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -284,7 +282,6 @@ test -x apply_patches && ./apply_patches
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
-%patch8 -p1 -b .font-aliases
 %patch9 -p1 -b .qgtkstyle
 %patch10 -p1 -b .im
 
@@ -734,6 +731,13 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Jan 12 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-10
+- drop qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch (#447298),
+  in favor of qt-copy's 0263-fix-fontconfig-handling.diff
+
+* Mon Jan 12 2009 Than Ngo <than@redhat.com> - 4.4.3-9
+- qt-copy-patches-20090112
+
 * Tue Dec 30 2008 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-8
 - qt-copy-patches-20081225
 
