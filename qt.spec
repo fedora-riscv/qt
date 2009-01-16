@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -731,6 +731,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Jan 16 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.4.3-11
+- rebuild for new OpenSSL
+
 * Mon Jan 12 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-10
 - drop qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch (#447298),
   in favor of qt-copy's 0263-fix-fontconfig-handling.diff
