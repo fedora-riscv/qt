@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -21,6 +21,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %if "%{name}" != "qt4"
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
+%{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
 %endif
 
 Source4: Trolltech.conf
@@ -731,6 +732,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Jan 26 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-13
+- Provides: qt4%%{?_isa} = %%version-%%release
+
 * Thu Jan 22 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-12 
 - respin (mysql)
 
