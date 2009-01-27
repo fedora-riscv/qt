@@ -79,6 +79,7 @@ BuildRequires: dbus-devel >= 0.62
 %endif
 
 # See http://bugzilla.redhat.com/196901
+%define _qt4 %{name}
 %define _qt4_prefix %{_libdir}/qt4
 %define _qt4_bindir %{_qt4_prefix}/bin
 # _qt4_datadir is not multilib clean, and hacks to workaround that breaks stuff.
@@ -515,6 +516,7 @@ EOF
 # rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
+%%_qt4 %{name}
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
@@ -734,6 +736,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %changelog
 * Mon Jan 26 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-13
 - Provides: qt4%%{?_isa} = %%version-%%release
+- add %%_qt4 to macros.qt4
 
 * Thu Jan 22 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-12 
 - respin (mysql)
