@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 10%{?dist}
+Release: 14%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -21,6 +21,7 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 %if "%{name}" != "qt4"
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
+%{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
 %endif
 
 Source4: Trolltech.conf
@@ -39,7 +40,7 @@ Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.3-im.patch
 
 ## qt-copy patches
-%define qt_copy 20090112
+%define qt_copy 20090129
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -78,6 +79,7 @@ BuildRequires: dbus-devel >= 0.62
 %endif
 
 # See http://bugzilla.redhat.com/196901
+%define _qt4 %{name}
 %define _qt4_prefix %{_libdir}/qt4
 %define _qt4_bindir %{_qt4_prefix}/bin
 # _qt4_datadir is not multilib clean, and hacks to workaround that breaks stuff.
@@ -514,6 +516,7 @@ EOF
 # rpm macros
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
+%%_qt4 %{name}
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
@@ -731,6 +734,19 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Jan 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-14
+- qt-copy-patches-20090129
+
+* Mon Jan 26 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-13
+- Provides: qt4%%{?_isa} = %%version-%%release
+- add %%_qt4 to macros.qt4
+
+* Thu Jan 22 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-12 
+- respin (mysql)
+
+* Fri Jan 16 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.4.3-11
+- rebuild for new OpenSSL
+
 * Mon Jan 12 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-10
 - drop qt-x11-opensource-src-4.3.4-no-hardcoded-font-aliases.patch (#447298),
   in favor of qt-copy's 0263-fix-fontconfig-handling.diff
