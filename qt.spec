@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -40,7 +40,7 @@ Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.3-im.patch
 
 ## qt-copy patches
-%define qt_copy 20090112
+%define qt_copy 20090129
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -734,6 +734,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Jan 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-14
+- qt-copy-patches-20090129
+
 * Mon Jan 26 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-13
 - Provides: qt4%%{?_isa} = %%version-%%release
 - add %%_qt4 to macros.qt4
