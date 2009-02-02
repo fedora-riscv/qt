@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -274,6 +274,10 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 echo "0242" >> patches/DISABLED
 echo "0250" >> patches/DISABLED
 echo "0251" >> patches/DISABLED
+echo "0269" >> patches/DISABLED
+echo "0270" >> patches/DISABLED
+echo "0271" >> patches/DISABLED
+
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -734,6 +738,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Feb 02 2009 Than Ngo <than@redhat.com> 4.4.3-15
+- disable 0269,0270,0271 patches, it causes issue in systray
+
 * Thu Jan 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-14
 - qt-copy-patches-20090129
 
