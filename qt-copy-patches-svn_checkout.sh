@@ -11,7 +11,7 @@ rm -rf $EXPORT_DIR
 SVN_ROOT=svn://anonsvn.kde.org/home/kde/branches/qt/4.4
 
 svn export --non-recursive $SVN_ROOT $EXPORT_DIR/
-svn export $SVN_ROOT $EXPORT_DIR/patches
+svn export $SVN_ROOT/patches $EXPORT_DIR/patches
 
 pushd $EXPORT_DIR
 rm -f ../qt-copy-patches-${DATE}svn.tar.bz2

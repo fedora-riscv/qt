@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -40,7 +40,7 @@ Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.3-im.patch
 
 ## qt-copy patches
-%define qt_copy 20090129
+%define qt_copy 20090205
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -274,9 +274,6 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 echo "0242" >> patches/DISABLED
 echo "0250" >> patches/DISABLED
 echo "0251" >> patches/DISABLED
-echo "0269" >> patches/DISABLED
-echo "0270" >> patches/DISABLED
-echo "0271" >> patches/DISABLED
 
 test -x apply_patches && ./apply_patches
 %endif
@@ -738,6 +735,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Feb 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-16
+- track branches/qt-copy/4.4, and backout previous trunk(qt45) ones
+
 * Mon Feb 02 2009 Than Ngo <than@redhat.com> 4.4.3-15
 - disable 0269,0270,0271 patches, it causes issue in systray
 
