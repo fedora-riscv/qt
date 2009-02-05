@@ -6,7 +6,10 @@ EXPORT_DIR=qt-copy
 set -x
 rm -rf $EXPORT_DIR
 
-# app
+# trunk tracking qt-4.5 now
+#SVN_ROOT=svn://anonsvn.kde.org/home/kde/trunk/qt-copy
+SVN_ROOT=svn://anonsvn.kde.org/home/kde/branches/qt/4.4
+
 svn export --non-recursive svn://anonsvn.kde.org/home/kde/trunk/qt-copy $EXPORT_DIR/
 svn export svn://anonsvn.kde.org/home/kde/trunk/qt-copy/patches $EXPORT_DIR/patches
 
