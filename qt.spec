@@ -1,5 +1,5 @@
-
 # Fedora Review: http://bugzilla.redhat.com/188180
+%define pre -rc1
 
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
@@ -8,14 +8,14 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.4.3
-Release: 16%{?dist}
+Version: 4.5.0
+Release: 0.rc1.0%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
+Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if "%{name}" != "qt4"
@@ -37,10 +37,11 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # under GNOME, default to QGtkStyle if available
 # (otherwise fall back to QCleanlooksStyle)
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
-Patch10: qt-x11-opensource-src-4.4.3-im.patch
+patch11: qt-x11-opensource-src-4.5.0-rc1-misc.patch
+Patch12: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 
 ## qt-copy patches
-%define qt_copy 20090205
+#define qt_copy 20090205
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -270,7 +271,7 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 %prep
 %setup -q -n qt-x11-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
 
-%if 0%{?qt_copy:1}
+%if 0%{?qt_copy}
 echo "0242" >> patches/DISABLED
 echo "0250" >> patches/DISABLED
 echo "0251" >> patches/DISABLED
@@ -286,7 +287,8 @@ test -x apply_patches && ./apply_patches
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch9 -p1 -b .qgtkstyle
-%patch10 -p1 -b .im
+%patch11 -p1 -b .misc
+%patch12 -p1 -b .ppc64
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -361,7 +363,7 @@ fi
   -system-libjpeg \
   -system-libtiff \
   -system-zlib \
-  -tablet \
+  -xinput \
   -xcursor \
   -xfixes \
   -xinerama \
@@ -381,7 +383,6 @@ fi
   %{?sqlite} %{?_system_sqlite}
 
 make %{?_smp_mflags}
-
 
 %install
 rm -rf %{buildroot}
@@ -604,6 +605,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtTest.so.*
 %{_qt4_libdir}/libQtXml.so.*
 %{_qt4_libdir}/libQtXmlPatterns.so.*
+%{_qt4_libdir}/libQtScriptTools.so.*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
@@ -638,6 +640,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %files devel
 %defattr(-,root,root,-)
+%{_qt4_bindir}/lconvert
 %{_qt4_bindir}/lrelease*
 %{_qt4_bindir}/lupdate*
 %{_qt4_bindir}/moc*
@@ -655,6 +658,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_bindir}/qhelpgenerator
 %{_qt4_bindir}/xmlpatterns
 %if "%{_qt4_bindir}" != "%{_bindir}"
+%{_bindir}/lconvert
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
 %{_bindir}/pixeltool*
@@ -735,6 +739,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Feb 11 2009 Than Ngo <than@redhat.com> - 4.5.0-0.rc1.0
+- 4.5.0 rc1
+
 * Thu Feb 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-16
 - track branches/qt-copy/4.4, and backout previous trunk(qt45) ones
 

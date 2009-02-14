@@ -1,0 +1,11 @@
+diff -up qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp.orig qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp
+--- qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp.orig	2009-02-11 13:14:12.000000000 +0100
++++ qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp	2009-02-11 13:20:37.000000000 +0100
+@@ -1486,6 +1486,7 @@ int QTest::qExec(QObject *testObject, in
+ #else
+ 
+ #ifdef QTESTLIB_USE_VALGRIND
++    int callgrindChildExitCode;
+     if (QBenchmarkGlobalData::current->mode() == QBenchmarkGlobalData::CallgrindParentProcess)
+         return callgrindChildExitCode;
+ #endif
