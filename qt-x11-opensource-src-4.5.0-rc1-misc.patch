@@ -1,11 +1,21 @@
-diff -up qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp.orig qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp
---- qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp.orig	2009-02-11 13:14:12.000000000 +0100
-+++ qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp	2009-02-11 13:20:37.000000000 +0100
-@@ -1486,6 +1486,7 @@ int QTest::qExec(QObject *testObject, in
- #else
+diff -up qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp.misc qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp
+--- qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp.misc	2009-02-04 17:05:30.000000000 +0100
++++ qt-x11-opensource-src-4.5.0-rc1/src/testlib/qtestcase.cpp	2009-02-16 11:04:50.000000000 +0100
+@@ -1359,6 +1359,9 @@ int QTest::qExec(QObject *testObject, in
+     QBenchmarkGlobalData benchmarkData;
+     QBenchmarkGlobalData::current = &benchmarkData;
  
++#ifdef QTESTLIB_USE_VALGRIND
++      int callgrindChildExitCode = 0;
++#endif
+ 
+ #ifdef Q_WS_MAC
+      bool macNeedsActivate = qApp && qstrcmp(qApp->metaObject()->className(), "QApplicaion");
+@@ -1411,7 +1414,6 @@ int QTest::qExec(QObject *testObject, in
+     QTestResult::setCurrentTestObject(metaObject->className());
+     qParseArgs(argc, argv);
  #ifdef QTESTLIB_USE_VALGRIND
-+    int callgrindChildExitCode;
-     if (QBenchmarkGlobalData::current->mode() == QBenchmarkGlobalData::CallgrindParentProcess)
-         return callgrindChildExitCode;
- #endif
+-    int callgrindChildExitCode;
+     if (QBenchmarkGlobalData::current->mode() == QBenchmarkGlobalData::CallgrindParentProcess) {
+         const QStringList origAppArgs(QCoreApplication::arguments());
+         if (!QBenchmarkValgrindUtils::rerunThroughCallgrind(origAppArgs, callgrindChildExitCode))
