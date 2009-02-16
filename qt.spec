@@ -12,7 +12,7 @@ Version: 4.5.0
 Release: 0.2.rc1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
-License: LGPLv2 or GPLv3 with exceptions or GPLv2 with exceptions
+License: LGPLv2 or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre}.tar.bz2
