@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 0.2.rc1%{?dist}
+Release: 0.3.rc1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: LGPLv2 or GPLv3 with exceptions
@@ -737,6 +737,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Feb 16 2009 Than Ngo <than@redhat.com> 4.5.0-0.3.rc1
+- fix callgrindChildExitCode is uninitialzed
+
 * Sun Feb 15 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-0.2.rc1
 - qt-copy-patches-20090215
 - License: +LGPLv2
