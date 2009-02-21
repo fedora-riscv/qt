@@ -1,6 +1,9 @@
 # Fedora Review: http://bugzilla.redhat.com/188180
 %define pre -rc1
 
+# --no-pch disables precompiled headers, make ccache-friendly
+#define pch --no-pch
+
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
 Name:    qt
@@ -9,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 0.3.rc1%{?dist}
+Release: 0.4.rc1%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: LGPLv2 or GPLv3 with exceptions
@@ -41,7 +44,7 @@ patch11: qt-x11-opensource-src-4.5.0-rc1-misc.patch
 Patch12: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 
 ## qt-copy patches
-%define qt_copy 20090215
+%define qt_copy 20090220
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -67,7 +70,9 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
+%define phonon -phonon
 %define webkit -webkit
+%define gtkstyle -gtkstyle
 
 #define nas -system-nas-sound
 %define nas -no-nas-sound
@@ -131,6 +136,15 @@ BuildRequires: nas-devel
 BuildRequires: mysql-devel >= 4.0
 %endif
 
+%if "%{?phonon}" == "-phonon"
+BuildRequires: glib2-devel
+BuildRequires: gstreamer-plugins-base-devel 
+%endif
+
+%if "%{?gtkstyle}" == "-gtkstyle"
+BuildRequires: gtk2-devel
+%endif
+
 %if "%{?psql}" != "-no-sql-psql"
 BuildRequires: postgresql-devel
 # added deps to workaround http://bugzilla.redhat.com/440673
@@ -146,12 +160,13 @@ BuildRequires: unixODBC-devel
 BuildRequires: sqlite-devel
 %endif
 
-Obsoletes: qt4-config < %{version}-%{release}
+Obsoletes: qgtkstyle < 0.1
+Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
-Obsoletes: qt4-sqlite < %{version}-%{release}
+Obsoletes: qt4-sqlite < 4.5.0 
 Provides: qt4-sqlite = %{version}-%{release}
 %if "%{name}" == "qt"
-Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}4.5.0
 Provides: qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 
@@ -170,6 +185,10 @@ Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: pkgconfig
+%if 0%{?phonon:1}
+# No, let's avoid the circular dependency (for now) -- Rex
+#Requires: phonon-devel
+%endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
 Provides:  WebKit-qt-devel = 1.0.0-1
@@ -349,11 +368,13 @@ fi
   -cups \
   -fontconfig \
   -largefile \
+  -gtkstyle \
   -qt-gif \
   -no-rpath \
   -reduce-relocations \
   -no-separate-debug-info \
-  -no-phonon -no-gstreamer \
+  %{?phonon} %{!?phonon:-no-phonon} \
+  %{?pch} \
   -sm \
   -stl \
   -system-libmng \
@@ -534,6 +555,18 @@ EOF
 
 # create/own %%_qt4_plugindir/styles
 mkdir %{buildroot}%{_qt4_plugindir}/styles
+
+%if 0%{?phonon:1}
+# if building with phonon support, nuke it
+rm -f  %{buildroot}%{_qt4_libdir}/libphonon*
+rm -rf %{buildroot}%{_qt4_headerdir}/phonon/
+rm -rf %{buildroot}%{_qt4_headerdir}/Qt/phonon/
+# compat symlink ?  maybe put into phonon-devel instead ?
+#ln -s %{_includedir}/KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
+#ln -s ../KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
+rm -rf %{buildroot}%{_libdir}/pkgconfig/phonon.pc
+rm -f %{buildroot}%{_qt4_plugindir}/phonon_backend/libphonon_gstreamer.so
+%endif
 
 
 %clean
@@ -737,6 +770,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Feb 20 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.4.rc1
+- saner versioned Obsoletes
+- -gtkstyle, Obsoletes: qgtkstyle < 0.1
+- enable phonon support and associated hackery
+
 * Mon Feb 16 2009 Than Ngo <than@redhat.com> 4.5.0-0.3.rc1
 - fix callgrindChildExitCode is uninitialzed
 
