@@ -12,10 +12,14 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 0.4.rc1%{?dist}
+Release: 0.5.rc1%{?dist}
 
-# GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
-License: LGPLv2 or GPLv3 with exceptions
+## for 4.5.0 final:
+##License: LGPLv2 or GPLv3 with exceptions
+## but, until then,
+# see GPL_EXCEPTIONS*.txt 
+License: GPLv3 with exceptions or GPLv2 with exceptions
+
 Group: System Environment/Libraries
 Url: http://www.trolltech.com/products/qt/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre}.tar.bz2
@@ -42,6 +46,10 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 patch11: qt-x11-opensource-src-4.5.0-rc1-misc.patch
 Patch12: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
+
+## upstreamable bits
+# http://bugzilla.redhat.com/485677
+Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 
 ## qt-copy patches
 %define qt_copy 20090220
@@ -306,6 +314,8 @@ test -x apply_patches && ./apply_patches
 %patch9 -p1 -b .qgtkstyle
 %patch11 -p1 -b .misc
 %patch12 -p1 -b .ppc64
+
+%patch50 -p1 -b .qhostaddress
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -770,6 +780,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sun Feb 22 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.5.rc1
+- revert license, change won't land until official 4.5.0 release
+- workaround broken qhostaddress.h (#485677)
+
 * Fri Feb 20 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.4.rc1
 - saner versioned Obsoletes
 - -gtkstyle, Obsoletes: qgtkstyle < 0.1
