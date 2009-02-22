@@ -169,6 +169,7 @@ BuildRequires: sqlite-devel
 %endif
 
 Obsoletes: qgtkstyle < 0.1
+Provides:  qgtkstyle = 0.1-1
 Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
 Obsoletes: qt4-sqlite < 4.5.0 
@@ -783,6 +784,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 * Sun Feb 22 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.5.rc1
 - revert license, change won't land until official 4.5.0 release
 - workaround broken qhostaddress.h (#485677)
+- Provides: qgtkstyle = 0.1
 
 * Fri Feb 20 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.4.rc1
 - saner versioned Obsoletes
