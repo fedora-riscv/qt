@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 0.5.rc1%{?dist}
+Release: 0.6.rc1%{?dist}
 
 ## for 4.5.0 final:
 ##License: LGPLv2 or GPLv3 with exceptions
@@ -46,6 +46,7 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 patch11: qt-x11-opensource-src-4.5.0-rc1-misc.patch
 Patch12: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
+Patch13: qt-x11-opensource-src-4.5.0-rc1-odbc.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -315,6 +316,7 @@ test -x apply_patches && ./apply_patches
 %patch9 -p1 -b .qgtkstyle
 %patch11 -p1 -b .misc
 %patch12 -p1 -b .ppc64
+%patch13 -p1 -b .odbc
 
 %patch50 -p1 -b .qhostaddress
 
@@ -781,6 +783,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Feb 23 2009 Than Ngo <than@redhat.com> 4.5.0-0.6.rc1
+- fix build problem against new unixODBC
+
 * Sun Feb 22 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.5.rc1
 - revert license, change won't land until official 4.5.0 release
 - workaround broken qhostaddress.h (#485677)
