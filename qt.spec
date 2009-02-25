@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 0.5.rc1%{?dist}
+Release: 0.6.rc1%{?dist}
 
 ## for 4.5.0 final:
 ##License: LGPLv2 or GPLv3 with exceptions
@@ -781,6 +781,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.5.0-0.6.rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
 * Sun Feb 22 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.5.rc1
 - revert license, change won't land until official 4.5.0 release
 - workaround broken qhostaddress.h (#485677)
