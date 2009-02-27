@@ -428,7 +428,7 @@ make %{?_smp_mflags}
 
 # snapshot doesn't generate docs by default for some reason 
 #if 0%{?snap:1}
-test -d doc/html || make docs %{?_smp_mflags}
+test -d doc/html || make docs
 #endif
 
 
