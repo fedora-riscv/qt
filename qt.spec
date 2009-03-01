@@ -5,7 +5,7 @@
 
 # configure options
 # -no-pch disables precompiled headers, make ccache-friendly
-%define no_pch -no-pch
+#define no_pch -no-pch
 
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
@@ -369,6 +369,11 @@ fi
 
 
 %build
+
+# workaround snapshot "can't find libQtXml.so.4" in docs generation
+#if 0%{?snap:1}
+export LD_LIBRARY_PATH="`pwd`/lib:$LD_LIBRARY_PATH"
+#endif
 
 # build shared, threaded (default) libraries
 ./configure -v \
