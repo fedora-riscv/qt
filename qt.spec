@@ -14,11 +14,7 @@ Name:    qt4
 Version: 4.5.0
 Release: 1%{?dist}
 
-## for 4.5.0 final:
-##License: LGPLv2 or GPLv3 with exceptions
-## but, until then,
-# see GPL_EXCEPTIONS*.txt 
-License: GPLv3 with exceptions or GPLv2 with exceptions
+License: LGPLv2 or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
@@ -298,7 +294,6 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 %if 0%{?qt_copy}
 echo "0250" >> patches/DISABLED
-echo "0272" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -611,9 +606,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %files
 %defattr(-,root,root,-)
-%doc README* 
-%doc LICENSE.GPL2 GPL_EXCEPTION*.TXT
-%doc LICENSE.GPL3
+%doc README* LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
 #config /etc/profile.d/qt4.*
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
