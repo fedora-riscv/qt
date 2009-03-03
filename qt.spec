@@ -37,9 +37,6 @@ Source5: qconfig-multilib.h
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
-# under GNOME, default to QGtkStyle if available
-# (otherwise fall back to QCleanlooksStyle)
-Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -306,7 +303,6 @@ test -x apply_patches && ./apply_patches
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
-%patch9 -p1 -b .qgtkstyle
 %patch10 -p1 -b .ppc64
 %patch50 -p1 -b .qhostaddress
 
@@ -781,6 +777,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 * Tue Mar 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-2
 - License: LGPLv2 with exceptions or GPLv3 with exceptions
 - BR: gstreamer-devel
+- drop qgtkstyle patch (no longer needed)
 
 * Tue Mar 03 2009 Than Ngo <than@redhat.com> - 4.5.0-1
 - 4.5.0
