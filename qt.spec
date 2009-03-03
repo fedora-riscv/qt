@@ -39,7 +39,7 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # under GNOME, default to QGtkStyle if available
 # (otherwise fall back to QCleanlooksStyle)
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
-
+Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
@@ -305,7 +305,7 @@ test -x apply_patches && ./apply_patches
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch9 -p1 -b .qgtkstyle
-
+%patch10 -p1 -b .ppc64
 %patch50 -p1 -b .qhostaddress
 
 # drop -fexceptions from $RPM_OPT_FLAGS
