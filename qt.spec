@@ -1,7 +1,4 @@
 # Fedora Review: http://bugzilla.redhat.com/188180
-#define pre rc1
-%define snap 20090224
-%define pre snapshot-%{snap}
 
 # configure options
 # -no-pch disables precompiled headers, make ccache-friendly
@@ -15,21 +12,16 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 0.8.%{snap}%{?dist}
+Release: 1%{?dist}
 
 ## for 4.5.0 final:
 ##License: LGPLv2 or GPLv3 with exceptions
 ## but, until then,
 # see GPL_EXCEPTIONS*.txt 
 License: GPLv3 with exceptions or GPLv2 with exceptions
-
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-%if 0%{?snap:1}
-Source0: ftp://ftp.trolltech.no/qt/snapshots/qt-x11-opensource-src-%{version}-snapshot-%{snap}.tar.gz 
-%else
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}%{?pre:-%{pre}}}.tar.bz2
-%endif
+Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 %if "%{name}" != "qt4"
@@ -51,15 +43,13 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # under GNOME, default to QGtkStyle if available
 # (otherwise fall back to QCleanlooksStyle)
 Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
-patch11: qt-x11-opensource-src-4.5.0-rc1-misc.patch
-Patch12: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 
 ## qt-copy patches
-%define qt_copy 20090220
+%define qt_copy 20090303
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -304,14 +294,11 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-x11-opensource-src-%{version}%{?pre:-%{pre}} %{?qt_copy:-a 2}
+%setup -q -n qt-x11-opensource-src-%{version} %{?qt_copy:-a 2}
 
 %if 0%{?qt_copy}
 echo "0250" >> patches/DISABLED
-%if 0%{?snap} >= 20090224
 echo "0272" >> patches/DISABLED
-%endif
-
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -323,10 +310,6 @@ test -x apply_patches && ./apply_patches
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch9 -p1 -b .qgtkstyle
-%if 0%{?snap} < 20090224
-%patch11 -p1 -b .misc
-%patch12 -p1 -b .ppc64
-%endif
 
 %patch50 -p1 -b .qhostaddress
 
@@ -369,11 +352,6 @@ fi
 
 
 %build
-
-# workaround snapshot "can't find libQtXml.so.4" in docs generation
-#if 0%{?snap:1}
-export LD_LIBRARY_PATH="`pwd`/lib:$LD_LIBRARY_PATH"
-#endif
 
 # build shared, threaded (default) libraries
 ./configure -v \
@@ -431,24 +409,11 @@ export LD_LIBRARY_PATH="`pwd`/lib:$LD_LIBRARY_PATH"
 
 make %{?_smp_mflags}
 
-# snapshot doesn't generate docs by default for some reason 
-#if 0%{?snap:1}
-test -d doc/html || make docs
-#endif
-
 
 %install
 rm -rf %{buildroot}
 
 make install INSTALL_ROOT=%{buildroot}
-
-# snapshot install_htmldocs install_pchdocs targets broken too, qmake bug?
-#if %{?snap:1}
-test -d %{buildroot}%{_qt4_docdir}/html || \
-  cp -a doc/html/ %{buildroot}%{_qt4_docdir}/
-test -d %{buildroot}%{_qt4_docdir}/qch || \
-  cp -a doc/qch/  %{buildroot}%{_qt4_docdir}/
-#endif
 
 # Add desktop file(s)
 desktop-file-install \
@@ -818,6 +783,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Mar 03 2009 Than Ngo <than@redhat.com> - 4.5.0-1
+- 4.5.0
+
 * Fri Feb 27 2009 Rex Dieter <rdieter@fedoraproject.org> - 1:4.5.0-0.8.20090224
 - 20090224 snapshot
 - adjust pkgconfig hackery
