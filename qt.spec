@@ -12,9 +12,10 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
-License: LGPLv2 or GPLv3 with exceptions
+# See LGPL_EXCEPTIONS.txt 
+License: LGPLv2 with exceptions or GPLv3
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
@@ -139,6 +140,7 @@ BuildRequires: mysql-devel >= 4.0
 
 %if "%{?phonon}" == "-phonon"
 BuildRequires: glib2-devel
+BuildRequires: gstreamer-devel
 BuildRequires: gstreamer-plugins-base-devel 
 %endif
 
@@ -776,6 +778,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Mar 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-2
+- License: LGPLv2 with exceptions or GPLv3
+- BR: gstreamer-devel
+
 * Tue Mar 03 2009 Than Ngo <than@redhat.com> - 4.5.0-1
 - 4.5.0
 
