@@ -14,8 +14,8 @@ Name:    qt4
 Version: 4.5.0
 Release: 2%{?dist}
 
-# See LGPL_EXCEPTIONS.txt 
-License: LGPLv2 with exceptions or GPLv3
+# See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
+License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
@@ -779,7 +779,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %changelog
 * Tue Mar 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-2
-- License: LGPLv2 with exceptions or GPLv3
+- License: LGPLv2 with exceptions or GPLv3 with exceptions
 - BR: gstreamer-devel
 
 * Tue Mar 03 2009 Than Ngo <than@redhat.com> - 4.5.0-1
