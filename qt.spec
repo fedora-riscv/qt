@@ -640,7 +640,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtTest.so.*
 %{_qt4_libdir}/libQtXml.so.*
 %{_qt4_libdir}/libQtXmlPatterns.so.*
-%{_qt4_libdir}/libQtScriptTools.so.*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
@@ -657,6 +656,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtGui.so.*
 %{_qt4_libdir}/libQtHelp.so.*
 %{_qt4_libdir}/libQtOpenGL.so.*
+%{_qt4_libdir}/libQtScriptTools.so.*
 %{_qt4_libdir}/libQtSvg.so.*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
 %{_qt4_plugindir}/*
@@ -778,6 +778,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 - License: LGPLv2 with exceptions or GPLv3 with exceptions
 - BR: gstreamer-devel
 - drop qgtkstyle patch (no longer needed)
+- -x11: move libQtScriptTools here (linked with libQtGui)
 
 * Tue Mar 03 2009 Than Ngo <than@redhat.com> - 4.5.0-1
 - 4.5.0
