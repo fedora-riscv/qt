@@ -2,7 +2,7 @@
 
 # configure options
 # -no-pch disables precompiled headers, make ccache-friendly
-#define no_pch -no-pch
+%define no_pch -no-pch
 
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -41,6 +41,7 @@ Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
+Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 
 ## qt-copy patches
 %define qt_copy 20090303
@@ -70,6 +71,7 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define phonon -phonon
+%define phonon_backend -no-phonon-backend
 %define webkit -webkit
 %define gtkstyle -gtkstyle
 
@@ -135,8 +137,7 @@ BuildRequires: nas-devel
 BuildRequires: mysql-devel >= 4.0
 %endif
 
-%if "%{?phonon}" == "-phonon"
-BuildRequires: glib2-devel
+%if "%{?phonon_backend}" == "-phonon-backend"
 BuildRequires: gstreamer-devel
 BuildRequires: gstreamer-plugins-base-devel 
 %endif
@@ -305,6 +306,7 @@ test -x apply_patches && ./apply_patches
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch10 -p1 -b .ppc64
 %patch50 -p1 -b .qhostaddress
+%patch51 -p1 -b .qdoc3
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -372,7 +374,8 @@ fi
   -no-rpath \
   -reduce-relocations \
   -no-separate-debug-info \
-  %{?phonon} %{!?phonon:-no-phonon} \
+  %{?phonon} \
+  %{?phonon_backend} \
   %{?no_pch} \
   -sm \
   -stl \
@@ -564,14 +567,14 @@ mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon:1}
 # if building with phonon support, nuke it
-rm -f  %{buildroot}%{_qt4_libdir}/libphonon*
-rm -rf %{buildroot}%{_qt4_headerdir}/phonon/
-rm -rf %{buildroot}%{_qt4_headerdir}/Qt/phonon/
+rm -fv  %{buildroot}%{_qt4_libdir}/libphonon*
+rm -rfv %{buildroot}%{_qt4_headerdir}/phonon/
+rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon/
 # compat symlink ?  maybe put into phonon-devel instead ?
 #ln -s %{_includedir}/KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
 #ln -s ../KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
-rm -rf %{buildroot}%{_libdir}/pkgconfig/phonon.pc
-rm -f %{buildroot}%{_qt4_plugindir}/phonon_backend/libphonon_gstreamer.so
+rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
+rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/libphonon_gstreamer.so
 %endif
 
 
@@ -660,7 +663,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtSvg.so.*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
 %{_qt4_plugindir}/*
-%exclude %{_qt4_plugindir}/designer
 %exclude %{_qt4_plugindir}/sqldrivers
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
@@ -680,6 +682,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_bindir}/lupdate*
 %{_qt4_bindir}/moc*
 %{_qt4_bindir}/pixeltool*
+%{_qt4_bindir}/qdoc3*
 %{_qt4_bindir}/qmake*
 %{_qt4_bindir}/qt3to4
 %{_qt4_bindir}/rcc*
@@ -698,6 +701,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_bindir}/lupdate*
 %{_bindir}/pixeltool*
 %{_bindir}/moc*
+%{_bindir}/qdoc3
 %{_bindir}/qmake*
 %{_bindir}/qt3to4
 %{_bindir}/rcc*
@@ -729,7 +733,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_libdir}/pkgconfig/*.pc
 # Qt designer
 %{_qt4_bindir}/designer*
-%{_qt4_plugindir}/designer/
 %{_datadir}/applications/*designer*.desktop
 # Qt Linguist
 %{_qt4_bindir}/linguist*
@@ -774,6 +777,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Mar 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-3
+- -no-phonon-backend
+- include qdoc3
+- move designer plugins to runtime (#487622)
+
 * Tue Mar 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-2
 - License: LGPLv2 with exceptions or GPLv3 with exceptions
 - BR: gstreamer-devel
