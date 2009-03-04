@@ -9,7 +9,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.4.3
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
 License: GPLv3 with exceptions or GPLv2 with exceptions
@@ -40,7 +40,7 @@ Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
 Patch10: qt-x11-opensource-src-4.4.3-im.patch
 
 ## qt-copy patches
-%define qt_copy 20090129
+%define qt_copy 20090304
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -622,7 +622,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtSvg.so.*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
 %{_qt4_plugindir}/*
-%exclude %{_qt4_plugindir}/designer
 %exclude %{_qt4_plugindir}/sqldrivers
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
@@ -689,7 +688,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_libdir}/pkgconfig/*.pc
 # Qt designer
 %{_qt4_bindir}/designer*
-%{_qt4_plugindir}/designer/
 %{_datadir}/applications/*designer*.desktop
 # Qt Linguist
 %{_qt4_bindir}/linguist*
@@ -734,6 +732,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Mar 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-15
+- move designer plugins to runtime (#487622)
+- qt-copy-patches-20090304
+
 * Thu Jan 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-14
 - qt-copy-patches-20090129
 
