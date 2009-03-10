@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -547,6 +547,7 @@ EOF
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4 %{name}
+%%_qt45 %{version}
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
@@ -568,13 +569,12 @@ mkdir %{buildroot}%{_qt4_plugindir}/styles
 %if 0%{?phonon:1}
 # if building with phonon support, nuke it
 rm -fv  %{buildroot}%{_qt4_libdir}/libphonon*
-rm -rfv %{buildroot}%{_qt4_headerdir}/phonon/
-rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon/
+rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
+rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
+rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
 # compat symlink ?  maybe put into phonon-devel instead ?
 #ln -s %{_includedir}/KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
 #ln -s ../KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
-rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
-rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/libphonon_gstreamer.so
 %endif
 
 
@@ -777,6 +777,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Mar 10 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-4
+- macros.qt4: %%_qt45
+- cleanup more phonon-related left-overs 
+
 * Wed Mar 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-3
 - -no-phonon-backend
 - include qdoc3
