@@ -1,0 +1,60 @@
+--- qt-x11-opensource-src-4.5.0/src/3rdparty/webkit/JavaScriptCore/wtf/Threading.h.orig	2009-03-15 00:21:08.000000000 -0500
++++ qt-x11-opensource-src-4.5.0/src/3rdparty/webkit/JavaScriptCore/wtf/Threading.h	2009-03-15 00:22:38.000000000 -0500
+@@ -196,14 +196,14 @@
+ #elif COMPILER(GCC)
+ #define WTF_USE_LOCKFREE_THREADSAFESHARED 1
+ 
+-inline void atomicIncrement(int volatile* addend) { __gnu_cxx::__atomic_add(addend, 1); }
+-inline int atomicDecrement(int volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
++inline void atomicIncrement(_Atomic_word volatile* addend) { __gnu_cxx::__atomic_add(addend, 1); }
++inline _Atomic_word atomicDecrement(_Atomic_word volatile* addend) { return __gnu_cxx::__exchange_and_add(addend, -1) - 1; }
+ 
+ #endif
+ 
+ template<class T> class ThreadSafeShared : Noncopyable {
+ public:
+-    ThreadSafeShared(int initialRefCount = 1)
++    ThreadSafeShared(_Atomic_word initialRefCount = 1)
+         : m_refCount(initialRefCount)
+     {
+     }
+@@ -237,16 +237,16 @@
+         return refCount() == 1;
+     }
+ 
+-    int refCount() const
++    _Atomic_word refCount() const
+     {
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+         MutexLocker locker(m_mutex);
+ #endif
+-        return static_cast<int const volatile &>(m_refCount);
++        return static_cast<_Atomic_word const volatile &>(m_refCount);
+     }
+ 
+ private:
+-    int m_refCount;
++    _Atomic_word m_refCount;
+ #if !USE(LOCKFREE_THREADSAFESHARED)
+     mutable Mutex m_mutex;
+ #endif
+--- qt-x11-opensource-src-4.5.0/src/3rdparty/webkit/JavaScriptCore/wtf/Platform.h.orig	2009-03-15 00:21:37.000000000 -0500
++++ qt-x11-opensource-src-4.5.0/src/3rdparty/webkit/JavaScriptCore/wtf/Platform.h	2009-03-15 00:22:38.000000000 -0500
+@@ -214,9 +214,16 @@
+ #endif
+ 
+ /* PLATFORM(SPARC64) */
+-#if defined(__sparc64__)
++#if defined(__sparc64__) \
++    || defined(__sparc__) && defined(_arch64__)
+ #define WTF_PLATFORM_SPARC64 1
+ #define WTF_PLATFORM_BIG_ENDIAN 1
++#else 
++/* PLATFORM(SPARC) */
++#if defined(__sparc__)
++#define WTF_PLATFORM_SPARC 1
++#define WTF_PLATFORM_BIG_ENDIAN 1
++#endif
+ #endif
+ 
+ /* PLATFORM(WIN_CE) && PLATFORM(QT)

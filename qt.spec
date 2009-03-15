@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -42,6 +42,7 @@ Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 # http://bugzilla.redhat.com/485677
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
+Patch52: qt-4.5-sparc64.patch
 
 ## qt-copy patches
 %define qt_copy 20090303
@@ -307,6 +308,7 @@ test -x apply_patches && ./apply_patches
 %patch10 -p1 -b .ppc64
 %patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
+%patch52 -p1 -b .sparc64
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -777,6 +779,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat Mar 14 2009 Dennis Gilmore <dennis@ausil.us> - 4.5.0-5
+- add patch for sparc64. 
+- _Atomic_word is not always an int
+
 * Tue Mar 10 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-4
 - macros.qt4: %%_qt45
 - cleanup more phonon-related left-overs 
