@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -38,6 +38,8 @@ Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
+Patch11: qt-x11-opensource-src-4.5.0-linguist-crash.patch 
+
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
@@ -306,6 +308,7 @@ test -x apply_patches && ./apply_patches
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch10 -p1 -b .ppc64
+%patch11 -p1 -b .linguist-crash
 %patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
@@ -779,6 +782,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Mar 17 2009 Than Ngo <than@redhat.com> - 4.5.0-6
+- fix lupdate segfault (#486866)
+
 * Sat Mar 14 2009 Dennis Gilmore <dennis@ausil.us> - 4.5.0-5
 - add patch for sparc64. 
 - _Atomic_word is not always an int
