@@ -1,0 +1,11 @@
+diff -up qt-x11-opensource-src-4.5.0/src/corelib/concurrent/qtconcurrentreducekernel.h.qthreadpool qt-x11-opensource-src-4.5.0/src/corelib/concurrent/qtconcurrentreducekernel.h
+--- qt-x11-opensource-src-4.5.0/src/corelib/concurrent/qtconcurrentreducekernel.h.qthreadpool	2009-03-19 23:22:12.000000000 -0500
++++ qt-x11-opensource-src-4.5.0/src/corelib/concurrent/qtconcurrentreducekernel.h	2009-03-20 08:47:26.000000000 -0500
+@@ -51,6 +51,7 @@
+ #include <QtCore/qmap.h>
+ #include <QtCore/qmutex.h>
+ #include <QtCore/qthread.h>
++#include <QtCore/qthreadpool.h>
+ #include <QtCore/qvector.h>
+ 
+ QT_BEGIN_HEADER
