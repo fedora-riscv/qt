@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 6%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -45,9 +45,12 @@ Patch11: qt-x11-opensource-src-4.5.0-linguist-crash.patch
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
+# http://lists.kde.org/?l=kde-core-devel&m=123737428209683&w=2
+# fix issue with qt-copy 0275-qtconcurrent-threadcount.diff
+Patch53: qt-x11-opensource-src-4.5.0-0275_qthreadpool.patch
 
 ## qt-copy patches
-%define qt_copy 20090303
+%define qt_copy 20090319
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -193,6 +196,7 @@ Requires: pkgconfig
 %if 0%{?phonon:1}
 # No, let's avoid the circular dependency (for now) -- Rex
 #Requires: phonon-devel
+Provides: qt4-phonon-devel = %{version}-%{release}
 %endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
@@ -274,6 +278,9 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
+%if 0%{?phonon:1}
+Provides: qt4-phonon = %{version}-%{release}
+%endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
@@ -298,6 +305,7 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 %if 0%{?qt_copy}
 echo "0250" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
+%patch53 -p1 -b .0275_qthreadpool
 %endif
 
 # don't use -b on mkspec files, else they get installed too.
@@ -431,7 +439,7 @@ glib2_libs=$(pkg-config --libs glib-2.0 gobject-2.0 gthread-2.0)
 ssl_libs=$(pkg-config --libs openssl)
 for dep in \
   -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} \
-  -ljpeg -lm -lmng -lphonon -lpng ${ssl_libs} -lsqlite3 -lphonon -lz \
+  -ljpeg -lm -lmng -lpng ${ssl_libs} -lsqlite3 -lz \
   -L/usr/X11R6/%{_lib} -L%{_libdir} ; do
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la ||:
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
@@ -572,14 +580,17 @@ EOF
 mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon:1}
+mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
 # if building with phonon support, nuke it
-rm -fv  %{buildroot}%{_qt4_libdir}/libphonon*
-rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
-rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
+rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
 rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
-# compat symlink ?  maybe put into phonon-devel instead ?
-#ln -s %{_includedir}/KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
-#ln -s ../KDE/Phonon %{buildroot}%{_qt4_headerdir}/Qt/phonon/
+# contents slightly different between phonon-4.3.1 and qt-4.5.0
+rm -fv  %{buildroot}%{_includedir}/phonon/phononnamespace.h
+# contents dup'd but should remove just in case
+rm -fv  %{buildroot}%{_includedir}/phonon/*.h
+
+#rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
+#rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
 %endif
 
 
@@ -656,6 +667,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
+%if 0%{?phonon:1}
+#{_qt4_libdir}/libphonon.so.4*
+%endif
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
 %{_qt4_libdir}/libQtCLucene.so.*
@@ -731,6 +745,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_prefix}/mkspecs/
 %endif
 %{_qt4_datadir}/q3porting.xml
+%if 0%{?phonon:1}
+%{_qt4_libdir}/libphonon.prl
+#{_qt4_libdir}/libphonon.so
+%endif
 %{_qt4_libdir}/libQt*.so
 # remaining static lib: libQtUiTools.a 
 %{_qt4_libdir}/libQt*.a
@@ -782,6 +800,13 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Mar 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-8
+- qt-copy-patches-20090319
+
+* Thu Mar 19 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-7
+- include more phonon bits, attempt to fix/provide phonon bindings
+  for qtscriptgenerator, PyQt, ...
+
 * Tue Mar 17 2009 Than Ngo <than@redhat.com> - 4.5.0-6
 - fix lupdate segfault (#486866)
 
