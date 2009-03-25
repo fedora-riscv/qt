@@ -1,5 +1,8 @@
-
 # Fedora Review: http://bugzilla.redhat.com/188180
+
+# configure options
+# -no-pch disables precompiled headers, make ccache-friendly
+#define no_pch -no-pch
 
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
@@ -8,13 +11,13 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.4.3
-Release: 15%{?dist}
+Version: 4.5.0
+Release: 10%{?dist}
 
-# GPLv2 exceptions(see GPL_EXCEPTIONS*.txt)
-License: GPLv3 with exceptions or GPLv2 with exceptions
+# See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
+License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
-Url: http://www.trolltech.com/products/qt/
+Url: http://www.qtsoftware.com/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -34,13 +37,18 @@ Source5: qconfig-multilib.h
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
-# under GNOME, default to QGtkStyle if available
-# (otherwise fall back to QCleanlooksStyle)
-Patch9: qt-x11-opensource-src-4.4.0-qgtkstyle.patch
-Patch10: qt-x11-opensource-src-4.4.3-im.patch
+Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
+Patch11: qt-x11-opensource-src-4.5.0-linguist-crash.patch 
+Patch12: qt-x11-opensource-src-4.5.0-lrelease.patch
+
+## upstreamable bits
+# http://bugzilla.redhat.com/485677
+Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
+Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
+Patch52: qt-4.5-sparc64.patch
 
 ## qt-copy patches
-%define qt_copy 20090304
+%define qt_copy 20090325
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -66,7 +74,10 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
+%define phonon -phonon
+%define phonon_backend -no-phonon-backend
 %define webkit -webkit
+%define gtkstyle -gtkstyle
 
 #define nas -system-nas-sound
 %define nas -no-nas-sound
@@ -130,6 +141,15 @@ BuildRequires: nas-devel
 BuildRequires: mysql-devel >= 4.0
 %endif
 
+%if "%{?phonon_backend}" == "-phonon-backend"
+BuildRequires: gstreamer-devel
+BuildRequires: gstreamer-plugins-base-devel 
+%endif
+
+%if "%{?gtkstyle}" == "-gtkstyle"
+BuildRequires: gtk2-devel
+%endif
+
 %if "%{?psql}" != "-no-sql-psql"
 BuildRequires: postgresql-devel
 # added deps to workaround http://bugzilla.redhat.com/440673
@@ -145,12 +165,14 @@ BuildRequires: unixODBC-devel
 BuildRequires: sqlite-devel
 %endif
 
-Obsoletes: qt4-config < %{version}-%{release}
+Obsoletes: qgtkstyle < 0.1
+Provides:  qgtkstyle = 0.1-1
+Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
-Obsoletes: qt4-sqlite < %{version}-%{release}
+Obsoletes: qt4-sqlite < 4.5.0 
 Provides: qt4-sqlite = %{version}-%{release}
 %if "%{name}" == "qt"
-Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}4.5.0
 Provides: qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 
@@ -169,6 +191,11 @@ Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: pkgconfig
+%if 0%{?phonon:1}
+# No, let's avoid the circular dependency (for now) -- Rex
+#Requires: phonon-devel
+Provides: qt4-phonon-devel = %{version}-%{release}
+%endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
 Provides:  WebKit-qt-devel = 1.0.0-1
@@ -249,6 +276,9 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
+%if 0%{?phonon:1}
+Provides: qt4-phonon = %{version}-%{release}
+%endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
@@ -268,12 +298,10 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-x11-opensource-src-%{version}%{?pre} %{?qt_copy:-a 2}
+%setup -q -n qt-x11-opensource-src-%{version} %{?qt_copy:-a 2}
 
-%if 0%{?qt_copy:1}
-echo "0242" >> patches/DISABLED
+%if 0%{?qt_copy}
 echo "0250" >> patches/DISABLED
-echo "0251" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -284,8 +312,12 @@ test -x apply_patches && ./apply_patches
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
-%patch9 -p1 -b .qgtkstyle
-%patch10 -p1 -b .im
+%patch10 -p1 -b .ppc64
+%patch11 -p1 -b .linguist-crash
+%patch12 -p1 -b .lrelease
+%patch50 -p1 -b .qhostaddress
+%patch51 -p1 -b .qdoc3
+%patch52 -p1 -b .sparc64
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -348,11 +380,14 @@ fi
   -cups \
   -fontconfig \
   -largefile \
+  -gtkstyle \
   -qt-gif \
   -no-rpath \
   -reduce-relocations \
   -no-separate-debug-info \
-  -no-phonon -no-gstreamer \
+  %{?phonon} \
+  %{?phonon_backend} \
+  %{?no_pch} \
   -sm \
   -stl \
   -system-libmng \
@@ -360,7 +395,7 @@ fi
   -system-libjpeg \
   -system-libtiff \
   -system-zlib \
-  -tablet \
+  -xinput \
   -xcursor \
   -xfixes \
   -xinerama \
@@ -394,11 +429,16 @@ desktop-file-install \
   %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24}
 
 ## pkg-config
-# strip extraneous dirs/libraries -- Rex
+# strip extraneous dirs/libraries 
+# FIXME?: qt-4.5 seems to use Libs.private properly, so this hackery should 
+#         no longer be required -- Rex
 # safe ones
-glib2_libs=$(pkg-config --libs glib-2.0 gthread-2.0)
-for dep in -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} -lmng -ljpeg -lpng -lm -lz -lssl -lcrypto -lsqlite3 \
-  -L%{_builddir}/qt-x11%{?preview}-opensource-src-%{version}%{?pre}/lib -L/usr/X11R6/%{_lib} ; do
+glib2_libs=$(pkg-config --libs glib-2.0 gobject-2.0 gthread-2.0)
+ssl_libs=$(pkg-config --libs openssl)
+for dep in \
+  -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} \
+  -ljpeg -lm -lmng -lpng ${ssl_libs} -lsqlite3 -lz \
+  -L/usr/X11R6/%{_lib} -L%{_libdir} ; do
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la ||:
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/*.prl
@@ -409,7 +449,8 @@ for dep in -lXrender -lXrandr -lXcursor -lXfixes -lXinerama -lXi -lXft -lXt -lXe
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc 
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/*.prl
 done
-# nuke dandling reference(s) to %buildroot
+
+# nuke dangling reference(s) to %buildroot
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
 
 %if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
@@ -517,6 +558,7 @@ EOF
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4 %{name}
+%%_qt45 %{version}
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
@@ -534,6 +576,20 @@ EOF
 
 # create/own %%_qt4_plugindir/styles
 mkdir %{buildroot}%{_qt4_plugindir}/styles
+
+%if 0%{?phonon:1}
+mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
+# if building with phonon support, nuke it
+rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
+rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
+# contents slightly different between phonon-4.3.1 and qt-4.5.0
+rm -fv  %{buildroot}%{_includedir}/phonon/phononnamespace.h
+# contents dup'd but should remove just in case
+rm -fv  %{buildroot}%{_includedir}/phonon/*.h
+
+#rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
+#rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
+%endif
 
 
 %clean
@@ -565,9 +621,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %files
 %defattr(-,root,root,-)
-%doc README* 
-%doc LICENSE.GPL2 GPL_EXCEPTION*.TXT
-%doc LICENSE.GPL3
+%doc README* LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
 #config /etc/profile.d/qt4.*
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
@@ -611,6 +665,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
+%if 0%{?phonon:1}
+#{_qt4_libdir}/libphonon.so.4*
+%endif
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
 %{_qt4_libdir}/libQtCLucene.so.*
@@ -619,6 +676,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_libdir}/libQtGui.so.*
 %{_qt4_libdir}/libQtHelp.so.*
 %{_qt4_libdir}/libQtOpenGL.so.*
+%{_qt4_libdir}/libQtScriptTools.so.*
 %{_qt4_libdir}/libQtSvg.so.*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
 %{_qt4_plugindir}/*
@@ -636,10 +694,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %files devel
 %defattr(-,root,root,-)
+%{_qt4_bindir}/lconvert
 %{_qt4_bindir}/lrelease*
 %{_qt4_bindir}/lupdate*
 %{_qt4_bindir}/moc*
 %{_qt4_bindir}/pixeltool*
+%{_qt4_bindir}/qdoc3*
 %{_qt4_bindir}/qmake*
 %{_qt4_bindir}/qt3to4
 %{_qt4_bindir}/rcc*
@@ -653,10 +713,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_bindir}/qhelpgenerator
 %{_qt4_bindir}/xmlpatterns
 %if "%{_qt4_bindir}" != "%{_bindir}"
+%{_bindir}/lconvert
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
 %{_bindir}/pixeltool*
 %{_bindir}/moc*
+%{_bindir}/qdoc3
 %{_bindir}/qmake*
 %{_bindir}/qt3to4
 %{_bindir}/rcc*
@@ -681,6 +743,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_prefix}/mkspecs/
 %endif
 %{_qt4_datadir}/q3porting.xml
+%if 0%{?phonon:1}
+%{_qt4_libdir}/libphonon.prl
+#{_qt4_libdir}/libphonon.so
+%endif
 %{_qt4_libdir}/libQt*.so
 # remaining static lib: libQtUiTools.a 
 %{_qt4_libdir}/libQt*.a
@@ -732,9 +798,76 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
-* Wed Mar 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-15
+* Fri Mar 25 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-10
+- qt-copy-patches-20090325
+
+* Tue Mar 24 2009 Than Ngo <than@redhat.com> - 4.5.0-9
+- lrelease only shows warning when duplicate messages found in *.ts( #491514)
+
+* Fri Mar 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-8
+- qt-copy-patches-20090319
+
+* Thu Mar 19 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-7
+- include more phonon bits, attempt to fix/provide phonon bindings
+  for qtscriptgenerator, PyQt, ...
+
+* Tue Mar 17 2009 Than Ngo <than@redhat.com> - 4.5.0-6
+- fix lupdate segfault (#486866)
+
+* Sat Mar 14 2009 Dennis Gilmore <dennis@ausil.us> - 4.5.0-5
+- add patch for sparc64. 
+- _Atomic_word is not always an int
+
+* Tue Mar 10 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-4
+- macros.qt4: %%_qt45
+- cleanup more phonon-related left-overs 
+
+* Wed Mar 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-3
+- -no-phonon-backend
+- include qdoc3
 - move designer plugins to runtime (#487622)
-- qt-copy-patches-20090304
+
+* Tue Mar 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-2
+- License: LGPLv2 with exceptions or GPLv3 with exceptions
+- BR: gstreamer-devel
+- drop qgtkstyle patch (no longer needed)
+- -x11: move libQtScriptTools here (linked with libQtGui)
+
+* Tue Mar 03 2009 Than Ngo <than@redhat.com> - 4.5.0-1
+- 4.5.0
+
+* Fri Feb 27 2009 Rex Dieter <rdieter@fedoraproject.org> - 1:4.5.0-0.8.20090224
+- 20090224 snapshot
+- adjust pkgconfig hackery
+
+* Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.5.0-0.7.rc1
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
+* Sun Feb 22 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.5.rc1
+- revert license, change won't land until official 4.5.0 release
+- workaround broken qhostaddress.h (#485677)
+- Provides: qgtkstyle = 0.1
+
+* Fri Feb 20 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.0-0.4.rc1
+- saner versioned Obsoletes
+- -gtkstyle, Obsoletes: qgtkstyle < 0.1
+- enable phonon support and associated hackery
+
+* Mon Feb 16 2009 Than Ngo <than@redhat.com> 4.5.0-0.3.rc1
+- fix callgrindChildExitCode is uninitialzed
+
+* Sun Feb 15 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-0.2.rc1
+- qt-copy-patches-20090215
+- License: +LGPLv2
+
+* Wed Feb 11 2009 Than Ngo <than@redhat.com> - 4.5.0-0.rc1.0
+- 4.5.0 rc1
+
+* Thu Feb 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.4.3-16
+- track branches/qt-copy/4.4, and backout previous trunk(qt45) ones
+
+* Mon Feb 02 2009 Than Ngo <than@redhat.com> 4.4.3-15
+- disable 0269,0270,0271 patches, it causes issue in systray
 
 * Thu Jan 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.4.3-14
 - qt-copy-patches-20090129
