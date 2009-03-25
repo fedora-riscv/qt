@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -46,12 +46,9 @@ Patch12: qt-x11-opensource-src-4.5.0-lrelease.patch
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
-# http://lists.kde.org/?l=kde-core-devel&m=123737428209683&w=2
-# fix issue with qt-copy 0275-qtconcurrent-threadcount.diff
-Patch53: qt-x11-opensource-src-4.5.0-0275_qthreadpool.patch
 
 ## qt-copy patches
-%define qt_copy 20090319
+%define qt_copy 20090325
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -306,7 +303,6 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 %if 0%{?qt_copy}
 echo "0250" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
-%patch53 -p1 -b .0275_qthreadpool
 %endif
 
 # don't use -b on mkspec files, else they get installed too.
@@ -802,6 +798,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Mar 25 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-10
+- qt-copy-patches-20090325
+
 * Tue Mar 24 2009 Than Ngo <than@redhat.com> - 4.5.0-9
 - lrelease only shows warning when duplicate messages found in *.ts( #491514)
 
