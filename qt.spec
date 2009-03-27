@@ -40,6 +40,8 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
 Patch11: qt-x11-opensource-src-4.5.0-linguist-crash.patch 
 Patch12: qt-x11-opensource-src-4.5.0-lrelease.patch
+# hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
+Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -315,6 +317,7 @@ test -x apply_patches && ./apply_patches
 %patch10 -p1 -b .ppc64
 %patch11 -p1 -b .linguist-crash
 %patch12 -p1 -b .lrelease
+%patch13 -p1 -b .gcc_hack
 %patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
