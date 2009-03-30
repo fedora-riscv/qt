@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -42,6 +42,8 @@ Patch11: qt-x11-opensource-src-4.5.0-linguist-crash.patch
 Patch12: qt-x11-opensource-src-4.5.0-lrelease.patch
 # hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
+# qt fails to build on ia64: http://bugzilla.redhat.com/492174
+Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -318,6 +320,7 @@ test -x apply_patches && ./apply_patches
 %patch11 -p1 -b .linguist-crash
 %patch12 -p1 -b .lrelease
 %patch13 -p1 -b .gcc_hack
+%patch14 -p1 -b .ia64_boilerplate
 %patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
@@ -801,6 +804,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Mar 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-11
+- qt fails to build on ia64 (#492174)
+
 * Fri Mar 25 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-10
 - qt-copy-patches-20090325
 
