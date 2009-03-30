@@ -1,0 +1,15 @@
+diff -up qt-x11-opensource-src-4.5.0/src/corelib/global/qlibraryinfo.cpp.broken qt-x11-opensource-src-4.5.0/src/corelib/global/qlibraryinfo.cpp
+--- qt-x11-opensource-src-4.5.0/src/corelib/global/qlibraryinfo.cpp.broken	2009-03-25 13:42:23.000000000 -0400
++++ qt-x11-opensource-src-4.5.0/src/corelib/global/qlibraryinfo.cpp	2009-03-25 13:58:04.000000000 -0400
+@@ -488,7 +488,11 @@ QT_END_NAMESPACE
+ #  include <sys/syscall.h>
+ #  include <unistd.h>
+ 
++#if defined(QT_ARCH_IA64)
++char boilerplate[] =
++#else
+ static const char boilerplate[] =
++#endif
+     "This is the QtCore library version " QT_VERSION_STR "\n"
+     "Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).\n"
+     "Contact: Qt Software Information (qt-info@nokia.com)\n"
