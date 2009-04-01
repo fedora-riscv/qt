@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -50,6 +50,10 @@ Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
+# fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
+# should fix the reference counting in qt_toX11Pixmap and thus the Kolourpaint
+# crash with Qt 4.5
+Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 
 ## qt-copy patches
 %define qt_copy 20090325
@@ -324,6 +328,7 @@ test -x apply_patches && ./apply_patches
 %patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
+%patch53 -p1 -b .qatomic-inline-asm
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -804,6 +809,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Apr 01 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.0-12
+- fix inline asm in qatomic (de)ref (i386/x86_64), should fix Kolourpaint crash
+
 * Mon Mar 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-11
 - qt fails to build on ia64 (#492174)
 
