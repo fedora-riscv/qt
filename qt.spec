@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -519,8 +519,8 @@ rm -f %{buildroot}%{_qt4_libdir}/lib*.la
 
 # qt4.(sh|csh), currently unused
 %if 0
-install -p -m755 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4.sh
-install -p -m755 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4.csh
+install -p -m644 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4.sh
+install -p -m644 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4.csh
 sed -i \
   -e "s|@@QT4DIR@@|%{_qt4_prefix}|" \
   -e "s|@@QT4DOCDIR@@|%{_qt4_docdir}|" \
@@ -809,6 +809,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Apr 10 2009 Than Ngo <than@redhat.com> - 4.5.0-13
+- unneeded executable permissions for profile.d scripts
+
 * Wed Apr 01 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.0-12
 - fix inline asm in qatomic (de)ref (i386/x86_64), should fix Kolourpaint crash
 
