@@ -2,7 +2,7 @@
 
 # configure options
 # -no-pch disables precompiled headers, make ccache-friendly
-#define no_pch -no-pch
+%define no_pch -no-pch
 
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 10%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -42,12 +42,20 @@ Patch11: qt-x11-opensource-src-4.5.0-linguist-crash.patch
 Patch12: qt-x11-opensource-src-4.5.0-lrelease.patch
 # hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
+# qt fails to build on ia64: http://bugzilla.redhat.com/492174
+Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
+# http://bugzilla.redhat.com/490377
+Patch15: qt-x11-opensource-src-4.5.0-disable_ft_lcdfilter.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
 Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
+# fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
+# should fix the reference counting in qt_toX11Pixmap and thus the Kolourpaint
+# crash with Qt 4.5
+Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 
 ## qt-copy patches
 %define qt_copy 20090325
@@ -318,9 +326,12 @@ test -x apply_patches && ./apply_patches
 %patch11 -p1 -b .linguist-crash
 %patch12 -p1 -b .lrelease
 %patch13 -p1 -b .gcc_hack
+%patch14 -p1 -b .ia64_boilerplate
+%patch15 -p1 -b .disable_ft_lcdfilter
 %patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
+%patch53 -p1 -b .qatomic-inline-asm
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -511,8 +522,8 @@ rm -f %{buildroot}%{_qt4_libdir}/lib*.la
 
 # qt4.(sh|csh), currently unused
 %if 0
-install -p -m755 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4.sh
-install -p -m755 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4.csh
+install -p -m644 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4.sh
+install -p -m644 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4.csh
 sed -i \
   -e "s|@@QT4DIR@@|%{_qt4_prefix}|" \
   -e "s|@@QT4DOCDIR@@|%{_qt4_docdir}|" \
@@ -801,6 +812,18 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Apr 14 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-14
+- fix vrgb/vgbr corruption, disable QT_USE_FREETYPE_LCDFILTER (#490377)
+
+* Fri Apr 10 2009 Than Ngo <than@redhat.com> - 4.5.0-13
+- unneeded executable permissions for profile.d scripts
+
+* Wed Apr 01 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.0-12
+- fix inline asm in qatomic (de)ref (i386/x86_64), should fix Kolourpaint crash
+
+* Mon Mar 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-11
+- qt fails to build on ia64 (#492174)
+
 * Fri Mar 25 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-10
 - qt-copy-patches-20090325
 
