@@ -2,7 +2,7 @@
 
 # configure options
 # -no-pch disables precompiled headers, make ccache-friendly
-#define no_pch -no-pch
+%define no_pch -no-pch
 
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.0
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -44,6 +44,8 @@ Patch12: qt-x11-opensource-src-4.5.0-lrelease.patch
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 # qt fails to build on ia64: http://bugzilla.redhat.com/492174
 Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
+# http://bugzilla.redhat.com/490377
+Patch15: qt-x11-opensource-src-4.5.0-disable_ft_lcdfilter.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -325,6 +327,7 @@ test -x apply_patches && ./apply_patches
 %patch12 -p1 -b .lrelease
 %patch13 -p1 -b .gcc_hack
 %patch14 -p1 -b .ia64_boilerplate
+%patch15 -p1 -b .disable_ft_lcdfilter
 %patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
@@ -809,6 +812,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Tue Apr 14 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-14
+- fix vrgb/vgbr corruption, disable QT_USE_FREETYPE_LCDFILTER (#490377)
+
 * Fri Apr 10 2009 Than Ngo <than@redhat.com> - 4.5.0-13
 - unneeded executable permissions for profile.d scripts
 
