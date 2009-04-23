@@ -11,8 +11,8 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.5.0
-Release: 14%{?dist}
+Version: 4.5.1
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -37,9 +37,6 @@ Source5: qconfig-multilib.h
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
-Patch10: qt-x11-opensource-src-4.5.0-rc1-ppc64.patch
-Patch11: qt-x11-opensource-src-4.5.0-linguist-crash.patch 
-Patch12: qt-x11-opensource-src-4.5.0-lrelease.patch
 # hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 # qt fails to build on ia64: http://bugzilla.redhat.com/492174
@@ -49,7 +46,6 @@ Patch15: qt-x11-opensource-src-4.5.0-disable_ft_lcdfilter.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
-Patch50: qt-x11-opensource-src-4.5.0-rc1-qhostaddress.patch
 Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -58,7 +54,7 @@ Patch52: qt-4.5-sparc64.patch
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 
 ## qt-copy patches
-%define qt_copy 20090325
+%define qt_copy 20090423
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -312,6 +308,10 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 %if 0%{?qt_copy}
 echo "0250" >> patches/DISABLED
+echo "0245" >> patches/DISABLED
+echo "0275" >> patches/DISABLED
+echo "0276" >> patches/DISABLED
+echo "0278" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -322,13 +322,9 @@ test -x apply_patches && ./apply_patches
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
-%patch10 -p1 -b .ppc64
-%patch11 -p1 -b .linguist-crash
-%patch12 -p1 -b .lrelease
 %patch13 -p1 -b .gcc_hack
 %patch14 -p1 -b .ia64_boilerplate
 %patch15 -p1 -b .disable_ft_lcdfilter
-%patch50 -p1 -b .qhostaddress
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -376,6 +372,7 @@ fi
 # build shared, threaded (default) libraries
 ./configure -v \
   -confirm-license \
+  -opensource \
   -optimized-qmake \
   -prefix %{_qt4_prefix} \
   -bindir %{_qt4_bindir} \
@@ -812,6 +809,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Apr 23 2009 Than Ngo <than@redhat.com> - 4.5.1-1
+- 4.5.1
+
 * Tue Apr 14 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.0-14
 - fix vrgb/vgbr corruption, disable QT_USE_FREETYPE_LCDFILTER (#490377)
 
