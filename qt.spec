@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -54,7 +54,7 @@ Patch52: qt-4.5-sparc64.patch
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 
 ## qt-copy patches
-%define qt_copy 20090423
+%define qt_copy 20090424
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -308,10 +308,6 @@ Qt libraries which are used for drawing widgets and OpenGL items.
 
 %if 0%{?qt_copy}
 echo "0250" >> patches/DISABLED
-echo "0245" >> patches/DISABLED
-echo "0275" >> patches/DISABLED
-echo "0276" >> patches/DISABLED
-echo "0278" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -809,6 +805,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Apr 24 2009 Than Ngo <than@redhat.com> - 4.5.1-2
+- apply upstream patch to fix the svg rendering regression
+
 * Thu Apr 23 2009 Than Ngo <than@redhat.com> - 4.5.1-1
 - 4.5.1
 
