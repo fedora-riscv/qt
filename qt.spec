@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -41,8 +41,7 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 # qt fails to build on ia64: http://bugzilla.redhat.com/492174
 Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
-# http://bugzilla.redhat.com/490377
-Patch15: qt-x11-opensource-src-4.5.0-disable_ft_lcdfilter.patch
+Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -320,7 +319,7 @@ test -x apply_patches && ./apply_patches
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch13 -p1 -b .gcc_hack
 %patch14 -p1 -b .ia64_boilerplate
-%patch15 -p1 -b .disable_ft_lcdfilter
+%patch15 -p1 -b .enable_ft_lcdfilter
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -805,6 +804,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Apr 24 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-3
+- enable FT_LCD_FILTER
+
 * Fri Apr 24 2009 Than Ngo <than@redhat.com> - 4.5.1-2
 - apply upstream patch to fix the svg rendering regression
 
