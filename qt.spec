@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -58,9 +58,6 @@ Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
 %{?qt_copy:Provides: qt4-copy = %{qt_copy}}
-
-Source11: qt4.sh
-Source12: qt4.csh
 
 Source20: assistant.desktop
 Source21: designer.desktop
@@ -187,6 +184,30 @@ Qt is a software toolkit for developing applications.
 This package contains base tools, like string, xml, and network
 handling.
 
+
+%package demos
+Summary: Demonstration applications for %{name}
+Group:   Documentation
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+%description demos
+%{summary}.
+
+%package doc
+Summary: API documentation for %{name}
+Group: Documentation
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-assistant
+%if "%{name}" != "qt4"
+Obsoletes: qt4-doc < %{version}-%{release}
+Provides:  qt4-doc = %{version}-%{release}
+%endif
+%if 0%{?fedora} > 9
+BuildArch: noarch
+%endif
+%description doc
+%{summary}.  Includes:
+Qt Assistant
+
 %package devel
 Summary: Development files for the Qt toolkit
 Group: Development/Libraries
@@ -222,19 +243,30 @@ This package contains the files necessary to develop
 applications using the Qt toolkit.  Includes:
 Qt Linguist
 
-%package doc
-Summary: API documentation, demos and example programs for %{name}
+
+%package examples
+Summary: Programming examples for %{name}
 Group: Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-assistant
+
+%description examples
+%{summary}.
+
+
+%package mysql
+Summary: MySQL driver for Qt's SQL classes
+Group: System Environment/Libraries
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes: qt4-MySQL < %{version}-%{release}
+Provides:  qt4-MySQL = %{version}-%{release}
 %if "%{name}" != "qt4"
-Obsoletes: qt4-doc < %{version}-%{release}
-Provides:  qt4-doc = %{version}-%{release}
+Obsoletes: qt4-mysql < %{version}-%{release}
+Provides:  qt4-mysql = %{version}-%{release}
 %endif
 
-%description doc
-%{summary}.  Includes:
-Qt Assistant, Qt Demo
+%description mysql 
+%{summary}.
+
 
 %package odbc 
 Summary: ODBC driver for Qt's SQL classes
@@ -250,19 +282,6 @@ Provides:  qt4-odbc = %{version}-%{release}
 %description odbc 
 %{summary}.
 
-%package mysql 
-Summary: MySQL driver for Qt's SQL classes
-Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes: qt4-MySQL < %{version}-%{release}
-Provides:  qt4-MySQL = %{version}-%{release}
-%if "%{name}" != "qt4"
-Obsoletes: qt4-mysql < %{version}-%{release}
-Provides:  qt4-mysql = %{version}-%{release}
-%endif
-
-%description mysql 
-%{summary}.
 
 %package postgresql 
 Summary: PostgreSQL driver for Qt's SQL classes
@@ -277,6 +296,7 @@ Provides:  qt4-postgresql = %{version}-%{release}
 
 %description postgresql 
 %{summary}.
+
 
 %package x11
 Summary: Qt GUI-related libraries
@@ -299,7 +319,7 @@ Provides:  qt4-x11 = %{version}-%{release}
 %endif
 
 %description x11
-Qt libraries which are used for drawing widgets and OpenGL items.
+Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
@@ -512,17 +532,6 @@ rm -f %{buildroot}%{_qt4_libdir}/lib*.la
 %endif
 %endif
 
-# qt4.(sh|csh), currently unused
-%if 0
-install -p -m644 -D %{SOURCE11} %{buildroot}/etc/profile.d/qt4.sh
-install -p -m644 -D %{SOURCE12} %{buildroot}/etc/profile.d/qt4.csh
-sed -i \
-  -e "s|@@QT4DIR@@|%{_qt4_prefix}|" \
-  -e "s|@@QT4DOCDIR@@|%{_qt4_docdir}|" \
-  %{buildroot}/etc/profile.d/qt4.*
-%endif
-
-
 %if "%{_qt4_libdir}" != "%{_libdir}"
   mkdir -p %{buildroot}/etc/ld.so.conf.d
   echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{_arch}.conf
@@ -628,7 +637,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %files
 %defattr(-,root,root,-)
 %doc README* LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
-#config /etc/profile.d/qt4.*
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -668,35 +676,14 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
 %{_qt4_translationdir}/
 
-%files x11 
+%files demos
 %defattr(-,root,root,-)
-%{_sysconfdir}/rpm/macros.*
-%if 0%{?phonon:1}
-#{_qt4_libdir}/libphonon.so.4*
-%endif
-%{_qt4_libdir}/libQt3Support.so.*
-%{_qt4_libdir}/libQtAssistantClient.so.*
-%{_qt4_libdir}/libQtCLucene.so.*
-%{_qt4_libdir}/libQtDesigner.so.*
-%{_qt4_libdir}/libQtDesignerComponents.so.*
-%{_qt4_libdir}/libQtGui.so.*
-%{_qt4_libdir}/libQtHelp.so.*
-%{_qt4_libdir}/libQtOpenGL.so.*
-%{_qt4_libdir}/libQtScriptTools.so.*
-%{_qt4_libdir}/libQtSvg.so.*
-%{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
-%{_qt4_plugindir}/*
-%exclude %{_qt4_plugindir}/sqldrivers
+%{_qt4_bindir}/qt*demo*
 %if "%{_qt4_bindir}" != "%{_bindir}"
-%{_bindir}/assistant*
-%{?dbus:%{_bindir}/qdbusviewer}
-%{_bindir}/qt*config*
+%{_bindir}/qt*demo*
 %endif
-%{_qt4_bindir}/assistant*
-%{?dbus:%{_qt4_bindir}/qdbusviewer}
-%{_qt4_bindir}/qt*config*
-%{_datadir}/applications/*qtconfig*.desktop
-%{_datadir}/icons/hicolor/*/apps/qt4-logo.*
+%{_datadir}/applications/*qtdemo*.desktop
+%{_qt4_demosdir}/
 
 %files devel
 %defattr(-,root,root,-)
@@ -773,16 +760,18 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_docdir}/qch/
 %{_qt4_docdir}/src/
 %{_qt4_prefix}/doc
-%{_qt4_demosdir}/
-%{_qt4_examplesdir}/
 # Qt Assistant (bin moved to -x11)
 %{_datadir}/applications/*assistant*.desktop
-# Qt Demo
-%{_qt4_bindir}/qt*demo*
-%if "%{_qt4_bindir}" != "%{_bindir}"
-%{_bindir}/qt*demo*
+
+%files examples
+%defattr(-,root,root,-)
+%{_qt4_examplesdir}/
+
+%if "%{?mysql}" == "-plugin-sql-mysql"
+%files mysql
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/sqldrivers/libqsqlmysql*
 %endif
-%{_datadir}/applications/*qtdemo*.desktop
 
 %if "%{?odbc}" == "-plugin-sql-odbc"
 %files odbc 
@@ -796,14 +785,44 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_plugindir}/sqldrivers/libqsqlpsql*
 %endif
 
-%if "%{?mysql}" == "-plugin-sql-mysql"
-%files mysql 
+%files x11 
 %defattr(-,root,root,-)
-%{_qt4_plugindir}/sqldrivers/libqsqlmysql*
+%{_sysconfdir}/rpm/macros.*
+%if 0%{?phonon:1}
+#{_qt4_libdir}/libphonon.so.4*
 %endif
+%{_qt4_libdir}/libQt3Support.so.*
+%{_qt4_libdir}/libQtAssistantClient.so.*
+%{_qt4_libdir}/libQtCLucene.so.*
+%{_qt4_libdir}/libQtDesigner.so.*
+%{_qt4_libdir}/libQtDesignerComponents.so.*
+%{_qt4_libdir}/libQtGui.so.*
+%{_qt4_libdir}/libQtHelp.so.*
+%{_qt4_libdir}/libQtOpenGL.so.*
+%{_qt4_libdir}/libQtScriptTools.so.*
+%{_qt4_libdir}/libQtSvg.so.*
+%{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
+%{_qt4_plugindir}/*
+%exclude %{_qt4_plugindir}/sqldrivers
+%if "%{_qt4_bindir}" != "%{_bindir}"
+%{_bindir}/assistant*
+%{?dbus:%{_bindir}/qdbusviewer}
+%{_bindir}/qt*config*
+%endif
+%{_qt4_bindir}/assistant*
+%{?dbus:%{_qt4_bindir}/qdbusviewer}
+%{_qt4_bindir}/qt*config*
+%{_datadir}/applications/*qtconfig*.desktop
+%{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 
 %changelog
+* Fri Apr 24 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-4
+- qt-doc noarch
+- qt-demos, qt-examples (split from -doc)
+- (cosmetic) re-order subpkgs in alphabetical order
+- drop unused profile.d bits
+
 * Fri Apr 24 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-3
 - enable FT_LCD_FILTER
 
