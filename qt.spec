@@ -479,7 +479,8 @@ done
 # nuke dangling reference(s) to %buildroot
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
 
-%if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
+%if 0
+#if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
 # -doc make symbolic link to _qt4_docdir
 rm -rf %{buildroot}%{_qt4_prefix}/doc
 ln -s  ../../share/doc/qt4 %{buildroot}%{_qt4_prefix}/doc
@@ -759,7 +760,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_docdir}/html
 %{_qt4_docdir}/qch/
 %{_qt4_docdir}/src/
-%{_qt4_prefix}/doc
+#{_qt4_prefix}/doc
 # Qt Assistant (bin moved to -x11)
 %{_datadir}/applications/*assistant*.desktop
 
