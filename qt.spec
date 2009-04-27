@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -233,9 +233,12 @@ Provides:  WebKit-qt-devel = 1.0.0-1
 #Requires: dbus-devel
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
+# as long as libQtUiTools.a is included
+Provides:  %{name}-static = %{version}-%{release}
 %if "%{name}" != "qt4"
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
+Provides:  qt4-static = %{version}-%{release}
 %endif
 
 %description devel
@@ -742,8 +745,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 #{_qt4_libdir}/libphonon.so
 %endif
 %{_qt4_libdir}/libQt*.so
-# remaining static lib: libQtUiTools.a 
-%{_qt4_libdir}/libQt*.a
+%{_qt4_libdir}/libQtUiTools.a
 %{_qt4_libdir}/libQt*.prl
 %{_libdir}/pkgconfig/*.pc
 # Qt designer
@@ -818,6 +820,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Apr 27 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-5
+- -devel: Provides: *-static for libQtUiTools.a
+
 * Fri Apr 24 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-4
 - qt-doc noarch
 - qt-demos, qt-examples (split from -doc)
