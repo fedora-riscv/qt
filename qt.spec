@@ -823,9 +823,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 * Mon Apr 27 2009 Than Ngo <than@redhat.com> - 4.5.1-6
 - enable Freetype subpixel rendering at compile time  
 
-* Mon Apr 27 2009 Than Ngo <than@redhat.com> - 4.5.1-6
-- drop useless qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
-
 * Mon Apr 27 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-5
 - -devel: Provides: *-static for libQtUiTools.a
 
