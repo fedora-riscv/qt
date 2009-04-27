@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -820,6 +820,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Apr 27 2009 Than Ngo <than@redhat.com> - 4.5.1-6
+- drop useless hunk of qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
+
 * Mon Apr 27 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-5
 - -devel: Provides: *-static for libQtUiTools.a
 
