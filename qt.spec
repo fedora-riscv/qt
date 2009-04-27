@@ -41,6 +41,7 @@ Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 # qt fails to build on ia64: http://bugzilla.redhat.com/492174
 Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
+Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -341,6 +342,7 @@ test -x apply_patches && ./apply_patches
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch13 -p1 -b .gcc_hack
 %patch14 -p1 -b .ia64_boilerplate
+%patch15 -p1 -b .enable_ft_lcdfilter
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -818,6 +820,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Mon Apr 27 2009 Than Ngo <than@redhat.com> - 4.5.1-6
+- enable Freetype subpixel rendering at compile time  
+
 * Mon Apr 27 2009 Than Ngo <than@redhat.com> - 4.5.1-6
 - drop useless qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
