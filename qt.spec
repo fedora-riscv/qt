@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -238,6 +238,7 @@ Provides:  %{name}-static = %{version}-%{release}
 %if "%{name}" != "qt4"
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
+%{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
 %endif
 
@@ -820,6 +821,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Apr 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-7
+- -devel: Provides: qt4-devel%%{?_isa} ...
+
 * Mon Apr 27 2009 Than Ngo <than@redhat.com> - 4.5.1-6
 - drop useless hunk of qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
