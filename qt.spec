@@ -55,7 +55,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # http://bugzilla.redhat.com/440673
 # well, not quite upstreamable yet, not but it's a first try...
 # until mysql_config can export a usable linker flags 
-Patch54: qt-x11-opensource-src-4.5.1-mysql_config-1.patch
+Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 
 ## qt-copy patches
 %define qt_copy 20090424
