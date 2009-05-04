@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -51,6 +51,11 @@ Patch52: qt-4.5-sparc64.patch
 # should fix the reference counting in qt_toX11Pixmap and thus the Kolourpaint
 # crash with Qt 4.5
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
+# fix invalid assumptions about mysql_config --libs
+# http://bugzilla.redhat.com/440673
+# well, not quite upstreamable yet, not but it's a first try...
+# until mysql_config can export a usable linker flags 
+Patch54: qt-x11-opensource-src-4.5.1-mysql_config-1.patch
 
 ## qt-copy patches
 %define qt_copy 20090424
@@ -347,6 +352,7 @@ test -x apply_patches && ./apply_patches
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
+%patch54 -p1 -b .mysql_config
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -821,6 +827,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sun May 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-8
+- fix invalid assumptions about mysql_config --libs (bug #440673)
+
 * Wed Apr 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-7
 - -devel: Provides: qt4-devel%%{?_isa} ...
 

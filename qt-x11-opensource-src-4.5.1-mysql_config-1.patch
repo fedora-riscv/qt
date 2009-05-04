@@ -1,0 +1,14 @@
+diff -up qt-x11-opensource-src-4.5.1/configure.rex qt-x11-opensource-src-4.5.1/configure
+--- qt-x11-opensource-src-4.5.1/configure.rex	2009-04-21 18:57:35.000000000 -0500
++++ qt-x11-opensource-src-4.5.1/configure	2009-05-03 17:46:30.236077416 -0500
+@@ -4334,8 +4334,8 @@ for _SQLDR in $CFG_SQL_AVAILABLE; do
+ 		[ -z "$CFG_MYSQL_CONFIG" ] && CFG_MYSQL_CONFIG=`$WHICH mysql_config`
+                 if [ -x "$CFG_MYSQL_CONFIG" ]; then
+                     QT_CFLAGS_MYSQL=`$CFG_MYSQL_CONFIG --include 2>/dev/null`
+-                    QT_LFLAGS_MYSQL_R=`$CFG_MYSQL_CONFIG --libs_r 2>/dev/null`
+-                    QT_LFLAGS_MYSQL=`$CFG_MYSQL_CONFIG --libs 2>/dev/null`
++                    QT_LFLAGS_MYSQL_R="-L`$CFG_MYSQL_CONFIG --plugindir 2>/dev/null`/.. -lmysqlclient_r"
++                    QT_LFLAGS_MYSQL="-L`$CFG_MYSQL_CONFIG --plugindir 2>/dev/null`/.. -lmysqlclient"
+ 		    QT_MYSQL_VERSION=`$CFG_MYSQL_CONFIG --version 2>/dev/null`
+                     QT_MYSQL_VERSION_MAJOR=`echo $QT_MYSQL_VERSION | cut -d . -f 1`
+                 fi
