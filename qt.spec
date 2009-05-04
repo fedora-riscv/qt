@@ -750,7 +750,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 #{_qt4_libdir}/libphonon.so
 %endif
 %{_qt4_libdir}/libQt*.so
-%{_qt4_libdir}/libQtUiTools.a
+%{_qt4_libdir}/libQtUiTools*.a
 %{_qt4_libdir}/libQt*.prl
 %{_libdir}/pkgconfig/*.pc
 # Qt designer
@@ -825,8 +825,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
-* Sun May 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-8
+* Mon May 04 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-8
 - fix invalid assumptions about mysql_config --libs (bug #440673)
+- fix %%files breakage from 4.5.1-5
 
 * Wed Apr 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-7
 - -devel: Provides: qt4-devel%%{?_isa} ...
