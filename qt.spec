@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -828,6 +828,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed May 06 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-10
+- improved kde4_plugins patch, skip expensive/unneeded canonicalPath
+
 * Wed May 06 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-9
 - include kde4 plugin path by default (#498809)
 
