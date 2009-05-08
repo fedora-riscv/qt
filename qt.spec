@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 3%{?dist}.1
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -42,8 +42,6 @@ Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 # qt fails to build on ia64: http://bugzilla.redhat.com/492174
 Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
-# look for pa-in instead of pa in fontconfig (#497984)
-Patch16: qt-x11-opensource-src-4.5.0-pa-in.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -807,6 +805,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri May 08 2009 Than Ngo <than@redhat.com> - 4.5.1-4
+- drop qt-x11-opensource-src-4.5.0-pa-in.patch
+
 * Thu May 07 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.1-3.1
 - look for pa-in instead of pa in fontconfig (#497984)
 
