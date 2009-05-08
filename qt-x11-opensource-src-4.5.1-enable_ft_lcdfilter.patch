@@ -6,16 +6,7 @@ diff -up qt-x11-opensource-src-4.5.1/src/gui/text/qfontengine_ft.cpp.enable_ft_l
  #endif
  
 -#if defined(FT_LCD_FILTER_H) && defined(FT_CONFIG_OPTION_SUBPIXEL_RENDERING)
-+#if defined(FT_LCD_FILTER_H) // && defined(FT_CONFIG_OPTION_SUBPIXEL_RENDERING)
++#if defined(FT_LCD_FILTER_H)
  #define QT_USE_FREETYPE_LCDFILTER
  #endif
  
-@@ -1051,7 +1051,7 @@ QFontEngineFT::Glyph *QFontEngineFT::loa
-             Q_ASSERT(antialias);
-             uchar *convoluted = new uchar[bitmap.rows*bitmap.pitch];
-             bool useLegacyLcdFilter = false;
--#if defined(FC_LCD_FILTER) && defined(FT_LCD_FILTER_H)
-+#if defined(FT_LCD_FILTER_H) // && defined(FC_LCD_FILTER)
-             useLegacyLcdFilter = (lcdFilterType == FT_LCD_FILTER_LEGACY);
- #endif
-             uchar *buffer = bitmap.buffer;
