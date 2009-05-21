@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 10%{?dist}.1
+Release: 10%{?dist}.2
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -83,9 +83,9 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
-#define phonon -phonon
+%define phonon -phonon
 %define phonon_backend -no-phonon-backend
-#define webkit -webkit
+%define webkit -webkit
 %define gtkstyle -gtkstyle
 
 %define nas -no-nas-sound
@@ -191,7 +191,7 @@ This package contains base tools, like string, xml, and network
 handling.
 
 
-#define demos 1
+%define demos 1
 %package demos
 Summary: Demonstration applications for %{name}
 Group:   Documentation
@@ -199,7 +199,7 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description demos
 %{summary}.
 
-#define docs 1
+%define docs 1
 %package doc
 Summary: API documentation for %{name}
 Group: Documentation
@@ -256,7 +256,7 @@ applications using the Qt toolkit.  Includes:
 Qt Linguist
 
 
-#define examples 1
+%define examples 1
 %package examples
 Summary: Programming examples for %{name}
 Group: Documentation
@@ -841,6 +841,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed May 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-10.2
+- full (non-bootstrap) build
+
 * Wed May 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-10.1
 - allow for minimal bootstrap build (*cough* arm *cough*)
 
