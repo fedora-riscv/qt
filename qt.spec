@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 10%{?dist}.2
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -58,7 +58,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 
 ## qt-copy patches
-%define qt_copy 20090424
+%define qt_copy 20090522
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -841,6 +841,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri May 22 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-11
+- qt-copy-patches-20090522
+
 * Wed May 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-10.2
 - full (non-bootstrap) build
 
