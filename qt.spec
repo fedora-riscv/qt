@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -58,7 +58,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 
 ## qt-copy patches
-%define qt_copy 20090424
+%define qt_copy 20090522
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -74,6 +74,8 @@ Source24: qtconfig.desktop
 Source30: hi128-app-qt4-logo.png
 Source31: hi48-app-qt4-logo.png
 
+## BOOTSTRAPPING, undef docs, demos, examples, phonon, webkit
+
 ## optional plugin bits
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
@@ -86,7 +88,6 @@ Source31: hi48-app-qt4-logo.png
 %define webkit -webkit
 %define gtkstyle -gtkstyle
 
-#define nas -system-nas-sound
 %define nas -no-nas-sound
 %if 0%{?fedora} > 4 || 0%{?rhel} > 4
 # link dbus
@@ -190,6 +191,7 @@ This package contains base tools, like string, xml, and network
 handling.
 
 
+%define demos 1
 %package demos
 Summary: Demonstration applications for %{name}
 Group:   Documentation
@@ -197,6 +199,7 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description demos
 %{summary}.
 
+%define docs 1
 %package doc
 Summary: API documentation for %{name}
 Group: Documentation
@@ -253,6 +256,7 @@ applications using the Qt toolkit.  Includes:
 Qt Linguist
 
 
+%define examples 1
 %package examples
 Summary: Programming examples for %{name}
 Group: Documentation
@@ -422,7 +426,7 @@ fi
   -no-rpath \
   -reduce-relocations \
   -no-separate-debug-info \
-  %{?phonon} \
+  %{?phonon} %{!?phonon:-no-phonon} \
   %{?phonon_backend} \
   %{?no_pch} \
   -sm \
@@ -449,7 +453,10 @@ fi
   %{?mysql} \
   %{?psql} \
   %{?odbc} \
-  %{?sqlite} %{?_system_sqlite}
+  %{?sqlite} %{?_system_sqlite} \
+  %{!?docs:-nomake docs} \
+  %{!?demos:-nomake demos} \
+  %{!?examples:-nomake examples}
 
 make %{?_smp_mflags}
 
@@ -461,9 +468,9 @@ make install INSTALL_ROOT=%{buildroot}
 
 # Add desktop file(s)
 desktop-file-install \
-  --dir %{buildroot}%{_datadir}/applications \
+  --dir=%{buildroot}%{_datadir}/applications \
   --vendor="qt4" \
-  %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{SOURCE24}
+  %{?docs:%{SOURCE20}} %{SOURCE21} %{SOURCE22} %{?demos:%{SOURCE23}} %{SOURCE24}
 
 ## pkg-config
 # strip extraneous dirs/libraries 
@@ -688,14 +695,16 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
 %{_qt4_translationdir}/
 
+%if 0%{?demos}
 %files demos
 %defattr(-,root,root,-)
 %{_qt4_bindir}/qt*demo*
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qt*demo*
 %endif
-%{_datadir}/applications/*qtdemo*.desktop
+%{_datadir}/applications/*qtdemo.desktop
 %{_qt4_demosdir}/
+%endif
 
 %files devel
 %defattr(-,root,root,-)
@@ -758,12 +767,13 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_libdir}/pkgconfig/*.pc
 # Qt designer
 %{_qt4_bindir}/designer*
-%{_datadir}/applications/*designer*.desktop
+%{_datadir}/applications/*designer.desktop
 # Qt Linguist
 %{_qt4_bindir}/linguist*
-%{_datadir}/applications/*linguist*.desktop
+%{_datadir}/applications/*linguist.desktop
 %{_datadir}/icons/hicolor/*/apps/linguist4.*
 
+%if 0%{?docs}
 %files doc
 %defattr(-,root,root,-)
 %dir %{_qt4_docdir}/
@@ -772,11 +782,14 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_docdir}/src/
 #{_qt4_prefix}/doc
 # Qt Assistant (bin moved to -x11)
-%{_datadir}/applications/*assistant*.desktop
+%{_datadir}/applications/*assistant.desktop
+%endif
 
+%if 0%{?examples}
 %files examples
 %defattr(-,root,root,-)
 %{_qt4_examplesdir}/
+%endif
 
 %if "%{?mysql}" == "-plugin-sql-mysql"
 %files mysql
@@ -823,11 +836,20 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_bindir}/assistant*
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
 %{_qt4_bindir}/qt*config*
-%{_datadir}/applications/*qtconfig*.desktop
+%{_datadir}/applications/*qtconfig.desktop
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 
 %changelog
+* Fri May 22 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-11
+- qt-copy-patches-20090522
+
+* Wed May 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-10.2
+- full (non-bootstrap) build
+
+* Wed May 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-10.1
+- allow for minimal bootstrap build (*cough* arm *cough*)
+
 * Wed May 06 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-10
 - improved kde4_plugins patch, skip expensive/unneeded canonicalPath
 
