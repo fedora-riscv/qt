@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -84,7 +84,10 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define phonon -phonon
+# if building with --phonon, define to internal version (ie, Obsolete external phonon)
+#define phonon_internal 1
 %define phonon_backend -no-phonon-backend
+%define phonon_version 4.3.1
 %define webkit -webkit
 %define gtkstyle -gtkstyle
 
@@ -226,19 +229,17 @@ Requires: libpng-devel
 Requires: libjpeg-devel
 Requires: pkgconfig
 %if 0%{?phonon:1}
-# No, let's avoid the circular dependency (for now) -- Rex
-#Requires: phonon-devel
 Provides: qt4-phonon-devel = %{version}-%{release}
+%endif
+%if 0%{?phonon_internal}
+Obsoletes: phonon-devel < 4.3.1-100
+Provides:  phonon-devel = 4.3.1-100
+Requires:  phonon-backend%{?_isa} >= %{phonon_version}
 %endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
 Provides:  WebKit-qt-devel = 1.0.0-1
 %endif
-# we strip these from the .pc files to avoid the bogus deps
-# -openssl-linked ? -- Rex
-#Requires: openssl-devel
-# -dbus-linked ? -- Rex
-#Requires: dbus-devel
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
 # as long as libQtUiTools.a is included
@@ -314,6 +315,10 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
+%if 0%{?phonon_internal}
+Obsoletes: phonon < 4.3.1-100
+Provides:  phonon = 4.3.1-100
+%endif
 %if 0%{?phonon:1}
 Provides: qt4-phonon = %{version}-%{release}
 %endif
@@ -611,16 +616,18 @@ EOF
 # create/own %%_qt4_plugindir/styles
 mkdir %{buildroot}%{_qt4_plugindir}/styles
 
-%if 0%{?phonon:1}
+%if 0%{?phonon:1} 
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-# if building with phonon support, nuke it
+%endif
+
+%if ! 0%{?phonon_internal}
+mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
 rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
 rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
 # contents slightly different between phonon-4.3.1 and qt-4.5.0
 rm -fv  %{buildroot}%{_includedir}/phonon/phononnamespace.h
 # contents dup'd but should remove just in case
 rm -fv  %{buildroot}%{_includedir}/phonon/*.h
-
 #rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
 #rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
 %endif
@@ -759,7 +766,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_datadir}/q3porting.xml
 %if 0%{?phonon:1}
 %{_qt4_libdir}/libphonon.prl
-#{_qt4_libdir}/libphonon.so
+%if 0%{?phonon_internal}
+%{_qt4_libdir}/libphonon.so
+%endif
 %endif
 %{_qt4_libdir}/libQt*.so
 %{_qt4_libdir}/libQtUiTools*.a
@@ -812,8 +821,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
-%if 0%{?phonon:1}
-#{_qt4_libdir}/libphonon.so.4*
+%if 0%{?phonon_internal}
+%{_qt4_libdir}/libphonon.so.4*
 %endif
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
@@ -841,6 +850,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat May 23 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-12
+- +phonon_internal macro to toggle packaging of qt's phonon (default off)
+
 * Fri May 22 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-11
 - qt-copy-patches-20090522
 
