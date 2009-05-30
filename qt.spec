@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -213,6 +213,8 @@ Obsoletes: qt4-doc < %{version}-%{release}
 Provides:  qt4-doc = %{version}-%{release}
 %endif
 %if 0%{?fedora} > 9
+# help workaround yum bug http://bugzilla.redhat.com/502401
+Obsoletes: qt-doc < 1:4.5.1-4
 BuildArch: noarch
 %endif
 %description doc
@@ -850,6 +852,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat May 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-13
+- -doc: Obsoletes: qt-doc < 1:4.5.1-4 (workaround bug #502401)
+
 * Sat May 23 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-12
 - +phonon_internal macro to toggle packaging of qt's phonon (default off)
 
