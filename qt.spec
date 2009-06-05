@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -69,6 +69,7 @@ Source21: designer.desktop
 Source22: linguist.desktop
 Source23: qtdemo.desktop
 Source24: qtconfig.desktop
+Source25: gstreamer.desktop
 
 # upstream qt4-logo, http://trolltech.com/images/products/qt/qt4-logo
 Source30: hi128-app-qt4-logo.png
@@ -84,9 +85,7 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define phonon -phonon
-# if building with --phonon, define to internal version (ie, Obsolete external phonon)
-#define phonon_internal 1
-%define phonon_backend -no-phonon-backend
+%define phonon_backend -phonon-backend
 %define phonon_version 4.3.1
 %define webkit -webkit
 %define gtkstyle -gtkstyle
@@ -232,11 +231,8 @@ Requires: libjpeg-devel
 Requires: pkgconfig
 %if 0%{?phonon:1}
 Provides: qt4-phonon-devel = %{version}-%{release}
-%endif
-%if 0%{?phonon_internal}
 Obsoletes: phonon-devel < 4.3.1-100
 Provides:  phonon-devel = 4.3.1-100
-Requires:  phonon-backend%{?_isa} >= %{phonon_version}
 %endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
@@ -317,12 +313,13 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
-%if 0%{?phonon_internal}
-Obsoletes: phonon < 4.3.1-100
-Provides:  phonon = 4.3.1-100
-%endif
 %if 0%{?phonon:1}
-Provides: qt4-phonon = %{version}-%{release}
+Obsoletes: phonon < 4.3.1-100
+Obsoletes: phonon-backend-gstreamer < 4.3.1-100
+Provides:  phonon = 4.3.1-100
+Provides:  phonon%{?_isa} = 4.3.1-100
+Provides:  phonon-backend%{?_isa} = 4.3.1-100
+Provides:  qt4-phonon = %{version}-%{release}
 %endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt < 1.0.0-1
@@ -620,18 +617,11 @@ mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon:1} 
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-%endif
-
-%if ! 0%{?phonon_internal}
-mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
-rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
-# contents slightly different between phonon-4.3.1 and qt-4.5.0
-rm -fv  %{buildroot}%{_includedir}/phonon/phononnamespace.h
-# contents dup'd but should remove just in case
-rm -fv  %{buildroot}%{_includedir}/phonon/*.h
-#rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
-#rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
+pushd %{buildroot}%{_includedir}
+ln -s phonon Phonon
+popd
+mkdir -p %{buildroot}%{_datadir}/kde4/services/phononbackends
+install -m644 %{SOURCE25} %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
 
@@ -768,9 +758,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_qt4_datadir}/q3porting.xml
 %if 0%{?phonon:1}
 %{_qt4_libdir}/libphonon.prl
-%if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so
-%endif
 %endif
 %{_qt4_libdir}/libQt*.so
 %{_qt4_libdir}/libQtUiTools*.a
@@ -823,8 +811,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
-%if 0%{?phonon_internal}
+%if 0%{?phonon:1}
 %{_qt4_libdir}/libphonon.so.4*
+%{_datadir}/kde4
 %endif
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
@@ -852,6 +841,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Jun 05 2009 Than Ngo <than@redhat.com> - 4.5.1-14
+- enable phonon and gstreamer-backend
+
 * Sat May 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-13
 - -doc: Obsoletes: qt-doc < 1:4.5.1-4 (workaround bug #502401)
 
