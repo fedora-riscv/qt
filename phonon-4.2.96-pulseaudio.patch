@@ -1,0 +1,43 @@
+diff -Naurw phonon-4.2.96/phonon/globalconfig.cpp phonon-4.2.96.pulseaudio/phonon/globalconfig.cpp
+--- phonon-4.2.96/phonon/globalconfig.cpp	2008-11-27 16:41:41.000000000 +0100
++++ phonon-4.2.96.pulseaudio/phonon/globalconfig.cpp	2009-01-08 21:29:18.000000000 +0100
+@@ -31,6 +31,7 @@
+ #include "phononnamespace_p.h"
+ 
+ #include <QtCore/QList>
++#include <QtCore/QHash>
+ #include <QtCore/QVariant>
+ 
+ QT_BEGIN_NAMESPACE
+@@ -167,6 +168,15 @@
+                     | ((override & HideUnavailableDevices) ? FilterUnavailableDevices : 0)
+                     );
+         }
++        // make PulseAudio the global default (assume it is already default in this list)
++        if (!list.isEmpty()) {
++            int firstIndex = list.first();
++            if (backendIface->objectDescriptionProperties(Phonon::AudioOutputDeviceType,
++                  firstIndex)["name"].toString() == "PulseAudio") {
++                list.removeFirst();
++                defaultList.prepend(firstIndex);
++            }
++        }
+         defaultList += list;
+     }
+ 
+@@ -222,6 +232,15 @@
+                     | ((override & HideUnavailableDevices) ? FilterUnavailableDevices : 0)
+                   );
+         }
++        // make PulseAudio the global default (assume it is already default in this list)
++        if (!list.isEmpty()) {
++            int firstIndex = list.first();
++            if (backendIface->objectDescriptionProperties(Phonon::AudioCaptureDeviceType,
++                  firstIndex)["name"].toString() == "PulseAudio") {
++                list.removeFirst();
++                defaultList.prepend(firstIndex);
++            }
++        }
+         defaultList += list;
+     }
+ 

@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -44,6 +44,10 @@ Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
+# make PulseAudio the default device in Phonon with the xine-lib backend
+# (The GStreamer backend handles this entirely differently, with a separate
+# "sink" setting, and should pick up the PulseAudio "sink" without patches.)
+Patch17: phonon-4.2.96-pulseaudio.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -358,6 +362,9 @@ test -x apply_patches && ./apply_patches
 %patch14 -p1 -b .ia64_boilerplate
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
+pushd src/3rdparty/phonon
+%patch17 -p1 -b .phonon-pulseaudio
+popd
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -841,6 +848,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Fri Jun 05 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.1-15
+- apply Phonon PulseAudio patch (needed for the xine-lib backend)
+
 * Fri Jun 05 2009 Than Ngo <than@redhat.com> - 4.5.1-14
 - enable phonon and gstreamer-backend
 
