@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -32,6 +32,9 @@ Source4: Trolltech.conf
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 Source5: qconfig-multilib.h
+
+# Hack around missing Phonon/Global header
+Source6: Global
 
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
@@ -624,11 +627,15 @@ mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon:1} 
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-pushd %{buildroot}%{_includedir}
+pushd %{buildroot}%{_qt4_headerdir}
 ln -s phonon Phonon
 popd
-mkdir -p %{buildroot}%{_datadir}/kde4/services/phononbackends
-install -m644 %{SOURCE25} %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
+if [ -f %{buildroot}%{_qt4_headerdir}/Phonon/Global ]; then
+echo "WARNING: Phonon/Global exists, can remove specfile hack"
+else
+install -p -m644 %{SOURCE6} %{buildroot}%{_qt4_headerdir}/Phonon/Global
+fi
+install -p -m644 -D %{SOURCE25} %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
 
@@ -848,6 +855,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sat Jun 06 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-16
+- install awol Phonon/Global header
+
 * Fri Jun 05 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.1-15
 - apply Phonon PulseAudio patch (needed for the xine-lib backend)
 
