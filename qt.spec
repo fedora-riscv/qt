@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -33,9 +33,6 @@ Source4: Trolltech.conf
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 Source5: qconfig-multilib.h
 
-# Hack around missing Phonon/Global header
-Source6: Global
-
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
@@ -51,6 +48,8 @@ Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch
 # (The GStreamer backend handles this entirely differently, with a separate
 # "sink" setting, and should pick up the PulseAudio "sink" without patches.)
 Patch17: phonon-4.2.96-pulseaudio.patch
+Patch18: qt-x11-opensource-src-4.5.1-syncqt-header.patch
+Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -76,7 +75,6 @@ Source21: designer.desktop
 Source22: linguist.desktop
 Source23: qtdemo.desktop
 Source24: qtconfig.desktop
-Source25: gstreamer.desktop
 
 # upstream qt4-logo, http://trolltech.com/images/products/qt/qt4-logo
 Source30: hi128-app-qt4-logo.png
@@ -368,6 +366,8 @@ test -x apply_patches && ./apply_patches
 pushd src/3rdparty/phonon
 %patch17 -p1 -b .phonon-pulseaudio
 popd
+%patch18 -p1 -b .header
+%patch19 -p1 -b .servicesfile
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -410,6 +410,8 @@ if [ "%{_lib}" == "lib64" ] ; then
   sed -i -e "s,/lib /usr/lib,/%{_lib} /usr/%{_lib},g" config.tests/{unix,x11}/*.test
 fi
 
+# let syncqt to create new header
+rm -rf include
 
 %build
 
@@ -630,12 +632,6 @@ mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
 pushd %{buildroot}%{_qt4_headerdir}
 ln -s phonon Phonon
 popd
-if [ -f %{buildroot}%{_qt4_headerdir}/Phonon/Global ]; then
-echo "WARNING: Phonon/Global exists, can remove specfile hack"
-else
-install -p -m644 %{SOURCE6} %{buildroot}%{_qt4_headerdir}/Phonon/Global
-fi
-install -p -m644 -D %{SOURCE25} %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
 
@@ -828,6 +824,7 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %if 0%{?phonon:1}
 %{_qt4_libdir}/libphonon.so.4*
 %{_datadir}/kde4
+%{_datadir}/dbus-1
 %endif
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
@@ -855,6 +852,10 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Sun Jun 07 2009 Than Ngo <than@redhat.com> - 4.5.1-17
+- drop the hack, apply patch to install Global header, gstreamer.desktop
+  and dbus services file
+
 * Sat Jun 06 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-16
 - install awol Phonon/Global header
 
