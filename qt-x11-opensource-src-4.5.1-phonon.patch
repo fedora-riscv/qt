@@ -32,7 +32,6 @@ diff -up qt-x11-opensource-src-4.5.1/src/plugins/phonon/gstreamer/gstreamer.pro.
  target.path = $$[QT_INSTALL_PLUGINS]/phonon_backend
 -INSTALLS += target
 +services.files = $$PHONON_GSTREAMER_DIR/gstreamer.desktop
-+services.path = kde4/services/phononbackends
 +services.path = /usr/share/kde4/services/phononbackends
 +INSTALLS += target services
  
