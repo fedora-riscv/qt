@@ -94,6 +94,7 @@ Source31: hi48-app-qt4-logo.png
 %define phonon -phonon
 %define phonon_backend -phonon-backend
 %define phonon_version 4.3.1
+%define phonon_version_major 4.3
 %define phonon_release 100
 %define webkit -webkit
 %define gtkstyle -gtkstyle
@@ -205,10 +206,10 @@ handling.
 %package -n phonon-backend-gstreamer
 Summary: Gstreamer phonon backend
 Group:   Applications/Multimedia
-Requires: phonon%{?_isa} = %{phonon_version} 
-Provides: phonon-backend%{?_isa} = %{phonon_version}-%{release}
+Requires: phonon%{?_isa} >= %{phonon_version_major} 
+Provides: phonon-backend%{?_isa} = %{phonon_version}-%{phonon_release}
 Obsoletes: %{name}-backend-gst < 4.2.0-4
-Provides:  %{name}-backend-gst = %{phonon_version}-%{release}
+Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
 %description -n phonon-backend-gstreamer
 %{summary}.
 
@@ -336,7 +337,7 @@ Group: System Environment/Libraries
 Obsoletes: phonon < 4.3.1-100
 Provides:  phonon = %{phonon_version}-%{phonon_release}
 Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
-Requires:  phonon-backend%{?_isa} >= %{phonon_version} 
+Requires:  phonon-backend%{?_isa} >= %{phonon_version_major} 
 Provides:  qt4-phonon = %{version}-%{release}
 %endif
 %if 0%{?webkit:1}
