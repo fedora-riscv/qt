@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.1
-Release: 17%{?dist}
+Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -70,6 +70,8 @@ Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
 %{?qt_copy:Provides: qt4-copy = %{qt_copy}}
 
+Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
+
 Source20: assistant.desktop
 Source21: designer.desktop
 Source22: linguist.desktop
@@ -92,6 +94,7 @@ Source31: hi48-app-qt4-logo.png
 %define phonon -phonon
 %define phonon_backend -phonon-backend
 %define phonon_version 4.3.1
+%define phonon_release 100
 %define webkit -webkit
 %define gtkstyle -gtkstyle
 
@@ -159,6 +162,8 @@ BuildRequires: mysql-devel >= 4.0
 %if "%{?phonon_backend}" == "-phonon-backend"
 BuildRequires: gstreamer-devel
 BuildRequires: gstreamer-plugins-base-devel 
+# icon-generation
+BuildRequires: GraphicsMagick
 %endif
 
 %if "%{?gtkstyle}" == "-gtkstyle"
@@ -197,6 +202,15 @@ Qt is a software toolkit for developing applications.
 This package contains base tools, like string, xml, and network
 handling.
 
+%package -n phonon-backend-gstreamer
+Summary: Gstreamer phonon backend
+Group:   Applications/Multimedia
+Requires: phonon%{?_isa} = %{phonon_version} 
+Provides: phonon-backend%{?_isa} = %{phonon_version}-%{release}
+Obsoletes: %{name}-backend-gst < 4.2.0-4
+Provides:  %{name}-backend-gst = %{phonon_version}-%{release}
+%description -n phonon-backend-gstreamer
+%{summary}.
 
 %define demos 1
 %package demos
@@ -237,7 +251,7 @@ Requires: pkgconfig
 %if 0%{?phonon:1}
 Provides: qt4-phonon-devel = %{version}-%{release}
 Obsoletes: phonon-devel < 4.3.1-100
-Provides:  phonon-devel = 4.3.1-100
+Provides:  phonon-devel = %{phonon_version}-%{phonon_release}
 %endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
@@ -320,10 +334,9 @@ Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
 %if 0%{?phonon:1}
 Obsoletes: phonon < 4.3.1-100
-Obsoletes: phonon-backend-gstreamer < 4.3.1-100
-Provides:  phonon = 4.3.1-100
-Provides:  phonon%{?_isa} = 4.3.1-100
-Provides:  phonon-backend%{?_isa} = 4.3.1-100
+Provides:  phonon = %{phonon_version}-%{phonon_release}
+Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
+Requires:  phonon-backend%{?_isa} >= %{phonon_version} 
 Provides:  qt4-phonon = %{version}-%{release}
 %endif
 %if 0%{?webkit:1}
@@ -634,6 +647,15 @@ ln -s phonon Phonon
 popd
 %endif
 
+%if "%{?phonon_backend}" == "-phonon-backend"
+install -D -m 0644 %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/phonon-gstreamer.svg
+for i in 16 22 32 48 64 128; do
+  mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
+  gm convert -background None -geometry ${i}x${i}  %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/phonon-gstreamer.png
+  touch --reference %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/phonon-gstreamer.png
+done
+%endif
+
 
 %clean
 rm -rf %{buildroot}
@@ -645,22 +667,49 @@ rm -rf %{buildroot}
 
 %post devel
 touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %postun devel
+if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
 
 %post x11
 /sbin/ldconfig
 touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans x11
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %postun x11
 /sbin/ldconfig
+if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
 
+%if "%{?phonon_backend}" == "-phonon-backend"
+%post -n phonon-backend-gstreamer
+touch --no-create %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+
+%posttrans -n phonon-backend-gstreamer
+gtk-update-icon-cache %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+
+%postun -n phonon-backend-gstreamer
+if [ $1 -eq 0 ] ; then
+  touch --no-create %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+  gtk-update-icon-cache %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+fi
+
+%files -n phonon-backend-gstreamer
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
+%{_kde4_datadir}/kde4/services/phononbackends/gstreamer.desktop
+%{_datadir}/icons/hicolor/*/apps/phonon-gstreamer.*
+%endif
 
 %files
 %defattr(-,root,root,-)
@@ -823,8 +872,8 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_sysconfdir}/rpm/macros.*
 %if 0%{?phonon:1}
 %{_qt4_libdir}/libphonon.so.4*
-%{_datadir}/kde4
-%{_datadir}/dbus-1
+%dir %{_datadir}/kde4/services/phononbackends/
+%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
 %endif
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
@@ -839,6 +888,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/sqldrivers
+%if "%{?phonon_backend}" == "-phonon-backend"
+%exclude %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
+%endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
 %{?dbus:%{_bindir}/qdbusviewer}
@@ -850,8 +902,11 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 %{_datadir}/applications/*qtconfig.desktop
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
-
 %changelog
+* Sun Jun 07 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-18
+- phonon-backend-gstreamer pkg, with icons
+- optimize (icon-mostly) scriptlets
+
 * Sun Jun 07 2009 Than Ngo <than@redhat.com> - 4.5.1-17
 - drop the hack, apply patch to install Global header, gstreamer.desktop
   and dbus services file
