@@ -708,7 +708,7 @@ fi
 %files -n phonon-backend-gstreamer
 %defattr(-,root,root,-)
 %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
-%{_kde4_datadir}/kde4/services/phononbackends/gstreamer.desktop
+%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %{_datadir}/icons/hicolor/*/apps/phonon-gstreamer.*
 %endif
 
