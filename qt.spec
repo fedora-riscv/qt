@@ -11,8 +11,8 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.5.1
-Release: 18%{?dist}
+Version: 4.5.2
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -904,6 +904,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Thu Jun 25 2009 Lukáš Tinkl <ltinkl@redhat.com> - 4.5.2-1
+- Qt 4.5.2
+
 * Sun Jun 07 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-18
 - phonon-backend-gstreamer pkg, with icons
 - optimize (icon-mostly) scriptlets
