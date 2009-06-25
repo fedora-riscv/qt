@@ -46,7 +46,6 @@ Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch
 # (The GStreamer backend handles this entirely differently, with a separate
 # "sink" setting, and should pick up the PulseAudio "sink" without patches.)
 Patch17: phonon-4.2.96-pulseaudio.patch
-Patch18: qt-x11-opensource-src-4.5.1-syncqt-header.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 
 ## upstreamable bits
@@ -379,7 +378,6 @@ test -x apply_patches && ./apply_patches
 pushd src/3rdparty/phonon
 %patch17 -p1 -b .phonon-pulseaudio
 popd
-%patch18 -p1 -b .header
 %patch19 -p1 -b .servicesfile
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
