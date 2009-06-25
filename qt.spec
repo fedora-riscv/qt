@@ -39,8 +39,6 @@ Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
-# qt fails to build on ia64: http://bugzilla.redhat.com/492174
-Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
@@ -376,7 +374,6 @@ test -x apply_patches && ./apply_patches
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch13 -p1 -b .gcc_hack
-%patch14 -p1 -b .ia64_boilerplate
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
 pushd src/3rdparty/phonon
