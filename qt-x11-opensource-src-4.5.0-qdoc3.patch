@@ -1,22 +1,21 @@
-diff -up qt-x11-opensource-src-4.5.0/tools/qdoc3/qdoc3.pro.qdoc3 qt-x11-opensource-src-4.5.0/tools/qdoc3/qdoc3.pro
---- qt-x11-opensource-src-4.5.0/tools/qdoc3/qdoc3.pro.qdoc3	2009-02-25 15:09:26.000000000 -0600
-+++ qt-x11-opensource-src-4.5.0/tools/qdoc3/qdoc3.pro	2009-03-04 09:30:05.000000000 -0600
-@@ -106,3 +106,7 @@ win32 {
-         QT_WINCONFIG = debug
-     }    
- }
-+
+diff -ur qt-orig/tools/qdoc3/qdoc3.pro qt-4.5.2/tools/qdoc3/qdoc3.pro
+--- qt-orig/tools/qdoc3/qdoc3.pro	2009-06-20 06:57:59.000000000 +0200
++++ qt-4.5.2/tools/qdoc3/qdoc3.pro	2009-06-25 20:00:12.000000000 +0200
+@@ -99,3 +99,6 @@
+            webxmlgenerator.cpp \
+ 	   yyindent.cpp
+ 
 +TARGET= qdoc3
 +target.path = $$[QT_INSTALL_BINS]
 +INSTALLS += target
-diff -up qt-x11-opensource-src-4.5.0/tools/tools.pro.qdoc3 qt-x11-opensource-src-4.5.0/tools/tools.pro
---- qt-x11-opensource-src-4.5.0/tools/tools.pro.qdoc3	2009-02-25 15:09:27.000000000 -0600
-+++ qt-x11-opensource-src-4.5.0/tools/tools.pro	2009-03-04 09:44:18.000000000 -0600
-@@ -13,6 +13,7 @@ no-png {
+diff -ur qt-orig/tools/tools.pro qt-4.5.2/tools/tools.pro
+--- qt-orig/tools/tools.pro	2009-06-20 06:57:59.000000000 +0200
++++ qt-4.5.2/tools/tools.pro	2009-06-25 19:59:19.000000000 +0200
+@@ -13,6 +13,7 @@
           SUBDIRS += designer
       }
       SUBDIRS     += linguist
 +     SUBDIRS     += qdoc3
       wince*: SUBDIRS = qtestlib designer
       unix:!mac:!embedded:contains(QT_CONFIG, qt3support):SUBDIRS += qtconfig
-      win32:!wince*:!contains(QT_EDITION, OpenSource|Console):SUBDIRS += activeqt
+      win32:!wince*:SUBDIRS += activeqt
