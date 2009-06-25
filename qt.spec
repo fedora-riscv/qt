@@ -65,7 +65,7 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 
 ## qt-copy patches
 # undef temporarily to solve whether to package qt-copy, qt vanilla, or qt from gitorious
-# %define qt_copy 20090522
+#define qt_copy 20090522
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
