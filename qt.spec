@@ -65,7 +65,7 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # http://qt.gitorious.org/+kde-developers/qt/kde-qt/commits/4.5.2-patched
 # once they actually contain all the patches from qt-copy (0283 and 0285 are
 # AWOL)
-%define qt_copy 20090522
+%define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
