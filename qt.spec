@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -61,8 +61,11 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 
 ## qt-copy patches
-# undef temporarily to solve whether to package qt-copy, qt vanilla, or qt from gitorious
-#define qt_copy 20090522
+# we'll want to switch to the kde-qt branches, e.g.:
+# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commits/4.5.2-patched
+# once they actually contain all the patches from qt-copy (0283 and 0285 are
+# AWOL)
+%define qt_copy 20090522
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
@@ -362,6 +365,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 %if 0%{?qt_copy}
 echo "0234" >> patches/DISABLED
 echo "0250" >> patches/DISABLED
+echo "0273" >> patches/DISABLED
+echo "0279" >> patches/DISABLED
+echo "0281" >> patches/DISABLED
+echo "0282" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
@@ -901,6 +908,10 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Fri Jun 26 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.2-2
+- take current qt-copy-patches snapshot (20090626)
+- disable patches which are already in 4.5.2
+
 * Thu Jun 25 2009 Lukáš Tinkl <ltinkl@redhat.com> - 4.5.2-1
 - Qt 4.5.2
 
