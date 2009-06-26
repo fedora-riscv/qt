@@ -47,6 +47,8 @@ Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch
 # "sink" setting, and should pick up the PulseAudio "sink" without patches.)
 Patch17: phonon-4.2.96-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
+# fix the qt-copy patch 0274-shm-native-image-fix.diff to apply against 4.5.2
+Patch20: qt-copy-20090626-qt452.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -62,7 +64,7 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # we'll want to switch to the kde-qt branches, e.g.:
 # http://qt.gitorious.org/+kde-developers/qt/kde-qt/commits/4.5.2-patched
 # once they actually contain all the patches from qt-copy (0283 and 0285 are
-# AWOL)
+# AWOL, 0274 got incorrectly ported to 4.5.2 (one hunk missing))
 %define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
@@ -361,6 +363,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %setup -q -n qt-x11-opensource-src-%{version} %{?qt_copy:-a 2}
 
 %if 0%{?qt_copy}
+%patch20 -p1 -b .qt-copy-qt452
 echo "0234" >> patches/DISABLED
 echo "0250" >> patches/DISABLED
 echo "0273" >> patches/DISABLED
@@ -909,6 +912,7 @@ fi
 * Fri Jun 26 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.2-2
 - take current qt-copy-patches snapshot (20090626)
 - disable patches which are already in 4.5.2
+- fix the qt-copy patch 0274-shm-native-image-fix.diff to apply against 4.5.2
 
 * Thu Jun 25 2009 Lukáš Tinkl <ltinkl@redhat.com> - 4.5.2-1
 - Qt 4.5.2

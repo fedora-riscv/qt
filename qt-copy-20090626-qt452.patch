@@ -1,0 +1,29 @@
+diff -ur qt-copy/patches/0274-shm-native-image-fix.diff qt-copy-qt452/patches/0274-shm-native-image-fix.diff
+--- qt-copy/patches/0274-shm-native-image-fix.diff	2009-03-03 11:46:54.000000000 +0100
++++ qt-copy-qt452/patches/0274-shm-native-image-fix.diff	2009-06-26 03:26:36.000000000 +0200
+@@ -15,15 +15,19 @@
+ ===================================================================
+ --- src/gui/kernel/qapplication_x11.cpp (revision 934506)
+ +++ src/gui/kernel/qapplication_x11.cpp (working copy)
+-@@ -1943,7 +1943,7 @@ void qt_init(QApplicationPrivate *priv,
+-             // to determine whether the display is local or not (not 100 % accurate)
++@@ -1955,9 +1955,9 @@
+              bool local = displayName.isEmpty() || displayName.lastIndexOf(QLatin1Char(':')) == 0;
+-             if (local && (qgetenv("QT_X11_NO_MITSHM").toInt() == 0))
+--                X11->use_mitshm = mitshm_pixmaps;
+-+                X11->use_mitshm = true;
++             if (local && (qgetenv("QT_X11_NO_MITSHM").toInt() == 0)) {
++                 Visual *defaultVisual = DefaultVisual(X11->display, DefaultScreen(X11->display));
++-                X11->use_mitshm = mitshm_pixmaps && (defaultVisual->red_mask == 0xff0000
++-                                                     && defaultVisual->green_mask == 0xff00
++-                                                     && defaultVisual->blue_mask == 0xff);
+++                X11->use_mitshm = defaultVisual->red_mask == 0xff0000
+++                                  && defaultVisual->green_mask == 0xff00
+++                                  && defaultVisual->blue_mask == 0xff;
++             }
+          }
+  #endif // QT_NO_MITSHM
+- 
+ Index: src/gui/image/qnativeimage_p.h
+ ===================================================================
+ --- src/gui/image/qnativeimage_p.h	(revision 930645)
