@@ -53,8 +53,6 @@ Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
-# should fix the reference counting in qt_toX11Pixmap and thus the Kolourpaint
-# crash with Qt 4.5
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
