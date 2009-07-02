@@ -55,7 +55,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 
 ## qt-copy patches
-%define qt_copy 20090522
+%define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
 %{?qt_copy:Provides: qt-copy = %{qt_copy}}
