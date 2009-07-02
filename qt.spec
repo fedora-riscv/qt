@@ -42,6 +42,8 @@ Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
+# fix the qt-copy patch 0274-shm-native-image-fix.diff to apply against 4.5.2
+Patch20: qt-copy-20090626-qt452.patch
 
 ## upstreamable bits
 Patch51: qt-x11-opensource-src-4.5.2-qdoc3.patch
