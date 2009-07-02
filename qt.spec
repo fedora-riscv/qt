@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -72,6 +72,12 @@ Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Provides: qt4-copy = %{qt_copy}}
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
+Source11: hi16-phonon-gstreamer.png
+Source12: hi22-phonon-gstreamer.png
+Source13: hi32-phonon-gstreamer.png
+Source14: hi48-phonon-gstreamer.png
+Source15: hi64-phonon-gstreamer.png
+Source16: hi128-phonon-gstreamer.png
 
 Source20: assistant.desktop
 Source21: designer.desktop
@@ -164,8 +170,6 @@ BuildRequires: mysql-devel >= 4.0
 %if "%{?phonon_backend}" == "-phonon-backend"
 BuildRequires: gstreamer-devel
 BuildRequires: gstreamer-plugins-base-devel 
-# icon-generation
-BuildRequires: GraphicsMagick
 %endif
 
 %if "%{?gtkstyle}" == "-gtkstyle"
@@ -655,11 +659,12 @@ popd
 
 %if "%{?phonon_backend}" == "-phonon-backend"
 install -D -m 0644 %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/phonon-gstreamer.svg
-for i in 16 22 32 48 64 128; do
-  mkdir -p %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps
-  gm convert -background None -geometry ${i}x${i}  %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/phonon-gstreamer.png
-  touch --reference %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/${i}x${i}/apps/phonon-gstreamer.png
-done
+install -D -m 0644 %{SOURCE11} %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE12} %{buildroot}%{_datadir}/icons/hicolor/22x22/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE13} %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE14} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE15} %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE16} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/phonon-gstreamer.png
 %endif
 
 
@@ -909,6 +914,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Thu Jul 02 2009 Than Ngo <than@redhat.com> - 4.5.2-3
+- pregenerate PNG, drop BR on GraphicsMagick (bz#509244)
+
 * Fri Jun 26 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.2-2
 - take current qt-copy-patches snapshot (20090626)
 - disable patches which are already in 4.5.2
