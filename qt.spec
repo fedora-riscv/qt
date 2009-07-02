@@ -343,7 +343,13 @@ Qt libraries used for drawing widgets and OpenGL items.
 %setup -q -n qt-x11-opensource-src-%{version} %{?qt_copy:-a 2}
 
 %if 0%{?qt_copy}
+%patch20 -p1 -b .qt-copy-qt452
+echo "0234" >> patches/DISABLED
 echo "0250" >> patches/DISABLED
+echo "0273" >> patches/DISABLED
+echo "0279" >> patches/DISABLED
+echo "0281" >> patches/DISABLED
+echo "0282" >> patches/DISABLED
 test -x apply_patches && ./apply_patches
 %endif
 
