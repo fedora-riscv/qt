@@ -11,8 +11,8 @@ Epoch:   1
 %else
 Name:    qt4
 %endif
-Version: 4.5.1
-Release: 13%{?dist}
+Version: 4.5.2
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -39,15 +39,12 @@ Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
-# qt fails to build on ia64: http://bugzilla.redhat.com/492174
-Patch14: qt-x11-opensource-src-4.5.0-ia64_boilerplate.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
 
 ## upstreamable bits
-# http://bugzilla.redhat.com/485677
-Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
+Patch51: qt-x11-opensource-src-4.5.2-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 # should fix the reference counting in qt_toX11Pixmap and thus the Kolourpaint
@@ -358,7 +355,6 @@ test -x apply_patches && ./apply_patches
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch13 -p1 -b .gcc_hack
-%patch14 -p1 -b .ia64_boilerplate
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
 %patch51 -p1 -b .qdoc3
@@ -852,6 +848,9 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Thu Jul 02 2009 Than Ngo <than@redhat.com> - 4.5.2-1
+- 4.5.2
+
 * Sat May 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-13
 - -doc: Obsoletes: qt-doc < 1:4.5.1-4 (workaround bug #502401)
 
