@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -59,6 +59,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 
 ## qt-copy patches
 # we'll want to switch to the kde-qt branches, e.g.:
@@ -395,6 +396,7 @@ popd
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
+%patch55 -p1 -b .timestamp
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -914,6 +916,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Thu Jul 30 2009 Than Ngo <than@redhat.com> - 4.5.2-5
+- apply upstream patch to fix issue in Copy and paste
+
 * Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.5.2-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
