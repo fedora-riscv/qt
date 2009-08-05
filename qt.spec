@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -249,8 +249,8 @@ Qt Assistant
 %package devel
 Summary: Development files for the Qt toolkit
 Group: Development/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-x11 
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-x11%{?_isa}
 Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
@@ -285,7 +285,7 @@ Qt Linguist
 %package examples
 Summary: Programming examples for %{name}
 Group: Documentation
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description examples
 %{summary}.
@@ -294,7 +294,7 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 %package mysql
 Summary: MySQL driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-MySQL < %{version}-%{release}
 Provides:  qt4-MySQL = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -309,7 +309,7 @@ Provides:  qt4-mysql = %{version}-%{release}
 %package odbc 
 Summary: ODBC driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-ODBC < %{version}-%{release}
 Provides:  qt4-ODBC = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -324,7 +324,7 @@ Provides:  qt4-odbc = %{version}-%{release}
 %package postgresql 
 Summary: PostgreSQL driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-PostgreSQL < %{version}-%{release}
 Provides:  qt4-PostgreSQL = %{version}-%{release}
 %if "%{name}" != "qt4"
@@ -354,11 +354,13 @@ Provides: qt4-assistant = %{version}-%{release}
 %if "%{name}" != "qt4"
 Provides: %{name}-assistant = %{version}-%{release}
 %endif
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %if "%{name}" != "qt4"
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
 %endif
+Requires(post): /sbin/ldconfig
+Requires(postun): /sbin/ldconfig
 
 %description x11
 Qt libraries used for drawing widgets and OpenGL items.
@@ -563,13 +565,18 @@ for i in * ; do
 done
 popd
 
-# _debug lib symlinks (see bug #196513)
+# _debug targets (see bug #196513)
 pushd %{buildroot}%{_qt4_libdir}
 for lib in libQt*.so ; do
-  ln -s $lib $(basename $lib .so)_debug.so
+   libbase=`basename $lib .so | sed -e 's/^lib//'`
+#  ln -s $lib lib${libbase}_debug.so
+   echo "INPUT(-l${libbase})" > lib${libbase}_debug.so 
 done
 for lib in libQt*.a ; do
-  ln -s $lib $(basename $lib .a)_debug.a
+   libbase=`basename $lib .a | sed -e 's/^lib//' `
+#  ln -s $lib lib${libbase}_debug.a
+   echo "INPUT(-l${libbase})" > lib${libbase}_debug.a
+
 done
 popd
 
@@ -916,6 +923,11 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Wed Aug 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-6
+- use linker scripts for _debug targets (#510246)
+- tighten deps using %%{?_isa}
+- -x11: Requires(post,postun): /sbin/ldconfig
+
 * Thu Jul 30 2009 Than Ngo <than@redhat.com> - 4.5.2-5
 - apply upstream patch to fix issue in Copy and paste
 
