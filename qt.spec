@@ -576,7 +576,6 @@ for lib in libQt*.a ; do
    libbase=`basename $lib .a | sed -e 's/^lib//' `
 #  ln -s $lib lib${libbase}_debug.a
    echo "INPUT(-l${libbase})" > lib${libbase}_debug.a
-
 done
 popd
 
@@ -688,7 +687,7 @@ rm -rf %{buildroot}
 %post devel
 touch --no-create %{_datadir}/icons/hicolor ||:
 
-%posttrans
+%posttrans devel
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %postun devel
