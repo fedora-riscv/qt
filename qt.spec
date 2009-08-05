@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 1%{?dist}
+Release: 1%{?dist}.1
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -55,6 +55,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 
 ## qt-copy patches
 %define qt_copy 20090626
@@ -336,6 +337,8 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
 %endif
+Requires(post): /sbin/ldconfig
+Requires(postun): /sbin/ldconfig
 
 %description x11
 Qt libraries used for drawing widgets and OpenGL items.
@@ -369,6 +372,7 @@ test -x apply_patches && ./apply_patches
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
+%patch55 -p1 -b .timestamp
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -533,13 +537,17 @@ for i in * ; do
 done
 popd
 
-# _debug lib symlinks (see bug #196513)
+# _debug targets (see bug #196513)
 pushd %{buildroot}%{_qt4_libdir}
 for lib in libQt*.so ; do
-  ln -s $lib $(basename $lib .so)_debug.so
+   libbase=`basename $lib .so | sed -e 's/^lib//'`
+#  ln -s $lib lib${libbase}_debug.so
+   echo "INPUT(-l${libbase})" > lib${libbase}_debug.so
 done
 for lib in libQt*.a ; do
-  ln -s $lib $(basename $lib .a)_debug.a
+   libbase=`basename $lib .a | sed -e 's/^lib//' `
+#  ln -s $lib lib${libbase}_debug.a
+   echo "INPUT(-l${libbase})" > lib${libbase}_debug.a
 done
 popd
 
@@ -649,21 +657,29 @@ rm -rf %{buildroot}
 
 %post devel
 touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans devel
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %postun devel
+if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
 
 %post x11
 /sbin/ldconfig
 touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans x11
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 %postun x11
 /sbin/ldconfig
+if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
 
 
 %files
@@ -856,6 +872,12 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
 
 %changelog
+* Wed Aug 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-1.1
+- use linker scripts for _debug targets (#510246)
+- apply upstream patch to fix issue in Copy and paste
+- optimize (icon-mostly) scriptlets
+- -x11: Requires(post,postun): /sbin/ldconfig
+
 * Thu Jul 02 2009 Than Ngo <than@redhat.com> - 4.5.2-1
 - 4.5.2
 
