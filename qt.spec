@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 1%{?dist}.1
+Release: 1%{?dist}.2
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -58,6 +58,10 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 
 ## qt-copy patches
+# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/01f26d0756839fbe783c637ca7dec5b7987f7e14.patch
+Patch287: 287-qmenu-respect-minwidth
+# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a.patch
+Patch0288: 0288-more-x-keycodes.patch
 %define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
@@ -373,6 +377,9 @@ test -x apply_patches && ./apply_patches
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .timestamp
+
+%patch287 -p1 -b .287-qmenu-respect
+%patch0288 -p1 -b .0288-more-x-keycodes
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -872,6 +879,10 @@ fi
 
 
 %changelog
+* Sat Aug 18 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-1.2
+- kde-qt: 287-qmenu-respect-minwidth
+- kde-qt: 0288-more-x-keycodes (#475247)
+
 * Wed Aug 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-1.1
 - use linker scripts for _debug targets (#510246)
 - apply upstream patch to fix issue in Copy and paste
