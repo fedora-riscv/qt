@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -62,6 +62,10 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 
 ## qt-copy patches
+# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/01f26d0756839fbe783c637ca7dec5b7987f7e14.patch
+Patch287: 287-qmenu-respect-minwidth
+# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a.patch
+Patch0288: 0288-more-x-keycodes.patch
 # we'll want to switch to the kde-qt branches, e.g.:
 # http://qt.gitorious.org/+kde-developers/qt/kde-qt/commits/4.5.2-patched
 # once they actually contain all the patches from qt-copy (0283 and 0285 are
@@ -399,6 +403,9 @@ popd
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .timestamp
+
+%patch287 -p1 -b .287-qmenu-respect
+%patch0288 -p1 -b .0288-more-x-keycodes
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -922,6 +929,10 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Sat Aug 18 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-7
+- kde-qt: 287-qmenu-respect-minwidth
+- kde-qt: 0288-more-x-keycodes (#475247)
+
 * Wed Aug 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-6
 - use linker scripts for _debug targets (#510246)
 - tighten deps using %%{?_isa}
