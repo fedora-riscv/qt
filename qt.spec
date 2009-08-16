@@ -59,7 +59,7 @@ Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 
 ## qt-copy patches
 # http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/01f26d0756839fbe783c637ca7dec5b7987f7e14.patch
-Patch287: 287-qmenu-respect-minwidth
+Patch287: 287-qmenu-respect-minwidth.patch
 # http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a.patch
 Patch0288: 0288-more-x-keycodes.patch
 %define qt_copy 20090626
