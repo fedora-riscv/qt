@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -49,6 +49,7 @@ Patch17: phonon-4.2.96-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 # fix the qt-copy patch 0274-shm-native-image-fix.diff to apply against 4.5.2
 Patch20: qt-copy-20090626-qt452.patch
+Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -398,6 +399,7 @@ pushd src/3rdparty/phonon
 %patch17 -p1 -b .phonon-pulseaudio
 popd
 %patch19 -p1 -b .servicesfile
+%patch21 -p1 -b .gst-pulsaudio
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -929,6 +931,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Sun Aug 16 2009 Than Ngo <than@redhat.com> - 4.5.2-8
+- fix phonon-backend-gstreamer for using pulsaudio
+
 * Sat Aug 18 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-7
 - kde-qt: 287-qmenu-respect-minwidth
 - kde-qt: 0288-more-x-keycodes (#475247)
