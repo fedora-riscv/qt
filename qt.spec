@@ -932,7 +932,7 @@ fi
 
 %changelog
 * Sun Aug 16 2009 Than Ngo <than@redhat.com> - 4.5.2-8
-- fix phonon-backend-gstreamer for using pulsaudio
+- fix phonon-backend-gstreamer for using pulsaudio (#513421)
 
 * Sat Aug 14 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-7
 - kde-qt: 287-qmenu-respect-minwidth
