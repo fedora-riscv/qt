@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -71,6 +71,10 @@ Patch0288: 0288-more-x-keycodes.patch
 # http://qt.gitorious.org/+kde-developers/qt/kde-qt/commits/4.5.2-patched
 # once they actually contain all the patches from qt-copy (0283 and 0285 are
 # AWOL, 0274 got incorrectly ported to 4.5.2 (one hunk missing))
+
+# security patches
+Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
+
 %define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
@@ -405,6 +409,9 @@ popd
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .timestamp
+
+# security fixes
+%patch100 -p1 -b .CVE-2009-1725
 
 %patch287 -p1 -b .287-qmenu-respect-minwidth
 %patch0288 -p1 -b .0288-more-x-keycodes
@@ -931,6 +938,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Tue Aug 18 2009 Than Ngo <than@redhat.com> - 4.5.2-9
+- security fix for CVE-2009-1725 (bz#513813)
+
 * Sun Aug 16 2009 Than Ngo <than@redhat.com> - 4.5.2-8
 - fix phonon-backend-gstreamer for using pulsaudio (#513421)
 
