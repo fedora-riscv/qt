@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 1%{?dist}.2
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -62,6 +62,10 @@ Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 Patch287: 287-qmenu-respect-minwidth.patch
 # http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a.patch
 Patch0288: 0288-more-x-keycodes.patch
+
+# security fixes
+Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
+
 %define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
 %{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
@@ -377,6 +381,9 @@ test -x apply_patches && ./apply_patches
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .timestamp
+
+# security fixes
+%patch100 -p1 -b .CVE-2009-1725
 
 %patch287 -p1 -b .287-qmenu-respect
 %patch0288 -p1 -b .0288-more-x-keycodes
@@ -879,6 +886,9 @@ fi
 
 
 %changelog
+* Tue Aug 18 2009 Than Ngo <than@redhat.com> - 4.5.2-2
+- security fix for CVE-2009-1725
+
 * Sat Aug 18 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-1.2
 - kde-qt: 287-qmenu-respect-minwidth
 - kde-qt: 0288-more-x-keycodes (#475247)
