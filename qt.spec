@@ -4,6 +4,8 @@
 # -no-pch disables precompiled headers, make ccache-friendly
 %define no_pch -no-pch
 
+%define _default_patch_fuzz 2
+
 Summary: Qt toolkit
 %if 0%{?fedora} > 8
 Name:    qt
@@ -12,7 +14,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -42,13 +44,9 @@ Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
-# make PulseAudio the default device in Phonon with the xine-lib backend
-# (The GStreamer backend handles this entirely differently, with a separate
-# "sink" setting, and should pick up the PulseAudio "sink" without patches.)
+# make PulseAudio the default device in Phonon
 Patch17: phonon-4.2.96-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
-# fix the qt-copy patch 0274-shm-native-image-fix.diff to apply against 4.5.2
-Patch20: qt-copy-20090626-qt452.patch
 Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
 
 ## upstreamable bits
@@ -62,24 +60,14 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 
-## qt-copy patches
-# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/01f26d0756839fbe783c637ca7dec5b7987f7e14.patch
-Patch287: 287-qmenu-respect-minwidth.patch
-# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a.patch
-Patch0288: 0288-more-x-keycodes.patch
-# we'll want to switch to the kde-qt branches, e.g.:
-# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commits/4.5.2-patched
-# once they actually contain all the patches from qt-copy (0283 and 0285 are
-# AWOL, 0274 got incorrectly ported to 4.5.2 (one hunk missing))
-
 # security patches
 Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
 
-%define qt_copy 20090626
-Source1: qt-copy-patches-svn_checkout.sh
-%{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
-%{?qt_copy:Provides: qt-copy = %{qt_copy}}
-%{?qt_copy:Provides: qt4-copy = %{qt_copy}}
+# switch to kde-qt branches, qt-copy doesn't exist anymore
+Patch200: kde-qt-patches-20090820git.patch
+# these patches are not merged yet in kde-qt branches
+Patch201: 0283-do-not-deduce-scrollbar-extent-twice.diff
+Patch202: 0285-qgv-dontshowchildren.diff
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -376,18 +364,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-x11-opensource-src-%{version} %{?qt_copy:-a 2}
-
-%if 0%{?qt_copy}
-%patch20 -p1 -b .qt-copy-qt452
-echo "0234" >> patches/DISABLED
-echo "0250" >> patches/DISABLED
-echo "0273" >> patches/DISABLED
-echo "0279" >> patches/DISABLED
-echo "0281" >> patches/DISABLED
-echo "0282" >> patches/DISABLED
-test -x apply_patches && ./apply_patches
-%endif
+%setup -q -n qt-x11-opensource-src-%{version}
 
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
@@ -413,8 +390,10 @@ popd
 # security fixes
 %patch100 -p1 -b .CVE-2009-1725
 
-%patch287 -p1 -b .287-qmenu-respect-minwidth
-%patch0288 -p1 -b .0288-more-x-keycodes
+# kde-qt branch
+%patch200 -p1 -b .kde-qt-patches-20090820git
+%patch201 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
+%patch202 -p0 -b .0285-qgv-dontshowchildren
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -938,6 +917,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Thu Aug 20 2009 Than Ngo <than@redhat.com> - 4.5.2-10
+- switch to kde-qt branch
+
 * Tue Aug 18 2009 Than Ngo <than@redhat.com> - 4.5.2-9
 - security fix for CVE-2009-1725 (bz#513813)
 
