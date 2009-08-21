@@ -14,7 +14,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -917,6 +917,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Fri Aug 21 2009 Tomas Mraz <tmraz@redhat.com> - 1:4.5.2-11
+- rebuilt with new openssl
+
 * Thu Aug 20 2009 Than Ngo <than@redhat.com> - 4.5.2-10
 - switch to kde-qt branch
 
