@@ -66,8 +66,9 @@ Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
 # switch to kde-qt branches, qt-copy doesn't exist anymore
 Patch200: kde-qt-patches-20090820git.patch
 # these patches are not merged yet in kde-qt branches
-Patch201: 0283-do-not-deduce-scrollbar-extent-twice.diff
-Patch202: 0285-qgv-dontshowchildren.diff
+Patch201: 0118-qtcopy-define.diff
+Patch202: 0283-do-not-deduce-scrollbar-extent-twice.diff
+Patch203: 0285-qgv-dontshowchildren.diff
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -392,8 +393,9 @@ popd
 
 # kde-qt branch
 %patch200 -p1 -b .kde-qt-patches-20090820git
-%patch201 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
-%patch202 -p0 -b .0285-qgv-dontshowchildren
+%patch201 -p1 -b .0118-qtcopy-define
+%patch202 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
+%patch203 -p0 -b .0285-qgv-dontshowchildren
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -727,7 +729,7 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc README* LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
+%doc README README.kde-qt LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
