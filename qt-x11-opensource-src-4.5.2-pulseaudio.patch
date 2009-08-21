@@ -1,6 +1,6 @@
-diff -Naurw phonon-4.2.96/phonon/globalconfig.cpp phonon-4.2.96.pulseaudio/phonon/globalconfig.cpp
---- phonon-4.2.96/phonon/globalconfig.cpp	2008-11-27 16:41:41.000000000 +0100
-+++ phonon-4.2.96.pulseaudio/phonon/globalconfig.cpp	2009-01-08 21:29:18.000000000 +0100
+diff -up qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/phonon/globalconfig.cpp.phonon-pulseaudio qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/phonon/globalconfig.cpp
+--- qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/phonon/globalconfig.cpp.phonon-pulseaudio	2009-06-20 06:57:54.000000000 +0200
++++ qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/phonon/globalconfig.cpp	2009-08-21 00:11:55.000000000 +0200
 @@ -31,6 +31,7 @@
  #include "phononnamespace_p.h"
  
@@ -9,7 +9,7 @@ diff -Naurw phonon-4.2.96/phonon/globalconfig.cpp phonon-4.2.96.pulseaudio/phono
  #include <QtCore/QVariant>
  
  QT_BEGIN_NAMESPACE
-@@ -167,6 +168,15 @@
+@@ -167,6 +168,15 @@ QList<int> GlobalConfig::audioOutputDevi
                      | ((override & HideUnavailableDevices) ? FilterUnavailableDevices : 0)
                      );
          }
@@ -25,7 +25,7 @@ diff -Naurw phonon-4.2.96/phonon/globalconfig.cpp phonon-4.2.96.pulseaudio/phono
          defaultList += list;
      }
  
-@@ -222,6 +232,15 @@
+@@ -222,6 +232,15 @@ QList<int> GlobalConfig::audioCaptureDev
                      | ((override & HideUnavailableDevices) ? FilterUnavailableDevices : 0)
                    );
          }

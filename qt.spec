@@ -45,7 +45,7 @@ Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
 # make PulseAudio the default device in Phonon
-Patch17: phonon-4.2.96-pulseaudio.patch
+Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
 
@@ -377,9 +377,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
-pushd src/3rdparty/phonon
 %patch17 -p1 -b .phonon-pulseaudio
-popd
 %patch19 -p1 -b .servicesfile
 %patch21 -p1 -b .gst-pulsaudio
 %patch51 -p1 -b .qdoc3
@@ -393,7 +391,7 @@ popd
 
 # kde-qt branch
 %patch200 -p1 -b .kde-qt-patches-20090820git
-%patch201 -p1 -b .0118-qtcopy-define
+%patch201 -p0 -b .0118-qtcopy-define
 %patch202 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
 %patch203 -p0 -b .0285-qgv-dontshowchildren
 
