@@ -1,6 +1,6 @@
 diff -up qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp.openssl qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp
 --- qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp.openssl	2009-06-20 06:57:57.000000000 +0200
-+++ qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp	2009-08-26 11:43:31.000000000 +0200
++++ qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp	2009-08-26 12:14:32.000000000 +0200
 @@ -362,7 +362,7 @@ QMultiMap<QSsl::AlternateNameEntryType, 
      if (!d->x509)
          return result;
@@ -10,6 +10,15 @@ diff -up qt-x11-opensource-src-4.5.2/src/network/ssl/qsslcertificate.cpp.openssl
  
      if (altNames) {
          for (int i = 0; i < q_sk_GENERAL_NAME_num(altNames); ++i) {
+@@ -383,7 +383,7 @@ QMultiMap<QSsl::AlternateNameEntryType, 
+             else if (genName->type == GEN_EMAIL)
+                 result.insert(QSsl::EmailEntry, altName);
+         }
+-        q_sk_free(altNames);
++        q_sk_free((STACK *)altNames);
+     }
+ 
+     return result;
 diff -up qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl.cpp.openssl qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl.cpp
 --- qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl.cpp.openssl	2009-06-20 06:57:57.000000000 +0200
 +++ qt-x11-opensource-src-4.5.2/src/network/ssl/qsslsocket_openssl.cpp	2009-08-26 10:40:09.000000000 +0200
