@@ -14,7 +14,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -401,11 +401,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
-## customize our platform
-%if "%{_lib}" == "lib64"
-%define platform linux-g++-64
-%else
 %define platform linux-g++
+%if "%{_qt4_datadir}" != "%{_qt4_prefix}" && "%{_lib}" == "lib64"                                  
+%define platform linux-g++-64                                                                      
 %endif
 
 sed -i \
@@ -920,6 +918,10 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Thu Aug 27 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-12
+- use platform linux-g++ everwhere (ie, drop linux-g++-64 on 64 bit),
+  avoids plugin/linker weirdness described in bug #475110
+
 * Wed Aug 26 2009 Tomas Mraz <tmraz@redhat.com> - 1:4.5.2-11
 - rebuilt with new openssl
 
