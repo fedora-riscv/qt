@@ -919,7 +919,7 @@ fi
 
 %changelog
 * Thu Aug 27 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-12
-- use platform linux-g++ everwhere (ie, drop linux-g++-64 on 64 bit),
+- use platform linux-g++ everywhere (ie, drop linux-g++-64 on 64 bit),
   avoids plugin/linker weirdness described in bug #475110
 
 * Wed Aug 26 2009 Tomas Mraz <tmraz@redhat.com> - 1:4.5.2-11
