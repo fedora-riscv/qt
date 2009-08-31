@@ -12,7 +12,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -65,6 +65,7 @@ Patch0288: 0288-more-x-keycodes.patch
 
 # security fixes
 Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
+Patch101: qt-x11-opensource-src-4.5.2-CVE-2009-2700.patch
 
 %define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
@@ -384,6 +385,7 @@ test -x apply_patches && ./apply_patches
 
 # security fixes
 %patch100 -p1 -b .CVE-2009-1725
+%patch101 -p1 -b .CVE-2009-2700
 
 %patch287 -p1 -b .287-qmenu-respect
 %patch0288 -p1 -b .0288-more-x-keycodes
@@ -886,6 +888,9 @@ fi
 
 
 %changelog
+* Mon Aug 31 2009 Than Ngo <than@redhat.com> - 4.5.2-3
+- fix for CVE-2009-2700
+
 * Tue Aug 18 2009 Than Ngo <than@redhat.com> - 4.5.2-2
 - security fix for CVE-2009-1725
 
