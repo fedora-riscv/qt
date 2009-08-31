@@ -65,6 +65,7 @@ Patch0288: 0288-more-x-keycodes.patch
 
 # security fixes
 Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
+Patch101: qt-x11-opensource-src-4.5.2-CVE-2009-2700.patch
 
 %define qt_copy 20090626
 Source1: qt-copy-patches-svn_checkout.sh
@@ -384,6 +385,7 @@ test -x apply_patches && ./apply_patches
 
 # security fixes
 %patch100 -p1 -b .CVE-2009-1725
+%patch101 -p1 -b .CVE-2009-2700
 
 %patch287 -p1 -b .287-qmenu-respect
 %patch0288 -p1 -b .0288-more-x-keycodes
