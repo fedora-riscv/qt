@@ -14,7 +14,7 @@ Epoch:   1
 Name:    qt4
 %endif
 Version: 4.5.2
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -64,6 +64,7 @@ Patch56: qt-x11-opensource-src-4.5.2-ossl10.patch
 
 # security patches
 Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
+Patch101: qt-x11-opensource-src-4.5.2-CVE-2009-2700.patch
 
 # switch to kde-qt branches, qt-copy doesn't exist anymore
 Patch200: kde-qt-patches-20090820git.patch
@@ -391,6 +392,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # security fixes
 %patch100 -p1 -b .CVE-2009-1725
+%patch101 -p1 -b .CVE-2009-2700
 
 # kde-qt branch
 %patch200 -p1 -b .kde-qt-patches-20090820git
@@ -918,6 +920,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Mon Aug 31 2009 Than Ngo <than@redhat.com> - 4.5.2-13
+- fix for CVE-2009-2700
+
 * Thu Aug 27 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-12
 - use platform linux-g++ everywhere (ie, drop linux-g++-64 on 64 bit),
   avoids plugin/linker weirdness described in bug #475110
