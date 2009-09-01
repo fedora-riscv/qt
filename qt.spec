@@ -217,6 +217,7 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-assistant
 Obsoletes: qt4-doc < %{version}-%{release}
 Provides:  qt4-doc = %{version}-%{release}
+# help workaround yum bug http://bugzilla.redhat.com/502401
 Obsoletes: qt-doc < 1:4.5.1-4
 BuildArch: noarch
 %description doc
@@ -243,6 +244,7 @@ Provides:  WebKit-qt-devel = 1.0.0-1
 %endif
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
+# as long as libQtUiTools.a is included
 Provides:  %{name}-static = %{version}-%{release}
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
