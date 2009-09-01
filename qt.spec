@@ -7,14 +7,10 @@
 %define _default_patch_fuzz 2
 
 Summary: Qt toolkit
-%if 0%{?fedora} > 8
 Name:    qt
 Epoch:   1
-%else
-Name:    qt4
-%endif
 Version: 4.5.2
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -22,12 +18,9 @@ Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
 Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-%if "%{name}" != "qt4"
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
-%endif
 
 Source4: Trolltech.conf
 
@@ -107,15 +100,8 @@ Source31: hi48-app-qt4-logo.png
 %define phonon_release 100
 %define webkit -webkit
 %define gtkstyle -gtkstyle
-
 %define nas -no-nas-sound
-%if 0%{?fedora} > 4 || 0%{?rhel} > 4
-# link dbus
 %define dbus -dbus-linked
-# dlopen dbus
-#define dbus -dbus
-BuildRequires: dbus-devel >= 0.62
-%endif
 
 # See http://bugzilla.redhat.com/196901
 %define _qt4 %{name}
@@ -133,10 +119,9 @@ BuildRequires: dbus-devel >= 0.62
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
 
-%if "%{_qt4_libdir}" != "%{_libdir}"
 Prereq: /etc/ld.so.conf.d
-%endif
 
+BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: findutils
@@ -156,9 +141,7 @@ BuildRequires: pkgconfig
 #define x_deps libGL-devel libGLU-devel
 ## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
 %define x_deps xorg-x11-devel xorg-x11-Mesa-libGL xorg-x11-Mesa-libGLU
-%if 0%{?fedora} > 4 || 0%{?rhel} > 4
 %define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
-%endif
 BuildRequires: %{x_deps}
 
 %if "%{?nas}" != "-no-nas-sound"
@@ -199,10 +182,8 @@ Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
 Obsoletes: qt4-sqlite < 4.5.0 
 Provides: qt4-sqlite = %{version}-%{release}
-%if "%{name}" == "qt"
 Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}4.5.0
 Provides: qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
-%endif
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -234,15 +215,10 @@ Summary: API documentation for %{name}
 Group: Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-assistant
-%if "%{name}" != "qt4"
 Obsoletes: qt4-doc < %{version}-%{release}
 Provides:  qt4-doc = %{version}-%{release}
-%endif
-%if 0%{?fedora} > 9
-# help workaround yum bug http://bugzilla.redhat.com/502401
 Obsoletes: qt-doc < 1:4.5.1-4
 BuildArch: noarch
-%endif
 %description doc
 %{summary}.  Includes:
 Qt Assistant
@@ -267,14 +243,11 @@ Provides:  WebKit-qt-devel = 1.0.0-1
 %endif
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
-# as long as libQtUiTools.a is included
 Provides:  %{name}-static = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
-%endif
 
 %description devel
 This package contains the files necessary to develop
@@ -298,10 +271,8 @@ Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-MySQL < %{version}-%{release}
 Provides:  qt4-MySQL = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-mysql < %{version}-%{release}
 Provides:  qt4-mysql = %{version}-%{release}
-%endif
 
 %description mysql 
 %{summary}.
@@ -313,10 +284,8 @@ Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-ODBC < %{version}-%{release}
 Provides:  qt4-ODBC = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-odbc < %{version}-%{release}
 Provides:  qt4-odbc = %{version}-%{release}
-%endif
 
 %description odbc 
 %{summary}.
@@ -328,10 +297,8 @@ Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-PostgreSQL < %{version}-%{release}
 Provides:  qt4-PostgreSQL = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-postgresql < %{version}-%{release}
 Provides:  qt4-postgresql = %{version}-%{release}
-%endif
 
 %description postgresql 
 %{summary}.
@@ -352,14 +319,10 @@ Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
 %endif
 Provides: qt4-assistant = %{version}-%{release}
-%if "%{name}" != "qt4"
 Provides: %{name}-assistant = %{version}-%{release}
-%endif
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
-%endif
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -388,7 +351,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .timestamp
+%if 0%{?fedora} > 11
 %patch56 -p1 -b .ossl10
+%endif
 
 # security fixes
 %patch100 -p1 -b .CVE-2009-1725
@@ -920,6 +885,10 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Tue Sep 01 2009 Than Ngo <than@redhat.com> - 4.5.2-14
+- drop fedora < 9 support
+- only apply ossl patch for fedora > 11
+
 * Mon Aug 31 2009 Than Ngo <than@redhat.com> - 4.5.2-13
 - fix for CVE-2009-2700
 
