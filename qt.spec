@@ -140,7 +140,6 @@ BuildRequires: pkgconfig
 ## In theory, should be as simple as:
 #define x_deps libGL-devel libGLU-devel
 ## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
-%define x_deps xorg-x11-devel xorg-x11-Mesa-libGL xorg-x11-Mesa-libGLU
 %define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
 BuildRequires: %{x_deps}
 
