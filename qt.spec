@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -41,6 +41,9 @@ Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch
 Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
+# use system ca-bundle certs, http://bugzilla.redhat.com/521911
+Patch22: qt-x11-opensource-src-4.5.2-system_ca_certificates.patch 
+Requires: ca-certificates
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -347,6 +350,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch17 -p1 -b .phonon-pulseaudio
 %patch19 -p1 -b .servicesfile
 %patch21 -p1 -b .gst-pulsaudio
+%patch22 -p1 -b .system_ca_certificates
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -886,6 +890,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Tue Sep 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-15
+- use system ca-certificates (#521911)
+
 * Tue Sep 01 2009 Than Ngo <than@redhat.com> - 4.5.2-14
 - drop fedora < 9 support
 - only apply ossl patch for fedora > 11
