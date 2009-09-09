@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -890,6 +890,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Wed Sep 09 2009 Than Ngo <than@redhat.com> - 4.5.2-16
+- add a correct system_ca_certificates patch
+
 * Tue Sep 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-15
 - use system ca-certificates (#521911)
 
