@@ -372,6 +372,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
+# hack around (hopefully temporary) gcc borkage
+%if 0%{?fedora} > 11
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fno-var-tracking-assignments"
+%endif
 
 %define platform linux-g++
 %if "%{_qt4_datadir}" != "%{_qt4_prefix}" && "%{_lib}" == "lib64"                                  
