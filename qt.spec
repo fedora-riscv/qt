@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -356,9 +356,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .timestamp
-%if 0%{?fedora} > 11
 %patch56 -p1 -b .ossl10
-%endif
 
 # security fixes
 %patch100 -p1 -b .CVE-2009-1725
@@ -894,6 +892,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Fri Sep 11 2009 Than Ngo <than@redhat.com> - 4.5.2-17
+- drop useless check for ossl patch, the patch works fine with old ossl
+
 * Wed Sep 09 2009 Than Ngo <than@redhat.com> - 4.5.2-16
 - add a correct system_ca_certificates patch
 
