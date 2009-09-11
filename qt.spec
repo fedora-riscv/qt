@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 17%{?dist}
+Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -370,10 +370,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
-# hack around (hopefully temporary) gcc borkage
-%if 0%{?fedora} > 11
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fno-var-tracking-assignments"
-%endif
+# hack around (hopefully temporary) gcc borkage (#522576)
+#if 0%{?fedora} > 11
+#RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fno-var-tracking-assignments"
+#endif
 
 %define platform linux-g++
 %if "%{_qt4_datadir}" != "%{_qt4_prefix}" && "%{_lib}" == "lib64"                                  
@@ -892,6 +892,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Fri Sep 11 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-18
+- drop gcc -fno-var-tracking-assignments hack (#522576)
+
 * Fri Sep 11 2009 Than Ngo <than@redhat.com> - 4.5.2-17
 - drop useless check for ossl patch, the patch works fine with old ossl
 
