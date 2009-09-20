@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 18%{?dist}
+Release: 19%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -86,6 +86,11 @@ Source24: qtconfig.desktop
 # upstream qt4-logo, http://trolltech.com/images/products/qt/qt4-logo
 Source30: hi128-app-qt4-logo.png
 Source31: hi48-app-qt4-logo.png
+
+# copied from kdebase-4.3.1
+Source33: ox16-app-designer.png
+Source34: ox32-app-designer.png
+Source35: ox48-app-designer.png
 
 ## BOOTSTRAPPING, undef docs, demos, examples, phonon, webkit
 
@@ -579,6 +584,10 @@ install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
+# designer icon(s)
+install -p -m644 -D %{SOURCE33} %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/designer.png
+install -p -m644 -D %{SOURCE34} %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/designer.png
+install -p -m644 -D %{SOURCE35} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/designer.png
 # linguist icons
 for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
@@ -815,6 +824,7 @@ fi
 # Qt designer
 %{_qt4_bindir}/designer*
 %{_datadir}/applications/*designer.desktop
+%{_datadir}/icons/hicolor/*/apps/designer.*
 # Qt Linguist
 %{_qt4_bindir}/linguist*
 %{_datadir}/applications/*linguist.desktop
@@ -892,6 +902,9 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Sun Sep 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-19
+- Missing Qt Designer icon (#476605)
+
 * Fri Sep 11 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-18
 - drop gcc -fno-var-tracking-assignments hack (#522576)
 
