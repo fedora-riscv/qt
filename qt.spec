@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 19%{?dist}
+Release: 20%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -86,11 +86,6 @@ Source24: qtconfig.desktop
 # upstream qt4-logo, http://trolltech.com/images/products/qt/qt4-logo
 Source30: hi128-app-qt4-logo.png
 Source31: hi48-app-qt4-logo.png
-
-# copied from kdebase-4.3.1
-Source33: ox16-app-designer.png
-Source34: ox32-app-designer.png
-Source35: ox48-app-designer.png
 
 ## BOOTSTRAPPING, undef docs, demos, examples, phonon, webkit
 
@@ -584,14 +579,15 @@ install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
-# designer icon(s)
-install -p -m644 -D %{SOURCE33} %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/designer.png
-install -p -m644 -D %{SOURCE34} %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/designer.png
-install -p -m644 -D %{SOURCE35} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/designer.png
+# assistant icons
+install -p -m644 -D tools/assistant/tools/assistant/images/assistant.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/assistant.png
+install -p -m644 -D tools/assistant/tools/assistant/images/assistant-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/assistant.png
+# designer icons
+install -p -m644 -D tools/designer/src/designer/images/designer.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/designer.png
 # linguist icons
 for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
-  install -p -m644 -D ${icon} %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/linguist4.png
+  install -p -m644 -D ${icon} %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/linguist.png
 done
 
 # Qt.pc
@@ -727,6 +723,10 @@ fi
 %else
 %dir %{_qt4_datadir}
 %endif
+%if 0%{?docs}
+%dir %{_qt4_docdir}
+%dir %{_qt4_docdir}/qch/
+%endif
 %if "%{_qt4_sysconfdir}" != "%{_sysconfdir}"
 %dir %{_qt4_sysconfdir}
 %endif
@@ -824,22 +824,26 @@ fi
 # Qt designer
 %{_qt4_bindir}/designer*
 %{_datadir}/applications/*designer.desktop
-%{_datadir}/icons/hicolor/*/apps/designer.*
+%{_datadir}/icons/hicolor/*/apps/designer*
+%{?docs:%{_qt4_docdir}/qch/designer.qch}
 # Qt Linguist
 %{_qt4_bindir}/linguist*
 %{_datadir}/applications/*linguist.desktop
-%{_datadir}/icons/hicolor/*/apps/linguist4.*
+%{_datadir}/icons/hicolor/*/apps/linguist*
+%{?docs:%{_qt4_docdir}/qch/linguist.qch}
 
 %if 0%{?docs}
 %files doc
 %defattr(-,root,root,-)
-%dir %{_qt4_docdir}/
 %{_qt4_docdir}/html
-%{_qt4_docdir}/qch/
+%{_qt4_docdir}/qch/*.qch
+%exclude %{_qt4_docdir}/qch/designer.qch
+%exclude %{_qt4_docdir}/qch/linguist.qch
 %{_qt4_docdir}/src/
 #{_qt4_prefix}/doc
 # Qt Assistant (bin moved to -x11)
 %{_datadir}/applications/*assistant.desktop
+%{_datadir}/icons/hicolor/*/apps/assistant*
 %endif
 
 %if 0%{?examples}
@@ -902,6 +906,11 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %changelog
+* Mon Sep 28 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-20
+- use internal Qt Assistant/Designer icons
+- -devel: move designer.qch,linguist.qch here
+- move ownership of %%_qt4_docdir, %%_qt4_docdir/qch to main pkg
+
 * Sun Sep 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-19
 - Missing Qt Designer icon (#476605)
 
