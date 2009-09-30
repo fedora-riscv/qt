@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 20%{?dist}
+Release: 21%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -97,7 +97,11 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define phonon -phonon
+# if building with -phonon, define to internal version (ie, Obsolete external phonon)
+#define phonon_internal 1
 %define phonon_backend -phonon-backend
+# if -phonon-backend, include in packaging (else it's omitted)
+#define phonon_backend_packaged 1
 %define phonon_version 4.3.1
 %define phonon_version_major 4.3
 %define phonon_release 100
@@ -237,6 +241,8 @@ Requires: libjpeg-devel
 Requires: pkgconfig
 %if 0%{?phonon:1}
 Provides: qt4-phonon-devel = %{version}-%{release}
+%endif
+%if 0%{?phonon_internal}
 Obsoletes: phonon-devel < 4.3.1-100
 Provides:  phonon-devel = %{phonon_version}-%{phonon_release}
 %endif
@@ -312,10 +318,12 @@ Provides:  qt4-postgresql = %{version}-%{release}
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
 %if 0%{?phonon:1}
+Requires:  phonon-backend%{?_isa} >= %{phonon_version_major} 
+%endif
+%if 0%{?phonon_internal}
 Obsoletes: phonon < 4.3.1-100
 Provides:  phonon = %{phonon_version}-%{phonon_release}
 Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
-Requires:  phonon-backend%{?_isa} >= %{phonon_version_major} 
 Provides:  qt4-phonon = %{version}-%{release}
 %endif
 %if 0%{?webkit:1}
@@ -579,9 +587,11 @@ install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
+%if 0%{?docs}
 # assistant icons
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/assistant.png
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/assistant.png
+%endif
 # designer icons
 install -p -m644 -D tools/designer/src/designer/images/designer.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/designer.png
 # linguist icons
@@ -640,7 +650,20 @@ ln -s phonon Phonon
 popd
 %endif
 
-%if "%{?phonon_backend}" == "-phonon-backend"
+%if ! 0%{?phonon_internal}
+rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
+rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
+# contents slightly different between phonon-4.3.1 and qt-4.5.0
+rm -fv  %{buildroot}%{_includedir}/phonon/phononnamespace.h
+# contents dup'd but should remove just in case
+rm -fv  %{buildroot}%{_includedir}/phonon/*.h
+#rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
+#rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
+rm -fv %{buildroot}%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
+%endif
+
+#if "%{?phonon_backend}" == "-phonon-backend"
+%if 0%{?phonon_backend_packaged}
 install -D -m 0644 %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/phonon-gstreamer.svg
 install -D -m 0644 %{SOURCE11} %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/phonon-gstreamer.png
 install -D -m 0644 %{SOURCE12} %{buildroot}%{_datadir}/icons/hicolor/22x22/apps/phonon-gstreamer.png
@@ -685,7 +708,8 @@ touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
-%if "%{?phonon_backend}" == "-phonon-backend"
+#if "%{?phonon_backend}" == "-phonon-backend"
+%if 0%{?phonon_backend_packaged}
 %post -n phonon-backend-gstreamer
 touch --no-create %{_kde4_iconsdir}/hicolor &> /dev/null ||:
 
@@ -815,6 +839,8 @@ fi
 %{_qt4_datadir}/q3porting.xml
 %if 0%{?phonon:1}
 %{_qt4_libdir}/libphonon.prl
+%endif
+%if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so
 %endif
 %{_qt4_libdir}/libQt*.so
@@ -873,7 +899,7 @@ fi
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
-%if 0%{?phonon:1}
+%if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so.4*
 %dir %{_datadir}/kde4/services/phononbackends/
 %{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
@@ -891,7 +917,8 @@ fi
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/sqldrivers
-%if "%{?phonon_backend}" == "-phonon-backend"
+#if "%{?phonon_backend}" == "-phonon-backend"
+%if 0%{?phonon_backend_packaged}
 %exclude %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 %endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
@@ -905,7 +932,11 @@ fi
 %{_datadir}/applications/*qtconfig.desktop
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
+
 %changelog
+* Tue Sep 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-21
+- switch to external/kde phonon
+
 * Mon Sep 28 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-20
 - use internal Qt Assistant/Designer icons
 - -devel: move designer.qch,linguist.qch here
