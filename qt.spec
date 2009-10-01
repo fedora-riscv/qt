@@ -9,14 +9,14 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.5.2
-Release: 21%{?dist}
+Version: 4.5.3
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
+Source0: ftp://ftp.qt.nokia.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
@@ -42,7 +42,7 @@ Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
-Patch22: qt-x11-opensource-src-4.5.2-system_ca_certificates.patch 
+Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
 
 ## upstreamable bits
@@ -54,13 +54,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
-Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
-# compile with openssl-1.0
-Patch56: qt-x11-opensource-src-4.5.2-ossl10.patch
 
 # security patches
-Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
-Patch101: qt-x11-opensource-src-4.5.2-CVE-2009-2700.patch
 
 # switch to kde-qt branches, qt-copy doesn't exist anymore
 Patch200: kde-qt-patches-20090820git.patch
@@ -363,16 +358,12 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
-%patch55 -p1 -b .timestamp
-%patch56 -p1 -b .ossl10
 
 # security fixes
-%patch100 -p1 -b .CVE-2009-1725
-%patch101 -p1 -b .CVE-2009-2700
 
 # kde-qt branch
-%patch200 -p1 -b .kde-qt-patches-20090820git
-%patch201 -p0 -b .0118-qtcopy-define
+#patch200 -p1 -b .kde-qt-patches-20090820git
+#patch201 -p0 -b .0118-qtcopy-define
 %patch202 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
 %patch203 -p0 -b .0285-qgv-dontshowchildren
 
@@ -934,6 +925,9 @@ fi
 
 
 %changelog
+* Thu Oct 01 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-1
+- qt-4.5.3
+
 * Tue Sep 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-21
 - switch to external/kde phonon
 
