@@ -394,7 +394,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## doesn't apply (looks mostly harmless, affects -raster engine)
 #patch212 -p1 -b .kde-qt-0012
 ## doesn't apply (Kevin?)
-%patch213 -p1 -b .kde-qt-0013
+#patch213 -p1 -b .kde-qt-0013
 ## upstreamed already?
 #patch214 -p1 -b .kde-qt-0014
 %patch215 -p1 -b .kde-qt-0015
