@@ -389,9 +389,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch210 -p1 -b .kde-qt-0010
 %patch211 -p1 -b .kde-qt-0011
 %patch212 -p1 -b .0274-shm-native-image-fix
-%patch214 -p1 -b .kde-qt-0015
-%patch215 -p1 -b .kde-qt-0016
-%patch216 -p1 -b .kde-qt-0017
+%patch213 -p1 -b .kde-qt-0015
+%patch214 -p1 -b .kde-qt-0016
+%patch215 -p1 -b .kde-qt-0017
 
 # not yet merged ones
 %patch301 -p0 -b .0118-qtcopy-define
