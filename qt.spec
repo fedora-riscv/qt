@@ -57,12 +57,30 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 
 # security patches
 
-# switch to kde-qt branches, qt-copy doesn't exist anymore
-Patch200: kde-qt-patches-20091002git.patch
+# kde-qt git patches
+Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
+Patch202: 0002-This-patch-makes-override-redirect-windows-popup-me.patch
+Patch203: 0003-This-patch-changes-QObjectPrivateVersion-thus-preve.patch
+Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow.patch
+Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
+Patch206: 0006-Fix-configure.exe-to-do-an-out-of-source-build-on-wi.patch
+Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-g.patch
+Patch208: 0008-In-a-treeview-with-columns-like-this.patch
+Patch209: 0009-This-patch-fixes-deserialization-of-values-with-cust.patch
+Patch210: 0010-Import-README.qt-copy-from-the-original-qt-copy.patch
+Patch211: 0011-Update-this-file-to-reflect-the-workflow-with-Git-a.patch
+Patch212: 0012-This-patch-makes-the-raster-graphics-system-use-shar.patch
+Patch213: 0013-Restore-a-section-of-the-file-that-got-removed-due-t.patch
+Patch214: 0014-Fix-error-line-not-to-have-a-as-it-s-not-correct.patch
+Patch215: 0015-Make-QMenu-respect-the-minimum-width-set.patch
+Patch216: 0016-Fill-gap-of-X.org-XFree-multimedia-special-launcher.patch
+Patch217: 0017-Add-context-to-tr-calls-in-QShortcut.patch
+Patch218: 0018-Fix-QNativeImage-constructor.patch
+
 # these patches are not merged yet in kde-qt branches
-Patch201: 0118-qtcopy-define.diff
-Patch202: 0283-do-not-deduce-scrollbar-extent-twice.diff
-Patch203: 0285-qgv-dontshowchildren.diff
+Patch301: 0118-qtcopy-define.diff
+Patch302: 0283-do-not-deduce-scrollbar-extent-twice.diff
+Patch303: 0285-qgv-dontshowchildren.diff
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -362,17 +380,35 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # kde-qt branch
-%patch200 -p1 -b .kde-qt-patches-20091002git
-#patch201 -p0 -b .0118-qtcopy-define
-%patch202 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
-%patch203 -p0 -b .0285-qgv-dontshowchildren
+%patch201 -p1 -b .kde-qt-0001
+%patch202 -p1 -b .kde-qt-0002
+%patch203 -p1 -b .kde-qt-0003
+%patch204 -p1 -b .kde-qt-0004
+%patch205 -p1 -b .kde-qt-0005
+%patch206 -p1 -b .kde-qt-0006
+%patch207 -p1 -b .kde-qt-0007
+%patch208 -p1 -b .kde-qt-0008
+%patch209 -p1 -b .kde-qt-0009
+%patch210 -p1 -b .kde-qt-0010
+%patch211 -p1 -b .kde-qt-0011
+## doesn't apply (looks mostly harmless, affects -raster engine)
+#patch212 -p1 -b .kde-qt-0012
+## doesn't apply (Kevin?)
+%patch213 -p1 -b .kde-qt-0013
+## upstreamed already?
+#patch214 -p1 -b .kde-qt-0014
+%patch215 -p1 -b .kde-qt-0015
+%patch216 -p1 -b .kde-qt-0016
+%patch217 -p1 -b .kde-qt-0017
+%patch218 -p1 -b .kde-qt-0018
+
+# not yet merged ones
+%patch301 -p0 -b .0118-qtcopy-define
+%patch302 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
+%patch303 -p0 -b .0285-qgv-dontshowchildren
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
-# hack around (hopefully temporary) gcc borkage (#522576)
-#if 0%{?fedora} > 11
-#RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fno-var-tracking-assignments"
-#endif
 
 %define platform linux-g++
 %if "%{_qt4_datadir}" != "%{_qt4_prefix}" && "%{_lib}" == "lib64"                                  
@@ -408,6 +444,7 @@ fi
 
 # let syncqt to create new header
 rm -rf include
+
 
 %build
 
