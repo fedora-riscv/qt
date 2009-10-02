@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -69,13 +69,10 @@ Patch208: 0008-In-a-treeview-with-columns-like-this.patch
 Patch209: 0009-This-patch-fixes-deserialization-of-values-with-cust.patch
 Patch210: 0010-Import-README.qt-copy-from-the-original-qt-copy.patch
 Patch211: 0011-Update-this-file-to-reflect-the-workflow-with-Git-a.patch
-Patch212: 0012-This-patch-makes-the-raster-graphics-system-use-shar.patch
-Patch213: 0013-Restore-a-section-of-the-file-that-got-removed-due-t.patch
-Patch214: 0014-Fix-error-line-not-to-have-a-as-it-s-not-correct.patch
-Patch215: 0015-Make-QMenu-respect-the-minimum-width-set.patch
-Patch216: 0016-Fill-gap-of-X.org-XFree-multimedia-special-launcher.patch
-Patch217: 0017-Add-context-to-tr-calls-in-QShortcut.patch
-Patch218: 0018-Fix-QNativeImage-constructor.patch
+Patch212: 0274-shm-native-image-fix.patch
+Patch213: 0015-Make-QMenu-respect-the-minimum-width-set.patch
+Patch214: 0016-Fill-gap-of-X.org-XFree-multimedia-special-launcher.patch
+Patch215: 0017-Add-context-to-tr-calls-in-QShortcut.patch
 
 # these patches are not merged yet in kde-qt branches
 Patch301: 0118-qtcopy-define.diff
@@ -391,16 +388,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch209 -p1 -b .kde-qt-0009
 %patch210 -p1 -b .kde-qt-0010
 %patch211 -p1 -b .kde-qt-0011
-## doesn't apply (looks mostly harmless, affects -raster engine)
-#patch212 -p1 -b .kde-qt-0012
-## doesn't apply (Kevin?)
-#patch213 -p1 -b .kde-qt-0013
-## upstreamed already?
-#patch214 -p1 -b .kde-qt-0014
-%patch215 -p1 -b .kde-qt-0015
-%patch216 -p1 -b .kde-qt-0016
-%patch217 -p1 -b .kde-qt-0017
-%patch218 -p1 -b .kde-qt-0018
+%patch212 -p1 -b .0274-shm-native-image-fix
+%patch214 -p1 -b .kde-qt-0015
+%patch215 -p1 -b .kde-qt-0016
+%patch216 -p1 -b .kde-qt-0017
 
 # not yet merged ones
 %patch301 -p0 -b .0118-qtcopy-define
@@ -965,6 +956,9 @@ fi
 
 
 %changelog
+* Fri Oct 02 2009 Than Ngo <than@redhat.com> - 4.5.3-2
+- cleanup patches
+
 * Thu Oct 01 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-1
 - qt-4.5.3
 
