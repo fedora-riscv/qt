@@ -58,7 +58,7 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # security patches
 
 # switch to kde-qt branches, qt-copy doesn't exist anymore
-Patch200: kde-qt-patches-20090820git.patch
+Patch200: kde-qt-patches-20091002git.patch
 # these patches are not merged yet in kde-qt branches
 Patch201: 0118-qtcopy-define.diff
 Patch202: 0283-do-not-deduce-scrollbar-extent-twice.diff
@@ -362,7 +362,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # kde-qt branch
-#patch200 -p1 -b .kde-qt-patches-20090820git
+%patch200 -p1 -b .kde-qt-patches-20091002git
 #patch201 -p0 -b .0118-qtcopy-define
 %patch202 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
 %patch203 -p0 -b .0285-qgv-dontshowchildren

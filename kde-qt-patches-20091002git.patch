@@ -1,18 +1,23 @@
-commit b48e2091871516496cf0b133249fbf5326a55831
-Author: Lubos Lunak <l.lunak@kde.org>
-Date:   Sat Feb 23 16:44:52 2008 +0100
+From b48e2091871516496cf0b133249fbf5326a55831 Mon Sep 17 00:00:00 2001
+From: Lubos Lunak <l.lunak@kde.org>
+Date: Sat, 23 Feb 2008 16:44:52 +0100
+Subject: [PATCH 01/18] This patch uses object name as a fallback for window role if no window
+ role is set explicitly using setWindowRole(). Since Qt3 always used
+ the object name as the window role and most Qt3/KDE3 code is ported to
+ call setObjectName(),
 
-    This patch uses object name as a fallback for window role if no window
-    role is set explicitly using setWindowRole(). Since Qt3 always used
-    the object name as the window role and most Qt3/KDE3 code is ported to
-    call setObjectName(),
-    
-    this makes the window role set in many cases (which KWin uses for window identifying).
-    
-    NOTE: It is suggested to apply patch #0209 as well when this patch is used.
-    
-    qt-bugs@ issue : 167704
-    Trolltech task ID : 168283 (status: "fixed" for Qt 4.4.0, but effectively refused)
+this makes the window role set in many cases (which KWin uses for window identifying).
+
+NOTE: It is suggested to apply patch #0209 as well when this patch is used.
+
+qt-bugs@ issue : 167704
+Trolltech task ID : 168283 (status: "fixed" for Qt 4.4.0, but effectively refused)
+---
+ src/corelib/kernel/qobject.cpp |    8 ++++++++
+ src/corelib/kernel/qobject_p.h |    3 +++
+ src/gui/kernel/qwidget_p.h     |    1 +
+ src/gui/kernel/qwidget_x11.cpp |   27 +++++++++++++++++++++------
+ 4 files changed, 33 insertions(+), 6 deletions(-)
 
 diff --git a/src/corelib/kernel/qobject.cpp b/src/corelib/kernel/qobject.cpp
 index 6487194..ef0369e 100644
@@ -107,17 +112,21 @@ index 79ee8c9..b56849c 100644
  Q_GLOBAL_STATIC(QX11PaintEngine, qt_widget_paintengine)
  QPaintEngine *QWidget::paintEngine() const
  {
+-- 
+1.6.2.5
 
-commit 339e220e29ff39b86705438b4be6f90e5618d27b
-Author: Lubos Lunak <l.lunak@kde.org>
-Date:   Tue Oct 2 16:08:32 2007 +0200
+From 339e220e29ff39b86705438b4be6f90e5618d27b Mon Sep 17 00:00:00 2001
+From: Lubos Lunak <l.lunak@kde.org>
+Date: Tue, 2 Oct 2007 16:08:32 +0200
+Subject: [PATCH 02/18] This patch makes override-redirect windows (popup menu, dropdown menu,
+ tooltip, combobox, etc.) also have more window properties like WM_CLASS,
+ so they can be used when compositing.
 
-    This patch makes override-redirect windows (popup menu, dropdown menu,
-    tooltip, combobox, etc.) also have more window properties like WM_CLASS,
-    so they can be used when compositing.
-    
-    qt-bugs@ issue : none
-    bugs.kde.org number : none
+qt-bugs@ issue : none
+bugs.kde.org number : none
+---
+ src/gui/kernel/qwidget_x11.cpp |   21 +++++++++++++++------
+ 1 files changed, 15 insertions(+), 6 deletions(-)
 
 diff --git a/src/gui/kernel/qwidget_x11.cpp b/src/gui/kernel/qwidget_x11.cpp
 index 79ee8c9..a74a849 100644
@@ -170,23 +179,27 @@ index 79ee8c9..a74a849 100644
      }
  
      if (initializeWindow && q->internalWinId()) {
+-- 
+1.6.2.5
 
-commit 68eaa07de69e873b89d4aba341c6ed1ca81f6819
-Author: Lubos Lunak <l.lunak@kde.org>
-Date:   Wed Jan 30 14:24:01 2008 +0100
+From 68eaa07de69e873b89d4aba341c6ed1ca81f6819 Mon Sep 17 00:00:00 2001
+From: Lubos Lunak <l.lunak@kde.org>
+Date: Wed, 30 Jan 2008 14:24:01 +0100
+Subject: [PATCH 03/18] This patch changes QObjectPrivateVersion, thus preventing mixing
+ parts of upstream Qt and qt-copy. In general it is a bad idea to mix
+ e.g. libQtCore from one build and libQtGui from another one, and other
+ qt-copy patches could make changes in Qt internal structures that could
+ cause problems when mixed with upstream Qt.
 
-    This patch changes QObjectPrivateVersion, thus preventing mixing
-    parts of upstream Qt and qt-copy. In general it is a bad idea to mix
-    e.g. libQtCore from one build and libQtGui from another one, and other
-    qt-copy patches could make changes in Qt internal structures that could
-    cause problems when mixed with upstream Qt.
-    
-    This patch does not make qt-copy binary incompatible with upstream Qt.
-    It only further enforces using the same sources for the whole Qt build.
-    
-    qt-bugs@ issue : none
-    Trolltech task ID : none
-    bugs.kde.org number : none
+This patch does not make qt-copy binary incompatible with upstream Qt.
+It only further enforces using the same sources for the whole Qt build.
+
+qt-bugs@ issue : none
+Trolltech task ID : none
+bugs.kde.org number : none
+---
+ src/corelib/kernel/qobject_p.h |    4 +++-
+ 1 files changed, 3 insertions(+), 1 deletions(-)
 
 diff --git a/src/corelib/kernel/qobject_p.h b/src/corelib/kernel/qobject_p.h
 index 0bcccba..88192fd 100644
@@ -203,31 +216,35 @@ index 0bcccba..88192fd 100644
  
  class Q_CORE_EXPORT QObjectPrivate : public QObjectData
  {
+-- 
+1.6.2.5
 
-commit 86fc0d43cdcf3232ae0e4e6f4f28cf8f1a45ede5
-Author: Benjamin Reed <rangerrick@befunk.com>
-Date:   Tue Feb 19 17:37:37 2008 +0100
+From 86fc0d43cdcf3232ae0e4e6f4f28cf8f1a45ede5 Mon Sep 17 00:00:00 2001
+From: Benjamin Reed <rangerrick@befunk.com>
+Date: Tue, 19 Feb 2008 17:37:37 +0100
+Subject: [PATCH 04/18] This patch adds support for using -isystem to allow putting an include
+ directory at the end of the compiler's header search path.
 
-    This patch adds support for using -isystem to allow putting an include
-    directory at the end of the compiler's header search path.
-    
-    I don't have the exact output anymore (I've since patched Qt's configure) but
-    essentially, since I have pcre.h in /opt/kde4-deps/include, it was
-    conflicting with Qt's (modified) pcre.h in the WebKit bits, since
-    -I /opt/kde4-deps/include ends up in CXXFLAGS in the generated makefiles, it
-    comes *before* the specific locations in INCPATH on the compile line, and you
-    end up with a conflict with the system-installed pcre.h.
-    
-    Presumably, if your pcre.h is in /usr/include as on most Linux systems, you
-    wouldn't notice this issue since /usr/include's already in your include path
-    and people likely don't pass -I /usr/include to configure.  I suspect that on
-    any platform with a regular, system-installed pcre.h (or clucene headers),
-    adding -I /usr/include would exhibit this bug, just as a custom-installed
-    pcre/clucene in another root would.
-    
-    qt-bugs@ issue : 199610
-    Trolltech task ID :
-    bugs.kde.org number :
+I don't have the exact output anymore (I've since patched Qt's configure) but
+essentially, since I have pcre.h in /opt/kde4-deps/include, it was
+conflicting with Qt's (modified) pcre.h in the WebKit bits, since
+-I /opt/kde4-deps/include ends up in CXXFLAGS in the generated makefiles, it
+comes *before* the specific locations in INCPATH on the compile line, and you
+end up with a conflict with the system-installed pcre.h.
+
+Presumably, if your pcre.h is in /usr/include as on most Linux systems, you
+wouldn't notice this issue since /usr/include's already in your include path
+and people likely don't pass -I /usr/include to configure.  I suspect that on
+any platform with a regular, system-installed pcre.h (or clucene headers),
+adding -I /usr/include would exhibit this bug, just as a custom-installed
+pcre/clucene in another root would.
+
+qt-bugs@ issue : 199610
+Trolltech task ID :
+bugs.kde.org number :
+---
+ configure |    8 ++++++++
+ 1 files changed, 8 insertions(+), 0 deletions(-)
 
 diff --git a/configure b/configure
 index 2c108ad..610a201 100755
@@ -255,34 +272,38 @@ index 2c108ad..610a201 100755
      add_lpath)
          L_FLAGS="$L_FLAGS -L\"${VAL}\""
          ;;
+-- 
+1.6.2.5
 
-commit 733d1afd03908d695aa8a6518f453b9ff0e5b8a2
-Author: Robert Knight <robertknight@gmail.com>
-Date:   Sun Apr 20 16:28:31 2008 +0200
+From 733d1afd03908d695aa8a6518f453b9ff0e5b8a2 Mon Sep 17 00:00:00 2001
+From: Robert Knight <robertknight@gmail.com>
+Date: Sun, 20 Apr 2008 16:28:31 +0200
+Subject: [PATCH 05/18] When tabs are inserted or removed in a QTabBar,
+ QTabBarPrivate::refresh() is called to update the layout.  If the
+ tabbar widget is hidden, this just sets a boolean variable
+ (layoutDirty) and returns, so the parent widget's layout is not
+ notified about the possible geometry change.
 
-    When tabs are inserted or removed in a QTabBar,
-    QTabBarPrivate::refresh() is called to update the layout.  If the
-    tabbar widget is hidden, this just sets a boolean variable
-    (layoutDirty) and returns, so the parent widget's layout is not
-    notified about the possible geometry change.
-    
-    Prior to Qt 4.4 this was not a problem because the geometry was
-    recalculated in QTabBar::sizeHint() if the layoutDirty variable was
-    set.  In Qt 4.4 however the layout caches size hint information in
-    QWidgetItemV2.  Since the cache information is not invalidated, the
-    layout may end up using out-of-date size hint information to compute
-    the widget size.
-    
-    If the QTabBar is empty when QTabBar::sizeHint() is called, it will
-    return a size with a height of 0, which will be kept in the cache and
-    so the tab bar will never be shown.
-    
-    This patch fixes the problem by calling updateGeometry() whenever the
-    tab bar's layout is refreshed.
-    
-    qt-bugs@ issue : 208185
-    Trolltech task ID : 208349
-    bugs.kde.org number : 159014
+Prior to Qt 4.4 this was not a problem because the geometry was
+recalculated in QTabBar::sizeHint() if the layoutDirty variable was
+set.  In Qt 4.4 however the layout caches size hint information in
+QWidgetItemV2.  Since the cache information is not invalidated, the
+layout may end up using out-of-date size hint information to compute
+the widget size.
+
+If the QTabBar is empty when QTabBar::sizeHint() is called, it will
+return a size with a height of 0, which will be kept in the cache and
+so the tab bar will never be shown.
+
+This patch fixes the problem by calling updateGeometry() whenever the
+tab bar's layout is refreshed.
+
+qt-bugs@ issue : 208185
+Trolltech task ID : 208349
+bugs.kde.org number : 159014
+---
+ src/gui/widgets/qtabbar.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/src/gui/widgets/qtabbar.cpp b/src/gui/widgets/qtabbar.cpp
 index 419d456..41107a0 100644
@@ -298,15 +319,21 @@ index 419d456..41107a0 100644
  }
  
  /*!
+-- 
+1.6.2.5
 
-commit 8e28e0603a900e1b18ebfd14c4f87b16dabf4cf6
-Author: Christian Ehrlicher <ch.ehrlicher@gmx.de>
-Date:   Fri Sep 19 17:41:26 2008 +0200
+From 8e28e0603a900e1b18ebfd14c4f87b16dabf4cf6 Mon Sep 17 00:00:00 2001
+From: Christian Ehrlicher <ch.ehrlicher@gmx.de>
+Date: Fri, 19 Sep 2008 17:41:26 +0200
+Subject: [PATCH 06/18] Fix configure.exe to do an out-of-source build on windows
 
-    Fix configure.exe to do an out-of-source build on windows
-    
-    qt-bugs@ issue : N227213
-    Trolltech task ID : none yet
+qt-bugs@ issue : N227213
+Trolltech task ID : none yet
+---
+ bin/syncqt             |    6 +++++-
+ projects.pro           |    3 +++
+ src/tools/moc/main.cpp |    6 ++++++
+ 3 files changed, 14 insertions(+), 1 deletions(-)
 
 diff --git a/bin/syncqt b/bin/syncqt
 index 7a9f1d3..b5a8e1c 100755
@@ -359,16 +386,20 @@ index d519b09..7979836 100644
  }
  
  
+-- 
+1.6.2.5
 
-commit 0afcf33127c6ccbe5dfaae4f4c5e02f28dc10ae1
-Author: Christian Ehrlicher <ch.ehrlicher@gmx.de>
-Date:   Thu May 8 21:25:49 2008 +0200
+From 0afcf33127c6ccbe5dfaae4f4c5e02f28dc10ae1 Mon Sep 17 00:00:00 2001
+From: Christian Ehrlicher <ch.ehrlicher@gmx.de>
+Date: Thu, 8 May 2008 21:25:49 +0200
+Subject: [PATCH 07/18] When using qmake outside qt src tree, it sometimes generates wrong
+ paths (wrong path separator)
 
-    When using qmake outside qt src tree, it sometimes generates wrong
-    paths (wrong path separator)
-    
-    qt-bugs@ issue : none
-    Trolltech task ID : 214661
+qt-bugs@ issue : none
+Trolltech task ID : 214661
+---
+ qmake/property.cpp |   29 ++++++++++++++++-------------
+ 1 files changed, 16 insertions(+), 13 deletions(-)
 
 diff --git a/qmake/property.cpp b/qmake/property.cpp
 index 8ba89f9..dd78349 100644
@@ -428,40 +459,44 @@ index 8ba89f9..dd78349 100644
      if(!ok) {
          QString version = qmake_version();
          if(slash != -1) {
+-- 
+1.6.2.5
 
-commit 1ec9dd029abaa0f00798535fdb1722154b1c63f6
-Author: Rafael Fernández López <ereslibre@kde.org>
-Date:   Sun Oct 26 10:40:51 2008 +0100
+From 1ec9dd029abaa0f00798535fdb1722154b1c63f6 Mon Sep 17 00:00:00 2001
+From: =?utf-8?q?Rafael=20Fern=C3=A1ndez=20L=C3=B3pez?= <ereslibre@kde.org>
+Date: Sun, 26 Oct 2008 10:40:51 +0100
+Subject: [PATCH 08/18] In a treeview with columns like this:
 
-    In a treeview with columns like this:
-    
-    Column 1 | Column 2 | ... | Column k | ... | Column n
-    
-    When selecting with rubberband (by clicking on the blank part of the viewport) while Column k is
-    hidden, you get double items on the selection model, when asking for selection(). This is becase
-    ranges are incorrectly calculated when there are hidden columns. A way to reproduce:
-    
-    Column 1 | Column 2 | Column 4 (Column 3 is hidden)
-     item
-     item
-     item
-      x <- press button here and move it up to select items (on this same column)
-    
-    If you do like this:
-    
-    Column 1 | Column 2 | Column 4 (Column 3 is hidden)
-     item
-     item
-     item
-                             x <- press button here and move it up
-    
-    you won't be able to reproduce, since you need the hidden column to be between the one you click and
-    the last one. The reason is that columnRanges returns two ranges when there is supposed to return 1
-    range (even when there are hidden columns).
-    
-    qt-bugs@ issue : N232819
-    Trolltech task ID : 232831
-    bugs.kde.org number : 171436
+Column 1 | Column 2 | ... | Column k | ... | Column n
+
+When selecting with rubberband (by clicking on the blank part of the viewport) while Column k is
+hidden, you get double items on the selection model, when asking for selection(). This is becase
+ranges are incorrectly calculated when there are hidden columns. A way to reproduce:
+
+Column 1 | Column 2 | Column 4 (Column 3 is hidden)
+ item
+ item
+ item
+  x <- press button here and move it up to select items (on this same column)
+
+If you do like this:
+
+Column 1 | Column 2 | Column 4 (Column 3 is hidden)
+ item
+ item
+ item
+                         x <- press button here and move it up
+
+you won't be able to reproduce, since you need the hidden column to be between the one you click and
+the last one. The reason is that columnRanges returns two ranges when there is supposed to return 1
+range (even when there are hidden columns).
+
+qt-bugs@ issue : N232819
+Trolltech task ID : 232831
+bugs.kde.org number : 171436
+---
+ src/gui/itemviews/qtreeview.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/src/gui/itemviews/qtreeview.cpp b/src/gui/itemviews/qtreeview.cpp
 index ed6ad03..dc147f2 100644
@@ -476,26 +511,30 @@ index ed6ad03..dc147f2 100644
              if (current.first != -2) {
                  //let's save the current one
                  ret += current;
+-- 
+1.6.2.5
 
-commit b274bbaf4768dcfdfcf95ceda08b6402ffedb80d
-Author: George Goldberg <grundleborg@googlemail.com>
-Date:   Tue Apr 28 17:08:07 2009 +0200
+From b274bbaf4768dcfdfcf95ceda08b6402ffedb80d Mon Sep 17 00:00:00 2001
+From: George Goldberg <grundleborg@googlemail.com>
+Date: Tue, 28 Apr 2009 17:08:07 +0200
+Subject: [PATCH 09/18] This patch fixes deserialization of values with custom types when setting
+ properties on dbus adaptors. It is needed, in particular by telepathy/Qt
+ programs and libraries. The bug was reported to Nokia on 2009-01-07 along
+ with the patch supplied here. The summary of the issue from the Qt
+ Software task tracker follows:
 
-    This patch fixes deserialization of values with custom types when setting
-    properties on dbus adaptors. It is needed, in particular by telepathy/Qt
-    programs and libraries. The bug was reported to Nokia on 2009-01-07 along
-    with the patch supplied here. The summary of the issue from the Qt
-    Software task tracker follows:
-    
-    When calling the setter for a DBus property, if that property has a custom type
-    (e.g. a struct with dbus type (uss)), QtDBus fails to demarshall the
-    QDBusArgument before attempting to set the property on the adaptor. The result
-    is that it attempts to call adaptor->setProperty() with a QDBusArgument of type
-    "uss" instead of with the type of the custom struct.
-    
-    qt-bugs@ issue : N240326
-    Qt Software task ID : 240608
-    bugs.kde.org number : none
+When calling the setter for a DBus property, if that property has a custom type
+(e.g. a struct with dbus type (uss)), QtDBus fails to demarshall the
+QDBusArgument before attempting to set the property on the adaptor. The result
+is that it attempts to call adaptor->setProperty() with a QDBusArgument of type
+"uss" instead of with the type of the custom struct.
+
+qt-bugs@ issue : N240326
+Qt Software task ID : 240608
+bugs.kde.org number : none
+---
+ src/dbus/qdbusinternalfilters.cpp |   16 +++++++++++++++-
+ 1 files changed, 15 insertions(+), 1 deletions(-)
 
 diff --git a/src/dbus/qdbusinternalfilters.cpp b/src/dbus/qdbusinternalfilters.cpp
 index c71f2f4..d261d01 100644
@@ -526,12 +565,18 @@ index c71f2f4..d261d01 100644
          }
      }
  
+-- 
+1.6.2.5
 
-commit 9a3fe8fc4912bf82b791c4131f553c18140ca838
-Author: Thiago Macieira <thiago@doriath.(none)>
-Date:   Sun Jun 21 13:17:13 2009 -0300
+From 9a3fe8fc4912bf82b791c4131f553c18140ca838 Mon Sep 17 00:00:00 2001
+From: Thiago Macieira <thiago@doriath.(none)>
+Date: Sun, 21 Jun 2009 13:17:13 -0300
+Subject: [PATCH 10/18] Import README.qt-copy from the original qt-copy
 
-    Import README.qt-copy from the original qt-copy
+---
+ README.kde-qt |  188 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 188 insertions(+), 0 deletions(-)
+ create mode 100644 README.kde-qt
 
 diff --git a/README.kde-qt b/README.kde-qt
 new file mode 100644
@@ -727,12 +772,17 @@ index 0000000..f605a0b
 +(srcdir == $QTDIR), run:
 +
 +	svn revert -R include
+-- 
+1.6.2.5
 
-commit 39b24a10e4dee27357b9760b735c2ab98b132963
-Author: Thiago Macieira <thiago@doriath.(none)>
-Date:   Sun Jun 21 13:46:54 2009 -0300
+From 39b24a10e4dee27357b9760b735c2ab98b132963 Mon Sep 17 00:00:00 2001
+From: Thiago Macieira <thiago@doriath.(none)>
+Date: Sun, 21 Jun 2009 13:46:54 -0300
+Subject: [PATCH 11/18] Update this file to reflect the workflow with Git, as well as use Git commands
 
-    Update this file to reflect the workflow with Git, as well as use Git commands
+---
+ README.kde-qt |  163 +++++++++++++++++++++++++++++++--------------------------
+ 1 files changed, 88 insertions(+), 75 deletions(-)
 
 diff --git a/README.kde-qt b/README.kde-qt
 index f605a0b..db3feb6 100644
@@ -979,21 +1029,27 @@ index f605a0b..db3feb6 100644
 -	svn revert -R include
 +	rm -rf include
 +	bin/syncqt
+-- 
+1.6.2.5
 
-commit 8731ab999b849dac4716e3d29f5f55ed8e56438e
-Author: Thiago Macieira <thiago.macieira@nokia.com>
-Date:   Thu Jun 25 13:50:29 2009 +0200
+From 8731ab999b849dac4716e3d29f5f55ed8e56438e Mon Sep 17 00:00:00 2001
+From: Thiago Macieira <thiago.macieira@nokia.com>
+Date: Thu, 25 Jun 2009 13:50:29 +0200
+Subject: [PATCH 12/18] This patch makes the raster graphics system use shared images instead
+ of shared pixmaps.
 
-    This patch makes the raster graphics system use shared images instead
-    of shared pixmaps.
-    
-    Shared memory pixmaps are deprecated since they are slower than shared
-    images with modern graphics hardware. They are also not supported by EXA
-    drivers and can be disabled in the latest version of the NVidia driver.
-    
-    qt-bugs@ issue : none
-    Qt Software task ID : none
-    bugs.kde.org number : none
+Shared memory pixmaps are deprecated since they are slower than shared
+images with modern graphics hardware. They are also not supported by EXA
+drivers and can be disabled in the latest version of the NVidia driver.
+
+qt-bugs@ issue : none
+Qt Software task ID : none
+bugs.kde.org number : none
+---
+ src/gui/image/qnativeimage.cpp             |   10 ----------
+ src/gui/image/qnativeimage_p.h             |    1 -
+ src/gui/painting/qwindowsurface_raster.cpp |   13 ++++++++++---
+ 3 files changed, 10 insertions(+), 14 deletions(-)
 
 diff --git a/src/gui/image/qnativeimage.cpp b/src/gui/image/qnativeimage.cpp
 index 3745708..3c21fce 100644
@@ -1066,14 +1122,18 @@ index d6fb03b..09963d9 100644
          XSync(X11->display, False);
      } else
  #endif
+-- 
+1.6.2.5
 
-commit bb8255da422470c5012b6b1c4c24eb2afb6804dc
-Author: Thiago Macieira <thiago.macieira@nokia.com>
-Date:   Fri Jun 26 11:41:45 2009 +0200
+From bb8255da422470c5012b6b1c4c24eb2afb6804dc Mon Sep 17 00:00:00 2001
+From: Thiago Macieira <thiago.macieira@nokia.com>
+Date: Fri, 26 Jun 2009 11:41:45 +0200
+Subject: [PATCH 13/18] Restore a section of the file that got removed due to conflict resolution.
 
-    Restore a section of the file that got removed due to conflict resolution.
-    
-    Thanks to Kevin Kofler for pointing this out
+Thanks to Kevin Kofler for pointing this out
+---
+ src/gui/kernel/qapplication_x11.cpp |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/src/gui/kernel/qapplication_x11.cpp b/src/gui/kernel/qapplication_x11.cpp
 index 33aec9e..53f020b 100644
@@ -1092,86 +1152,17 @@ index 33aec9e..53f020b 100644
              }
          }
  #endif // QT_NO_MITSHM
+-- 
+1.6.2.5
 
-commit 3860708da46685c135ac4faf074a4d7dd9952de8
-Author: David Faure <dfaure@AsterixT.(none)>
-Date:   Fri Jun 26 13:38:02 2009 +0200
+From 4b5ae1db24fa1b96f00ef62bd2e1063a8a313e5c Mon Sep 17 00:00:00 2001
+From: Albert Astals Cid <aacid@kde.org>
+Date: Sat, 27 Jun 2009 14:19:23 +0200
+Subject: [PATCH 14/18] Fix #error line not to have a ' as it's not correct
 
-    Add missing word in sentence
-
-diff --git a/README.kde-qt b/README.kde-qt
-index db3feb6..1e5f8c7 100644
---- a/README.kde-qt
-+++ b/README.kde-qt
-@@ -176,7 +176,7 @@ To create a patch, do the following:
-       git push git@gitorious.org:qt/kde-qt.git 4.5.1-patched patches/0180-window-role
-   (Don't forget to list both branch names)
- 
--Don't forget to submit your patch to using the Qt Contribution Model,
-+Don't forget to submit your patch to QtSoftware using the Qt Contribution Model,
- along with the long description of the issue found. See
- http://qt.gitorious.org/qt/pages/QtContributionGuidelines for
- information how. You can submit the branch you've just sent to the
-
-commit 46a247a2c9a8c0c4456a02f6a0922d859d88fe76
-Author: David Faure <dfaure@AsterixT.(none)>
-Date:   Fri Jun 26 13:45:37 2009 +0200
-
-    "Building Qt documentation" said to run "make install", but obviously we
-    don't want that if using qt uninstalled -> swap both sections and add a
-    "if uninstalled" before the make install bit.
-
-diff --git a/README.kde-qt b/README.kde-qt
-index 1e5f8c7..9e272c9 100644
---- a/README.kde-qt
-+++ b/README.kde-qt
-@@ -95,18 +95,7 @@ option. That option is technically equivalent to the options:
- To run a test, go to its source dir in tests/auto/testname. Type
- "make" to build it, then run it (either ./tst_testname, or "make install").
- 
--6. Building Qt documentation
--============================
--
--To build and install the documentation, run:
--
--   make docs
--   ./config.status
--   make install
--
--It is necessary to do this once only, even if you rebuild Qt later.
--
--7. Using Qt uninstalled
-+6. Using Qt uninstalled
- =======================
- 
- To use without having to install it, configure it as follows:
-@@ -122,6 +111,20 @@ Attention: DO NOT run
- If you do, Qt will overwrite your include/ directory with its
- installation.
- 
-+7. Building Qt documentation
-+============================
-+
-+To build and install the documentation, run:
-+
-+   make docs
-+
-+And if you don't use Qt uninstalled:
-+
-+   ./config.status
-+   make install
-+
-+It is necessary to do all this once only, even if you rebuild Qt later.
-+
- 8. Creating kde-qt.git modifications
- ====================================
- 
-
-commit 4b5ae1db24fa1b96f00ef62bd2e1063a8a313e5c
-Author: Albert Astals Cid <aacid@kde.org>
-Date:   Sat Jun 27 14:19:23 2009 +0200
-
-    Fix #error line not to have a ' as it's not correct
+---
+ src/3rdparty/webkit/WebCore/DerivedSources.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/src/3rdparty/webkit/WebCore/DerivedSources.cpp b/src/3rdparty/webkit/WebCore/DerivedSources.cpp
 index f698913..aaf8983 100644
@@ -1184,195 +1175,23 @@ index f698913..aaf8983 100644
 -#error Don't include any file in DerivedSources.cpp that includes StaticConstructors.h
 +#error Do not include any file in DerivedSources.cpp that includes StaticConstructors.h
  #endif
+-- 
+1.6.2.5
 
-commit 2d1727e396d5dca24ae0fb6a45d35ffc1abd0c12
-Author: Thiago Macieira <thiago.macieira@nokia.com>
-Date:   Fri Jun 12 14:27:54 2009 +0200
+From 01f26d0756839fbe783c637ca7dec5b7987f7e14 Mon Sep 17 00:00:00 2001
+From: Aaron Seigo <aseigo@kde.org>
+Date: Mon, 27 Jul 2009 21:46:22 -0600
+Subject: [PATCH 15/18] Make QMenu respect the minimum width set
 
-    Attempt to fix header installation for Phonon.
-    
-    This is the long-standing issue of whether Phonon headers should be
-    written with a capital P or a lowercase one. KDE releases of Phonon
-    had <Phonon/CapitalClassName> whereas Qt 4.4 had <phonon/filename.h>.
-    
-    I tried to solve this before by adding a Phonon subdir next to phonon
-    in include/, but that only compounded the error: the presence of two
-    dirs caused problems and the installation wasn't fixed.
-    
-    So instead try to place Phonon/ClassName inside include/phonon. And
-    fix the installation to do it properly: just copy the include/$lib dir
-    into the target, then overwrite the .h files with the sources from
-    src/$lib.
-    
-    Reviewed-by: Marius Storm-Olsen
-    (cherry picked from commit 4b43263b870c17fd813d1d34f97146f4c725083e)
+If one sets a minimum width on a QMenu and that size is larger than the
+smallest size needed by the large menu item, it ignores the minimum
+width and just uses the largest menu item size.
 
-diff --git a/bin/syncqt b/bin/syncqt
-index 137b25f..71d4bff 100755
---- a/bin/syncqt
-+++ b/bin/syncqt
-@@ -308,8 +308,6 @@ sub syncHeader {
-     $header =~ s=\\=/=g;
-     return copyFile($iheader, $header) if($copy);
- 
--    my $iheader_no_basedir = $iheader;
--    $iheader_no_basedir =~ s,^$basedir/?,,;
-     unless(-e "$header") {
-         my $header_dir = dirname($header);
-         mkpath $header_dir, 0777;
-@@ -802,10 +800,9 @@ foreach (@modules_to_sync) {
- 				my $class = $_;
- 				if ($class =~ m/::/) {
- 				    $class =~ s,::,/,g;
--				    $class = "../" . $class;
- 				}
- 				$class_lib_map_contents .= "QT_CLASS_LIB($_, $lib, $header_base)\n";
--				$header_copies++ if(syncHeader("$out_basedir/include/$lib/$class", $header, 0));
-+				$header_copies++ if(syncHeader("$out_basedir/include/$lib/$class", "$out_basedir/include/$lib/$header", 0));
- 			    }
- 			} else {
- 			    @headers = ( "$out_basedir/include/$lib/private/$header" );
-@@ -827,7 +824,6 @@ foreach (@modules_to_sync) {
- 				    my $class = $_;
- 				    if ($class =~ m/::/) {
- 					$class =~ s,::,/,g;
--					$class = "../" . $class;
- 				    }
- 				    my $class_header = fixPaths("$out_basedir/include/$lib/$class",
- 								$current_dir) . " ";
-@@ -848,25 +844,27 @@ foreach (@modules_to_sync) {
-     $master_contents .= "#endif\n";
- 
-     unless($showonly) {
--        #generate the "master" include file
--        my $master_include = "$out_basedir/include/$lib/$lib";
--	$pri_install_files .= fixPaths($master_include, "$modules{$lib}") . " "; #get the master file installed too
--        if(-e "$master_include") {
--            open MASTERINCLUDE, "<$master_include";
--            local $/;
--            binmode MASTERINCLUDE;
--            my $oldmaster = <MASTERINCLUDE>;
--            close MASTERINCLUDE;
--            $oldmaster =~ s/\r//g; # remove \r's , so comparison is ok on all platforms
--            $master_include = 0 if($oldmaster eq $master_contents);
--        }
--        if($master_include && $master_contents) {
--            my $master_dir = dirname($master_include);
--            mkpath $master_dir, 0777;
--            print "header (master) created for $lib\n";
--            open MASTERINCLUDE, ">$master_include";
--            print MASTERINCLUDE "$master_contents";
--            close MASTERINCLUDE;
-+        unless ($lib eq "phonon") {
-+            #generate the "master" include file
-+            my $master_include = "$out_basedir/include/$lib/$lib";
-+            $pri_install_files .= fixPaths($master_include, "$modules{$lib}") . " "; #get the master file installed too
-+            if($master_include && -e "$master_include") {
-+                open MASTERINCLUDE, "<$master_include";
-+                local $/;
-+                binmode MASTERINCLUDE;
-+                my $oldmaster = <MASTERINCLUDE>;
-+                close MASTERINCLUDE;
-+                $oldmaster =~ s/\r//g; # remove \r's , so comparison is ok on all platforms
-+                $master_include = 0 if($oldmaster eq $master_contents);
-+            }
-+            if($master_include && $master_contents) {
-+                my $master_dir = dirname($master_include);
-+                mkpath $master_dir, 0777;
-+                print "header (master) created for $lib\n";
-+                open MASTERINCLUDE, ">$master_include";
-+                print MASTERINCLUDE "$master_contents";
-+                close MASTERINCLUDE;
-+            }
-         }
- 
-         #handle the headers.pri for each module
-diff --git a/src/qt_install.pri b/src/qt_install.pri
-index 6dd2074..ebeac8d 100644
---- a/src/qt_install.pri
-+++ b/src/qt_install.pri
-@@ -15,11 +15,19 @@ qt_install_headers {
-                           $$QT_SOURCE_TREE/src/corelib/arch/$$QT_ARCH/arch
-     }
- 
--    flat_headers.files = $$INSTALL_HEADERS
--    flat_headers.path = $$[QT_INSTALL_HEADERS]/Qt
--    INSTALLS += flat_headers
-+    equals(TARGET, phonon) {
-+        class_headers.path = $$[QT_INSTALL_HEADERS]/$$TARGET/Phonon
-+    } else {
-+        flat_headers.files = $$INSTALL_HEADERS
-+        flat_headers.path = $$[QT_INSTALL_HEADERS]/Qt
-+        INSTALLS += flat_headers
- 
--    targ_headers.files = $$INSTALL_HEADERS $$SYNCQT.HEADER_CLASSES
-+        class_headers.path = $$[QT_INSTALL_HEADERS]/$$TARGET
-+    }
-+    class_headers.files = $$SYNCQT.HEADER_CLASSES
-+    INSTALLS += class_headers
-+
-+    targ_headers.files = $$INSTALL_HEADERS
-     targ_headers.path = $$[QT_INSTALL_HEADERS]/$$TARGET
-     INSTALLS += targ_headers
- }
-
-commit f9802f2bbbd23137acb5f80d1f131fa6b1a85752
-Author: Thiago Macieira <thiago.macieira@nokia.com>
-Date:   Fri Jun 12 15:06:29 2009 +0200
-
-    Fix compilation after the last change.
-    
-    The #include <phonon> header no longer exists. And the <Phonon> or
-    <Phonon/Phonon> headers have never existed (neither for us nor for the
-    Phonon sources). You have to select each and every header that you do
-    want now.
-    
-    Reviewed-By: Marius Storm-Olsen
-    (cherry picked from commit 71be46c61c582d2f4635a1e420e44d57ddb5857a)
-
-diff --git a/src/3rdparty/webkit/WebCore/platform/graphics/qt/MediaPlayerPrivatePhonon.cpp b/src/3rdparty/webkit/WebCore/platform/graphics/qt/MediaPlayerPrivatePhonon.cpp
-index b1a48fb..2e01100 100644
---- a/src/3rdparty/webkit/WebCore/platform/graphics/qt/MediaPlayerPrivatePhonon.cpp
-+++ b/src/3rdparty/webkit/WebCore/platform/graphics/qt/MediaPlayerPrivatePhonon.cpp
-@@ -35,7 +35,10 @@
- #include <QMetaEnum>
- #include <QUrl>
- #include <QEvent>
--#include <phonon>
-+
-+#include <Phonon/AudioOutput>
-+#include <Phonon/MediaObject>
-+#include <Phonon/VideoWidget>
- 
- using namespace Phonon;
- 
-diff --git a/tools/designer/src/plugins/phononwidgets/videoplayertaskmenu.h b/tools/designer/src/plugins/phononwidgets/videoplayertaskmenu.h
-index 2ca3b58..58255b2 100644
---- a/tools/designer/src/plugins/phononwidgets/videoplayertaskmenu.h
-+++ b/tools/designer/src/plugins/phononwidgets/videoplayertaskmenu.h
-@@ -47,7 +47,8 @@
- #include <QtDesigner/QDesignerTaskMenuExtension>
- #include <QtDesigner/private/extensionfactory_p.h>
- 
--#include <phonon>
-+#include <Phonon/BackendCapabilities>
-+#include <Phonon/VideoPlayer>
- 
- QT_BEGIN_NAMESPACE
- 
-
-commit 01f26d0756839fbe783c637ca7dec5b7987f7e14
-Author: Aaron Seigo <aseigo@kde.org>
-Date:   Mon Jul 27 21:46:22 2009 -0600
-
-    Make QMenu respect the minimum width set
-    
-    If one sets a minimum width on a QMenu and that size is larger than the
-    smallest size needed by the large menu item, it ignores the minimum
-    width and just uses the largest menu item size.
-    
-    This results in ugly painting artifacts. This currently affects
-    (at least) the tasks widget in Plasma in KDE4.
+This results in ugly painting artifacts. This currently affects
+(at least) the tasks widget in Plasma in KDE4.
+---
+ src/gui/widgets/qmenu.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
 diff --git a/src/gui/widgets/qmenu.cpp b/src/gui/widgets/qmenu.cpp
 index 9fbbb04..5d62ea6 100644
@@ -1387,13 +1206,20 @@ index 9fbbb04..5d62ea6 100644
              //wrapping
              if (!scroll &&
                 y+sz.height()+vmargin > dh - (q->style()->pixelMetric(QStyle::PM_MenuDesktopFrameWidth, 0, q) * 2)) {
+-- 
+1.6.2.5
 
-commit 1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a
-Author: Helio Chissini de Castro <helio@kde.org>
-Date:   Fri Jul 10 16:00:13 2009 -0300
+From 1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a Mon Sep 17 00:00:00 2001
+From: Helio Chissini de Castro <helio@kde.org>
+Date: Fri, 10 Jul 2009 16:00:13 -0300
+Subject: [PATCH 16/18] Fill gap of X.org/XFree multimedia/special/launcher keys
+ Qt up to 4.5.x is missing whole setup of multimedia keys already defined by X
 
-    Fill gap of X.org/XFree multimedia/special/launcher keys
-    Qt up to 4.5.x is missing whole setup of multimedia keys already defined by X
+---
+ src/corelib/global/qnamespace.h   |   97 ++++++++++++-
+ src/gui/kernel/qkeymapper_x11.cpp |  286 ++++++++++++++++++++++++++++++-------
+ src/gui/kernel/qkeysequence.cpp   |  174 +++++++++++++++++------
+ 3 files changed, 461 insertions(+), 96 deletions(-)
 
 diff --git a/src/corelib/global/qnamespace.h b/src/corelib/global/qnamespace.h
 index 3edbca7..ddf27a8 100644
@@ -2040,3 +1866,102 @@ index 894f663..665c058 100644
  
      // --------------------------------------------------------------
      // More consistent namings
+-- 
+1.6.2.5
+
+From 9eb3560cfd5cd0bc9c7bf79f2c27657ee07b8f95 Mon Sep 17 00:00:00 2001
+From: Albert Astals Cid <aacid@kde.org>
+Date: Sat, 8 Aug 2009 14:40:25 +0200
+Subject: [PATCH 17/18] Add context to tr calls in QShortcut
+
+Some languages have special rules for using "+" to concatenate strings and
+for example it needs to be Ctrl + Shift instead of Ctrl+Shift, adding
+context to these strings helps creating a more correct translation
+---
+ src/gui/kernel/qkeysequence.cpp |   20 ++++++++++----------
+ 1 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/src/gui/kernel/qkeysequence.cpp b/src/gui/kernel/qkeysequence.cpp
+index 894f663..c17f253 100644
+--- a/src/gui/kernel/qkeysequence.cpp
++++ b/src/gui/kernel/qkeysequence.cpp
+@@ -991,10 +991,10 @@ int QKeySequencePrivate::decodeString(const QString &str, QKeySequence::Sequence
+ 
+     QList<QModifKeyName> modifs;
+     if (nativeText) {
+-        modifs << QModifKeyName(Qt::CTRL, QShortcut::tr("Ctrl").toLower().append(QLatin1Char('+')))
+-               << QModifKeyName(Qt::SHIFT, QShortcut::tr("Shift").toLower().append(QLatin1Char('+')))
+-               << QModifKeyName(Qt::ALT, QShortcut::tr("Alt").toLower().append(QLatin1Char('+')))
+-               << QModifKeyName(Qt::META, QShortcut::tr("Meta").toLower().append(QLatin1Char('+')));
++        modifs << QModifKeyName(Qt::CTRL, QShortcut::tr("Ctrl", "Ctrl key, used for shortcuts").toLower().append(QLatin1Char('+')))
++               << QModifKeyName(Qt::SHIFT, QShortcut::tr("Shift", "Shift key, used for shortcuts").toLower().append(QLatin1Char('+')))
++               << QModifKeyName(Qt::ALT, QShortcut::tr("Alt", "Alt key, used for shortcuts").toLower().append(QLatin1Char('+')))
++               << QModifKeyName(Qt::META, QShortcut::tr("Meta", "Meta key, used for shortcuts").toLower().append(QLatin1Char('+')));
+     }
+     modifs += *gmodifs; // Test non-translated ones last
+ 
+@@ -1086,7 +1086,7 @@ QString QKeySequence::encodeString(int key)
+ static inline void addKey(QString &str, const QString &theKey, QKeySequence::SequenceFormat format)
+ {
+     if (!str.isEmpty())
+-        str += (format == QKeySequence::NativeText) ? QShortcut::tr("+")
++        str += (format == QKeySequence::NativeText) ? QShortcut::tr("+", "Symbol used to concatenate keys in shortcuts")
+                                                     : QString::fromLatin1("+");
+     str += theKey;
+ }
+@@ -1111,13 +1111,13 @@ QString QKeySequencePrivate::encodeString(int key, QKeySequence::SequenceFormat
+     {
+         // On other systems the order is Meta, Control, Alt, Shift
+         if ((key & Qt::META) == Qt::META)
+-            s = nativeText ? QShortcut::tr("Meta") : QString::fromLatin1("Meta");
++            s = nativeText ? QShortcut::tr("Meta", "Meta key, used for shortcuts") : QString::fromLatin1("Meta");
+         if ((key & Qt::CTRL) == Qt::CTRL)
+-            addKey(s, nativeText ? QShortcut::tr("Ctrl") : QString::fromLatin1("Ctrl"), format);
++            addKey(s, nativeText ? QShortcut::tr("Ctrl", "Ctrl key, used for shortcuts") : QString::fromLatin1("Ctrl"), format);
+         if ((key & Qt::ALT) == Qt::ALT)
+-            addKey(s, nativeText ? QShortcut::tr("Alt") : QString::fromLatin1("Alt"), format);
++            addKey(s, nativeText ? QShortcut::tr("Alt", "Alt key, used for shortcuts") : QString::fromLatin1("Alt"), format);
+         if ((key & Qt::SHIFT) == Qt::SHIFT)
+-            addKey(s, nativeText ? QShortcut::tr("Shift") : QString::fromLatin1("Shift"), format);
++            addKey(s, nativeText ? QShortcut::tr("Shift", "Shift key, used for shortcuts") : QString::fromLatin1("Shift"), format);
+     }
+ 
+ 
+@@ -1132,7 +1132,7 @@ QString QKeySequencePrivate::encodeString(int key, QKeySequence::SequenceFormat
+             p += QChar((key-0x10000)%400+0xdc00);
+         }
+     } else if (key >= Qt::Key_F1 && key <= Qt::Key_F35) {
+-            p = nativeText ? QShortcut::tr("F%1").arg(key - Qt::Key_F1 + 1)
++            p = nativeText ? QShortcut::tr("F%1", "Fx key, used for shortcuts").arg(key - Qt::Key_F1 + 1)
+                            : QString::fromLatin1("F%1").arg(key - Qt::Key_F1 + 1);
+     } else if (key) {
+         int i=0;
+-- 
+1.6.2.5
+
+From 4be7acd98f49b3b1bb12c9fa5dd52b7f9ffd90fb Mon Sep 17 00:00:00 2001
+From: Dario Freddi <drf@kde.org>
+Date: Mon, 28 Sep 2009 15:58:12 +0200
+Subject: [PATCH 18/18] Fix QNativeImage constructor
+
+Signed-off-by: Dario Freddi <drf@kde.org>
+---
+ src/gui/image/qnativeimage.cpp |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/gui/image/qnativeimage.cpp b/src/gui/image/qnativeimage.cpp
+index a0c86db..c1bc794 100644
+--- a/src/gui/image/qnativeimage.cpp
++++ b/src/gui/image/qnativeimage.cpp
+@@ -144,7 +144,7 @@ QImage::Format QNativeImage::systemFormat()
+ #elif defined(Q_WS_X11) && !defined(QT_NO_MITSHM)
+ 
+ QNativeImage::QNativeImage(int width, int height, QImage::Format format,bool /* isTextBuffer */, QWidget *widget)
+-    : xshmimg(0), xshmpm(0)
++    : xshmimg(0)
+ {
+     if (!X11->use_mitshm) {
+         image = QImage(width, height, format);
+-- 
+1.6.2.5
+
