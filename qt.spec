@@ -54,6 +54,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+# fix translations build (work-in-progress)
+#Patch55: qt-x11-opensource-src-4.5.3-translations_buildfix.patch
 
 # security patches
 
@@ -373,6 +375,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
+#patch55 -p1 -b .translations_buildfix
 
 # security fixes
 
@@ -537,6 +540,13 @@ done
 # nuke dangling reference(s) to %buildroot
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
 
+# nuke QMAKE_PRL_LIBS, seems similar to static linking and .la files (#520323)
+sed -i -e "s|^QMAKE_PRL_LIBS|#QMAKE_PRL_LIBS|" %{buildroot}%{_qt4_libdir}/*.prl
+
+# .la files, die, die, die.
+rm -f %{buildroot}%{_qt4_libdir}/lib*.la
+
+
 %if 0
 #if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
 # -doc make symbolic link to _qt4_docdir
@@ -575,9 +585,6 @@ for lib in libQt*.a ; do
    echo "INPUT(-l${libbase})" > lib${libbase}_debug.a
 done
 popd
-
-# .la files, die, die, die.
-rm -f %{buildroot}%{_qt4_libdir}/lib*.la
 
 %ifarch %{multilib_archs}
 # multilib: qconfig.h
@@ -662,21 +669,20 @@ EOF
 # create/own %%_qt4_plugindir/styles
 mkdir %{buildroot}%{_qt4_plugindir}/styles
 
-%if 0%{?phonon:1} 
+%if 0%{?phonon_internal}
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
+# This should no longer be required, but... -- Rex
 pushd %{buildroot}%{_qt4_headerdir}
 ln -s phonon Phonon
 popd
-%endif
-
-%if ! 0%{?phonon_internal}
+%else
 rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
 rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
 # contents slightly different between phonon-4.3.1 and qt-4.5.0
 rm -fv  %{buildroot}%{_includedir}/phonon/phononnamespace.h
 # contents dup'd but should remove just in case
 rm -fv  %{buildroot}%{_includedir}/phonon/*.h
-#rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
+rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
 #rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
 rm -fv %{buildroot}%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
 %endif
@@ -958,6 +964,8 @@ fi
 %changelog
 * Fri Oct 02 2009 Than Ngo <than@redhat.com> - 4.5.3-2
 - cleanup patches
+- if ! phonon_internal, exclude more/all phonon headers
+- qt-devel must Requires: phonon-devel (#520323)
 
 * Thu Oct 01 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-1
 - qt-4.5.3
