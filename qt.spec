@@ -673,6 +673,9 @@ install -D -m 0644 %{SOURCE13} %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/
 install -D -m 0644 %{SOURCE14} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/phonon-gstreamer.png
 install -D -m 0644 %{SOURCE15} %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/phonon-gstreamer.png
 install -D -m 0644 %{SOURCE16} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/phonon-gstreamer.png
+%else
+rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
+rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
 
