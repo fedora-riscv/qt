@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 22%{?dist}
+Release: 23%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -97,11 +97,13 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define phonon -phonon
-# if building with -phonon, define to internal version (ie, Obsolete external phonon)
-#define phonon_internal 1
 %define phonon_backend -phonon-backend
+%if 0%{?rhel}
+# if building with -phonon, define to internal version (ie, Obsolete external phonon)
+%define phonon_internal 1
 # if -phonon-backend, include in packaging (else it's omitted)
-#define phonon_backend_packaged 1
+%define phonon_backend_packaged 1
+%endif
 %define phonon_version 4.3.1
 %define phonon_version_major 4.3
 %define phonon_release 100
@@ -939,6 +941,9 @@ fi
 
 
 %changelog
+* Sun Oct 04 2009 Than Ngo <than@redhat.com> - 4.5.2-23
+- rhel cleanup
+
 * Sat Oct 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-22
 - if ! phonon_internal, exclude more/all phonon headers
 - qt-devel must Requires: phonon-devel (#520323)
