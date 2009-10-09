@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 23%{?dist}
+Release: 24%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -44,6 +44,9 @@ Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
 Patch22: qt-x11-opensource-src-4.5.2-system_ca_certificates.patch 
 Requires: ca-certificates
+# disable JavaScriptCore JIT as it crashes with SE Linux
+# http://bugzilla.redhat.com/527079
+Patch23: qt-x11-opensource-src-4.5.3-javascript-disable-jit.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -361,6 +364,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch19 -p1 -b .servicesfile
 %patch21 -p1 -b .gst-pulsaudio
 %patch22 -p1 -b .system_ca_certificates
+%patch23 -p1 -b .javascriptcore-disable-jit
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
@@ -941,6 +945,9 @@ fi
 
 
 %changelog
+* Tue Oct 06 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.2-24
+- disable JavaScriptCore JIT, SE Linux crashes (#527079)
+
 * Sun Oct 04 2009 Than Ngo <than@redhat.com> - 4.5.2-23
 - rhel cleanup
 
