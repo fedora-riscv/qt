@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.2
-Release: 24%{?dist}
+Release: 25%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -61,9 +61,10 @@ Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 # compile with openssl-1.0
 Patch56: qt-x11-opensource-src-4.5.2-ossl10.patch
 
-# security patches
+## upstream/security patches
 Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
 Patch101: qt-x11-opensource-src-4.5.2-CVE-2009-2700.patch
+Patch102: qt-x11-opensource-src-4.5.2-fix-webkit-drag-crash.patch
 
 # switch to kde-qt branches, qt-copy doesn't exist anymore
 Patch200: kde-qt-patches-20090820git.patch
@@ -372,9 +373,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch55 -p1 -b .timestamp
 %patch56 -p1 -b .ossl10
 
-# security fixes
+# upstream/security fixes
 %patch100 -p1 -b .CVE-2009-1725
 %patch101 -p1 -b .CVE-2009-2700
+%patch102 -p1 -b .webkit_drag_crash
 
 # kde-qt branch
 %patch200 -p1 -b .kde-qt-patches-20090820git
@@ -384,10 +386,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
-# hack around (hopefully temporary) gcc borkage (#522576)
-#if 0%{?fedora} > 11
-#RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fno-var-tracking-assignments"
-#endif
 
 %define platform linux-g++
 %if "%{_qt4_datadir}" != "%{_qt4_prefix}" && "%{_lib}" == "lib64"                                  
@@ -945,6 +943,9 @@ fi
 
 
 %changelog
+* Fri Oct 09 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-25
+- qt webkit crash on drag (#528094)
+
 * Tue Oct 06 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.2-24
 - disable JavaScriptCore JIT, SE Linux crashes (#527079)
 

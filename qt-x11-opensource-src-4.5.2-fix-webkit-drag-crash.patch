@@ -1,0 +1,28 @@
+diff -up qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/html/HTMLElement.cpp qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/html/HTMLElement.cpp
+index 4caf336..b21a3fe 100644
+--- qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/html/HTMLElement.cpp
++++ qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/html/HTMLElement.cpp
+@@ -44,6 +44,7 @@
+ #include "XMLTokenizer.h"
+ #include "markup.h"
+ #include <wtf/StdLibExtras.h>
++#include <stdio.h>
+ 
+ namespace WebCore {
+ 
+diff -up qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/page/DragController.cpp qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/page/DragController.cpp
+index 10a11f2..c756da8 100644
+--- qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/page/DragController.cpp
++++ qt-x11-opensource-src-4.5.2/src/3rdparty/webkit/WebCore/page/DragController.cpp
+@@ -157,7 +157,7 @@ void DragController::dragExited(DragData* dragData)
+     Frame* mainFrame = m_page->mainFrame();
+     
+     if (RefPtr<FrameView> v = mainFrame->view()) {
+-        ClipboardAccessPolicy policy = m_document->securityOrigin()->isLocal() ? ClipboardReadable : ClipboardTypesReadable;
++        ClipboardAccessPolicy policy = (!m_document || m_document->securityOrigin()->isLocal()) ? ClipboardReadable : ClipboardTypesReadable;
+         RefPtr<Clipboard> clipboard = dragData->createClipboard(policy);
+         clipboard->setSourceOperation(dragData->draggingSourceOperationMask());
+         mainFrame->eventHandler()->cancelDragAndDrop(createMouseEvent(dragData), clipboard.get());
+-- 
+1.6.2.5
+
