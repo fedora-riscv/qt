@@ -1,0 +1,88 @@
+diff -up qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage.cpp.me qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage.cpp
+--- qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage.cpp.me	2009-10-02 18:26:02.000000000 +0200
++++ qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage.cpp	2009-10-02 18:27:13.000000000 +0200
+@@ -144,7 +144,7 @@ QImage::Format QNativeImage::systemForma
+ #elif defined(Q_WS_X11) && !defined(QT_NO_MITSHM)
+ 
+ QNativeImage::QNativeImage(int width, int height, QImage::Format format,bool /* isTextBuffer */, QWidget *widget)
+-    : xshmimg(0), xshmpm(0)
++    : xshmimg(0)
+ {
+     if (!X11->use_mitshm) {
+         image = QImage(width, height, format);
+@@ -195,11 +195,6 @@ QNativeImage::QNativeImage(int width, in
+             shmctl(xshminfo.shmid, IPC_RMID, 0);
+         return;
+     }
+-    xshmpm = XShmCreatePixmap(X11->display, DefaultRootWindow(X11->display), xshmimg->data,
+-                              &xshminfo, width, height, dd);
+-    if (!xshmpm) {
+-        qWarning() << "QNativeImage: Unable to create shared Pixmap.";
+-    }
+ }
+ 
+ 
+@@ -208,10 +203,6 @@ QNativeImage::~QNativeImage()
+     if (!xshmimg)
+         return;
+ 
+-    if (xshmpm) {
+-        XFreePixmap(X11->display, xshmpm);
+-        xshmpm = 0;
+-    }
+     XShmDetach(X11->display, &xshminfo);
+     xshmimg->data = 0;
+     XDestroyImage(xshmimg);
+diff -up qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage_p.h.me qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage_p.h
+--- qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage_p.h.me	2009-10-02 18:33:38.000000000 +0200
++++ qt-x11-opensource-src-4.5.3/src/gui/image/qnativeimage_p.h	2009-10-02 18:34:01.000000000 +0200
+@@ -90,7 +90,6 @@ public:
+ 
+ #elif defined(Q_WS_X11) && !defined(QT_NO_MITSHM)
+     XImage *xshmimg;
+-    Pixmap xshmpm;
+     XShmSegmentInfo xshminfo;
+ 
+ #elif defined(Q_WS_MAC)
+diff -up qt-x11-opensource-src-4.5.3/src/gui/kernel/qapplication_x11.cpp.me qt-x11-opensource-src-4.5.3/src/gui/kernel/qapplication_x11.cpp
+--- qt-x11-opensource-src-4.5.3/src/gui/kernel/qapplication_x11.cpp.me	2009-10-02 18:27:55.000000000 +0200
++++ qt-x11-opensource-src-4.5.3/src/gui/kernel/qapplication_x11.cpp	2009-10-02 18:33:30.000000000 +0200
+@@ -1959,12 +1959,9 @@ void qt_init(QApplicationPrivate *priv, 
+             bool local = displayName.isEmpty() || displayName.lastIndexOf(QLatin1Char(':')) == 0;
+             if (local && (qgetenv("QT_X11_NO_MITSHM").toInt() == 0)) {
+                 Visual *defaultVisual = DefaultVisual(X11->display, DefaultScreen(X11->display));
+-                X11->use_mitshm = mitshm_pixmaps && ((defaultVisual->red_mask == 0xff0000
+-                                                      || defaultVisual->red_mask == 0xf800)
+-                                                     && (defaultVisual->green_mask == 0xff00
+-                                                         || defaultVisual->green_mask == 0x7e0)
+-                                                     && (defaultVisual->blue_mask == 0xff
+-                                                         || defaultVisual->blue_mask == 0x1f));
++                X11->use_mitshm = (defaultVisual->red_mask == 0xff0000 || defaultVisual->red_mask == 0xf800)
++                                   && (defaultVisual->green_mask == 0xff00 || defaultVisual->green_mask == 0x7e0)
++                                   && (defaultVisual->blue_mask == 0xff || defaultVisual->blue_mask == 0x1f);
+             }
+         }
+ #endif // QT_NO_MITSHM
+diff -up qt-x11-opensource-src-4.5.3/src/gui/painting/qwindowsurface_raster.cpp.me qt-x11-opensource-src-4.5.3/src/gui/painting/qwindowsurface_raster.cpp
+--- qt-x11-opensource-src-4.5.3/src/gui/painting/qwindowsurface_raster.cpp.me	2009-10-02 18:34:18.000000000 +0200
++++ qt-x11-opensource-src-4.5.3/src/gui/painting/qwindowsurface_raster.cpp	2009-10-02 18:35:54.000000000 +0200
+@@ -220,9 +220,16 @@ void QRasterWindowSurface::flush(QWidget
+ 
+     QRect br = rgn.boundingRect().translated(offset);
+ #ifndef QT_NO_MITSHM
+-    if (d_ptr->image->xshmpm) {
+-        XCopyArea(X11->display, d_ptr->image->xshmpm, widget->handle(), d_ptr->gc,
+-                  br.x(), br.y(), br.width(), br.height(), wbr.x(), wbr.y());
++    if (d_ptr->image->xshmimg && (br.width() * br.height() > 65536)) {
++        const QImage &src = d->image->image;
++        br = br.intersected(src.rect());
++        // Hack to make sure we satisify the PutImage() constraints in the X server,
++        // since the doShmPutImage() route currently forces a migration to system ram.
++        wbr.setX(wbr.x() - br.x());
++        br.setX(0);
++        br.setWidth(src.width());
++        XShmPutImage(X11->display, widget->handle(), d_ptr->gc, d_ptr->image->xshmimg,
++                     br.x(), br.y(), wbr.x(), wbr.y(), br.width(), br.height(), False);
+         XSync(X11->display, False);
+     } else
+ #endif

@@ -9,14 +9,14 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.5.2
-Release: 25%{?dist}
+Version: 4.5.3
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
+Source0: ftp://ftp.qt.nokia.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
@@ -42,7 +42,7 @@ Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
-Patch22: qt-x11-opensource-src-4.5.2-system_ca_certificates.patch 
+Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
 # disable JavaScriptCore JIT as it crashes with SE Linux
 # http://bugzilla.redhat.com/527079
@@ -57,21 +57,30 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
-Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
-# compile with openssl-1.0
-Patch56: qt-x11-opensource-src-4.5.2-ossl10.patch
 
-## upstream/security patches
-Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
-Patch101: qt-x11-opensource-src-4.5.2-CVE-2009-2700.patch
-Patch102: qt-x11-opensource-src-4.5.2-fix-webkit-drag-crash.patch
+# security patches
 
-# switch to kde-qt branches, qt-copy doesn't exist anymore
-Patch200: kde-qt-patches-20090820git.patch
+# kde-qt git patches
+Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
+Patch202: 0002-This-patch-makes-override-redirect-windows-popup-me.patch
+Patch203: 0003-This-patch-changes-QObjectPrivateVersion-thus-preve.patch
+Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow.patch
+Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
+Patch206: 0006-Fix-configure.exe-to-do-an-out-of-source-build-on-wi.patch
+Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-g.patch
+Patch208: 0008-In-a-treeview-with-columns-like-this.patch
+Patch209: 0009-This-patch-fixes-deserialization-of-values-with-cust.patch
+Patch210: 0010-Import-README.qt-copy-from-the-original-qt-copy.patch
+Patch211: 0011-Update-this-file-to-reflect-the-workflow-with-Git-a.patch
+Patch212: 0274-shm-native-image-fix.patch
+Patch213: 0015-Make-QMenu-respect-the-minimum-width-set.patch
+Patch214: 0016-Fill-gap-of-X.org-XFree-multimedia-special-launcher.patch
+Patch215: 0017-Add-context-to-tr-calls-in-QShortcut.patch
+
 # these patches are not merged yet in kde-qt branches
-Patch201: 0118-qtcopy-define.diff
-Patch202: 0283-do-not-deduce-scrollbar-extent-twice.diff
-Patch203: 0285-qgv-dontshowchildren.diff
+Patch301: 0118-qtcopy-define.diff
+Patch302: 0283-do-not-deduce-scrollbar-extent-twice.diff
+Patch303: 0285-qgv-dontshowchildren.diff
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -370,19 +379,30 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
-%patch55 -p1 -b .timestamp
-%patch56 -p1 -b .ossl10
 
-# upstream/security fixes
-%patch100 -p1 -b .CVE-2009-1725
-%patch101 -p1 -b .CVE-2009-2700
-%patch102 -p1 -b .webkit_drag_crash
+# security fixes
 
 # kde-qt branch
-%patch200 -p1 -b .kde-qt-patches-20090820git
-%patch201 -p0 -b .0118-qtcopy-define
-%patch202 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
-%patch203 -p0 -b .0285-qgv-dontshowchildren
+%patch201 -p1 -b .kde-qt-0001
+%patch202 -p1 -b .kde-qt-0002
+%patch203 -p1 -b .kde-qt-0003
+%patch204 -p1 -b .kde-qt-0004
+%patch205 -p1 -b .kde-qt-0005
+%patch206 -p1 -b .kde-qt-0006
+%patch207 -p1 -b .kde-qt-0007
+%patch208 -p1 -b .kde-qt-0008
+%patch209 -p1 -b .kde-qt-0009
+%patch210 -p1 -b .kde-qt-0010
+%patch211 -p1 -b .kde-qt-0011
+%patch212 -p1 -b .0274-shm-native-image-fix
+%patch213 -p1 -b .kde-qt-0015
+%patch214 -p1 -b .kde-qt-0016
+%patch215 -p1 -b .kde-qt-0017
+
+# not yet merged ones
+%patch301 -p0 -b .0118-qtcopy-define
+%patch302 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
+%patch303 -p0 -b .0285-qgv-dontshowchildren
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -419,8 +439,11 @@ if [ "%{_lib}" == "lib64" ] ; then
   sed -i -e "s,/lib /usr/lib,/%{_lib} /usr/%{_lib},g" config.tests/{unix,x11}/*.test
 fi
 
-# let syncqt to create new header
-rm -rf include
+# let makefile create missing .qm files, the .qm files should be included in qt upstream
+for f in translations/*.ts ; do
+  touch ${f%.ts}.qm
+done
+
 
 %build
 
@@ -485,6 +508,9 @@ rm -rf include
 
 make %{?_smp_mflags}
 
+# recreate .qm files
+LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
+
 
 %install
 rm -rf %{buildroot}
@@ -527,6 +553,7 @@ sed -i -e "s|^QMAKE_PRL_LIBS|#QMAKE_PRL_LIBS|" %{buildroot}%{_qt4_libdir}/*.prl
 
 # .la files, die, die, die.
 rm -f %{buildroot}%{_qt4_libdir}/lib*.la
+
 
 %if 0
 #if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
@@ -943,18 +970,20 @@ fi
 
 
 %changelog
-* Fri Oct 09 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-25
-- qt webkit crash on drag (#528094)
-
-* Tue Oct 06 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.2-24
-- disable JavaScriptCore JIT, SE Linux crashes (#527079)
-
-* Sun Oct 04 2009 Than Ngo <than@redhat.com> - 4.5.2-23
+* Sat Oct 10 2009 Than Ngo <than@redhat.com> - 4.5.3-4
+- fix translation build issue
 - rhel cleanup
 
-* Sat Oct 03 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-22
+* Tue Oct 06 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.3-3
+- disable JavaScriptCore JIT, SE Linux crashes (#527079)
+
+* Fri Oct 02 2009 Than Ngo <than@redhat.com> - 4.5.3-2
+- cleanup patches
 - if ! phonon_internal, exclude more/all phonon headers
 - qt-devel must Requires: phonon-devel (#520323)
+
+* Thu Oct 01 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-1
+- qt-4.5.3
 
 * Tue Sep 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-21
 - switch to external/kde phonon
