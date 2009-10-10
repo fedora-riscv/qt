@@ -57,8 +57,6 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
-# fix translations build (work-in-progress)
-#Patch55: qt-x11-opensource-src-4.5.3-translations_buildfix.patch
 
 # security patches
 
@@ -509,7 +507,8 @@ done
 make %{?_smp_mflags}
 
 # recreate .qm files
-bin/lrelease translations/*.ts
+LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
+
 
 %install
 rm -rf %{buildroot}
