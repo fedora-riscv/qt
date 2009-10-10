@@ -1,7 +1,7 @@
 From 01f26d0756839fbe783c637ca7dec5b7987f7e14 Mon Sep 17 00:00:00 2001
 From: Aaron Seigo <aseigo@kde.org>
 Date: Mon, 27 Jul 2009 21:46:22 -0600
-Subject: [PATCH] Make QMenu respect the minimum width set
+Subject: [PATCH 15/18] Make QMenu respect the minimum width set
 
 If one sets a minimum width on a QMenu and that size is larger than the
 smallest size needed by the large menu item, it ignores the minimum
@@ -27,5 +27,5 @@ index 9fbbb04..5d62ea6 100644
              if (!scroll &&
                 y+sz.height()+vmargin > dh - (q->style()->pixelMetric(QStyle::PM_MenuDesktopFrameWidth, 0, q) * 2)) {
 -- 
-1.6.1
+1.6.2.5
 

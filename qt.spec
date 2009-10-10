@@ -4,28 +4,23 @@
 # -no-pch disables precompiled headers, make ccache-friendly
 %define no_pch -no-pch
 
+%define _default_patch_fuzz 2
+
 Summary: Qt toolkit
-%if 0%{?fedora} > 8
 Name:    qt
 Epoch:   1
-%else
-Name:    qt4
-%endif
-Version: 4.5.2
-Release: 3%{?dist}
+Version: 4.5.3
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: ftp://ftp.trolltech.com/qt/source/qt-x11-opensource-src-%{version}.tar.bz2
+Source0: ftp://ftp.qt.nokia.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-
-%if "%{name}" != "qt4"
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
-%endif
 
 Source4: Trolltech.conf
 
@@ -42,36 +37,58 @@ Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
-# fix the qt-copy patch 0274-shm-native-image-fix.diff to apply against 4.5.2
-Patch20: qt-copy-20090626-qt452.patch
+# make PulseAudio the default device in Phonon
+Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
+Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
+Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
+# use system ca-bundle certs, http://bugzilla.redhat.com/521911
+Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
+Requires: ca-certificates
+# disable JavaScriptCore JIT as it crashes with SE Linux
+# http://bugzilla.redhat.com/527079
+Patch23: qt-x11-opensource-src-4.5.3-javascript-disable-jit.patch
 
 ## upstreamable bits
-Patch51: qt-x11-opensource-src-4.5.2-qdoc3.patch
+# http://bugzilla.redhat.com/485677
+Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
 Patch52: qt-4.5-sparc64.patch
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
-# should fix the reference counting in qt_toX11Pixmap and thus the Kolourpaint
-# crash with Qt 4.5
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
-Patch55: qt-x11-opensource-src-4.5.2-timestamp.patch
 
-## qt-copy patches
-# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/01f26d0756839fbe783c637ca7dec5b7987f7e14.patch
-Patch287: 287-qmenu-respect-minwidth.patch
-# http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a.patch
-Patch0288: 0288-more-x-keycodes.patch
+# security patches
 
-# security fixes
-Patch100: qt-x11-opensource-src-4.5.2-CVE-2009-1725.patch
-Patch101: qt-x11-opensource-src-4.5.2-CVE-2009-2700.patch
+# kde-qt git patches
+Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
+Patch202: 0002-This-patch-makes-override-redirect-windows-popup-me.patch
+Patch203: 0003-This-patch-changes-QObjectPrivateVersion-thus-preve.patch
+Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow.patch
+Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
+Patch206: 0006-Fix-configure.exe-to-do-an-out-of-source-build-on-wi.patch
+Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-g.patch
+Patch208: 0008-In-a-treeview-with-columns-like-this.patch
+Patch209: 0009-This-patch-fixes-deserialization-of-values-with-cust.patch
+Patch210: 0010-Import-README.qt-copy-from-the-original-qt-copy.patch
+Patch211: 0011-Update-this-file-to-reflect-the-workflow-with-Git-a.patch
+Patch212: 0274-shm-native-image-fix.patch
+Patch213: 0015-Make-QMenu-respect-the-minimum-width-set.patch
+Patch214: 0016-Fill-gap-of-X.org-XFree-multimedia-special-launcher.patch
+Patch215: 0017-Add-context-to-tr-calls-in-QShortcut.patch
 
-%define qt_copy 20090626
-Source1: qt-copy-patches-svn_checkout.sh
-%{?qt_copy:Source2: qt-copy-patches-%{qt_copy}svn.tar.bz2}
-%{?qt_copy:Provides: qt-copy = %{qt_copy}}
-%{?qt_copy:Provides: qt4-copy = %{qt_copy}}
+# these patches are not merged yet in kde-qt branches
+Patch301: 0118-qtcopy-define.diff
+Patch302: 0283-do-not-deduce-scrollbar-extent-twice.diff
+Patch303: 0285-qgv-dontshowchildren.diff
+
+Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
+Source11: hi16-phonon-gstreamer.png
+Source12: hi22-phonon-gstreamer.png
+Source13: hi32-phonon-gstreamer.png
+Source14: hi48-phonon-gstreamer.png
+Source15: hi64-phonon-gstreamer.png
+Source16: hi128-phonon-gstreamer.png
 
 Source20: assistant.desktop
 Source21: designer.desktop
@@ -93,21 +110,20 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define phonon -phonon
-# if building with --phonon, define to internal version (ie, Obsolete external phonon)
-#define phonon_internal 1
-%define phonon_backend -no-phonon-backend
+%define phonon_backend -phonon-backend
+%if 0%{?rhel}
+# if building with -phonon, define to internal version (ie, Obsolete external phonon)
+%define phonon_internal 1
+# if -phonon-backend, include in packaging (else it's omitted)
+%define phonon_backend_packaged 1
+%endif
 %define phonon_version 4.3.1
+%define phonon_version_major 4.3
+%define phonon_release 100
 %define webkit -webkit
 %define gtkstyle -gtkstyle
-
 %define nas -no-nas-sound
-%if 0%{?fedora} > 4 || 0%{?rhel} > 4
-# link dbus
 %define dbus -dbus-linked
-# dlopen dbus
-#define dbus -dbus
-BuildRequires: dbus-devel >= 0.62
-%endif
 
 # See http://bugzilla.redhat.com/196901
 %define _qt4 %{name}
@@ -125,10 +141,9 @@ BuildRequires: dbus-devel >= 0.62
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
 
-%if "%{_qt4_libdir}" != "%{_libdir}"
 Prereq: /etc/ld.so.conf.d
-%endif
 
+BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: findutils
@@ -147,10 +162,7 @@ BuildRequires: pkgconfig
 ## In theory, should be as simple as:
 #define x_deps libGL-devel libGLU-devel
 ## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
-%define x_deps xorg-x11-devel xorg-x11-Mesa-libGL xorg-x11-Mesa-libGLU
-%if 0%{?fedora} > 4 || 0%{?rhel} > 4
 %define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
-%endif
 BuildRequires: %{x_deps}
 
 %if "%{?nas}" != "-no-nas-sound"
@@ -191,10 +203,8 @@ Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
 Obsoletes: qt4-sqlite < 4.5.0 
 Provides: qt4-sqlite = %{version}-%{release}
-%if "%{name}" == "qt"
 Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}4.5.0
 Provides: qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
-%endif
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -202,6 +212,15 @@ Qt is a software toolkit for developing applications.
 This package contains base tools, like string, xml, and network
 handling.
 
+%package -n phonon-backend-gstreamer
+Summary: Gstreamer phonon backend
+Group:   Applications/Multimedia
+Requires: phonon%{?_isa} >= %{phonon_version_major} 
+Provides: phonon-backend%{?_isa} = %{phonon_version}-%{phonon_release}
+Obsoletes: %{name}-backend-gst < 4.2.0-4
+Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
+%description -n phonon-backend-gstreamer
+%{summary}.
 
 %define demos 1
 %package demos
@@ -217,15 +236,11 @@ Summary: API documentation for %{name}
 Group: Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-assistant
-%if "%{name}" != "qt4"
 Obsoletes: qt4-doc < %{version}-%{release}
 Provides:  qt4-doc = %{version}-%{release}
-%endif
-%if 0%{?fedora} > 9
 # help workaround yum bug http://bugzilla.redhat.com/502401
 Obsoletes: qt-doc < 1:4.5.1-4
 BuildArch: noarch
-%endif
 %description doc
 %{summary}.  Includes:
 Qt Assistant
@@ -233,8 +248,8 @@ Qt Assistant
 %package devel
 Summary: Development files for the Qt toolkit
 Group: Development/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-x11 
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-x11%{?_isa}
 Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
@@ -244,8 +259,7 @@ Provides: qt4-phonon-devel = %{version}-%{release}
 %endif
 %if 0%{?phonon_internal}
 Obsoletes: phonon-devel < 4.3.1-100
-Provides:  phonon-devel = 4.3.1-100
-Requires:  phonon-backend%{?_isa} >= %{phonon_version}
+Provides:  phonon-devel = %{phonon_version}-%{phonon_release}
 %endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
@@ -255,12 +269,10 @@ Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
 # as long as libQtUiTools.a is included
 Provides:  %{name}-static = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
-%endif
 
 %description devel
 This package contains the files necessary to develop
@@ -272,7 +284,7 @@ Qt Linguist
 %package examples
 Summary: Programming examples for %{name}
 Group: Documentation
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description examples
 %{summary}.
@@ -281,13 +293,11 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 %package mysql
 Summary: MySQL driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-MySQL < %{version}-%{release}
 Provides:  qt4-MySQL = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-mysql < %{version}-%{release}
 Provides:  qt4-mysql = %{version}-%{release}
-%endif
 
 %description mysql 
 %{summary}.
@@ -296,13 +306,11 @@ Provides:  qt4-mysql = %{version}-%{release}
 %package odbc 
 Summary: ODBC driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-ODBC < %{version}-%{release}
 Provides:  qt4-ODBC = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-odbc < %{version}-%{release}
 Provides:  qt4-odbc = %{version}-%{release}
-%endif
 
 %description odbc 
 %{summary}.
@@ -311,13 +319,11 @@ Provides:  qt4-odbc = %{version}-%{release}
 %package postgresql 
 Summary: PostgreSQL driver for Qt's SQL classes
 Group: System Environment/Libraries
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-PostgreSQL < %{version}-%{release}
 Provides:  qt4-PostgreSQL = %{version}-%{release}
-%if "%{name}" != "qt4"
 Obsoletes: qt4-postgresql < %{version}-%{release}
 Provides:  qt4-postgresql = %{version}-%{release}
-%endif
 
 %description postgresql 
 %{summary}.
@@ -326,26 +332,24 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
+%if 0%{?phonon:1}
+Requires:  phonon-backend%{?_isa} >= %{phonon_version_major} 
+%endif
 %if 0%{?phonon_internal}
 Obsoletes: phonon < 4.3.1-100
-Provides:  phonon = 4.3.1-100
-%endif
-%if 0%{?phonon:1}
-Provides: qt4-phonon = %{version}-%{release}
+Provides:  phonon = %{phonon_version}-%{phonon_release}
+Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
+Provides:  qt4-phonon = %{version}-%{release}
 %endif
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
 %endif
 Provides: qt4-assistant = %{version}-%{release}
-%if "%{name}" != "qt4"
 Provides: %{name}-assistant = %{version}-%{release}
-%endif
-Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
-%if "%{name}" != "qt4"
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
-%endif
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -354,18 +358,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-x11-opensource-src-%{version} %{?qt_copy:-a 2}
-
-%if 0%{?qt_copy}
-%patch20 -p1 -b .qt-copy-qt452
-echo "0234" >> patches/DISABLED
-echo "0250" >> patches/DISABLED
-echo "0273" >> patches/DISABLED
-echo "0279" >> patches/DISABLED
-echo "0281" >> patches/DISABLED
-echo "0282" >> patches/DISABLED
-test -x apply_patches && ./apply_patches
-%endif
+%setup -q -n qt-x11-opensource-src-%{version}
 
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
@@ -377,27 +370,46 @@ test -x apply_patches && ./apply_patches
 %patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
+%patch17 -p1 -b .phonon-pulseaudio
+%patch19 -p1 -b .servicesfile
+%patch21 -p1 -b .gst-pulsaudio
+%patch22 -p1 -b .system_ca_certificates
+%patch23 -p1 -b .javascriptcore-disable-jit
 %patch51 -p1 -b .qdoc3
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
-%patch55 -p1 -b .timestamp
 
 # security fixes
-%patch100 -p1 -b .CVE-2009-1725
-%patch101 -p1 -b .CVE-2009-2700
 
-%patch287 -p1 -b .287-qmenu-respect
-%patch0288 -p1 -b .0288-more-x-keycodes
+# kde-qt branch
+%patch201 -p1 -b .kde-qt-0001
+%patch202 -p1 -b .kde-qt-0002
+%patch203 -p1 -b .kde-qt-0003
+%patch204 -p1 -b .kde-qt-0004
+%patch205 -p1 -b .kde-qt-0005
+%patch206 -p1 -b .kde-qt-0006
+%patch207 -p1 -b .kde-qt-0007
+%patch208 -p1 -b .kde-qt-0008
+%patch209 -p1 -b .kde-qt-0009
+%patch210 -p1 -b .kde-qt-0010
+%patch211 -p1 -b .kde-qt-0011
+%patch212 -p1 -b .0274-shm-native-image-fix
+%patch213 -p1 -b .kde-qt-0015
+%patch214 -p1 -b .kde-qt-0016
+%patch215 -p1 -b .kde-qt-0017
+
+# not yet merged ones
+%patch301 -p0 -b .0118-qtcopy-define
+%patch302 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
+%patch303 -p0 -b .0285-qgv-dontshowchildren
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
-## customize our platform
-%if "%{_lib}" == "lib64"
-%define platform linux-g++-64
-%else
 %define platform linux-g++
+%if "%{_qt4_datadir}" != "%{_qt4_prefix}" && "%{_lib}" == "lib64"                                  
+%define platform linux-g++-64                                                                      
 %endif
 
 sed -i \
@@ -426,6 +438,11 @@ if [ "%{_lib}" == "lib64" ] ; then
   sed -i -e "s,/usr/lib /lib,/usr/%{_lib} /%{_lib},g" config.tests/{unix,x11}/*.test
   sed -i -e "s,/lib /usr/lib,/%{_lib} /usr/%{_lib},g" config.tests/{unix,x11}/*.test
 fi
+
+# let makefile create missing .qm files, the .qm files should be included in qt upstream
+for f in translations/*.ts ; do
+  touch ${f%.ts}.qm
+done
 
 
 %build
@@ -491,6 +508,9 @@ fi
 
 make %{?_smp_mflags}
 
+# recreate .qm files
+LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
+
 
 %install
 rm -rf %{buildroot}
@@ -528,6 +548,13 @@ done
 # nuke dangling reference(s) to %buildroot
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
 
+# nuke QMAKE_PRL_LIBS, seems similar to static linking and .la files (#520323)
+sed -i -e "s|^QMAKE_PRL_LIBS|#QMAKE_PRL_LIBS|" %{buildroot}%{_qt4_libdir}/*.prl
+
+# .la files, die, die, die.
+rm -f %{buildroot}%{_qt4_libdir}/lib*.la
+
+
 %if 0
 #if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
 # -doc make symbolic link to _qt4_docdir
@@ -558,7 +585,7 @@ pushd %{buildroot}%{_qt4_libdir}
 for lib in libQt*.so ; do
    libbase=`basename $lib .so | sed -e 's/^lib//'`
 #  ln -s $lib lib${libbase}_debug.so
-   echo "INPUT(-l${libbase})" > lib${libbase}_debug.so
+   echo "INPUT(-l${libbase})" > lib${libbase}_debug.so 
 done
 for lib in libQt*.a ; do
    libbase=`basename $lib .a | sed -e 's/^lib//' `
@@ -566,9 +593,6 @@ for lib in libQt*.a ; do
    echo "INPUT(-l${libbase})" > lib${libbase}_debug.a
 done
 popd
-
-# .la files, die, die, die.
-rm -f %{buildroot}%{_qt4_libdir}/lib*.la
 
 %ifarch %{multilib_archs}
 # multilib: qconfig.h
@@ -597,10 +621,17 @@ install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
+%if 0%{?docs}
+# assistant icons
+install -p -m644 -D tools/assistant/tools/assistant/images/assistant.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/assistant.png
+install -p -m644 -D tools/assistant/tools/assistant/images/assistant-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/assistant.png
+%endif
+# designer icons
+install -p -m644 -D tools/designer/src/designer/images/designer.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/designer.png
 # linguist icons
 for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
-  install -p -m644 -D ${icon} %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/linguist4.png
+  install -p -m644 -D ${icon} %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/linguist.png
 done
 
 # Qt.pc
@@ -646,20 +677,36 @@ EOF
 # create/own %%_qt4_plugindir/styles
 mkdir %{buildroot}%{_qt4_plugindir}/styles
 
-%if 0%{?phonon:1} 
+%if 0%{?phonon_internal}
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-%endif
-
-%if ! 0%{?phonon_internal}
-mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
+# This should no longer be required, but... -- Rex
+pushd %{buildroot}%{_qt4_headerdir}
+ln -s phonon Phonon
+popd
+%else
 rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
 rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
 # contents slightly different between phonon-4.3.1 and qt-4.5.0
 rm -fv  %{buildroot}%{_includedir}/phonon/phononnamespace.h
 # contents dup'd but should remove just in case
 rm -fv  %{buildroot}%{_includedir}/phonon/*.h
-#rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
+rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
 #rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
+rm -fv %{buildroot}%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
+%endif
+
+#if "%{?phonon_backend}" == "-phonon-backend"
+%if 0%{?phonon_backend_packaged}
+install -D -m 0644 %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/phonon-gstreamer.svg
+install -D -m 0644 %{SOURCE11} %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE12} %{buildroot}%{_datadir}/icons/hicolor/22x22/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE13} %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE14} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE15} %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/phonon-gstreamer.png
+install -D -m 0644 %{SOURCE16} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/phonon-gstreamer.png
+%else
+rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
+rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
 
@@ -697,10 +744,30 @@ touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
+#if "%{?phonon_backend}" == "-phonon-backend"
+%if 0%{?phonon_backend_packaged}
+%post -n phonon-backend-gstreamer
+touch --no-create %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+
+%posttrans -n phonon-backend-gstreamer
+gtk-update-icon-cache %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+
+%postun -n phonon-backend-gstreamer
+if [ $1 -eq 0 ] ; then
+  touch --no-create %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+  gtk-update-icon-cache %{_kde4_iconsdir}/hicolor &> /dev/null ||:
+fi
+
+%files -n phonon-backend-gstreamer
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
+%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
+%{_datadir}/icons/hicolor/*/apps/phonon-gstreamer.*
+%endif
 
 %files
 %defattr(-,root,root,-)
-%doc README* LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
+%doc README README.kde-qt LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -715,6 +782,10 @@ fi
 %dir %{_datadir}/qt4
 %else
 %dir %{_qt4_datadir}
+%endif
+%if 0%{?docs}
+%dir %{_qt4_docdir}
+%dir %{_qt4_docdir}/qch/
 %endif
 %if "%{_qt4_sysconfdir}" != "%{_sysconfdir}"
 %dir %{_qt4_sysconfdir}
@@ -804,9 +875,9 @@ fi
 %{_qt4_datadir}/q3porting.xml
 %if 0%{?phonon:1}
 %{_qt4_libdir}/libphonon.prl
+%endif
 %if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so
-%endif
 %endif
 %{_qt4_libdir}/libQt*.so
 %{_qt4_libdir}/libQtUiTools*.a
@@ -815,21 +886,26 @@ fi
 # Qt designer
 %{_qt4_bindir}/designer*
 %{_datadir}/applications/*designer.desktop
+%{_datadir}/icons/hicolor/*/apps/designer*
+%{?docs:%{_qt4_docdir}/qch/designer.qch}
 # Qt Linguist
 %{_qt4_bindir}/linguist*
 %{_datadir}/applications/*linguist.desktop
-%{_datadir}/icons/hicolor/*/apps/linguist4.*
+%{_datadir}/icons/hicolor/*/apps/linguist*
+%{?docs:%{_qt4_docdir}/qch/linguist.qch}
 
 %if 0%{?docs}
 %files doc
 %defattr(-,root,root,-)
-%dir %{_qt4_docdir}/
 %{_qt4_docdir}/html
-%{_qt4_docdir}/qch/
+%{_qt4_docdir}/qch/*.qch
+%exclude %{_qt4_docdir}/qch/designer.qch
+%exclude %{_qt4_docdir}/qch/linguist.qch
 %{_qt4_docdir}/src/
 #{_qt4_prefix}/doc
 # Qt Assistant (bin moved to -x11)
 %{_datadir}/applications/*assistant.desktop
+%{_datadir}/icons/hicolor/*/apps/assistant*
 %endif
 
 %if 0%{?examples}
@@ -861,6 +937,8 @@ fi
 %{_sysconfdir}/rpm/macros.*
 %if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so.4*
+%dir %{_datadir}/kde4/services/phononbackends/
+%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
 %endif
 %{_qt4_libdir}/libQt3Support.so.*
 %{_qt4_libdir}/libQtAssistantClient.so.*
@@ -875,6 +953,10 @@ fi
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/sqldrivers
+#if "%{?phonon_backend}" == "-phonon-backend"
+%if 0%{?phonon_backend_packaged}
+%exclude %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
+%endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
 %{?dbus:%{_bindir}/qdbusviewer}
@@ -888,24 +970,109 @@ fi
 
 
 %changelog
-* Mon Aug 31 2009 Than Ngo <than@redhat.com> - 4.5.2-3
+* Sat Oct 10 2009 Than Ngo <than@redhat.com> - 4.5.3-4
+- fix translation build issue
+- rhel cleanup
+
+* Tue Oct 06 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.3-3
+- disable JavaScriptCore JIT, SE Linux crashes (#527079)
+
+* Fri Oct 02 2009 Than Ngo <than@redhat.com> - 4.5.3-2
+- cleanup patches
+- if ! phonon_internal, exclude more/all phonon headers
+- qt-devel must Requires: phonon-devel (#520323)
+
+* Thu Oct 01 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-1
+- qt-4.5.3
+
+* Tue Sep 29 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-21
+- switch to external/kde phonon
+
+* Mon Sep 28 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-20
+- use internal Qt Assistant/Designer icons
+- -devel: move designer.qch,linguist.qch here
+- move ownership of %%_qt4_docdir, %%_qt4_docdir/qch to main pkg
+
+* Sun Sep 20 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-19
+- Missing Qt Designer icon (#476605)
+
+* Fri Sep 11 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-18
+- drop gcc -fno-var-tracking-assignments hack (#522576)
+
+* Fri Sep 11 2009 Than Ngo <than@redhat.com> - 4.5.2-17
+- drop useless check for ossl patch, the patch works fine with old ossl
+
+* Wed Sep 09 2009 Than Ngo <than@redhat.com> - 4.5.2-16
+- add a correct system_ca_certificates patch
+
+* Tue Sep 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.2-15
+- use system ca-certificates (#521911)
+
+* Tue Sep 01 2009 Than Ngo <than@redhat.com> - 4.5.2-14
+- drop fedora < 9 support
+- only apply ossl patch for fedora > 11
+
+* Mon Aug 31 2009 Than Ngo <than@redhat.com> - 4.5.2-13
 - fix for CVE-2009-2700
 
-* Tue Aug 18 2009 Than Ngo <than@redhat.com> - 4.5.2-2
-- security fix for CVE-2009-1725
+* Thu Aug 27 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-12
+- use platform linux-g++ everywhere (ie, drop linux-g++-64 on 64 bit),
+  avoids plugin/linker weirdness (bug #478481)
 
-* Sat Aug 18 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-1.2
+* Wed Aug 26 2009 Tomas Mraz <tmraz@redhat.com> - 1:4.5.2-11
+- rebuilt with new openssl
+
+* Thu Aug 20 2009 Than Ngo <than@redhat.com> - 4.5.2-10
+- switch to kde-qt branch
+
+* Tue Aug 18 2009 Than Ngo <than@redhat.com> - 4.5.2-9
+- security fix for CVE-2009-1725 (bz#513813)
+
+* Sun Aug 16 2009 Than Ngo <than@redhat.com> - 4.5.2-8
+- fix phonon-backend-gstreamer for using pulsaudio (#513421)
+
+* Sat Aug 14 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-7
 - kde-qt: 287-qmenu-respect-minwidth
 - kde-qt: 0288-more-x-keycodes (#475247)
 
-* Wed Aug 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-1.1
+* Wed Aug 05 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.2-6
 - use linker scripts for _debug targets (#510246)
-- apply upstream patch to fix issue in Copy and paste
-- optimize (icon-mostly) scriptlets
+- tighten deps using %%{?_isa}
 - -x11: Requires(post,postun): /sbin/ldconfig
 
-* Thu Jul 02 2009 Than Ngo <than@redhat.com> - 4.5.2-1
-- 4.5.2
+* Thu Jul 30 2009 Than Ngo <than@redhat.com> - 4.5.2-5
+- apply upstream patch to fix issue in Copy and paste
+
+* Sun Jul 26 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.5.2-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
+* Thu Jul 02 2009 Than Ngo <than@redhat.com> - 4.5.2-3
+- pregenerate PNG, drop BR on GraphicsMagick (bz#509244)
+
+* Fri Jun 26 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.2-2
+- take current qt-copy-patches snapshot (20090626)
+- disable patches which are already in 4.5.2
+- fix the qt-copy patch 0274-shm-native-image-fix.diff to apply against 4.5.2
+
+* Thu Jun 25 2009 Lukáš Tinkl <ltinkl@redhat.com> - 4.5.2-1
+- Qt 4.5.2
+
+* Sun Jun 07 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-18
+- phonon-backend-gstreamer pkg, with icons
+- optimize (icon-mostly) scriptlets
+
+* Sun Jun 07 2009 Than Ngo <than@redhat.com> - 4.5.1-17
+- drop the hack, apply patch to install Global header, gstreamer.desktop
+  and dbus services file
+
+* Sat Jun 06 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-16
+- install awol Phonon/Global header
+
+* Fri Jun 05 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.5.1-15
+- apply Phonon PulseAudio patch (needed for the xine-lib backend)
+
+* Fri Jun 05 2009 Than Ngo <than@redhat.com> - 4.5.1-14
+- enable phonon and gstreamer-backend
 
 * Sat May 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.1-13
 - -doc: Obsoletes: qt-doc < 1:4.5.1-4 (workaround bug #502401)

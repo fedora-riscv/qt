@@ -1,7 +1,7 @@
 From 1a94cd7b132497f70a2b97ec2b58f6e2b1c5076a Mon Sep 17 00:00:00 2001
 From: Helio Chissini de Castro <helio@kde.org>
 Date: Fri, 10 Jul 2009 16:00:13 -0300
-Subject: [PATCH] Fill gap of X.org/XFree multimedia/special/launcher keys
+Subject: [PATCH 16/18] Fill gap of X.org/XFree multimedia/special/launcher keys
  Qt up to 4.5.x is missing whole setup of multimedia keys already defined by X
 
 ---
@@ -656,5 +656,5 @@ index 894f663..665c058 100644
      // --------------------------------------------------------------
      // More consistent namings
 -- 
-1.6.1
+1.6.2.5
 
