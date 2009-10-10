@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -379,7 +379,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
-#patch55 -p1 -b .translations_buildfix
 
 # security fixes
 
@@ -440,8 +439,10 @@ if [ "%{_lib}" == "lib64" ] ; then
   sed -i -e "s,/lib /usr/lib,/%{_lib} /usr/%{_lib},g" config.tests/{unix,x11}/*.test
 fi
 
-# let syncqt to create new header
-rm -rf include
+# let makefile create missing .qm files, the .qm files should be included in qt upstream
+for f in translations/*.ts ; do
+  touch ${f%.ts}.qm
+done
 
 
 %build
@@ -966,6 +967,9 @@ fi
 
 
 %changelog
+* Sat Oct 10 2009 Than Ngo <than@redhat.com> - 4.5.3-4
+- fix translation build issue
+
 * Tue Oct 06 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.3-3
 - disable JavaScriptCore JIT, SE Linux crashes (#527079)
 
