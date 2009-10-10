@@ -110,11 +110,13 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define phonon -phonon
-# if building with -phonon, define to internal version (ie, Obsolete external phonon)
-#define phonon_internal 1
 %define phonon_backend -phonon-backend
+%if 0%{?rhel}
+# if building with -phonon, define to internal version (ie, Obsolete external phonon)
+%define phonon_internal 1
 # if -phonon-backend, include in packaging (else it's omitted)
-#define phonon_backend_packaged 1
+%define phonon_backend_packaged 1
+%endif
 %define phonon_version 4.3.1
 %define phonon_version_major 4.3
 %define phonon_release 100
@@ -970,6 +972,7 @@ fi
 %changelog
 * Sat Oct 10 2009 Than Ngo <than@redhat.com> - 4.5.3-4
 - fix translation build issue
+- rhel cleanup
 
 * Tue Oct 06 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.3-3
 - disable JavaScriptCore JIT, SE Linux crashes (#527079)
