@@ -508,14 +508,13 @@ done
 
 make %{?_smp_mflags}
 
+# recreate .qm files
+bin/lrelease translations/*.ts
 
 %install
 rm -rf %{buildroot}
 
 make install INSTALL_ROOT=%{buildroot}
-
-# recreate .qm files
-bin/lrelease translations/*.ts
 
 # Add desktop file(s)
 desktop-file-install \
