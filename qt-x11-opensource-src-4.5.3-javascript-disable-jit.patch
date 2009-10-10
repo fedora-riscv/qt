@@ -1,0 +1,24 @@
+diff -up qt-x11-opensource-src-4.5.3/src/3rdparty/webkit/JavaScriptCore/JavaScriptCore.pri.javascriptcore-disable-jit qt-x11-opensource-src-4.5.3/src/3rdparty/webkit/JavaScriptCore/JavaScriptCore.pri
+--- qt-x11-opensource-src-4.5.3/src/3rdparty/webkit/JavaScriptCore/JavaScriptCore.pri.javascriptcore-disable-jit	2009-09-29 13:01:35.000000000 +0200
++++ qt-x11-opensource-src-4.5.3/src/3rdparty/webkit/JavaScriptCore/JavaScriptCore.pri	2009-10-06 10:39:55.976466622 +0200
+@@ -13,20 +13,6 @@ win32-* {
+     LIBS += -lwinmm
+ }
+ 
+-# Disable the JIT due to numerous observed miscompilations :(
+-CONFIG(release):isEqual(QT_ARCH,i386) {
+-     JIT_DEFINES = ENABLE_JIT ENABLE_WREC ENABLE_JIT_OPTIMIZE_CALL ENABLE_JIT_OPTIMIZE_PROPERTY_ACCESS ENABLE_JIT_OPTIMIZE_ARITHMETIC
+-     # Require gcc >= 4.1
+-     linux-g++*:greaterThan(QT_GCC_MAJOR_VERSION,3):greaterThan(QT_GCC_MINOR_VERSION,0) {
+-         DEFINES += $$JIT_DEFINES WTF_USE_JIT_STUB_ARGUMENT_VA_LIST
+-         QMAKE_CXXFLAGS += -fno-stack-protector
+-         QMAKE_CFLAGS += -fno-stack-protector
+-     }
+-     win32-msvc* {
+-         DEFINES += $$JIT_DEFINES WTF_USE_JIT_STUB_ARGUMENT_REGISTER
+-     }
+-}
+-
+ win32-msvc*: INCLUDEPATH += $$PWD/os-win32
+ wince* {
+     INCLUDEPATH += $$PWD/os-wince
