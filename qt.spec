@@ -6,17 +6,21 @@
 
 %define _default_patch_fuzz 2
 
+%define pre beta1
+# enable kde-qt integration/patches (currently a no-op)
+#define kde_qt 1
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.5.3
-Release: 4%{?dist}
+Version: 4.6.0
+Release: 0.1.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: ftp://ftp.qt.nokia.com/qt/source/qt-x11-opensource-src-%{version}.tar.gz
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
@@ -61,26 +65,7 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # security patches
 
 # kde-qt git patches
-Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
-Patch202: 0002-This-patch-makes-override-redirect-windows-popup-me.patch
-Patch203: 0003-This-patch-changes-QObjectPrivateVersion-thus-preve.patch
-Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow.patch
-Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
-Patch206: 0006-Fix-configure.exe-to-do-an-out-of-source-build-on-wi.patch
-Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-g.patch
-Patch208: 0008-In-a-treeview-with-columns-like-this.patch
-Patch209: 0009-This-patch-fixes-deserialization-of-values-with-cust.patch
-Patch210: 0010-Import-README.qt-copy-from-the-original-qt-copy.patch
-Patch211: 0011-Update-this-file-to-reflect-the-workflow-with-Git-a.patch
-Patch212: 0274-shm-native-image-fix.patch
-Patch213: 0015-Make-QMenu-respect-the-minimum-width-set.patch
-Patch214: 0016-Fill-gap-of-X.org-XFree-multimedia-special-launcher.patch
-Patch215: 0017-Add-context-to-tr-calls-in-QShortcut.patch
 
-# these patches are not merged yet in kde-qt branches
-Patch301: 0118-qtcopy-define.diff
-Patch302: 0283-do-not-deduce-scrollbar-extent-twice.diff
-Patch303: 0285-qgv-dontshowchildren.diff
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -141,7 +126,9 @@ Source31: hi48-app-qt4-logo.png
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
 
+%if "%{_qt4_libdir}" != "%{_libdir}"
 Prereq: /etc/ld.so.conf.d
+%endif
 
 BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
@@ -358,7 +345,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-x11-opensource-src-%{version}
+%setup -q -n qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}
 
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
@@ -374,35 +361,22 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch19 -p1 -b .servicesfile
 %patch21 -p1 -b .gst-pulsaudio
 %patch22 -p1 -b .system_ca_certificates
-%patch23 -p1 -b .javascriptcore-disable-jit
-%patch51 -p1 -b .qdoc3
-%patch52 -p1 -b .sparc64
+## FIXME: I think this one can be replaced with ./configure -no-javascript-jit
+## test first if it's still needed
+#patch23 -p1 -b .javascriptcore-disable-jit
+## FIXME: qdoc3 was needed for older qt-creator builds, but it seems
+## it's not needed anymore
+#patch51 -p1 -b .qdoc3
+## FIXME: port patch
+#patch52 -p1 -b .sparc64
+## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
+## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 
 # security fixes
 
 # kde-qt branch
-%patch201 -p1 -b .kde-qt-0001
-%patch202 -p1 -b .kde-qt-0002
-%patch203 -p1 -b .kde-qt-0003
-%patch204 -p1 -b .kde-qt-0004
-%patch205 -p1 -b .kde-qt-0005
-%patch206 -p1 -b .kde-qt-0006
-%patch207 -p1 -b .kde-qt-0007
-%patch208 -p1 -b .kde-qt-0008
-%patch209 -p1 -b .kde-qt-0009
-%patch210 -p1 -b .kde-qt-0010
-%patch211 -p1 -b .kde-qt-0011
-%patch212 -p1 -b .0274-shm-native-image-fix
-%patch213 -p1 -b .kde-qt-0015
-%patch214 -p1 -b .kde-qt-0016
-%patch215 -p1 -b .kde-qt-0017
-
-# not yet merged ones
-%patch301 -p0 -b .0118-qtcopy-define
-%patch302 -p0 -b .0283-do-not-deduce-scrollbar-extent-twice
-%patch303 -p0 -b .0285-qgv-dontshowchildren
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -767,7 +741,10 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%doc README README.kde-qt LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
+%doc README LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
+%if 0%{?kde_qt:1}
+%doc README.kde-qt
+%endif
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -792,20 +769,20 @@ fi
 %endif
 %config(noreplace) %{_qt4_sysconfdir}/Trolltech.conf
 %{_qt4_datadir}/phrasebooks/
-%{_qt4_libdir}/libQtCore.so.*
+%{_qt4_libdir}/libQtCore.so.4*
 %if 0%{?dbus:1}
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qdbus
 %endif
 %{_qt4_bindir}/qdbus
-%{_qt4_libdir}/libQtDBus.so.*
+%{_qt4_libdir}/libQtDBus.so.4*
 %endif
-%{_qt4_libdir}/libQtNetwork.so.*
-%{_qt4_libdir}/libQtScript.so.*
-%{_qt4_libdir}/libQtSql.so.*
-%{_qt4_libdir}/libQtTest.so.*
-%{_qt4_libdir}/libQtXml.so.*
-%{_qt4_libdir}/libQtXmlPatterns.so.*
+%{_qt4_libdir}/libQtNetwork.so.4*
+%{_qt4_libdir}/libQtScript.so.4*
+%{_qt4_libdir}/libQtSql.so.4*
+%{_qt4_libdir}/libQtTest.so.4*
+%{_qt4_libdir}/libQtXml.so.4*
+%{_qt4_libdir}/libQtXmlPatterns.so.4*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
@@ -829,9 +806,10 @@ fi
 %{_qt4_bindir}/lupdate*
 %{_qt4_bindir}/moc*
 %{_qt4_bindir}/pixeltool*
-%{_qt4_bindir}/qdoc3*
+#{_qt4_bindir}/qdoc3*
 %{_qt4_bindir}/qmake*
 %{_qt4_bindir}/qt3to4
+%{_qt4_bindir}/qttracereplay
 %{_qt4_bindir}/rcc*
 %{_qt4_bindir}/uic*
 %{_qt4_bindir}/qcollectiongenerator
@@ -842,15 +820,17 @@ fi
 %{_qt4_bindir}/qhelpconverter
 %{_qt4_bindir}/qhelpgenerator
 %{_qt4_bindir}/xmlpatterns
+%{_qt4_bindir}/xmlpatternsvalidator
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/lconvert
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
 %{_bindir}/pixeltool*
 %{_bindir}/moc*
-%{_bindir}/qdoc3
+#{_bindir}/qdoc3
 %{_bindir}/qmake*
 %{_bindir}/qt3to4
+%{_bindir}/qttracereplay
 %{_bindir}/rcc*
 %{_bindir}/uic*
 %{_bindir}/designer*
@@ -863,6 +843,7 @@ fi
 %{_bindir}/qhelpconverter
 %{_bindir}/qhelpgenerator
 %{_bindir}/xmlpatterns
+%{_bindir}/xmlpatternsvalidator
 %endif
 %if "%{_qt4_headerdir}" != "%{_includedir}"
 %dir %{_qt4_headerdir}/
@@ -940,17 +921,18 @@ fi
 %dir %{_datadir}/kde4/services/phononbackends/
 %{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
 %endif
-%{_qt4_libdir}/libQt3Support.so.*
-%{_qt4_libdir}/libQtAssistantClient.so.*
-%{_qt4_libdir}/libQtCLucene.so.*
-%{_qt4_libdir}/libQtDesigner.so.*
-%{_qt4_libdir}/libQtDesignerComponents.so.*
-%{_qt4_libdir}/libQtGui.so.*
-%{_qt4_libdir}/libQtHelp.so.*
-%{_qt4_libdir}/libQtOpenGL.so.*
-%{_qt4_libdir}/libQtScriptTools.so.*
-%{_qt4_libdir}/libQtSvg.so.*
-%{?webkit:%{_qt4_libdir}/libQtWebKit.so.*}
+%{_qt4_libdir}/libQt3Support.so.4*
+%{_qt4_libdir}/libQtAssistantClient.so.4*
+%{_qt4_libdir}/libQtCLucene.so.4*
+%{_qt4_libdir}/libQtDesigner.so.4*
+%{_qt4_libdir}/libQtDesignerComponents.so.4*
+%{_qt4_libdir}/libQtGui.so.4*
+%{_qt4_libdir}/libQtHelp.so.4*
+%{_qt4_libdir}/libQtMultimedia.so.4*
+%{_qt4_libdir}/libQtOpenGL.so.4*
+%{_qt4_libdir}/libQtScriptTools.so.4*
+%{_qt4_libdir}/libQtSvg.so.4*
+%{?webkit:%{_qt4_libdir}/libQtWebKit.so.4*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/sqldrivers
 #if "%{?phonon_backend}" == "-phonon-backend"
@@ -970,6 +952,10 @@ fi
 
 
 %changelog
+* Wed Oct 14 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.1.beta1
+- qt-4.6.0-beta1
+- no kde-qt patches (yet)
+
 * Sat Oct 10 2009 Than Ngo <than@redhat.com> - 4.5.3-4
 - fix translation build issue
 - rhel cleanup
