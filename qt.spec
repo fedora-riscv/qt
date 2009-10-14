@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -141,7 +141,9 @@ Source31: hi48-app-qt4-logo.png
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
 
+%if "%{_qt4_libdir}" != "%{_libdir}"
 Prereq: /etc/ld.so.conf.d
+%endif
 
 BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
@@ -970,6 +972,9 @@ fi
 
 
 %changelog
+* Wed Oct 14 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.3-5
+- drop needless Prereq: /etc/ld.so.conf.d
+
 * Sat Oct 10 2009 Than Ngo <than@redhat.com> - 4.5.3-4
 - fix translation build issue
 - rhel cleanup
