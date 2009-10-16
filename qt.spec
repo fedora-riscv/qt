@@ -14,7 +14,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 0.1.%{pre}%{?dist}
+Release: 0.2.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -54,7 +54,7 @@ Patch23: qt-x11-opensource-src-4.5.3-javascript-disable-jit.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
-Patch51: qt-x11-opensource-src-4.5.0-qdoc3.patch
+Patch51: qt-everywhere-opensource-src-4.6.0-beta1-qdoc3.patch 
 Patch52: qt-4.5-sparc64.patch
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
@@ -188,10 +188,6 @@ Obsoletes: qgtkstyle < 0.1
 Provides:  qgtkstyle = 0.1-1
 Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
-Obsoletes: qt4-sqlite < 4.5.0 
-Provides: qt4-sqlite = %{version}-%{release}
-Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}4.5.0
-Provides: qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -315,6 +311,17 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %description postgresql 
 %{summary}.
 
+%package sqlite
+Summary: SQLite driver for Qt's SQL classes
+Group: System Environment/Libraries
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes: qt4-SQLite < %{version}-%{release}
+Provides:  qt4-SQLite = %{version}-%{release}
+Obsoletes: qt4-sqlite < %{version}-%{release}
+Provides:  qt4-sqlite = %{version}-%{release}
+
+%description sqlite
+%{summary}.
 
 %package x11
 Summary: Qt GUI-related libraries
@@ -331,6 +338,9 @@ Provides:  qt4-phonon = %{version}-%{release}
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
+%endif
+%if 0%{?sqlite:1}
+Requires: %{name}-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 Provides: qt4-assistant = %{version}-%{release}
 Provides: %{name}-assistant = %{version}-%{release}
@@ -364,9 +374,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## FIXME: I think this one can be replaced with ./configure -no-javascript-jit
 ## test first if it's still needed
 #patch23 -p1 -b .javascriptcore-disable-jit
-## FIXME: qdoc3 was needed for older qt-creator builds, but it seems
-## it's not needed anymore
-#patch51 -p1 -b .qdoc3
+%patch51 -p1 -b .qdoc3
 ## FIXME: port patch
 #patch52 -p1 -b .sparc64
 ## TODO: still worth carrying?  if so, upstream it.
@@ -785,7 +793,6 @@ fi
 %{_qt4_libdir}/libQtXmlPatterns.so.4*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
-%{_qt4_plugindir}/sqldrivers/libqsqlite*
 %{_qt4_translationdir}/
 
 %if 0%{?demos}
@@ -913,6 +920,12 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqlpsql*
 %endif
 
+%if "%{?sqlite}" == "-plugin-sql-sqlite"
+%files sqlite
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/sqldrivers/libqsqlite*
+%endif
+
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
@@ -952,6 +965,11 @@ fi
 
 
 %changelog
+* Fri Oct 16 2009 Than Ngo <than@redhat.com> - 4.6.0-0.2.beta1 
+- subpackage sqlite plugin, add Require on qt-sqlite in qt-x11
+  for assistant
+- build/install qdoc3 again
+
 * Wed Oct 14 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.1.beta1
 - qt-4.6.0-beta1
 - no kde-qt patches (yet)
