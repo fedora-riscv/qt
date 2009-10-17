@@ -813,7 +813,7 @@ fi
 %{_qt4_bindir}/lupdate*
 %{_qt4_bindir}/moc*
 %{_qt4_bindir}/pixeltool*
-#{_qt4_bindir}/qdoc3*
+%{_qt4_bindir}/qdoc3*
 %{_qt4_bindir}/qmake*
 %{_qt4_bindir}/qt3to4
 %{_qt4_bindir}/qttracereplay
@@ -834,7 +834,7 @@ fi
 %{_bindir}/lupdate*
 %{_bindir}/pixeltool*
 %{_bindir}/moc*
-#{_bindir}/qdoc3
+%{_bindir}/qdoc3
 %{_bindir}/qmake*
 %{_bindir}/qt3to4
 %{_bindir}/qttracereplay
