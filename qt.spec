@@ -691,7 +691,7 @@ mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon_internal}
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-# This should no longer be required, but... -- Rex
+# needed by qtscriptgenerator
 pushd %{buildroot}%{_qt4_headerdir}
 ln -s phonon Phonon
 popd
