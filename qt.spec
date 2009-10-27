@@ -4,17 +4,17 @@
 # -no-pch disables precompiled headers, make ccache-friendly
 %define no_pch -no-pch
 
-%define _default_patch_fuzz 2
+%define _default_patch_fuzz 3 
 
 %define pre beta1
 # enable kde-qt integration/patches (currently a no-op)
-#define kde_qt 1
+%define kde_qt 1
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 0.2.%{pre}%{?dist}
+Release: 0.3.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -65,7 +65,21 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # security patches
 
 # kde-qt git patches
-
+Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
+Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
+Patch203: 0003-This-patch-changes-QObjectPrivateVersion-thus-preven.patch
+Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow-p.patch
+Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
+Patch206: 0006-Fix-configure.exe-to-do-an-out-of-source-build-on-wi.patch
+Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
+Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
+Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
+## older, but actually applies, version of patches 208, 209, 213 (double check)
+Patch274: 0274-shm-native-image-fix.patch
+Patch210: 0010-Fix-error-line-not-to-have-a-as-it-s-not-correct.patch
+Patch211: 0011-Fill-gap-of-X.org-XFree-multimedia-special-launcher-.patch
+Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
+Patch213: 0013-Fix-QNativeImage-constructor.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -102,9 +116,9 @@ Source31: hi48-app-qt4-logo.png
 # if -phonon-backend, include in packaging (else it's omitted)
 %define phonon_backend_packaged 1
 %endif
-%define phonon_version 4.3.1
+%define phonon_version 4.3.50
 %define phonon_version_major 4.3
-%define phonon_release 100
+%define phonon_release 1
 %define webkit -webkit
 %define gtkstyle -gtkstyle
 %define nas -no-nas-sound
@@ -385,6 +399,22 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # kde-qt branch
+%patch201 -p1 -b .kde-qt-0001
+%patch202 -p1 -b .kde-qt-0002
+%patch203 -p1 -b .kde-qt-0003
+%patch204 -p1 -b .kde-qt-0004
+%patch205 -p1 -b .kde-qt-0005
+%patch206 -p1 -b .kde-qt-0006
+%patch207 -p1 -b .kde-qt-0007
+## needs manual love
+#patch208 -p1 -b .kde-qt-0008
+#patch209 -p1 -b .kde-qt-0009
+%patch274 -p1 -b .qt-copy-0274
+## already applied?
+#patch210 -p1 -b .kde-qt-0010
+%patch211 -p1 -b .kde-qt-0011
+%patch212 -p1 -b .kde-qt-0012
+#patch213 -p1 -b .kde-qt-0013
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -750,9 +780,6 @@ fi
 %files
 %defattr(-,root,root,-)
 %doc README LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
-%if 0%{?kde_qt:1}
-%doc README.kde-qt
-%endif
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -965,6 +992,9 @@ fi
 
 
 %changelog
+* Mon Oct 26 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.3.beta1
+- kde-qt patches (as of 20091026)
+
 * Fri Oct 16 2009 Than Ngo <than@redhat.com> - 4.6.0-0.2.beta1 
 - subpackage sqlite plugin, add Require on qt-sqlite in qt-x11
   for assistant
