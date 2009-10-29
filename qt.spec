@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 4%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -57,6 +57,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+Patch55: qt-x11-opensource-src-4.5.3-glib-event-loop.patch
 
 # security patches
 
@@ -141,7 +142,9 @@ Source31: hi48-app-qt4-logo.png
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
 
+%if "%{_qt4_libdir}" != "%{_libdir}"
 Prereq: /etc/ld.so.conf.d
+%endif
 
 BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
@@ -201,10 +204,6 @@ Obsoletes: qgtkstyle < 0.1
 Provides:  qgtkstyle = 0.1-1
 Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
-Obsoletes: qt4-sqlite < 4.5.0 
-Provides: qt4-sqlite = %{version}-%{release}
-Obsoletes: qt-sqlite < %{?epoch:%{epoch}:}4.5.0
-Provides: qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -328,6 +327,17 @@ Provides:  qt4-postgresql = %{version}-%{release}
 %description postgresql 
 %{summary}.
 
+%package sqlite
+Summary: SQLite driver for Qt's SQL classes
+Group: System Environment/Libraries
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes: qt4-SQLite < %{version}-%{release}
+Provides:  qt4-SQLite = %{version}-%{release}
+Obsoletes: qt4-sqlite < %{version}-%{release}
+Provides:  qt4-sqlite = %{version}-%{release}
+
+%description sqlite
+%{summary}.
 
 %package x11
 Summary: Qt GUI-related libraries
@@ -344,6 +354,9 @@ Provides:  qt4-phonon = %{version}-%{release}
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
+%endif
+%if 0%{?sqlite:1}
+Requires: %{name}-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 Provides: qt4-assistant = %{version}-%{release}
 Provides: %{name}-assistant = %{version}-%{release}
@@ -379,6 +392,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
+%patch55 -p1 -b .glib-event-loop
 
 # security fixes
 
@@ -679,7 +693,7 @@ mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon_internal}
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-# This should no longer be required, but... -- Rex
+# needed by qtscriptgenerator
 pushd %{buildroot}%{_qt4_headerdir}
 ln -s phonon Phonon
 popd
@@ -808,7 +822,6 @@ fi
 %{_qt4_libdir}/libQtXmlPatterns.so.*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
-%{_qt4_plugindir}/sqldrivers/libqsqlite*
 %{_qt4_translationdir}/
 
 %if 0%{?demos}
@@ -932,6 +945,12 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqlpsql*
 %endif
 
+%if "%{?sqlite}" == "-plugin-sql-sqlite"
+%files sqlite
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/sqldrivers/libqsqlite*
+%endif
+
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
@@ -970,6 +989,17 @@ fi
 
 
 %changelog
+* Thu Oct 29 2009 Than Ngo <than@redhat.com> - 4.5.3-7
+- fix glib-even-loop issue, regression which causes
+  Password dialogs get stuck
+
+* Fri Oct 16 2009 Than Ngo <than@redhat.com> - 4.5.3-6
+- subpackage sqlite plugin, add Require on qt-sqlite in qt-x11
+  for assistant
+
+* Wed Oct 14 2009 Rex Dieter <rdieter@fedoraproject.org> 4.5.3-5
+- drop needless Prereq: /etc/ld.so.conf.d
+
 * Sat Oct 10 2009 Than Ngo <than@redhat.com> - 4.5.3-4
 - fix translation build issue
 - rhel cleanup
