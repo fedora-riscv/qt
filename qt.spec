@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 8%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -60,6 +60,7 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # glib-event-loop regression
 Patch55: qt-x11-opensource-src-4.5.3-glib-event-loop.patch
 # or fix from http://bugs.kde.org/210171
+# than reports this doesn't fix our original 3star echo bug
 Patch155: http://www.davidfaure.fr/2009/qeventdispatcher_glib_fix.diff
 
 # security patches
@@ -395,8 +396,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch52 -p1 -b .sparc64
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
-#patch55 -p1 -b .glib-event-loop
-%patch155 -p1 -b .qeventdispatcher_glib_fix
+%patch55 -p1 -b .glib-event-loop
+#patch155 -p1 -b .qeventdispatcher_glib_fix
 
 # security fixes
 
@@ -993,9 +994,6 @@ fi
 
 
 %changelog
-* Fri Oct 30 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-8
-- use upstream qeventdispatcher_glib_fix.diff (kde#210171)
-
 * Thu Oct 29 2009 Than Ngo <than@redhat.com> - 4.5.3-7
 - fix glib-even-loop issue, regression which causes
   Password dialogs get stuck
