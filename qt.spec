@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -360,7 +360,7 @@ Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
 %endif
 %if 0%{?sqlite:1}
-Requires: %{name}-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 Provides: qt4-assistant = %{version}-%{release}
 Provides: %{name}-assistant = %{version}-%{release}
@@ -994,6 +994,9 @@ fi
 
 
 %changelog
+* Sun Nov 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-8
+- -x11: Requires: %%{name}-sqlite%{?_isa}
+
 * Thu Oct 29 2009 Than Ngo <than@redhat.com> - 4.5.3-7
 - fix glib-even-loop issue, regression which causes
   Password dialogs get stuck
