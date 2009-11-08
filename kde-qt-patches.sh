@@ -2,4 +2,6 @@
 # unfortunately, requires an already checked-out copy of the git repo
 
 # when switching branches, use something like: git checkout --track -b remotes/origin/4.6.0-beta1-patched 
-git format-patch --output-directory kde-qt-patches v4.6.0-beta1..origin/4.6.0-beta1-patched
+#git format-patch --output-directory kde-qt-patches v4.6.0-beta1..origin/4.6.0-beta1-patched
+git format-patch --output-directory kde-qt-patches v4.6.0-beta1..origin/4.6-stable-patched
+

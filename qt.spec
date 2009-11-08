@@ -14,7 +14,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 0.3.%{pre}%{?dist}
+Release: 0.4.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -354,7 +354,7 @@ Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
 %endif
 %if 0%{?sqlite:1}
-Requires: %{name}-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 Provides: qt4-assistant = %{version}-%{release}
 Provides: %{name}-assistant = %{version}-%{release}
@@ -992,6 +992,9 @@ fi
 
 
 %changelog
+* Sun Nov 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.4.beta1
+- -x11: Requires: %%{name}-sqlite%{?_isa}
+
 * Mon Oct 26 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.3.beta1
 - kde-qt patches (as of 20091026)
 
