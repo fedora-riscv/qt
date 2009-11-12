@@ -4,13 +4,13 @@
 # -no-pch disables precompiled headers, make ccache-friendly
 %define no_pch -no-pch
 
-%define _default_patch_fuzz 2
+%define _default_patch_fuzz 2 
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -57,7 +57,11 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+# glib-event-loop regression
 Patch55: qt-x11-opensource-src-4.5.3-glib-event-loop.patch
+# or fix from http://bugs.kde.org/210171
+# than reports this doesn't fix our original 3star echo bug
+Patch155: http://www.davidfaure.fr/2009/qeventdispatcher_glib_fix.diff
 
 # security patches
 
@@ -356,7 +360,7 @@ Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
 %endif
 %if 0%{?sqlite:1}
-Requires: %{name}-sqlite = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %endif
 Provides: qt4-assistant = %{version}-%{release}
 Provides: %{name}-assistant = %{version}-%{release}
@@ -393,6 +397,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .glib-event-loop
+#patch155 -p1 -b .qeventdispatcher_glib_fix
 
 # security fixes
 
@@ -989,6 +994,9 @@ fi
 
 
 %changelog
+* Sun Nov 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-8
+- -x11: Requires: %%{name}-sqlite%{?_isa}
+
 * Thu Oct 29 2009 Than Ngo <than@redhat.com> - 4.5.3-7
 - fix glib-even-loop issue, regression which causes
   Password dialogs get stuck
