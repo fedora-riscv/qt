@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -64,6 +64,8 @@ Patch55: qt-x11-opensource-src-4.5.3-glib-event-loop.patch
 Patch155: http://www.davidfaure.fr/2009/qeventdispatcher_glib_fix.diff
 
 # security patches
+Patch180: qt-x11-opensource-src-4.5.3-cve-2009-2816-cors.patch
+Patch181: qt-x11-opensource-src-4.5.3-cve-2009-3384-ftp-ls-handling.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -400,6 +402,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch155 -p1 -b .qeventdispatcher_glib_fix
 
 # security fixes
+%patch180 -p1 -b .cve-2009-2816-cors
+%patch181 -p1 -b .cve-2009-3384-ftp-ls-handling
 
 # kde-qt branch
 %patch201 -p1 -b .kde-qt-0001
@@ -994,6 +998,10 @@ fi
 
 
 %changelog
+* Thu Nov 12 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.3-9
+- CVE-2009-3384 - WebKit, ftp listing handling (#525788)
+- CVE-2009-2816 - WebKit, MITM Cross-Origin Resource Sharing (#525789)
+
 * Sun Nov 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-8
 - -x11: Requires: %%{name}-sqlite%{?_isa}
 
