@@ -199,7 +199,7 @@ BuildRequires: unixODBC-devel
 BuildRequires: sqlite-devel
 %endif
 
-%if "%{?tds}" != "-no-sql-sqlite"
+%if "%{?tds}" != "-no-sql-tds"
 BuildRequires: freetds-devel
 %endif
 
