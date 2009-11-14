@@ -976,7 +976,7 @@ fi
 %if "%{?tds}" == "-plugin-sql-tds"
 %files tds
 %defattr(-,root,root,-)
-%{_qt4_plugindir}/sqldrivers/libqtds*
+%{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
 %files x11 
