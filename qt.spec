@@ -10,7 +10,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.5.3
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -116,6 +116,7 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
+%define tds -plugin-sql-tds
 %define phonon -phonon
 %define phonon_backend -phonon-backend
 %if 0%{?rhel}
@@ -204,6 +205,10 @@ BuildRequires: unixODBC-devel
 %if "%{?sqlite}" != "-no-sql-sqlite"
 %define _system_sqlite -system-sqlite
 BuildRequires: sqlite-devel
+%endif
+
+%if "%{?tds}" != "-no-sql-tds"
+BuildRequires: freetds-devel
 %endif
 
 Obsoletes: qgtkstyle < 0.1
@@ -303,6 +308,7 @@ Obsoletes: qt4-MySQL < %{version}-%{release}
 Provides:  qt4-MySQL = %{version}-%{release}
 Obsoletes: qt4-mysql < %{version}-%{release}
 Provides:  qt4-mysql = %{version}-%{release}
+%{?_isa:Provides: qt4-mysql%{?_isa} = %{version}-%{release}}
 
 %description mysql 
 %{summary}.
@@ -316,6 +322,7 @@ Obsoletes: qt4-ODBC < %{version}-%{release}
 Provides:  qt4-ODBC = %{version}-%{release}
 Obsoletes: qt4-odbc < %{version}-%{release}
 Provides:  qt4-odbc = %{version}-%{release}
+%{?_isa:Provides: qt4-odbc%{?_isa} = %{version}-%{release}}
 
 %description odbc 
 %{summary}.
@@ -329,6 +336,7 @@ Obsoletes: qt4-PostgreSQL < %{version}-%{release}
 Provides:  qt4-PostgreSQL = %{version}-%{release}
 Obsoletes: qt4-postgresql < %{version}-%{release}
 Provides:  qt4-postgresql = %{version}-%{release}
+%{?_isa:Provides: qt4-postgresql%{?_isa} = %{version}-%{release}}
 
 %description postgresql 
 %{summary}.
@@ -341,9 +349,21 @@ Obsoletes: qt4-SQLite < %{version}-%{release}
 Provides:  qt4-SQLite = %{version}-%{release}
 Obsoletes: qt4-sqlite < %{version}-%{release}
 Provides:  qt4-sqlite = %{version}-%{release}
+%{?_isa:Provides: qt4-sqlite%{?_isa} = %{version}-%{release}}
 
 %description sqlite
 %{summary}.
+
+%package tds 
+Summary: TDS driver for Qt's SQL classes
+Group: System Environment/Libraries
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides: qt4-tds = %{version}-%{release}
+%{?_isa:Provides: qt4-tds%{?_isa} = %{version}-%{release}}
+
+%description tds 
+%{summary}.
+
 
 %package x11
 Summary: Qt GUI-related libraries
@@ -525,6 +545,7 @@ done
   %{?psql} \
   %{?odbc} \
   %{?sqlite} %{?_system_sqlite} \
+  %{?tds} \
   %{!?docs:-nomake docs} \
   %{!?demos:-nomake demos} \
   %{!?examples:-nomake examples}
@@ -960,6 +981,12 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
 %endif
 
+%if "%{?tds}" == "-plugin-sql-tds"
+%files tds 
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/sqldrivers/libqsqltds*
+%endif
+
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
@@ -998,6 +1025,10 @@ fi
 
 
 %changelog
+* Sat Nov 14 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.5.3-10
+- -tds: Add package with TDS sqldriver (#537586)
+- add arch'd provides for sql drivers
+
 * Thu Nov 12 2009 Jaroslav Reznik <jreznik@redhat.com> - 4.5.3-9
 - CVE-2009-3384 - WebKit, ftp listing handling (#525788)
 - CVE-2009-2816 - WebKit, MITM Cross-Origin Resource Sharing (#525789)
