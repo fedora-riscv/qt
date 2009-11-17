@@ -6,7 +6,7 @@
 
 %define _default_patch_fuzz 3 
 
-%define pre beta1
+%define pre rc1 
 # enable kde-qt integration/patches (currently a no-op)
 %define kde_qt 1
 
@@ -14,7 +14,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 0.5.%{pre}%{?dist}
+Release: 0.6.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -428,10 +428,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## needs manual love
 #patch208 -p1 -b .kde-qt-0008
 #patch209 -p1 -b .kde-qt-0009
-%patch274 -p1 -b .qt-copy-0274
-## already applied?
+#patch274 -p1 -b .qt-copy-0274
+## already applied
 #patch210 -p1 -b .kde-qt-0010
-%patch211 -p1 -b .kde-qt-0011
+#patch211 -p1 -b .kde-qt-0011
 %patch212 -p1 -b .kde-qt-0012
 #patch213 -p1 -b .kde-qt-0013
 
@@ -1018,6 +1018,9 @@ fi
 
 
 %changelog
+* Tue Nov 17 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.6.rc1
+- qt-4.6.0-rc1
+
 * Sat Nov 14 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.5.beta1 
 - -tds: Add package with TDS sqldriver (#537586)
 - add arch'd provides for sql drivers
