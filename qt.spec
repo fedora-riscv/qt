@@ -43,7 +43,7 @@ Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch
 # make PulseAudio the default device in Phonon
 Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
-Patch21: qt-x11-opensource-src-4.5.2-gst-pulsaudio.patch
+Patch21: qt-everywhere-opensource-src-4.6.0-gst-pulsaudio.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
 Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
