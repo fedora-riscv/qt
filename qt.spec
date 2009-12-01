@@ -6,7 +6,6 @@
 
 %define _default_patch_fuzz 3 
 
-%define pre rc1 
 # enable kde-qt integration/patches (currently a no-op)
 %define kde_qt 1
 
@@ -14,13 +13,13 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 0.6.%{pre}%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
@@ -388,7 +387,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}
+%setup -q -n qt-everywhere-opensource-src-%{version}
 
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
@@ -1018,6 +1017,9 @@ fi
 
 
 %changelog
+* Tue Dec 01 2009 Than Ngo <than@redhat.com> - 4.6.0-1
+- 4.6.0
+
 * Tue Nov 17 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.6.rc1
 - qt-4.6.0-rc1
 
