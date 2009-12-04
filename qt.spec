@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -79,6 +79,7 @@ Patch210: 0010-Fix-error-line-not-to-have-a-as-it-s-not-correct.patch
 Patch211: 0011-Fill-gap-of-X.org-XFree-multimedia-special-launcher-.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 Patch213: 0013-Fix-QNativeImage-constructor.patch
+Patch214: qt-everywhere-opensource-src-4.6.0-QTBUG-5972.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -433,6 +434,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch211 -p1 -b .kde-qt-0011
 %patch212 -p1 -b .kde-qt-0012
 #patch213 -p1 -b .kde-qt-0013
+%patch214 -p1 -b .QTBUG-5972
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1017,6 +1019,9 @@ fi
 
 
 %changelog
+* Fri Dec 04 2009 Than Ngo <than@redhat.com> - 4.6.0-2
+- Stop using the NameOwnerChanged signal without arg0 in QtDBus itself
+
 * Tue Dec 01 2009 Than Ngo <than@redhat.com> - 4.6.0-1
 - 4.6.0
 

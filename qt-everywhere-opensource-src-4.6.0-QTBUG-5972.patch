@@ -1,0 +1,30 @@
+From a06da644f9293424f0f537c1d9288796403cd979 Mon Sep 17 00:00:00 2001
+From: Thiago Macieira <thiago.macieira@nokia.com>
+Date: Thu, 19 Nov 2009 10:01:47 +0100
+Subject: [PATCH] Revert "Stop using the NameOwnerChanged signal without arg0 in QtDBus itself"
+
+This partially reverts commit 1176ecf0b533279e5a1c97f183e5c5f1c57fb188.
+
+Task-number: QTBUG-5972
+(cherry picked from commit db1cff73726ff12d50139769dc8071f9e9173261)
+---
+ src/dbus/qdbusconnection.cpp |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/src/dbus/qdbusconnection.cpp b/src/dbus/qdbusconnection.cpp
+index b2a88ef..79ac8de 100644
+--- a/src/dbus/qdbusconnection.cpp
++++ b/src/dbus/qdbusconnection.cpp
+@@ -1005,6 +1005,9 @@ void QDBusConnectionPrivate::setBusService(const QDBusConnection &connection)
+     busService = new QDBusConnectionInterface(connection, this);
+     ref.deref(); // busService has increased the refcounting to us
+                  // avoid cyclic refcounting
++//    if (mode != PeerMode)
++    QObject::connect(busService, SIGNAL(serviceOwnerChanged(QString,QString,QString)),
++                     this, SIGNAL(serviceOwnerChanged(QString,QString,QString)));
+ 
+     QObject::connect(this, SIGNAL(callWithCallbackFailed(QDBusError,QDBusMessage)),
+                      busService, SIGNAL(callWithCallbackFailed(QDBusError,QDBusMessage)),
+-- 
+1.6.1
+
