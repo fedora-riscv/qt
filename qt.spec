@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 2%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1017,9 +1017,6 @@ fi
 
 
 %changelog
-* Fri Dec 04 2009 Than Ngo <than@redhat.com> - 4.6.0-2
-- Stop using the NameOwnerChanged signal without arg0 in QtDBus itself
-
 * Tue Dec 01 2009 Than Ngo <than@redhat.com> - 4.6.0-1
 - 4.6.0
 
