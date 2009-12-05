@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -707,6 +707,8 @@ EOF
 
 # create/own %%_qt4_plugindir/styles
 mkdir %{buildroot}%{_qt4_plugindir}/styles
+# create/own %%_qt4_plugindir/gui_platform
+mkdir %{buildroot}%{_qt4_plugindir}/gui_platform
 
 %if 0%{?phonon_internal}
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
@@ -1017,6 +1019,9 @@ fi
 
 
 %changelog
+* Sat Dec 05 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.0-2
+- own %%{_qt4_plugindir}/gui_platform
+
 * Tue Dec 01 2009 Than Ngo <than@redhat.com> - 4.6.0-1
 - 4.6.0
 
