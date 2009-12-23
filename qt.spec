@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -403,8 +403,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch19 -p1 -b .servicesfile
 %patch21 -p1 -b .gst-pulsaudio
 %patch22 -p1 -b .system_ca_certificates
-## FIXME: I think this one can be replaced with ./configure -no-javascript-jit
-## test first if it's still needed
+## FIXME: ./configure -no-javascript-jit should be sufficient, check
 #patch23 -p1 -b .javascriptcore-disable-jit
 %patch51 -p1 -b .qdoc3
 ## FIXME: port patch
@@ -507,6 +506,7 @@ done
   %{?phonon} %{!?phonon:-no-phonon} \
   %{?phonon_backend} \
   %{?no_pch} \
+  -no-javascript-jit \
   -sm \
   -stl \
   -system-libmng \
@@ -1019,6 +1019,9 @@ fi
 
 
 %changelog
+* Wed Dec 23 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.0-3
+- disable QtWebKit JavaScript JIT again, incompatible with SELinux (#549994)
+
 * Sat Dec 05 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.0-2
 - own %%{_qt4_plugindir}/gui_platform
 
