@@ -47,9 +47,6 @@ Patch21: qt-everywhere-opensource-src-4.6.0-gst-pulsaudio.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
 Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
-# disable JavaScriptCore JIT as it crashes with SE Linux
-# http://bugzilla.redhat.com/527079
-Patch23: qt-x11-opensource-src-4.5.3-javascript-disable-jit.patch
 
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
@@ -403,8 +400,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch19 -p1 -b .servicesfile
 %patch21 -p1 -b .gst-pulsaudio
 %patch22 -p1 -b .system_ca_certificates
-## FIXME: ./configure -no-javascript-jit should be sufficient, check
-#patch23 -p1 -b .javascriptcore-disable-jit
 %patch51 -p1 -b .qdoc3
 ## FIXME: port patch
 #patch52 -p1 -b .sparc64
