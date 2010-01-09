@@ -1,0 +1,29 @@
+From cec34b01f2c797475245e9416bbcce6b69a4cb38 Mon Sep 17 00:00:00 2001
+From: Olivier Goffart <ogoffart@trolltech.com>
+Date: Fri, 4 Dec 2009 11:12:01 +0100
+Subject: [PATCH] Fix crash when QGraphicsItem destructor deletes other QGraphicsItem
+
+Same fix as e7a10b00be3e4aa197900ecf424e6d44b07248ae
+
+Reviewed-by: Alexis
+---
+ src/gui/graphicsview/qgraphicsitem.cpp           |    4 ++--
+ tests/auto/qgraphicsscene/tst_qgraphicsscene.cpp |    6 ++++++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/src/gui/graphicsview/qgraphicsitem.cpp b/src/gui/graphicsview/qgraphicsitem.cpp
+index 7794da6..11bb01b 100644
+--- a/src/gui/graphicsview/qgraphicsitem.cpp
++++ b/src/gui/graphicsview/qgraphicsitem.cpp
+@@ -1347,8 +1347,8 @@ QGraphicsItem::~QGraphicsItem()
+     }
+ 
+     if (!d_ptr->children.isEmpty()) {
+-        QList<QGraphicsItem *> oldChildren = d_ptr->children;
+-        qDeleteAll(oldChildren);
++        while (!d_ptr->children.isEmpty())
++            delete d_ptr->children.first();
+         Q_ASSERT(d_ptr->children.isEmpty());
+     }
+ 
+

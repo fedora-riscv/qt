@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -76,6 +76,14 @@ Patch210: 0010-Fix-error-line-not-to-have-a-as-it-s-not-correct.patch
 Patch211: 0011-Fill-gap-of-X.org-XFree-multimedia-special-launcher-.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 Patch213: 0013-Fix-QNativeImage-constructor.patch
+# http://qt.gitorious.org/qt/kde-qt/commit/cec34b01f2c797475245e9416bbcce6b69a4cb38
+#Patch214: http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/cec34b01f2c797475245e9416bbcce6b69a4cb38.patch
+# above edited to omit tests/ portion
+Patch214: cec34b01f2c797475245e9416bbcce6b69a4cb38.patch
+#Patch215: http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/63839f0ca3836995cda2fb94cf7dd724d6f6ca52.patch
+# above edited to omit tests/ portion
+Patch215: 63839f0ca3836995cda2fb94cf7dd724d6f6ca52.patch
+
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -427,6 +435,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch211 -p1 -b .kde-qt-0011
 %patch212 -p1 -b .kde-qt-0012
 #patch213 -p1 -b .kde-qt-0013
+#patch214 -p1 -b .kde-qt-214
+%patch215 -p1 -b .kde-qt-215
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1014,6 +1024,10 @@ fi
 
 
 %changelog
+* Sat Jan 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.3.0-4
+- Fix crash when QGraphicsItem destructor deletes other QGraphicsItem (kde-qt cec34b01)
+- Fix a crash in KDE/Plasma with QGraphicsView. TopLevel list of items (kde-qt 63839f0c)
+
 * Wed Dec 23 2009 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.0-3
 - disable QtWebKit JavaScript JIT again, incompatible with SELinux (#549994)
 
