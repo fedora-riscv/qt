@@ -1024,7 +1024,7 @@ fi
 
 
 %changelog
-* Sat Jan 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.3.0-4
+* Sat Jan 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-4
 - Fix crash when QGraphicsItem destructor deletes other QGraphicsItem (kde-qt cec34b01)
 - Fix a crash in KDE/Plasma with QGraphicsView. TopLevel list of items (kde-qt 63839f0c)
 
