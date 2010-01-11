@@ -1027,7 +1027,7 @@ fi
 
 
 %changelog
-* Mon jan 11 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-5
+* Mon Jan 11 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-5
 - bitmap_font_speed patch (QTBUG-7255)
 
 * Sat Jan 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-4
