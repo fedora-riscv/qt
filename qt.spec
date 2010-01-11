@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -57,6 +57,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+# http://bugreports.qt.nokia.com/browse/QTBUG-7255
+Patch55: http://bugreports.qt.nokia.com/secure/attachment/12488/konsole-nvidia-font-speed.diff
 
 # security patches
 
@@ -415,6 +417,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
+%patch55 -p0 -b .bitmap_font_speed
 
 # security fixes
 
@@ -1024,6 +1027,9 @@ fi
 
 
 %changelog
+* Mon jan 11 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-5
+- bitmap_font_speed patch (QTBUG-7255)
+
 * Sat Jan 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-4
 - Fix crash when QGraphicsItem destructor deletes other QGraphicsItem (kde-qt cec34b01)
 - Fix a crash in KDE/Plasma with QGraphicsView. TopLevel list of items (kde-qt 63839f0c)
