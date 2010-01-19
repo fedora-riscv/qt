@@ -12,8 +12,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.6.0
-Release: 5%{?dist}
+Version: 4.6.1
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -72,19 +72,7 @@ Patch206: 0006-Fix-configure.exe-to-do-an-out-of-source-build-on-wi.patch
 Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
 Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
 Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
-## older, but actually applies, version of patches 208, 209, 213 (double check)
-Patch274: 0274-shm-native-image-fix.patch
-Patch210: 0010-Fix-error-line-not-to-have-a-as-it-s-not-correct.patch
-Patch211: 0011-Fill-gap-of-X.org-XFree-multimedia-special-launcher-.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
-Patch213: 0013-Fix-QNativeImage-constructor.patch
-# http://qt.gitorious.org/qt/kde-qt/commit/cec34b01f2c797475245e9416bbcce6b69a4cb38
-#Patch214: http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/cec34b01f2c797475245e9416bbcce6b69a4cb38.patch
-# above edited to omit tests/ portion
-Patch214: cec34b01f2c797475245e9416bbcce6b69a4cb38.patch
-#Patch215: http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/63839f0ca3836995cda2fb94cf7dd724d6f6ca52.patch
-# above edited to omit tests/ portion
-Patch215: 63839f0ca3836995cda2fb94cf7dd724d6f6ca52.patch
 
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
@@ -429,17 +417,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch205 -p1 -b .kde-qt-0005
 %patch206 -p1 -b .kde-qt-0006
 %patch207 -p1 -b .kde-qt-0007
-## needs manual love
-#patch208 -p1 -b .kde-qt-0008
-#patch209 -p1 -b .kde-qt-0009
-#patch274 -p1 -b .qt-copy-0274
-## already applied
-#patch210 -p1 -b .kde-qt-0010
-#patch211 -p1 -b .kde-qt-0011
 %patch212 -p1 -b .kde-qt-0012
-#patch213 -p1 -b .kde-qt-0013
-#patch214 -p1 -b .kde-qt-214
-%patch215 -p1 -b .kde-qt-215
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1027,6 +1005,9 @@ fi
 
 
 %changelog
+* Tue Jan 19 2010 Than Ngo <than@redhat.com> - 4.6.1-1
+- 4.6.1
+
 * Mon Jan 11 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-5
 - bitmap_font_speed patch (QTBUG-7255)
 
