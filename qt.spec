@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -57,8 +57,6 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
-# http://bugreports.qt.nokia.com/browse/QTBUG-7255
-Patch55: http://bugreports.qt.nokia.com/secure/attachment/12488/konsole-nvidia-font-speed.diff
 
 # security patches
 
@@ -405,7 +403,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
-%patch55 -p0 -b .bitmap_font_speed
 
 # security fixes
 
@@ -1005,6 +1002,9 @@ fi
 
 
 %changelog
+* Tue Jan 19 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.1-2
+- drop bitmap_font_speed patch, rejected upstream
+
 * Tue Jan 19 2010 Than Ngo <than@redhat.com> - 4.6.1-1
 - 4.6.1
 
