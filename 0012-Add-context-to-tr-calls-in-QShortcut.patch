@@ -1,7 +1,7 @@
 From 9eb3560cfd5cd0bc9c7bf79f2c27657ee07b8f95 Mon Sep 17 00:00:00 2001
 From: Albert Astals Cid <aacid@kde.org>
 Date: Sat, 8 Aug 2009 14:40:25 +0200
-Subject: [PATCH 17/18] Add context to tr calls in QShortcut
+Subject: [PATCH 12/13] Add context to tr calls in QShortcut
 
 Some languages have special rules for using "+" to concatenate strings and
 for example it needs to be Ctrl + Shift instead of Ctrl+Shift, adding
@@ -66,5 +66,5 @@ index 894f663..c17f253 100644
      } else if (key) {
          int i=0;
 -- 
-1.6.2.5
+1.6.5.1
 

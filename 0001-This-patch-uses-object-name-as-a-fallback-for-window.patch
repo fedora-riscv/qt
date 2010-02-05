@@ -1,7 +1,7 @@
 From b48e2091871516496cf0b133249fbf5326a55831 Mon Sep 17 00:00:00 2001
 From: Lubos Lunak <l.lunak@kde.org>
 Date: Sat, 23 Feb 2008 16:44:52 +0100
-Subject: [PATCH 01/18] This patch uses object name as a fallback for window role if no window
+Subject: [PATCH 01/13] This patch uses object name as a fallback for window role if no window
  role is set explicitly using setWindowRole(). Since Qt3 always used
  the object name as the window role and most Qt3/KDE3 code is ported to
  call setObjectName(),
@@ -113,5 +113,5 @@ index 79ee8c9..b56849c 100644
  QPaintEngine *QWidget::paintEngine() const
  {
 -- 
-1.6.2.5
+1.6.5.1
 

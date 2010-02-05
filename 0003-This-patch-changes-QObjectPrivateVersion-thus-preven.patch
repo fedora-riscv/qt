@@ -1,7 +1,7 @@
 From 68eaa07de69e873b89d4aba341c6ed1ca81f6819 Mon Sep 17 00:00:00 2001
 From: Lubos Lunak <l.lunak@kde.org>
 Date: Wed, 30 Jan 2008 14:24:01 +0100
-Subject: [PATCH 03/18] This patch changes QObjectPrivateVersion, thus preventing mixing
+Subject: [PATCH 03/13] This patch changes QObjectPrivateVersion, thus preventing mixing
  parts of upstream Qt and qt-copy. In general it is a bad idea to mix
  e.g. libQtCore from one build and libQtGui from another one, and other
  qt-copy patches could make changes in Qt internal structures that could
@@ -33,5 +33,5 @@ index 0bcccba..88192fd 100644
  class Q_CORE_EXPORT QObjectPrivate : public QObjectData
  {
 -- 
-1.6.2.5
+1.6.5.1
 
