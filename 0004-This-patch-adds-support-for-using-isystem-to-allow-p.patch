@@ -1,7 +1,7 @@
 From 86fc0d43cdcf3232ae0e4e6f4f28cf8f1a45ede5 Mon Sep 17 00:00:00 2001
 From: Benjamin Reed <rangerrick@befunk.com>
 Date: Tue, 19 Feb 2008 17:37:37 +0100
-Subject: [PATCH 04/18] This patch adds support for using -isystem to allow putting an include
+Subject: [PATCH 04/13] This patch adds support for using -isystem to allow putting an include
  directory at the end of the compiler's header search path.
 
 I don't have the exact output anymore (I've since patched Qt's configure) but
@@ -52,5 +52,5 @@ index 2c108ad..610a201 100755
          L_FLAGS="$L_FLAGS -L\"${VAL}\""
          ;;
 -- 
-1.6.2.5
+1.6.5.1
 

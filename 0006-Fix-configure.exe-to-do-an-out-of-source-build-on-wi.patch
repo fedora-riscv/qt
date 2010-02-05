@@ -1,7 +1,7 @@
 From 8e28e0603a900e1b18ebfd14c4f87b16dabf4cf6 Mon Sep 17 00:00:00 2001
 From: Christian Ehrlicher <ch.ehrlicher@gmx.de>
 Date: Fri, 19 Sep 2008 17:41:26 +0200
-Subject: [PATCH 06/18] Fix configure.exe to do an out-of-source build on windows
+Subject: [PATCH 06/13] Fix configure.exe to do an out-of-source build on windows
 
 qt-bugs@ issue : N227213
 Trolltech task ID : none yet
@@ -63,5 +63,5 @@ index d519b09..7979836 100644
  
  
 -- 
-1.6.2.5
+1.6.5.1
 

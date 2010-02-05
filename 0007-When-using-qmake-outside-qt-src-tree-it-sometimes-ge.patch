@@ -1,7 +1,7 @@
 From 0afcf33127c6ccbe5dfaae4f4c5e02f28dc10ae1 Mon Sep 17 00:00:00 2001
 From: Christian Ehrlicher <ch.ehrlicher@gmx.de>
 Date: Thu, 8 May 2008 21:25:49 +0200
-Subject: [PATCH 07/18] When using qmake outside qt src tree, it sometimes generates wrong
+Subject: [PATCH 07/13] When using qmake outside qt src tree, it sometimes generates wrong
  paths (wrong path separator)
 
 qt-bugs@ issue : none
@@ -69,5 +69,5 @@ index 8ba89f9..dd78349 100644
          QString version = qmake_version();
          if(slash != -1) {
 -- 
-1.6.2.5
+1.6.5.1
 

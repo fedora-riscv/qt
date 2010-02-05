@@ -1,20 +1,20 @@
-diff -up qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/audiooutput.cpp.than qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/audiooutput.cpp
---- qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/audiooutput.cpp.than	2009-08-16 14:20:43.000000000 +0200
-+++ qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/audiooutput.cpp	2009-08-16 14:45:56.000000000 +0200
-@@ -141,7 +141,9 @@ bool AudioOutput::setOutputDevice(int ne
+diff -up qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/audiooutput.cpp.gst-pulsaudio qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/audiooutput.cpp
+--- qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/audiooutput.cpp.gst-pulsaudio	2009-11-27 02:27:50.000000000 +0100
++++ qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/audiooutput.cpp	2009-12-01 13:36:43.000000000 +0100
+@@ -148,7 +148,9 @@ bool AudioOutput::setOutputDevice(int ne
          // Save previous state
          GstState oldState = GST_STATE(m_audioSink);
          const QByteArray oldDeviceValue = GstHelper::property(m_audioSink, "device");
--        const QByteArray deviceId = deviceList.at(newDevice).gstId;
-+        const QByteArray deviceId = (deviceList.at(newDevice).gstId == "PulseAudio"
-+                                     ? "default"
-+                                     : deviceList.at(newDevice).gstId);
+-        const QByteArray deviceId = deviceList.at(deviceIdx).gstId;
++        const QByteArray deviceId = (deviceList.at(deviceIdx).gstId == "PulseAudio"
++                                    ? "default"
++                                    : deviceList.at(deviceIdx).gstId);
          m_device = newDevice;
  
          // We test if the device can be opened by checking if it can go from NULL to READY state
-diff -up qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/devicemanager.cpp.than qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/devicemanager.cpp
---- qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/devicemanager.cpp.than	2009-08-15 12:39:08.000000000 +0200
-+++ qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/devicemanager.cpp	2009-08-16 14:45:13.000000000 +0200
+diff -up qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/devicemanager.cpp.gst-pulsaudio qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/devicemanager.cpp
+--- qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/devicemanager.cpp.gst-pulsaudio	2009-11-27 02:27:50.000000000 +0100
++++ qt-everywhere-opensource-src-4.6.0/src/3rdparty/phonon/gstreamer/devicemanager.cpp	2009-12-01 13:04:18.000000000 +0100
 @@ -50,6 +50,8 @@ AudioDevice::AudioDevice(DeviceManager *
      //get name from device
      if (gstId == "default") {
@@ -24,7 +24,7 @@ diff -up qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/devicemanager
      } else {
          GstElement *aSink= manager->createAudioSink();
  
-@@ -175,6 +177,18 @@ GstElement *DeviceManager::createAudioSi
+@@ -178,6 +180,18 @@ GstElement *DeviceManager::createAudioSi
                  }
              }
  
@@ -43,7 +43,7 @@ diff -up qt-x11-opensource-src-4.5.2/src/3rdparty/phonon/gstreamer/devicemanager
  #ifdef USE_ALSASINK2
              if (!sink) {
                  sink = gst_element_factory_make ("_k_alsasink", NULL);
-@@ -306,8 +320,12 @@ void DeviceManager::updateDeviceList()
+@@ -311,8 +325,12 @@ void DeviceManager::updateDeviceList()
      QList<QByteArray> list;
  
      if (audioSink) {
