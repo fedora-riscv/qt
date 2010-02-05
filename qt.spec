@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -57,6 +57,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+# http://bugs.kde.org/show_bug.cgi?id=180051#c22
+Patch55: qt-cups-1.patch
 
 # security patches
 
@@ -403,6 +405,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
+%patch55 -p1 -b .cups-1
 
 # security fixes
 
@@ -1002,6 +1005,9 @@ fi
 
 
 %changelog
+* Fri Feb 05 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.1-3
+- improve cups support (#523846, kde#180051#c22)
+
 * Tue Jan 19 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.1-2
 - drop bitmap_font_speed patch, rejected upstream
 
