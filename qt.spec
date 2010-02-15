@@ -12,8 +12,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.6.1
-Release: 3%{?dist}
+Version: 4.6.2
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1005,6 +1005,9 @@ fi
 
 
 %changelog
+* Mon Feb 15 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-1
+- 4.6.2
+
 * Fri Feb 05 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.1-3
 - improve cups support (#523846, kde#180051#c22)
 
