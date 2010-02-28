@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 1%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -58,7 +58,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
-Patch55: qt-cups-1.patch
+Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 
 # security patches
 
@@ -675,7 +675,7 @@ EOF
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4 %{name}
-%%_qt45 %{version}
+%%_qt46 %{version}
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
@@ -1005,6 +1005,12 @@ fi
 
 
 %changelog
+* Sun Feb 28 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-3
+- fix CUPS patch not to crash if currentPPD is NULL (#566304)
+
+* Tue Feb 16 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-2
+- macros.qt4: s/qt45/qt46/
+
 * Mon Feb 15 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-1
 - 4.6.2
 
