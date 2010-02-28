@@ -67,7 +67,7 @@ diff -ur qt-everywhere-opensource-src-4.6.2/src/gui/painting/qprinter.cpp qt-eve
 +
 +        if (cups.currentPPD()) {
 +            // set default color
-+            if(cups.currentPPD()->color_device)
++            if (cups.currentPPD()->color_device)
 +                setColorMode(Color);
 +            else
 +                setColorMode(GrayScale);
