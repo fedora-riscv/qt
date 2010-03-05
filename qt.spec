@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -72,7 +72,7 @@ Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
 Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
 Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
-
+Patch213: qt-x11-opensource-src-4.6.2-tablet-wacom-QTBUG-8599.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -415,6 +415,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch206 -p1 -b .kde-qt-0006
 %patch207 -p1 -b .kde-qt-0007
 %patch212 -p1 -b .kde-qt-0012
+%patch213 -p1 -b .tablet-wacom-QTBUG-8599
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1009,6 +1010,9 @@ fi
 
 
 %changelog
+* Fri Mar 05 2010 Than Ngo <than@redhat.com> - 4.6.2-5
+- Make tablet detection work with new wacom drivers (#569132)
+
 * Mon Mar 01 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-4
 - fix 64bit platform logic, use linux-g++-64 everywhere except x86_64 (#569542)
 
