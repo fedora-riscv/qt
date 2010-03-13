@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -138,6 +138,7 @@ Source31: hi48-app-qt4-logo.png
 Prereq: /etc/ld.so.conf.d
 %endif
 
+BuildRequires: alsa-lib-devel
 BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
@@ -520,6 +521,7 @@ done
   -glib \
   -openssl-linked \
   -xmlpatterns \
+  -alsa \
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?webkit} %{!?webkit:-no-webkit } \
   %{?nas} \
@@ -1014,6 +1016,9 @@ fi
 
 
 %changelog
+* Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-7
+- BR alsa-lib-devel, configure with -alsa (for QtMultimedia)
+
 * Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-6
 - Provides: qt-assistant-adp(-devel)
 
