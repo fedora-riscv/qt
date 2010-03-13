@@ -521,7 +521,6 @@ done
   -glib \
   -openssl-linked \
   -xmlpatterns \
-  -alsa \
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?webkit} %{!?webkit:-no-webkit } \
   %{?nas} \
@@ -1017,7 +1016,7 @@ fi
 
 %changelog
 * Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-7
-- BR alsa-lib-devel, configure with -alsa (for QtMultimedia)
+- BR alsa-lib-devel (for QtMultimedia)
 
 * Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-6
 - Provides: qt-assistant-adp(-devel)
