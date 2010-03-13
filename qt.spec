@@ -24,8 +24,6 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
-Provides: qt-assistant-adp = %{version}-0.%{release}
-%{?_isa:Provides: qt-assistant-adp%{?_isa} = %{version}-0.%{release}}
 
 Source4: Trolltech.conf
 
@@ -377,6 +375,8 @@ Provides: %{name}-assistant = %{version}-%{release}
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
+Provides: qt-assistant-adp = %{version}-0.%{release}
+%{?_isa:Provides: qt-assistant-adp%{?_isa} = %{version}-0.%{release}}
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
