@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 5%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -138,6 +138,7 @@ Source31: hi48-app-qt4-logo.png
 Prereq: /etc/ld.so.conf.d
 %endif
 
+BuildRequires: alsa-lib-devel
 BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
@@ -268,6 +269,8 @@ Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
+Provides: qt-assistant-adp-devel = %{version}-0.%{release}
+%{?_isa:Provides: qt-assistant-adp-devel%{?_isa} = %{version}-0.%{release}}
 
 %description devel
 This package contains the files necessary to develop
@@ -373,6 +376,8 @@ Provides: %{name}-assistant = %{version}-%{release}
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
+Provides: qt-assistant-adp = %{version}-0.%{release}
+%{?_isa:Provides: qt-assistant-adp%{?_isa} = %{version}-0.%{release}}
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -1010,6 +1015,12 @@ fi
 
 
 %changelog
+* Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-7
+- BR alsa-lib-devel (for QtMultimedia)
+
+* Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-6
+- Provides: qt-assistant-adp(-devel)
+
 * Fri Mar 05 2010 Than Ngo <than@redhat.com> - 4.6.2-5
 - Make tablet detection work with new wacom drivers (#569132)
 
