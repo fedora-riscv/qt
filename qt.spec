@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 3%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -51,7 +51,6 @@ Requires: ca-certificates
 ## upstreamable bits
 # http://bugzilla.redhat.com/485677
 Patch51: qt-everywhere-opensource-src-4.6.0-beta1-qdoc3.patch 
-Patch52: qt-4.5-sparc64.patch
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
@@ -73,7 +72,7 @@ Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
 Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
 Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
-
+Patch213: qt-x11-opensource-src-4.6.2-tablet-wacom-QTBUG-8599.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -139,6 +138,7 @@ Source31: hi48-app-qt4-logo.png
 Prereq: /etc/ld.so.conf.d
 %endif
 
+BuildRequires: alsa-lib-devel
 BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
@@ -269,6 +269,8 @@ Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
+Provides: qt-assistant-adp-devel = %{version}-0.%{release}
+%{?_isa:Provides: qt-assistant-adp-devel%{?_isa} = %{version}-0.%{release}}
 
 %description devel
 This package contains the files necessary to develop
@@ -374,6 +376,8 @@ Provides: %{name}-assistant = %{version}-%{release}
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
+Provides: qt-assistant-adp = %{version}-0.%{release}
+%{?_isa:Provides: qt-assistant-adp%{?_isa} = %{version}-0.%{release}}
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -399,8 +403,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch21 -p1 -b .gst-pulsaudio
 %patch22 -p1 -b .system_ca_certificates
 %patch51 -p1 -b .qdoc3
-## FIXME: port patch
-#patch52 -p1 -b .sparc64
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -418,13 +420,21 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch206 -p1 -b .kde-qt-0006
 %patch207 -p1 -b .kde-qt-0007
 %patch212 -p1 -b .kde-qt-0012
+%patch213 -p1 -b .tablet-wacom-QTBUG-8599
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
 %define platform linux-g++
-%if "%{_qt4_datadir}" != "%{_qt4_prefix}" && "%{_lib}" == "lib64"                                  
+
+# some 64bit platforms assume -64 suffix, https://bugzilla.redhat.com/569542
+%if "%{?__isa_bits}"  == "64"
 %define platform linux-g++-64                                                                      
+%endif
+
+# https://bugzilla.redhat.com/478481
+%ifarch x86_64
+%define platform linux-g++
 %endif
 
 sed -i \
@@ -1005,6 +1015,18 @@ fi
 
 
 %changelog
+* Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-7
+- BR alsa-lib-devel (for QtMultimedia)
+
+* Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-6
+- Provides: qt-assistant-adp(-devel)
+
+* Fri Mar 05 2010 Than Ngo <than@redhat.com> - 4.6.2-5
+- Make tablet detection work with new wacom drivers (#569132)
+
+* Mon Mar 01 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-4
+- fix 64bit platform logic, use linux-g++-64 everywhere except x86_64 (#569542)
+
 * Sun Feb 28 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-3
 - fix CUPS patch not to crash if currentPPD is NULL (#566304)
 
