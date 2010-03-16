@@ -6,20 +6,22 @@
 
 %define _default_patch_fuzz 3 
 
-# enable kde-qt integration/patches (currently a no-op)
+# enable kde-qt integration/patches 
 %define kde_qt 1
+
+%define pre tp
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.6.2
-Release: 7%{?dist}
+Version: 4.7.0
+Release: 0.2.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
@@ -115,7 +117,6 @@ Source31: hi48-app-qt4-logo.png
 %define phonon_release 1
 %define webkit -webkit
 %define gtkstyle -gtkstyle
-%define nas -no-nas-sound
 %define dbus -dbus-linked
 
 # See http://bugzilla.redhat.com/196901
@@ -129,6 +130,7 @@ Source31: hi48-app-qt4-logo.png
 %define _qt4_docdir %{_docdir}/qt4
 %define _qt4_examplesdir %{_qt4_prefix}/examples
 %define _qt4_headerdir %{_includedir} 
+%define _qt4_importdir %{_qt4_prefix}/imports 
 %define _qt4_libdir %{_libdir}
 %define _qt4_plugindir %{_qt4_prefix}/plugins
 %define _qt4_sysconfdir %{_sysconfdir}
@@ -144,26 +146,22 @@ BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: findutils
 BuildRequires: fontconfig-devel
-BuildRequires: freetype-devel
+BuildRequires: glib2-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
 BuildRequires: libpng-devel
 BuildRequires: libtiff-devel
-BuildRequires: freetype-devel
-BuildRequires: zlib-devel
-BuildRequires: glib2-devel
+BuildRequires: NetworkManager-devel
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig
+BuildRequires: pulseaudio-libs-devel
+BuildRequires: zlib-devel
 
 ## In theory, should be as simple as:
 #define x_deps libGL-devel libGLU-devel
 ## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
-%define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
+%define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libXv-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
 BuildRequires: %{x_deps}
-
-%if "%{?nas}" != "-no-nas-sound"
-BuildRequires: nas-devel
-%endif
 
 %if "%{?mysql}" != "-no-sql-mysql"
 BuildRequires: mysql-devel >= 4.0
@@ -269,8 +267,6 @@ Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
-Provides: qt-assistant-adp-devel = %{version}-0.%{release}
-%{?_isa:Provides: qt-assistant-adp-devel%{?_isa} = %{version}-0.%{release}}
 
 %description devel
 This package contains the files necessary to develop
@@ -376,8 +372,6 @@ Provides: %{name}-assistant = %{version}-%{release}
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
-Provides: qt-assistant-adp = %{version}-0.%{release}
-%{?_isa:Provides: qt-assistant-adp%{?_isa} = %{version}-0.%{release}}
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -386,14 +380,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-everywhere-opensource-src-%{version}
+%setup -q -n qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}
 
-# don't use -b on mkspec files, else they get installed too.
-# multilib hacks no longer required
-%patch2 -p1
-%if "%{_qt4_datadir}" != "%{_qt4_prefix}"
-%patch3 -p1 -b .multilib-QMAKEPATH
-%endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
@@ -412,15 +400,18 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # kde-qt branch
+%if 0%{?kde_qt}
 %patch201 -p1 -b .kde-qt-0001
 %patch202 -p1 -b .kde-qt-0002
 %patch203 -p1 -b .kde-qt-0003
 %patch204 -p1 -b .kde-qt-0004
 %patch205 -p1 -b .kde-qt-0005
 %patch206 -p1 -b .kde-qt-0006
-%patch207 -p1 -b .kde-qt-0007
+# doesn't apply, does look like much of a big deal though
+#patch207 -p1 -b .kde-qt-0007
 %patch212 -p1 -b .kde-qt-0012
 %patch213 -p1 -b .tablet-wacom-QTBUG-8599
+%endif
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -437,6 +428,14 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %define platform linux-g++
 %endif
 
+# multilib hacks
+# don't use -b on mkspec files, else they get installed too.
+# multilib hacks no longer required
+%patch2 -p1
+%if "%{_qt4_datadir}" != "%{_qt4_prefix}"
+%patch3 -p1 -b .multilib-QMAKEPATH
+%endif
+
 sed -i \
   -e "s|-O2|$RPM_OPT_FLAGS|g" \
   -e "s|g++.conf|g++-multilib.conf|g" mkspecs/%{platform}/qmake.conf
@@ -444,13 +443,6 @@ sed -i \
 sed -e "s|^QMAKE_CFLAGS_RELEASE|#QMAKE_CFLAGS_RELEASE|g" \
   mkspecs/common/g++.conf > mkspecs/common/g++-multilib.conf
   
-## FIXME, http://bugzilla.redhat.com/230224
-# On the surface, looks like a good idea to strip -I/usr/include, -L/usr/lib, 
-# but it turns out qmake-consuming apps expect/use QMAKE_INCDIR_QT directly 
-# (e.g. PyQt4, texmaker), and don't cope with null values
-#if "%{_qt4_headerdir}" == "%{_includedir}"
-#sed -i -e "s|^QMAKE_INCDIR_QT.*=.*|QMAKE_INCDIR_QT       =|" mkspecs/common/linux.conf
-#endif
 %if "%{_qt4_libdir}" == "%{_libdir}"
   sed -i -e "s|^QMAKE_LIBDIR_QT.*=.*|QMAKE_LIBDIR_QT       =|" mkspecs/common/linux.conf
 %endif
@@ -471,6 +463,10 @@ done
 
 
 %build
+
+# add '-importdir %{_qt4_importdir}' when it works, right now fails with:
+# %{_qt4_importdir} unknown argument
+
 
 # build shared, threaded (default) libraries
 ./configure -v \
@@ -523,7 +519,6 @@ done
   -xmlpatterns \
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?webkit} %{!?webkit:-no-webkit } \
-  %{?nas} \
   %{?mysql} \
   %{?psql} \
   %{?odbc} \
@@ -552,23 +547,21 @@ desktop-file-install \
 
 ## pkg-config
 # strip extraneous dirs/libraries 
-# FIXME?: qt-4.5 seems to use Libs.private properly, so this hackery should 
-#         no longer be required -- Rex
 # safe ones
 glib2_libs=$(pkg-config --libs glib-2.0 gobject-2.0 gthread-2.0)
 ssl_libs=$(pkg-config --libs openssl)
 for dep in \
   -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} \
   -ljpeg -lm -lmng -lpng ${ssl_libs} -lsqlite3 -lz \
-  -L/usr/X11R6/%{_lib} -L%{_libdir} ; do
-  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la ||:
-  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
+  -L/usr/X11R6/lib -L/usr/X11R6/%{_lib} -L%{_libdir} ; do
+  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la 
+#  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/*.prl
 done
 # riskier
-for dep in -lXrender -lXrandr -lXcursor -lXfixes -lXinerama -lXi -lXft -lXt -lXext -lX11 -lSM -lICE -ldl -lpthread ; do
-  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la ||:
-  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc 
+for dep in -ldl -lphonon -lpthread -lICE -lSM -lX11 -lXcursor -lXext -lXfixes -lXft -lXinerama -lXi -lXrandr -lXrender -lXt ; do
+  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la 
+#  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc 
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/*.prl
 done
 
@@ -576,7 +569,8 @@ done
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
 
 # nuke QMAKE_PRL_LIBS, seems similar to static linking and .la files (#520323)
-sed -i -e "s|^QMAKE_PRL_LIBS|#QMAKE_PRL_LIBS|" %{buildroot}%{_qt4_libdir}/*.prl
+# don't nuke, just drop -lphonon (above)
+#sed -i -e "s|^QMAKE_PRL_LIBS|#QMAKE_PRL_LIBS|" %{buildroot}%{_qt4_libdir}/*.prl
 
 # .la files, die, die, die.
 rm -f %{buildroot}%{_qt4_libdir}/lib*.la
@@ -670,7 +664,9 @@ demosdir=%{_qt4_demosdir}
 docdir=%{_qt4_docdir}
 examplesdir=%{_qt4_examplesdir}
 headerdir=%{_qt4_headerdir}
+importdir=%{_qt4_importdir}
 libdir=%{_qt4_libdir}
+moc=%{_qt4_bindir}/moc
 plugindir=%{_qt4_plugindir}
 qmake=%{_qt4_bindir}/qmake
 sysconfdir=%{_qt4_sysconfdir}
@@ -685,7 +681,7 @@ EOF
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4 %{name}
-%%_qt46 %{version}
+%%_qt47 %{version}
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
@@ -694,6 +690,7 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_docdir %%{_docdir}/qt4
 %%_qt4_examples %%{_qt4_prefix}/examples
 %%_qt4_headerdir %%{_includedir}
+%%_qt4_importdir %%{_qt4_prefix}/imports
 %%_qt4_libdir %%{_libdir}
 %%_qt4_plugindir %%{_qt4_prefix}/plugins
 %%_qt4_qmake %%{_qt4_bindir}/qmake
@@ -979,15 +976,16 @@ fi
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
+%{_qt4_importdir}/
 %if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so.4*
 %dir %{_datadir}/kde4/services/phononbackends/
 %{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
 %endif
 %{_qt4_libdir}/libQt3Support.so.4*
-%{_qt4_libdir}/libQtAssistantClient.so.4*
 %{_qt4_libdir}/libQtCLucene.so.4*
 %{_qt4_libdir}/libQtDesigner.so.4*
+%{_qt4_libdir}/libQtDeclarative.so.4*
 %{_qt4_libdir}/libQtDesignerComponents.so.4*
 %{_qt4_libdir}/libQtGui.so.4*
 %{_qt4_libdir}/libQtHelp.so.4*
@@ -1004,10 +1002,12 @@ fi
 %endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
+%{_bindir}/qml
 %{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qt*config*
 %endif
 %{_qt4_bindir}/assistant*
+%{_qt4_bindir}/qml
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
 %{_qt4_bindir}/qt*config*
 %{_datadir}/applications/*qtconfig.desktop
@@ -1015,6 +1015,14 @@ fi
 
 
 %changelog
+* Tue Mar 16 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.2.tp
+- qt-4.7.0-tp
+- macros.qt4 : +%%_qt4_importdir
+- don't strip libs from pkgconfig files, Libs.private is now used properly
+- add -lphonon to stripped libs instead of brutally hacking out
+  QMAKE_PRL_LIBS altogether (#520323)
+- qt-assistant-adp packaged separately now, not included here
+
 * Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-7
 - BR alsa-lib-devel (for QtMultimedia)
 
