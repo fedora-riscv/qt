@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -60,6 +60,12 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 
 # security patches
+Patch100: qt-x11-opensource-src-4.5.3-cve-2010-0046-css-format-mem-corruption.patch
+Patch101: qt-x11-opensource-src-4.5.3-cve-2010-0049-freed-line-boxes-ltr-rtl.patch
+Patch102: qt-x11-opensource-src-4.5.3-cve-2010-0050-crash-misnested-style-tags.patch
+Patch103: qt-x11-opensource-src-4.5.3-cve-2010-0052-destroyed-input-cached.patch
+Patch104: qt-everywhere-opensource-src-4.6.2-cve-2010-0051-lax-css-parsing-cross-domain-theft.patch
+Patch105: qt-everywhere-opensource-src-4.6.2-cve-2010-0054-image-element-pointer-name-getter.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -410,6 +416,12 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch55 -p1 -b .cups-1
 
 # security fixes
+%patch100 -p1 -b .cve-2010-0046-css-format-mem-corruption
+%patch101 -p1 -b .cve-2010-0049-freed-line-boxes-ltr-rtl
+%patch102 -p1 -b .cve-2010-0050-crash-misnested-style-tags
+%patch103 -p1 -b .cve-2010-0052-destroyed-input-cached
+%patch104 -p1 -b .cve-2010-0051-lax-css-parsing-cross-domain-theft
+%patch105 -p1 -b .cve-2010-0054-image-element-pointer-name-getter
 
 # kde-qt branch
 %patch201 -p1 -b .kde-qt-0001
@@ -1015,6 +1027,11 @@ fi
 
 
 %changelog
+* Wed Mar 17 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.6.2-8
+- WebKit security update:
+  CVE-2010-0046, CVE-2010-0049, CVE-2010-0050, CVE-2010-0051,
+  CVE-2010-0052, CVE-2010-0054
+
 * Sat Mar 13 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-7
 - BR alsa-lib-devel (for QtMultimedia)
 
