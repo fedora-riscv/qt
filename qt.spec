@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.2.%{pre}%{?dist}
+Release: 0.3.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -552,7 +552,7 @@ glib2_libs=$(pkg-config --libs glib-2.0 gobject-2.0 gthread-2.0)
 ssl_libs=$(pkg-config --libs openssl)
 for dep in \
   -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} \
-  -ljpeg -lm -lmng -lpng ${ssl_libs} -lsqlite3 -lz \
+  -ljpeg -lm -lmng -lpng -lpulse ${ssl_libs} -lsqlite3 -lz \
   -L/usr/X11R6/lib -L/usr/X11R6/%{_lib} -L%{_libdir} ; do
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la 
 #  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
@@ -1015,6 +1015,9 @@ fi
 
 
 %changelog
+* Sun Mar 21 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.7.0-0.3.tp
+- also strip -lpulse from .prl files (fixes PyQt4 QtMultimedia binding build)
+
 * Tue Mar 16 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.2.tp
 - qt-4.7.0-tp
 - macros.qt4 : +%%_qt4_importdir
