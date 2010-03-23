@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.3.%{pre}%{?dist}
+Release: 0.4.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -60,6 +60,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
+# fix webkit platform definitions for sparc64
+Patch56: qt-everywhere-opensource-src-4.6.2-sparc64-webkit-fix.patch
 
 # security patches
 
@@ -396,6 +398,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
+%patch56 -p1 -b .sparc
 
 # security fixes
 
@@ -1015,6 +1018,9 @@ fi
 
 
 %changelog
+* Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 4.7.0-0.4.tp
+- fix type cast issue on sparc64
+
 * Sun Mar 21 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.7.0-0.3.tp
 - also strip -lpulse from .prl files (fixes PyQt4 QtMultimedia binding build)
 
