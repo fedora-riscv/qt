@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -60,6 +60,8 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 # fix type cast issue on s390x
 Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
+# fix type cast issue on sparc64
+Patch57: qt-everywhere-opensource-src-4.6.2-webkit-sparc64.patch
 
 # security patches
 Patch100: qt-x11-opensource-src-4.5.3-cve-2010-0046-css-format-mem-corruption.patch
@@ -1036,6 +1038,9 @@ fi
 
 
 %changelog
+* Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 4.6.2-11
+- fix type cast issue on sparc64
+
 * Tue Mar 23 2010 Than Ngo <than@redhat.com> - 4.6.2-10
 - fix type cast issue on s390x
 

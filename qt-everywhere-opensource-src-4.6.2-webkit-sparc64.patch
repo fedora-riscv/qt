@@ -1,0 +1,16 @@
+diff -up qt-everywhere-opensource-src-4.6.2/src/3rdparty/webkit/JavaScriptCore/wtf/Platform.h.sparc qt-everywhere-opensource-src-4.6.2/src/3rdparty/webkit/JavaScriptCore/wtf/Platform.h
+--- qt-everywhere-opensource-src-4.6.2/src/3rdparty/webkit/JavaScriptCore/wtf/Platform.h.sparc	2010-03-23 10:45:57.076490991 -0400
++++ qt-everywhere-opensource-src-4.6.2/src/3rdparty/webkit/JavaScriptCore/wtf/Platform.h	2010-03-23 10:47:37.044618125 -0400
+@@ -734,7 +734,11 @@
+ #endif
+ 
+ #if !defined(WTF_USE_JSVALUE64) && !defined(WTF_USE_JSVALUE32) && !defined(WTF_USE_JSVALUE32_64)
+-#if (PLATFORM(X86_64) && (PLATFORM(UNIX) || PLATFORM(WIN_OS))) || PLATFORM(IA64) || PLATFORM(ALPHA) || PLATFORM(S390X)
++#if (PLATFORM(X86_64) && (PLATFORM(UNIX) || PLATFORM(WIN_OS))) \
++    || PLATFORM(IA64)    \
++    || PLATFORM(ALPHA)   \
++    || PLATFORM(SPARC64) \
++    || PLATFORM(S390X)
+ #define WTF_USE_JSVALUE64 1
+ #elif PLATFORM(ARM) || PLATFORM(PPC64)
+ #define WTF_USE_JSVALUE32 1
