@@ -556,9 +556,6 @@ done
 
 make %{?_smp_mflags}
 
-# recreate .qm files
-LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
-
 
 %install
 rm -rf %{buildroot}
@@ -1040,6 +1037,7 @@ fi
 %changelog
 * Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 4.6.2-11
 - fix type cast issue on sparc64
+- drop "recreate .qm file", it's not needed anymore
 
 * Tue Mar 23 2010 Than Ngo <than@redhat.com> - 4.6.2-10
 - fix type cast issue on s390x
