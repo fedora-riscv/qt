@@ -422,6 +422,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .typecast_s390x
+%patch57 -p1 -b .typecast_sparc64
 
 # security fixes
 %patch100 -p1 -b .cve-2010-0046-css-format-mem-corruption
