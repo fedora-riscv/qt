@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -58,8 +58,10 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
-# fix webkit to build for sparc64
-Patch56: qt-everywhere-opensource-src-4.6.2-sparc64-webkit-fix.patch
+# fix type cast issue on s390x
+Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
+# fix type cast issue on sparc64
+Patch57: qt-everywhere-opensource-src-4.6.2-webkit-sparc64.patch
 
 # security patches
 Patch100: qt-x11-opensource-src-4.5.3-cve-2010-0046-css-format-mem-corruption.patch
@@ -419,7 +421,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
-%patch56 -p1 -b .sparc64
+%patch56 -p1 -b .typecast_s390x
+%patch57 -p1 -b .typecast_sparc64
 
 # security fixes
 %patch100 -p1 -b .cve-2010-0046-css-format-mem-corruption
@@ -553,9 +556,6 @@ done
   %{!?examples:-nomake examples}
 
 make %{?_smp_mflags}
-
-# recreate .qm files
-LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 
 
 %install
@@ -1036,11 +1036,15 @@ fi
 
 
 %changelog
-* Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 4.6.2-10
-- fix sparc64 webkit bits
+* Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 4.6.2-11
+- fix type cast issue on sparc64
+- drop "recreate .qm file", it's not needed anymore
+
+* Tue Mar 23 2010 Than Ngo <than@redhat.com> - 4.6.2-10
+- fix type cast issue on s390x
 
 * Mon Mar 22 2010 Than Ngo <than@redhat.com> - 4.6.2-9
-- backport patch to fix ix a crash when reparenting an item
+- backport patch to fix a crash when reparenting an item
   in QGraphicsView, QTBUG-6932
 - drop dangling reference(s) to %%buildroot in *.pc
 
