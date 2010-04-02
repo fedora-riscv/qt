@@ -1047,7 +1047,7 @@ fi
 - fix type cast issue on s390x
 
 * Mon Mar 22 2010 Than Ngo <than@redhat.com> - 4.6.2-9
-- backport patch to fix ix a crash when reparenting an item
+- backport patch to fix a crash when reparenting an item
   in QGraphicsView, QTBUG-6932
 - drop dangling reference(s) to %%buildroot in *.pc
 
