@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1036,6 +1036,9 @@ fi
 
 
 %changelog
+* Fri Apr 02 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-12 
+- Associate text/vnd.trolltech.linguist with linguist (#579082)
+
 * Tue Mar 23 2010 Tom "spot" Callaway <tcallawa@redhat.com> - 4.6.2-11
 - fix type cast issue on sparc64
 - drop "recreate .qm file", it's not needed anymore
