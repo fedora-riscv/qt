@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.5.%{pre}%{?dist}
+Release: 0.6.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -64,6 +64,23 @@ Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 Patch56: qt-everywhere-opensource-src-4.6.2-sparc64-webkit-fix.patch
 
 # security patches
+
+# upstream patches
+
+# http://qt.gitorious.org/qt/qt/commit/ff870dbf9106f2bbb2cf64f5aa35fc5917e5f4f2
+# http://bugreports.qt.nokia.com/browse/QTBUG-9354
+#
+# From ff870dbf9106f2bbb2cf64f5aa35fc5917e5f4f2 Mon Sep 17 00:00:00 2001
+# From: Olivier Goffart <ogoffart@trolltech.com>
+# Date: Fri, 26 Mar 2010 11:26:42 +0100
+# Subject: [PATCH] QMetaObject::normalizeType: Fix parsing of type which contains "const" in names
+#
+# Regression since b881d8fb99972f1bd04ab4c84843cc8d43ddbeed
+#
+# Task-number: QTBUG-9354
+# Reviewed-by: Kent Hansen
+Patch100: qt-everywhere-opensource-src-4.7.0-tp-QTBUG-9354.patch
+
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -401,6 +418,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch56 -p1 -b .sparc
 
 # security fixes
+
+# upstream patches
+%patch100 -p1 -b .QTBUG-9354
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1018,6 +1038,9 @@ fi
 
 
 %changelog
+* Sat Apr 03 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.7.0-0.6.tp
+- backport fix for QTBUG-9354 which breaks kdeutils build
+
 * Fri Apr 02 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.5.tp
 - Associate text/vnd.trolltech.linguist with linguist (#579082)
 
