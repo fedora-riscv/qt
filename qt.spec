@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -86,6 +86,7 @@ Patch213: qt-x11-opensource-src-4.6.2-tablet-wacom-QTBUG-8599.patch
 # backport from 4.7 to fix a crash when reparenting an item in QGraphicsView
 # it should be included in 4.6.3
 Patch214: qt-everywhere-opensource-src-4.6.2-QTBUG-6932.patch
+patch215: qt-everywhere-opensource-src-4.6.2-atomic-s390.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -443,6 +444,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch212 -p1 -b .kde-qt-0012
 %patch213 -p1 -b .tablet-wacom-QTBUG-8599
 %patch214 -p1 -b .QTBUG-6932
+%patch215 -p1 -b .atomic-s390
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1036,6 +1038,9 @@ fi
 
 
 %changelog
+* Tue Apr 06 2010 Than Ngo <than@redhat.com> - 4.6.2-13
+- backport from 4.7 branch to fix s390(x) atomic ops crashes
+
 * Fri Apr 02 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-12 
 - Associate text/vnd.trolltech.linguist with linguist (#579082)
 
