@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -56,8 +56,6 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
-# http://bugs.kde.org/show_bug.cgi?id=180051#c22
-Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 # fix type cast issue on s390x
 Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
 # fix type cast issue on sparc64
@@ -87,6 +85,7 @@ Patch213: qt-x11-opensource-src-4.6.2-tablet-wacom-QTBUG-8599.patch
 # it should be included in 4.6.3
 Patch214: qt-everywhere-opensource-src-4.6.2-QTBUG-6932.patch
 patch215: qt-everywhere-opensource-src-4.6.2-atomic-s390.patch
+patch216: qt-everywhere-opensource-src-4.6.2-cups-QTBUG-6471.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -421,7 +420,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
-%patch55 -p1 -b .cups-1
 %patch56 -p1 -b .typecast_s390x
 %patch57 -p1 -b .typecast_sparc64
 
@@ -445,6 +443,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch213 -p1 -b .tablet-wacom-QTBUG-8599
 %patch214 -p1 -b .QTBUG-6932
 %patch215 -p1 -b .atomic-s390
+%patch216 -p1 -b .cups-QTBUG-6471
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1038,6 +1037,11 @@ fi
 
 
 %changelog
+* Thu Apr 15 2010 Than Ngo <than@redhat.com> - 4.6.2-14
+- backport from 4.7 branch to get the printDialog to check
+  for default paperSize via CUPS, it replaces the patch 
+  qt-everywhere-opensource-src-4.6.2-cups.patch
+
 * Tue Apr 06 2010 Than Ngo <than@redhat.com> - 4.6.2-13
 - backport from 4.7 branch to fix s390(x) atomic ops crashes
 
