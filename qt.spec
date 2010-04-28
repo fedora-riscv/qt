@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.6.%{pre}%{?dist}
+Release: 0.7.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -721,10 +721,10 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_translationdir %%{_datadir}/qt4/translations 
 EOF
 
-# create/own %%_qt4_plugindir/styles
-mkdir %{buildroot}%{_qt4_plugindir}/styles
-# create/own %%_qt4_plugindir/gui_platform
+# create/own stuff under %%_qt4_plugindir
+mkdir %{buildroot}%{_qt4_plugindir}/crypto
 mkdir %{buildroot}%{_qt4_plugindir}/gui_platform
+mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon_internal}
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
@@ -856,6 +856,7 @@ fi
 %{_qt4_libdir}/libQtXml.so.4*
 %{_qt4_libdir}/libQtXmlPatterns.so.4*
 %dir %{_qt4_plugindir}
+%dir %{_qt4_plugindir}/crypto/
 %dir %{_qt4_plugindir}/sqldrivers/
 %{_qt4_translationdir}/
 
@@ -1018,6 +1019,7 @@ fi
 %{_qt4_libdir}/libQtSvg.so.4*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.4*}
 %{_qt4_plugindir}/*
+%exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
 #if "%{?phonon_backend}" == "-phonon-backend"
 %if 0%{?phonon_backend_packaged}
@@ -1038,6 +1040,9 @@ fi
 
 
 %changelog
+* Wed Apr 28 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.7.tp
+- own %%{_qt4_plugindir}/crypto
+
 * Sat Apr 03 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.7.0-0.6.tp
 - backport fix for QTBUG-9354 which breaks kdeutils build
 
