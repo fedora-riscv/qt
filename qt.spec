@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 14%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -56,6 +56,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+# http://bugs.kde.org/show_bug.cgi?id=180051#c22
+Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 # fix type cast issue on s390x
 Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
 # fix type cast issue on sparc64
@@ -420,6 +422,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
+%patch55 -p1 -b .cups-1
 %patch56 -p1 -b .typecast_s390x
 %patch57 -p1 -b .typecast_sparc64
 
@@ -723,10 +726,10 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_translationdir %%{_datadir}/qt4/translations 
 EOF
 
-# create/own %%_qt4_plugindir/styles
-mkdir %{buildroot}%{_qt4_plugindir}/styles
-# create/own %%_qt4_plugindir/gui_platform
+# create/own stuff under %%_qt4_plugindir
+mkdir %{buildroot}%{_qt4_plugindir}/crypto
 mkdir %{buildroot}%{_qt4_plugindir}/gui_platform
+mkdir %{buildroot}%{_qt4_plugindir}/styles
 
 %if 0%{?phonon_internal}
 mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
@@ -859,6 +862,7 @@ fi
 %{_qt4_libdir}/libQtXmlPatterns.so.4*
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
+%dir %{_qt4_plugindir}/crypto/
 %{_qt4_translationdir}/
 
 %if 0%{?demos}
@@ -1019,6 +1023,7 @@ fi
 %{_qt4_libdir}/libQtSvg.so.4*
 %{?webkit:%{_qt4_libdir}/libQtWebKit.so.4*}
 %{_qt4_plugindir}/*
+%exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
 #if "%{?phonon_backend}" == "-phonon-backend"
 %if 0%{?phonon_backend_packaged}
@@ -1037,6 +1042,12 @@ fi
 
 
 %changelog
+* Thu Apr 29 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-16
+- restore qt-everywhere-opensource-src-4.6.2-cups.patch (#586725)
+
+* Wed Apr 28 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-15
+- own %%{_qt4_plugindir}/crypto
+
 * Thu Apr 15 2010 Than Ngo <than@redhat.com> - 4.6.2-14
 - backport from 4.7 branch to get the printDialog to check
   for default paperSize via CUPS, it replaces the patch 
