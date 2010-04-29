@@ -56,6 +56,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+# http://bugs.kde.org/show_bug.cgi?id=180051#c22
+Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 # fix type cast issue on s390x
 Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
 # fix type cast issue on sparc64
@@ -420,6 +422,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
+%patch55 -p1 -b .cups-1
 %patch56 -p1 -b .typecast_s390x
 %patch57 -p1 -b .typecast_sparc64
 
@@ -1039,6 +1042,9 @@ fi
 
 
 %changelog
+* Thu Apr 29 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-16
+- restore qt-everywhere-opensource-src-4.6.2-cups.patch (#586725)
+
 * Wed Apr 28 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-15
 - own %%{_qt4_plugindir}/crypto
 
