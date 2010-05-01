@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.7.%{pre}%{?dist}
+Release: 0.8.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -263,6 +263,12 @@ Summary: Development files for the Qt toolkit
 Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
+%if 0%{?webkit:1}
+Requires: %{name}-webkit%{?_isa}
+Obsoletes: WebKit-qt-devel < 1.0.0-1
+Provides:  WebKit-qt-devel = 1.0.0-1
+Provides:  QtWebKit-devel = 1.0-1
+%endif
 Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
@@ -273,10 +279,6 @@ Provides: qt4-phonon-devel = %{version}-%{release}
 %if 0%{?phonon_internal}
 Obsoletes: phonon-devel < 4.3.1-100
 Provides:  phonon-devel = %{phonon_version}-%{phonon_release}
-%endif
-%if 0%{?webkit:1}
-Obsoletes: WebKit-qt-devel < 1.0.0-1
-Provides:  WebKit-qt-devel = 1.0.0-1
 %endif
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
@@ -367,6 +369,18 @@ Provides: qt4-tds = %{version}-%{release}
 %description tds
 %{summary}.
 
+%if 0%{?webkit:1}
+%package webkit
+Summary: Qt WebKit library
+Group: System Environment/Libraries
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Obsoletes: WebKit-qt < 1.0.0-1
+Provides:  WebKit-qt = 1.0.0-1
+Provides:  QtWebKit = 1.0.0-1
+%description webkit
+%{summary}.
+%endif
+
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
@@ -378,10 +392,6 @@ Obsoletes: phonon < 4.3.1-100
 Provides:  phonon = %{phonon_version}-%{phonon_release}
 Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
 Provides:  qt4-phonon = %{version}-%{release}
-%endif
-%if 0%{?webkit:1}
-Obsoletes: WebKit-qt < 1.0.0-1
-Provides:  WebKit-qt = 1.0.0-1
 %endif
 %if 0%{?sqlite:1}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -489,7 +499,6 @@ done
 
 # add '-importdir %{_qt4_importdir}' when it works, right now fails with:
 # %{_qt4_importdir} unknown argument
-
 
 # build shared, threaded (default) libraries
 ./configure -v \
@@ -779,6 +788,12 @@ touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
+%if 0%{?webkit:1}
+%post webkit -p /sbin/ldconfig
+
+%postun webkit -p /sbin/ldconfig
+%endif
+
 %post x11
 /sbin/ldconfig
 touch --no-create %{_datadir}/icons/hicolor ||:
@@ -997,6 +1012,12 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
+%if 0%{?webkit:1}
+%files webkit
+%defattr(-,root,root,-)
+%{_qt4_libdir}/libQtWebKit.so.4*
+%endif
+
 %files x11 
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
@@ -1017,7 +1038,6 @@ fi
 %{_qt4_libdir}/libQtOpenGL.so.4*
 %{_qt4_libdir}/libQtScriptTools.so.4*
 %{_qt4_libdir}/libQtSvg.so.4*
-%{?webkit:%{_qt4_libdir}/libQtWebKit.so.4*}
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
@@ -1040,6 +1060,12 @@ fi
 
 
 %changelog
+* Fri Apr 30 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.8.tp
+- prepping for separate QtWebKit(-2.0)
+- -webkit subpkg,  Provides: QtWebKit ...
+- -devel: Provides: QtWebKit-devel ...
+- TODO: -webkit-devel (and see what breaks)
+
 * Wed Apr 28 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.7.tp
 - own %%{_qt4_plugindir}/crypto
 
