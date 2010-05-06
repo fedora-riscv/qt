@@ -42,8 +42,6 @@ Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
-# make PulseAudio the default device in Phonon
-Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
 Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
@@ -400,8 +398,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
-# pretty sure this isnt needed anymore, besides, doesnt' build as-is -- Rex
-#patch17 -p1 -b .phonon-pulseaudio
 %patch19 -p1 -b .servicesfile
 %patch22 -p1 -b .system_ca_certificates
 %patch51 -p1 -b .qdoc3
