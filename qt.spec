@@ -400,7 +400,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
-%patch17 -p1 -b .phonon-pulseaudio
+# pretty sure this isnt needed anymore, besides, doesnt' build as-is -- Rex
+#patch17 -p1 -b .phonon-pulseaudio
 %patch19 -p1 -b .servicesfile
 %patch22 -p1 -b .system_ca_certificates
 %patch51 -p1 -b .qdoc3
