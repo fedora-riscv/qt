@@ -1028,6 +1028,7 @@ fi
 %{_qt4_libdir}/libQtDesignerComponents.so.4*
 %{_qt4_libdir}/libQtGui.so.4*
 %{_qt4_libdir}/libQtHelp.so.4*
+%{_qt4_libdir}/libQtMediaServices.so.4*
 %{_qt4_libdir}/libQtMultimedia.so.4*
 %{_qt4_libdir}/libQtOpenGL.so.4*
 %{_qt4_libdir}/libQtScriptTools.so.4*
