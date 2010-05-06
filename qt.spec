@@ -400,7 +400,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .servicesfile
 %patch22 -p1 -b .system_ca_certificates
-%patch51 -p1 -b .qdoc3
+#patch51 -p1 -b .qdoc3
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
