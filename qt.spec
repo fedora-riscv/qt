@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -70,6 +70,9 @@ Patch102: qt-x11-opensource-src-4.5.3-cve-2010-0050-crash-misnested-style-tags.p
 Patch103: qt-x11-opensource-src-4.5.3-cve-2010-0052-destroyed-input-cached.patch
 Patch104: qt-everywhere-opensource-src-4.6.2-cve-2010-0051-lax-css-parsing-cross-domain-theft.patch
 Patch105: qt-everywhere-opensource-src-4.6.2-cve-2010-0054-image-element-pointer-name-getter.patch
+Patch106: qt-everywhere-opensource-src-4.6.2-cve-2010-0656.patch
+Patch107: qt-everywhere-opensource-src-4.6.2-cve-2010-0047.patch
+Patch108: qt-everywhere-opensource-src-4.6.2-cve-2010-0648.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -433,6 +436,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch103 -p1 -b .cve-2010-0052-destroyed-input-cached
 %patch104 -p1 -b .cve-2010-0051-lax-css-parsing-cross-domain-theft
 %patch105 -p1 -b .cve-2010-0054-image-element-pointer-name-getter
+%patch106 -p1 -b .cve-2010-0656
+%patch107 -p1 -b .cve-2010-0047
+%patch108 -p1 -b .cve-2010-0648
 
 # kde-qt branch
 %patch201 -p1 -b .kde-qt-0001
@@ -1042,6 +1048,10 @@ fi
 
 
 %changelog
+* Thu May 06 2010 Than Ngo <than@redhat.com> - 4.6.2-17
+- bz#589169, fix multiple flaws in webkit
+  CVE-2010-0047, CVE-2010-0648, CVE-2010-0656
+
 * Thu Apr 29 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.2-16
 - restore qt-everywhere-opensource-src-4.6.2-cups.patch (#586725)
 
