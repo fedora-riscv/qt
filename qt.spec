@@ -9,13 +9,13 @@
 # enable kde-qt integration/patches 
 %define kde_qt 1
 
-%define pre tp
+%define pre beta1 
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.8.%{pre}%{?dist}
+Release: 0.9.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -45,7 +45,6 @@ Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch
 # make PulseAudio the default device in Phonon
 Patch17: qt-x11-opensource-src-4.5.2-pulseaudio.patch
 Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
-Patch21: qt-everywhere-opensource-src-4.6.0-gst-pulsaudio.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
 Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
@@ -60,27 +59,10 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
-# fix webkit platform definitions for sparc64
-Patch56: qt-everywhere-opensource-src-4.6.2-sparc64-webkit-fix.patch
 
 # security patches
 
 # upstream patches
-
-# http://qt.gitorious.org/qt/qt/commit/ff870dbf9106f2bbb2cf64f5aa35fc5917e5f4f2
-# http://bugreports.qt.nokia.com/browse/QTBUG-9354
-#
-# From ff870dbf9106f2bbb2cf64f5aa35fc5917e5f4f2 Mon Sep 17 00:00:00 2001
-# From: Olivier Goffart <ogoffart@trolltech.com>
-# Date: Fri, 26 Mar 2010 11:26:42 +0100
-# Subject: [PATCH] QMetaObject::normalizeType: Fix parsing of type which contains "const" in names
-#
-# Regression since b881d8fb99972f1bd04ab4c84843cc8d43ddbeed
-#
-# Task-number: QTBUG-9354
-# Reviewed-by: Kent Hansen
-Patch100: qt-everywhere-opensource-src-4.7.0-tp-QTBUG-9354.patch
-
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -93,7 +75,6 @@ Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
 Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
 Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
-Patch213: qt-x11-opensource-src-4.6.2-tablet-wacom-QTBUG-8599.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -131,7 +112,7 @@ Source31: hi48-app-qt4-logo.png
 # if -phonon-backend, include in packaging (else it's omitted)
 %define phonon_backend_packaged 1
 %endif
-%define phonon_version 4.3.50
+%define phonon_version 4.3.80
 %define phonon_version_major 4.3
 %define phonon_release 1
 %define webkit -webkit
@@ -263,12 +244,6 @@ Summary: Development files for the Qt toolkit
 Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
-%if 0%{?webkit:1}
-Requires: %{name}-webkit%{?_isa}
-Obsoletes: WebKit-qt-devel < 1.0.0-1
-Provides:  WebKit-qt-devel = 1.0.0-1
-Provides:  QtWebKit-devel = 1.0-1
-%endif
 Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
@@ -374,10 +349,20 @@ Provides: qt4-tds = %{version}-%{release}
 Summary: Qt WebKit library
 Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+#Provides:  QtWebKit = 1.0.0-1
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
-Provides:  QtWebKit = 1.0.0-1
 %description webkit
+%{summary}.
+
+%package webkit-devel
+Summary: Development files for %{name}-webkit-devel 
+Group: System Environment/Libraries
+Requires: %{name}-webkit%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+#Provides:  QtWebKit-devel = 1.0.0-1
+Obsoletes: WebKit-qt < 1.0.0-1
+Provides:  WebKit-qt = 1.0.0-1
+%description webkit-devel
 %{summary}.
 %endif
 
@@ -417,7 +402,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch16 -p1 -b .kde4_plugins
 %patch17 -p1 -b .phonon-pulseaudio
 %patch19 -p1 -b .servicesfile
-%patch21 -p1 -b .gst-pulsaudio
 %patch22 -p1 -b .system_ca_certificates
 %patch51 -p1 -b .qdoc3
 ## TODO: still worth carrying?  if so, upstream it.
@@ -425,12 +409,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
-%patch56 -p1 -b .sparc
 
 # security fixes
 
 # upstream patches
-%patch100 -p1 -b .QTBUG-9354
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -443,7 +425,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 # doesn't apply, does look like much of a big deal though
 #patch207 -p1 -b .kde-qt-0007
 %patch212 -p1 -b .kde-qt-0012
-%patch213 -p1 -b .tablet-wacom-QTBUG-8599
 %endif
 
 # drop -fexceptions from $RPM_OPT_FLAGS
@@ -961,6 +942,14 @@ fi
 %{_datadir}/applications/*linguist.desktop
 %{_datadir}/icons/hicolor/*/apps/linguist*
 %{?docs:%{_qt4_docdir}/qch/linguist.qch}
+%if 0%{?webkit:1}
+%exclude %{_qt4_headerdir}/Qt/QtWebKit
+%exclude %{_qt4_headerdir}/QtWebKit/
+%exclude %{_qt4_libdir}/libQtWebKit.prl
+%exclude %{_qt4_libdir}/libQtWebKit.so
+%exclude %{_qt4_libdir}/libQtWebKit_debug.so
+%exclude %{_libdir}/pkgconfig/QtWebKit.pc
+%endif
 
 %if 0%{?docs}
 %files doc
@@ -1016,6 +1005,14 @@ fi
 %files webkit
 %defattr(-,root,root,-)
 %{_qt4_libdir}/libQtWebKit.so.4*
+
+%files webkit-devel
+%{_qt4_headerdir}/Qt/QtWebKit
+%{_qt4_headerdir}/QtWebKit/
+%{_qt4_libdir}/libQtWebKit.prl
+%{_qt4_libdir}/libQtWebKit.so
+%{_qt4_libdir}/libQtWebKit_debug.so
+%{_libdir}/pkgconfig/QtWebKit.pc
 %endif
 
 %files x11 
@@ -1060,6 +1057,10 @@ fi
 
 
 %changelog
+* Thu May 06 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.9.beta1
+- 4.7.0-beta1
+- -webkit-devel : it lives! brainz!
+
 * Fri Apr 30 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.8.tp
 - prepping for separate QtWebKit(-2.0)
 - -webkit subpkg,  Provides: QtWebKit ...
