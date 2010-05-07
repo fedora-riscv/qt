@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 17%{?dist}
+Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -278,6 +278,8 @@ Provides:  phonon-devel = %{phonon_version}-%{phonon_release}
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt-devel < 1.0.0-1
 Provides:  WebKit-qt-devel = 1.0.0-1
+Provides:  qt4-webkit-devel = %{version}-%{release}
+Provides:  qt4-webkit-devel%{?_isa} = %{version}-%{release}
 %endif
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
@@ -385,6 +387,8 @@ Provides:  qt4-phonon = %{version}-%{release}
 %if 0%{?webkit:1}
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
+Provides:  qt4-webkit = %{version}-%{release}
+Provides:  qt4-webkit%{?_isa} = %{version}-%{release}
 %endif
 %if 0%{?sqlite:1}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -1048,6 +1052,9 @@ fi
 
 
 %changelog
+* Thu May 06 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-18
+- +Provides: qt4-webkit(-devel)
+
 * Thu May 06 2010 Than Ngo <than@redhat.com> - 4.6.2-17
 - bz#589169, fix multiple flaws in webkit
   CVE-2010-0047, CVE-2010-0648, CVE-2010-0656
