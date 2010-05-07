@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.9.%{pre}%{?dist}
+Release: 0.10.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -48,8 +48,6 @@ Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch
 Requires: ca-certificates
 
 ## upstreamable bits
-# http://bugzilla.redhat.com/485677
-Patch51: qt-everywhere-opensource-src-4.6.0-beta1-qdoc3.patch 
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
@@ -347,6 +345,8 @@ Provides: qt4-tds = %{version}-%{release}
 Summary: Qt WebKit library
 Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides: qt4-webkit = %{version}-%{release}
+Provides: qt4-webkit%{?_isa} = %{version}-%{release}
 #Provides:  QtWebKit = 1.0.0-1
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
@@ -357,6 +357,9 @@ Provides:  WebKit-qt = 1.0.0-1
 Summary: Development files for %{name}-webkit-devel 
 Group: System Environment/Libraries
 Requires: %{name}-webkit%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-devel
+Provides: qt4-webkit-devel = %{version}-%{release}
+Provides: qt4-webkit-devel%{?_isa} = %{version}-%{release}
 #Provides:  QtWebKit-devel = 1.0.0-1
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
@@ -400,7 +403,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .servicesfile
 %patch22 -p1 -b .system_ca_certificates
-#patch51 -p1 -b .qdoc3
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1055,6 +1057,9 @@ fi
 
 
 %changelog
+* Thu May 06 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.10.beta1
+- -webkit-devel: Provides: qt4-webkit-devel , Requires: %%name-devel
+
 * Thu May 06 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.9.beta1
 - 4.7.0-beta1
 - -webkit-devel : it lives! brainz!
