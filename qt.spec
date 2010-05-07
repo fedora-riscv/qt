@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.10.%{pre}%{?dist}
+Release: 0.11.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -356,6 +356,9 @@ Provides:  WebKit-qt = 1.0.0-1
 %package webkit-devel
 Summary: Development files for %{name}-webkit-devel 
 Group: System Environment/Libraries
+# for upgrade path prior to -webkit splits
+Obsoletes: qt-devel < 1:4.7.0-0.9
+Obsoletes: qt4-devel < 4.7.0-0.9 
 Requires: %{name}-webkit%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-devel%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-webkit-devel = %{version}-%{release}
@@ -1057,6 +1060,9 @@ fi
 
 
 %changelog
+* Fri May 07 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.11.beta1
+- -webkit-devel: Obsoletes: qt-devel ... (upgrade path)
+
 * Thu May 06 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.10.beta1
 - -webkit-devel: Provides: qt4-webkit-devel , Requires: %%name-devel
 
