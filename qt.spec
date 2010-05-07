@@ -357,7 +357,7 @@ Provides:  WebKit-qt = 1.0.0-1
 Summary: Development files for %{name}-webkit-devel 
 Group: System Environment/Libraries
 Requires: %{name}-webkit%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-devel
+Requires: %{name}-devel%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-webkit-devel = %{version}-%{release}
 Provides: qt4-webkit-devel%{?_isa} = %{version}-%{release}
 #Provides:  QtWebKit-devel = 1.0.0-1
