@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.11.%{pre}%{?dist}
+Release: 0.12.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -946,6 +946,8 @@ fi
 %{?docs:%{_qt4_docdir}/qch/linguist.qch}
 %if 0%{?webkit:1}
 %exclude %{_qt4_headerdir}/Qt/QtWebKit
+%exclude %{_qt4_headerdir}/Qt/qgraphicswebview.h
+%exclude %{_qt4_headerdir}/Qt/qweb*.h
 %exclude %{_qt4_headerdir}/QtWebKit/
 %exclude %{_qt4_libdir}/libQtWebKit.prl
 %exclude %{_qt4_libdir}/libQtWebKit.so
@@ -1010,6 +1012,8 @@ fi
 
 %files webkit-devel
 %{_qt4_headerdir}/Qt/QtWebKit
+%{_qt4_headerdir}/Qt/qgraphicswebview.h
+%{_qt4_headerdir}/Qt/qweb*.h
 %{_qt4_headerdir}/QtWebKit/
 %{_qt4_libdir}/libQtWebKit.prl
 %{_qt4_libdir}/libQtWebKit.so
@@ -1060,6 +1064,9 @@ fi
 
 
 %changelog
+* Sun May 16 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.12.beta1
+- -webkit-devel: move Qt/qweb*.h here (#592680)
+
 * Fri May 07 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.11.beta1
 - -webkit-devel: Obsoletes: qt-devel ... (upgrade path)
 
