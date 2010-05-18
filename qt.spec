@@ -4,6 +4,10 @@
 # -no-pch disables precompiled headers, make ccache-friendly
 %define no_pch -no-pch
 
+## disable javascript JIT compiler (selinux crasher)
+## https://bugs.webkit.org/show_bug.cgi?id=35154
+%define no_javascript_jit  -no-javascript-jit
+
 %define _default_patch_fuzz 3 
 
 # enable kde-qt integration/patches 
@@ -516,7 +520,7 @@ done
   %{?phonon} %{!?phonon:-no-phonon} \
   %{?phonon_backend} \
   %{?no_pch} \
-  -no-javascript-jit \
+  %{?no_javascript_jit} \
   -sm \
   -stl \
   -system-libmng \
