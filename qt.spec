@@ -6,7 +6,7 @@
 
 ## disable javascript JIT compiler (selinux crasher)
 ## https://bugs.webkit.org/show_bug.cgi?id=35154
-%define no_javascript_jit  -no-javascript-jit
+#define no_javascript_jit  -no-javascript-jit
 
 %define _default_patch_fuzz 3 
 
@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.13.%{pre}%{?dist}
+Release: 0.14.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1071,6 +1071,9 @@ fi
 
 
 %changelog
+* Fri May 21 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.14.beta1
+- drop -no-javascript-jit (webkit#35154)
+
 * Mon May 17 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.13.beta1
 - QT_GRAPHICSSYSTEM env support
 
