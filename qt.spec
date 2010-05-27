@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.14.%{pre}%{?dist}
+Release: 0.15.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -77,6 +77,8 @@ Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 # based on http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/55ef01d93f8257b5927660290fc1ead0b2b74ec9.patch
 Patch217: qt-everywhere-opensource-src-4.7.0-beta1-QT_GRAPHICSSYSTEM.patch
+# QTBUG-9793
+Patch218: http://qt.gitorious.org/qt/qt/commit/0ebc9783d8ca0c4b27208bbc002c53c52c19ab4c.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -435,6 +437,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch212 -p1 -b .kde-qt-0012
 %endif
 %patch217 -p1 -b .QT_GRAPHICSSYSTEM
+%patch218 -p1 -b .QTBUG-9793
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1071,6 +1074,9 @@ fi
 
 
 %changelog
+* Thu May 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.15.beta1
+- Unsafe use of rand() in X11 (QTBUG-9793)
+
 * Fri May 21 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.14.beta1
 - drop -no-javascript-jit (webkit#35154)
 
