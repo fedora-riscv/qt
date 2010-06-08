@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 18%{?dist}
+Release: 20%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -91,6 +91,9 @@ Patch213: qt-x11-opensource-src-4.6.2-tablet-wacom-QTBUG-8599.patch
 Patch214: qt-everywhere-opensource-src-4.6.2-QTBUG-6932.patch
 patch215: qt-everywhere-opensource-src-4.6.2-atomic-s390.patch
 patch216: qt-everywhere-opensource-src-4.6.2-cups-QTBUG-6471.patch
+Patch217: http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/55ef01d93f8257b5927660290fc1ead0b2b74ec9.patch
+# QTBUG-9793
+Patch218: http://qt.gitorious.org/qt/qt/commit/0ebc9783d8ca0c4b27208bbc002c53c52c19ab4c.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -457,6 +460,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch214 -p1 -b .QTBUG-6932
 %patch215 -p1 -b .atomic-s390
 %patch216 -p1 -b .cups-QTBUG-6471
+%patch217 -p1 -b .QT_GRAPHICSSYSTEM
+%patch218 -p1 -b .QTBUG-9793
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1052,6 +1057,12 @@ fi
 
 
 %changelog
+* Thu May 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-20 
+- Unsafe use of rand() in X11 (QTBUG-9793)
+
+* Mon May 17 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-19
+- support QT_GRAPHICSSYSTEM env
+
 * Thu May 06 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-18
 - +Provides: qt4-webkit(-devel)
 
