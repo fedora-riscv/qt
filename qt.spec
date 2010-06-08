@@ -12,8 +12,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.6.2
-Release: 20%{?dist}
+Version: 4.6.3
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1057,6 +1057,9 @@ fi
 
 
 %changelog
+* Tue Jun 08 2010 Than Ngo <than@redhat.com> - 4.6.3-1
+- 4.6.3
+
 * Thu May 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-20 
 - Unsafe use of rand() in X11 (QTBUG-9793)
 
