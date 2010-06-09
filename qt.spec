@@ -12,8 +12,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.6.2
-Release: 20%{?dist}
+Version: 4.6.3
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -64,14 +64,8 @@ Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
 Patch57: qt-everywhere-opensource-src-4.6.2-webkit-sparc64.patch
 
 # security patches
-Patch100: qt-x11-opensource-src-4.5.3-cve-2010-0046-css-format-mem-corruption.patch
-Patch101: qt-x11-opensource-src-4.5.3-cve-2010-0049-freed-line-boxes-ltr-rtl.patch
-Patch102: qt-x11-opensource-src-4.5.3-cve-2010-0050-crash-misnested-style-tags.patch
-Patch103: qt-x11-opensource-src-4.5.3-cve-2010-0052-destroyed-input-cached.patch
 Patch104: qt-everywhere-opensource-src-4.6.2-cve-2010-0051-lax-css-parsing-cross-domain-theft.patch
-Patch105: qt-everywhere-opensource-src-4.6.2-cve-2010-0054-image-element-pointer-name-getter.patch
 Patch106: qt-everywhere-opensource-src-4.6.2-cve-2010-0656.patch
-Patch107: qt-everywhere-opensource-src-4.6.2-cve-2010-0047.patch
 Patch108: qt-everywhere-opensource-src-4.6.2-cve-2010-0648.patch
 
 # kde-qt git patches
@@ -85,12 +79,6 @@ Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
 Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
 Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
-Patch213: qt-x11-opensource-src-4.6.2-tablet-wacom-QTBUG-8599.patch
-# backport from 4.7 to fix a crash when reparenting an item in QGraphicsView
-# it should be included in 4.6.3
-Patch214: qt-everywhere-opensource-src-4.6.2-QTBUG-6932.patch
-patch215: qt-everywhere-opensource-src-4.6.2-atomic-s390.patch
-patch216: qt-everywhere-opensource-src-4.6.2-cups-QTBUG-6471.patch
 Patch217: http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/55ef01d93f8257b5927660290fc1ead0b2b74ec9.patch
 # QTBUG-9793
 Patch218: http://qt.gitorious.org/qt/qt/commit/0ebc9783d8ca0c4b27208bbc002c53c52c19ab4c.patch
@@ -437,14 +425,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch57 -p1 -b .typecast_sparc64
 
 # security fixes
-%patch100 -p1 -b .cve-2010-0046-css-format-mem-corruption
-%patch101 -p1 -b .cve-2010-0049-freed-line-boxes-ltr-rtl
-%patch102 -p1 -b .cve-2010-0050-crash-misnested-style-tags
-%patch103 -p1 -b .cve-2010-0052-destroyed-input-cached
 %patch104 -p1 -b .cve-2010-0051-lax-css-parsing-cross-domain-theft
-%patch105 -p1 -b .cve-2010-0054-image-element-pointer-name-getter
 %patch106 -p1 -b .cve-2010-0656
-%patch107 -p1 -b .cve-2010-0047
 %patch108 -p1 -b .cve-2010-0648
 
 # kde-qt branch
@@ -456,10 +438,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch206 -p1 -b .kde-qt-0006
 %patch207 -p1 -b .kde-qt-0007
 %patch212 -p1 -b .kde-qt-0012
-%patch213 -p1 -b .tablet-wacom-QTBUG-8599
-%patch214 -p1 -b .QTBUG-6932
-%patch215 -p1 -b .atomic-s390
-%patch216 -p1 -b .cups-QTBUG-6471
 %patch217 -p1 -b .QT_GRAPHICSSYSTEM
 %patch218 -p1 -b .QTBUG-9793
 
@@ -504,12 +482,6 @@ if [ "%{_lib}" == "lib64" ] ; then
   sed -i -e "s,/usr/lib /lib,/usr/%{_lib} /%{_lib},g" config.tests/{unix,x11}/*.test
   sed -i -e "s,/lib /usr/lib,/%{_lib} /usr/%{_lib},g" config.tests/{unix,x11}/*.test
 fi
-
-# let makefile create missing .qm files, the .qm files should be included in qt upstream
-for f in translations/*.ts ; do
-  touch ${f%.ts}.qm
-done
-
 
 %build
 
@@ -1057,6 +1029,9 @@ fi
 
 
 %changelog
+* Tue Jun 08 2010 Than Ngo <than@redhat.com> - 4.6.3-1
+- 4.6.3
+
 * Thu May 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-20 
 - Unsafe use of rand() in X11 (QTBUG-9793)
 
