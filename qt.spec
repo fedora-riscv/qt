@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.15.%{pre}%{?dist}
+Release: 0.16.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -577,7 +577,7 @@ glib2_libs=$(pkg-config --libs glib-2.0 gobject-2.0 gthread-2.0)
 ssl_libs=$(pkg-config --libs openssl)
 for dep in \
   -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} \
-  -ljpeg -lm -lmng -lpng -lpulse ${ssl_libs} -lsqlite3 -lz \
+  -ljpeg -lm -lmng -lpng -lpulse -lpulse-mainloop-glib ${ssl_libs} -lsqlite3 -lz \
   -L/usr/X11R6/lib -L/usr/X11R6/%{_lib} -L%{_libdir} ; do
   sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/lib*.la 
 #  sed -i -e "s|$dep ||g" %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc
@@ -592,6 +592,9 @@ done
 
 # nuke dangling reference(s) to %buildroot
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
+sed -i -e "s|-L%{_builddir}/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}/lib||g" \
+  %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc \
+  %{buildroot}%{_qt4_libdir}/*.prl
 
 # nuke QMAKE_PRL_LIBS, seems similar to static linking and .la files (#520323)
 # don't nuke, just drop -lphonon (above)
@@ -599,7 +602,6 @@ sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
 
 # .la files, die, die, die.
 rm -f %{buildroot}%{_qt4_libdir}/lib*.la
-
 
 %if 0
 #if "%{_qt4_docdir}" != "%{_qt4_prefix}/doc"
@@ -1074,6 +1076,10 @@ fi
 
 
 %changelog
+* Fri Jun 11 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.16.beta1
+- scrub -lpulse-mainloop-glib from .prl files (#599844)
+- scrub references to %%buildroot in .pc, .prl files
+
 * Thu May 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.15.beta1
 - Unsafe use of rand() in X11 (QTBUG-9793)
 
