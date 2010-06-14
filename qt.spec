@@ -72,7 +72,9 @@ Patch110: qt-everywhere-opensource-src-4.6.3-CVE-2010-1392.patch
 Patch111: qt-everywhere-opensource-src-4.6.3-CVE-2010-1396.patch
 Patch112: qt-everywhere-opensource-src-4.6.3-CVE-2010-1397.patch
 Patch113: qt-everywhere-opensource-src-4.6.3-CVE-2010-1398.patch
-Patch114: qt-everywhere-opensource-src-4.6.3-CVE-2010-1400.patch
+# oldStyle undefined in RenderObject::mapLocalToContainer
+# disable before backporting
+#Patch114: qt-everywhere-opensource-src-4.6.3-CVE-2010-1400.patch
 Patch115: qt-everywhere-opensource-src-4.6.3-CVE-2010-1412.patch
 Patch116: qt-everywhere-opensource-src-4.6.3-CVE-2010-1770.patch
 Patch117: qt-everywhere-opensource-src-4.6.3-CVE-2010-1773.patch
@@ -443,7 +445,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch111 -p1 -b .CVE-2010-1396
 %patch112 -p1 -b .CVE-2010-1397
 %patch113 -p1 -b .CVE-2010-1398
-%patch114 -p1 -b .CVE-2010-1400
+#patch114 -p1 -b .CVE-2010-1400
 %patch115 -p1 -b .CVE-2010-1412
 %patch116 -p1 -b .CVE-2010-1770
 %patch117 -p1 -b .CVE-2010-1773
@@ -1053,7 +1055,7 @@ fi
 * Fri Jun 11 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.6.3-2
 - WebKit security update:
   CVE-2010-1303_1304, CVE-2010-1392, CVE-2010-1396, CVE-2010-1397,
-  CVE-2010-1398, CVE-2010-1400, CVE-2010-1412, CVE-2010-1770,
+  CVE-2010-1398, CVE-2010-1412, CVE-2010-1770,
   CVE-2010-1773, CVE-2010-1774
 
 * Tue Jun 08 2010 Than Ngo <than@redhat.com> - 4.6.3-1
