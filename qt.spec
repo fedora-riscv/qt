@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -72,13 +72,13 @@ Patch110: qt-everywhere-opensource-src-4.6.3-CVE-2010-1392.patch
 Patch111: qt-everywhere-opensource-src-4.6.3-CVE-2010-1396.patch
 Patch112: qt-everywhere-opensource-src-4.6.3-CVE-2010-1397.patch
 Patch113: qt-everywhere-opensource-src-4.6.3-CVE-2010-1398.patch
-# oldStyle undefined in RenderObject::mapLocalToContainer
-# disable before backporting
-#Patch114: qt-everywhere-opensource-src-4.6.3-CVE-2010-1400.patch
+Patch114: qt-everywhere-opensource-src-4.6.3-CVE-2010-1400.patch
 Patch115: qt-everywhere-opensource-src-4.6.3-CVE-2010-1412.patch
 Patch116: qt-everywhere-opensource-src-4.6.3-CVE-2010-1770.patch
 Patch117: qt-everywhere-opensource-src-4.6.3-CVE-2010-1773.patch
 Patch118: qt-everywhere-opensource-src-4.6.3-CVE-2010-1774.patch
+Patch119: qt-everywhere-opensource-src-4.6.3-CVE-2010-1119.patch
+Patch120: qt-everywhere-opensource-src-4.6.3-CVE-2010-1778.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -445,11 +445,13 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch111 -p1 -b .CVE-2010-1396
 %patch112 -p1 -b .CVE-2010-1397
 %patch113 -p1 -b .CVE-2010-1398
-#patch114 -p1 -b .CVE-2010-1400
+%patch114 -p1 -b .CVE-2010-1400
 %patch115 -p1 -b .CVE-2010-1412
 %patch116 -p1 -b .CVE-2010-1770
 %patch117 -p1 -b .CVE-2010-1773
 %patch118 -p1 -b .CVE-2010-1774
+%patch119 -p1 -b .CVE-2010-1119
+%patch120 -p1 -b .CVE-2010-1778
 
 
 # kde-qt branch
@@ -1052,6 +1054,10 @@ fi
 
 
 %changelog
+* Tue Jun 15 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.6.3-3
+- WebKit security update:
+  CVE-2010-1119, CVE-2010-1400, CVE-2010-1778
+
 * Fri Jun 11 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.6.3-2
 - WebKit security update:
   CVE-2010-1303_1304, CVE-2010-1392, CVE-2010-1396, CVE-2010-1397,
