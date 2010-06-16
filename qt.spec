@@ -5,8 +5,11 @@
 %define no_pch -no-pch
 
 ## disable javascript JIT compiler (selinux crasher)
-## https://bugs.webkit.org/show_bug.cgi?id=35154
-#define no_javascript_jit  -no-javascript-jit
+## WAS https://bugs.webkit.org/show_bug.cgi?id=35154
+## i686 blacklist:  https://bugzilla.redhat.com/show_bug.cgi?id=604003
+%ifarch %{ix86}
+%define no_javascript_jit  -no-javascript-jit
+%endif
 
 %define _default_patch_fuzz 3 
 
@@ -19,7 +22,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.17.%{pre}%{?dist}
+Release: 0.18.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1079,6 +1082,9 @@ fi
 
 
 %changelog
+* Wed Jun 16 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.0-0.18.beta1
+- -no-javascript-jit on i686 (#604003)
+
 * Wed Jun 16 2010 Karsten Hopp <karsten@redhat.com> 4.7.0-0.17.beta1 
 - add s390 and s390x to 3rdparty/webkit/JavaScriptCore/wtf/Platform.h and
   3rdparty/javascriptcore/JavaScriptCore/wtf/Platform.h
