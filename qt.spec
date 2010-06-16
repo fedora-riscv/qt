@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.16.%{pre}%{?dist}
+Release: 0.17.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -59,6 +59,8 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
+# Add s390x as 64bit and s390 as 31bit bigendian platform
+Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
 
 # security patches
 
@@ -419,6 +421,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
+%patch56 -p1 -b .s390x
 
 # security fixes
 
@@ -1076,6 +1079,10 @@ fi
 
 
 %changelog
+* Wed Jun 16 2010 Karsten Hopp <karsten@redhat.com> 4.7.0-0.17.beta1 
+- add s390 and s390x to 3rdparty/webkit/JavaScriptCore/wtf/Platform.h and
+  3rdparty/javascriptcore/JavaScriptCore/wtf/Platform.h
+
 * Fri Jun 11 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.16.beta1
 - scrub -lpulse-mainloop-glib from .prl files (#599844)
 - scrub references to %%buildroot in .pc, .prl files
