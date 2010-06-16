@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.2
-Release: 20%{?dist}
+Release: 21%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -73,6 +73,18 @@ Patch105: qt-everywhere-opensource-src-4.6.2-cve-2010-0054-image-element-pointer
 Patch106: qt-everywhere-opensource-src-4.6.2-cve-2010-0656.patch
 Patch107: qt-everywhere-opensource-src-4.6.2-cve-2010-0047.patch
 Patch108: qt-everywhere-opensource-src-4.6.2-cve-2010-0648.patch
+Patch109: qt-everywhere-opensource-src-4.6.3-CVE-2010-1303_1304.patch
+Patch110: qt-everywhere-opensource-src-4.6.3-CVE-2010-1392.patch
+Patch111: qt-everywhere-opensource-src-4.6.3-CVE-2010-1396.patch
+Patch112: qt-everywhere-opensource-src-4.6.3-CVE-2010-1397.patch
+Patch113: qt-everywhere-opensource-src-4.6.3-CVE-2010-1398.patch
+Patch114: qt-everywhere-opensource-src-4.6.3-CVE-2010-1400.patch
+Patch115: qt-everywhere-opensource-src-4.6.3-CVE-2010-1412.patch
+Patch116: qt-everywhere-opensource-src-4.6.3-CVE-2010-1770.patch
+Patch117: qt-everywhere-opensource-src-4.6.3-CVE-2010-1773.patch
+Patch118: qt-everywhere-opensource-src-4.6.3-CVE-2010-1774.patch
+Patch119: qt-everywhere-opensource-src-4.6.3-CVE-2010-1119.patch
+Patch120: qt-everywhere-opensource-src-4.6.3-CVE-2010-1778.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -446,6 +458,18 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch106 -p1 -b .cve-2010-0656
 %patch107 -p1 -b .cve-2010-0047
 %patch108 -p1 -b .cve-2010-0648
+%patch109 -p1 -b .CVE-2010-1303_1304
+%patch110 -p1 -b .CVE-2010-1392
+%patch111 -p1 -b .CVE-2010-1396
+%patch112 -p1 -b .CVE-2010-1397
+%patch113 -p1 -b .CVE-2010-1398
+%patch114 -p1 -b .CVE-2010-1400
+%patch115 -p1 -b .CVE-2010-1412
+%patch116 -p1 -b .CVE-2010-1770
+%patch117 -p1 -b .CVE-2010-1773
+%patch118 -p1 -b .CVE-2010-1774
+%patch119 -p1 -b .CVE-2010-1119
+%patch120 -p1 -b .CVE-2010-1778
 
 # kde-qt branch
 %patch201 -p1 -b .kde-qt-0001
@@ -1057,6 +1081,12 @@ fi
 
 
 %changelog
+* Wed Jun 16 2010 Lukas Tinkl <ltinkl@redhat.com> - 4.6.2-21
+- WebKit security update:
+  CVE-2010-1303_1304, CVE-2010-1392, CVE-2010-1396, CVE-2010-1397,
+  CVE-2010-1398, CVE-2010-1412, CVE-2010-1770,
+  CVE-2010-1773, CVE-2010-1774, CVE-2010-1119, CVE-2010-1400, CVE-2010-1778
+
 * Thu May 27 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.2-20 
 - Unsafe use of rand() in X11 (QTBUG-9793)
 
