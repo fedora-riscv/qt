@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -62,8 +62,12 @@ Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
 # fix type cast issue on sparc64
 Patch57: qt-everywhere-opensource-src-4.6.2-webkit-sparc64.patch
+# qtwebkit to search nspluginwrapper paths too
+Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 
-# security patches
+# upstream or security patches
+# https://bugs.webkit.org/show_bug.cgi?id=40567
+Patch100: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_gtk_init.patch
 Patch104: qt-everywhere-opensource-src-4.6.2-cve-2010-0051-lax-css-parsing-cross-domain-theft.patch
 Patch106: qt-everywhere-opensource-src-4.6.2-cve-2010-0656.patch
 Patch108: qt-everywhere-opensource-src-4.6.2-cve-2010-0648.patch
@@ -420,7 +424,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
-%patch13 -p1 -b .gcc_hack
+#patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
 %patch17 -p1 -b .phonon-pulseaudio
@@ -435,6 +439,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .typecast_s390x
 %patch57 -p1 -b .typecast_sparc64
+%patch58 -p1 -b .qtwebkit_pluginpath
+
+# upstream patches
+%patch100 -p1 -b .qtwebkit_gtk_init
 
 # security fixes
 %patch104 -p1 -b .cve-2010-0051-lax-css-parsing-cross-domain-theft
@@ -1054,6 +1062,10 @@ fi
 
 
 %changelog
+* Fri Jun 18 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.3-4
+- QtWebKit does not search correct plugin path(s) (#568860)
+- QtWebKit browsers crash with flash-plugin (rh#605677,webkit#40567)
+
 * Tue Jun 15 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.6.3-3
 - WebKit security update:
   CVE-2010-1119, CVE-2010-1400, CVE-2010-1778
