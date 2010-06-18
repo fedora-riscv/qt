@@ -60,7 +60,7 @@ Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 # Add s390x as 64bit and s390 as 31bit bigendian platform
 Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
 # qtwebkit to search nspluginwrapper paths too
-Patch57: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
+Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 
 # security patches
 
@@ -423,11 +423,12 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .s390x
-%patch57 -p1 -b .qtwebkit_pluginpath
+%patch58 -p1 -b .qtwebkit_pluginpath
 
 # security fixes
 
 # upstream patches
+%patch100 -p1 -b .qtwebkit_gtk_init
 
 # kde-qt branch
 %if 0%{?kde_qt}
