@@ -424,7 +424,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
 %patch5 -p1 -b .bz#437440-as_IN-437440
-#patch13 -p1 -b .gcc_hack
+%patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
 %patch17 -p1 -b .phonon-pulseaudio
