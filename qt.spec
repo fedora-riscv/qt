@@ -6,10 +6,7 @@
 
 ## disable javascript JIT compiler (selinux crasher)
 ## WAS https://bugs.webkit.org/show_bug.cgi?id=35154
-## i686 blacklist:  https://bugzilla.redhat.com/show_bug.cgi?id=604003
-%ifarch %{ix86}
-%define no_javascript_jit  -no-javascript-jit
-%endif
+#define no_javascript_jit  -no-javascript-jit
 
 %define _default_patch_fuzz 3 
 
@@ -22,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.18.%{pre}%{?dist}
+Release: 0.19.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -44,8 +41,6 @@ Source5: qconfig-multilib.h
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
-# hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
-Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
@@ -64,10 +59,14 @@ Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 # Add s390x as 64bit and s390 as 31bit bigendian platform
 Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
+# qtwebkit to search nspluginwrapper paths too
+Patch57: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 
 # security patches
 
 # upstream patches
+# https://bugs.webkit.org/show_bug.cgi?id=40567
+Patch100: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_gtk_init.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -414,7 +413,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %setup -q -n qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}
 
 %patch5 -p1 -b .bz#437440-as_IN-437440
-%patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .servicesfile
@@ -425,6 +423,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .s390x
+%patch57 -p1 -b .qtwebkit_pluginpath
 
 # security fixes
 
@@ -1082,6 +1081,12 @@ fi
 
 
 %changelog
+* Fri Jun 18 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.0-0.19.beta1
+- revert -no-javascript-jit change, false-alarm (#604003)
+- QtWebKit does not search correct plugin path(s) (#568860)
+- QtWebKit browsers crash with flash-plugin (rh#605677,webkit#40567)
+- drop qt-x11-opensource-src-4.5.0-gcc_hack.patch
+
 * Wed Jun 16 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.0-0.18.beta1
 - -no-javascript-jit on i686 (#604003)
 
