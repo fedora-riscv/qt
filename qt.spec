@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -34,6 +34,7 @@ Source5: qconfig-multilib.h
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
+Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 # hack around gcc/ppc crasher, http://bugzilla.redhat.com/492185
 Patch13: qt-x11-opensource-src-4.5.0-gcc_hack.patch
@@ -423,6 +424,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 %if "%{_qt4_datadir}" != "%{_qt4_prefix}"
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
+%patch4 -p1 -b .uic_multilib
+
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch13 -p1 -b .gcc_hack
 %patch15 -p1 -b .enable_ft_lcdfilter
@@ -1062,6 +1065,9 @@ fi
 
 
 %changelog
+* Fri Jun 20 2010 Rex Dieter <rdieter@fedoraproject.org> 4.6.3-5
+- avoid timestamps in uic-generated files to be multilib-friendly
+
 * Fri Jun 18 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.3-4
 - QtWebKit does not search correct plugin path(s) (#568860)
 - QtWebKit browsers crash with flash-plugin (rh#605677,webkit#40567)
