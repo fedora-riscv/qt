@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.19.%{pre}%{?dist}
+Release: 0.20.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -40,6 +40,7 @@ Source5: qconfig-multilib.h
 # multilib hacks 
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
+Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
@@ -467,6 +468,7 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %if "%{_qt4_datadir}" != "%{_qt4_prefix}"
 %patch3 -p1 -b .multilib-QMAKEPATH
 %endif
+%patch4 -p1 -b .uic_multilib
 
 sed -i \
   -e "s|-O2|$RPM_OPT_FLAGS|g" \
@@ -1082,6 +1084,9 @@ fi
 
 
 %changelog
+* Fri Jun 20 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.0-0.20.beta1
+- avoid timestamps in uic-generated files to be multilib-friendly
+
 * Fri Jun 18 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.0-0.19.beta1
 - revert -no-javascript-jit change, false-alarm (#604003)
 - QtWebKit does not search correct plugin path(s) (#568860)
