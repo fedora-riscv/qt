@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.20.%{pre}%{?dist}
+Release: 0.21.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -49,6 +49,9 @@ Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
 Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
+# may be upstreamable, not sure yet
+# workaround for gdal/grass crashers wrt glib_eventloop null deref's
+Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -418,6 +421,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .servicesfile
 %patch22 -p1 -b .system_ca_certificates
+%patch23 -p1 -b .glib_eventloop_nullcheck
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1084,6 +1088,9 @@ fi
 
 
 %changelog
+* Tue Jun 29 2010 Rex Dieter <rdieter@fedoraproject.org. 4.7.0-0.21.beta1
+- workaround glib_eventloop crasher induced by gdal/grass (bug #498111)
+
 * Fri Jun 20 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.0-0.20.beta1
 - avoid timestamps in uic-generated files to be multilib-friendly
 
