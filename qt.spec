@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.21.%{pre}%{?dist}
+Release: 0.22.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1088,7 +1088,7 @@ fi
 
 
 %changelog
-* Tue Jun 29 2010 Rex Dieter <rdieter@fedoraproject.org. 4.7.0-0.21.beta1
+* Tue Jun 29 2010 Rex Dieter <rdieter@fedoraproject.org. 4.7.0-0.22.beta1
 - workaround glib_eventloop crasher induced by gdal/grass (bug #498111)
 
 * Fri Jun 20 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.0-0.20.beta1
