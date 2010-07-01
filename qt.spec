@@ -19,7 +19,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.23.%{pre}%{?dist}
+Release: 0.24.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -71,6 +71,8 @@ Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 # upstream patches
 # https://bugs.webkit.org/show_bug.cgi?id=40567
 Patch100: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_gtk_init.patch
+# http://bugreports.qt.nokia.com/browse/QTBUG-10809
+Patch101: http://qt.gitorious.org/+qt-developers/qt/staging/commit/9a1b0695277a3864b42d082095962f8742cdcf04.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -434,6 +436,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # upstream patches
 %patch100 -p1 -b .qtwebkit_gtk_init
+%patch101 -p1 -b .QTBUG-10809
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1102,6 +1105,9 @@ fi
 
 
 %changelog
+* Tue Jul 01 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.24.beta1
+- X11Embed broken (rh#609757,(QTBUG-10809)
+
 * Tue Jul 01 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.7.0-0.23.beta1
 - use find_lang to package the qm files (#609749)
 - put the qm files into the correct subpackages
