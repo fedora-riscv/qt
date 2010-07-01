@@ -774,7 +774,7 @@ rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
-# remove qvfb translations, qvfb is only available in Qt/Embedded
+# remove qvfb translations, we don't ship qvfb
 rm -fv  %{buildroot}%{_qt4_translationdir}/qvfb_*.qm
 
 %find_lang qt --with-qt --without-mo
@@ -1105,7 +1105,7 @@ fi
 * Tue Jul 01 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.7.0-0.23.beta1
 - use find_lang to package the qm files (#609749)
 - put the qm files into the correct subpackages
-- remove qvfb translations, qvfb is only available in Qt/Embedded
+- remove qvfb translations, we don't ship qvfb
 
 * Tue Jun 29 2010 Rex Dieter <rdieter@fedoraproject.org. 4.7.0-0.22.beta1
 - workaround glib_eventloop crasher induced by gdal/grass (bug #498111)
