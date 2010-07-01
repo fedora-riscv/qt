@@ -1106,7 +1106,7 @@ fi
 
 %changelog
 * Tue Jul 01 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.24.beta1
-- X11Embed broken (rh#609757,(QTBUG-10809)
+- X11Embed broken (rh#609757, QTBUG-10809)
 
 * Tue Jul 01 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.7.0-0.23.beta1
 - use find_lang to package the qm files (#609749)
