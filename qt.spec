@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -790,6 +790,21 @@ rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
+# remove qvfb translations, we don't ship qvfb
+rm -fv  %{buildroot}%{_qt4_translationdir}/qvfb_*.qm
+
+%find_lang qt --with-qt --without-mo
+
+%find_lang assistant --with-qt --without-mo
+%find_lang assistant_adp --with-qt --without-mo
+%find_lang qt_help --with-qt --without-mo
+%find_lang qtconfig --with-qt --without-mo
+cat assistant.lang assistant_adp.lang qt_help.lang qtconfig.lang >qt-x11.lang
+
+%find_lang designer --with-qt --without-mo
+%find_lang linguist --with-qt --without-mo
+cat designer.lang linguist.lang >qt-devel.lang
+
 
 %clean
 rm -rf %{buildroot}
@@ -846,7 +861,7 @@ fi
 %{_datadir}/icons/hicolor/*/apps/phonon-gstreamer.*
 %endif
 
-%files
+%files -f qt.lang
 %defattr(-,root,root,-)
 %doc README LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
 %if "%{_qt4_libdir}" != "%{_libdir}"
@@ -890,7 +905,7 @@ fi
 %dir %{_qt4_plugindir}
 %dir %{_qt4_plugindir}/sqldrivers/
 %dir %{_qt4_plugindir}/crypto/
-%{_qt4_translationdir}/
+%dir %{_qt4_translationdir}/
 
 %if 0%{?demos}
 %files demos
@@ -903,7 +918,7 @@ fi
 %{_qt4_demosdir}/
 %endif
 
-%files devel
+%files devel -f qt-devel.lang
 %defattr(-,root,root,-)
 %{_qt4_bindir}/lconvert
 %{_qt4_bindir}/lrelease*
@@ -1029,7 +1044,7 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
-%files x11 
+%files x11 -f qt-x11.lang
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
 %if 0%{?phonon_internal}
@@ -1069,10 +1084,15 @@ fi
 
 
 %changelog
-* Tue Jun 29 2010 Rex Dieter <rdieter@fedoraproject.org. 4.6.3-7
+* Tue Jul 01 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.3-8
+- use find_lang to package the qm files (#609749)
+- put the qm files into the correct subpackages
+- remove qvfb translations, we don't ship qvfb
+
+* Tue Jun 29 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.3-7
 - workaround glib_eventloop crasher induced by gdal/grass (bug #498111)
 
-* Fri Jun 20 2010 Rex Dieter <rdieter@fedoraproject.org> 4.6.3-5
+* Fri Jun 20 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.3-5
 - avoid timestamps in uic-generated files to be multilib-friendly
 
 * Fri Jun 18 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.3-4
