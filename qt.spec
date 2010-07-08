@@ -8,10 +8,8 @@
 ## WAS https://bugs.webkit.org/show_bug.cgi?id=35154
 #define no_javascript_jit  -no-javascript-jit
 
-%define _default_patch_fuzz 3 
-
 # enable kde-qt integration/patches 
-%define kde_qt 1
+#define kde_qt 1
 
 %define pre beta2
 
@@ -19,7 +17,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.25.%{pre}%{?dist}
+Release: 0.26.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -44,8 +42,9 @@ Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
 Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
-Patch16: qt-x11-opensource-src-4.5.1-kde4_plugins.patch 
-Patch19: qt-x11-opensource-src-4.5.1-phonon.patch
+# omit for now, (seems?) causes unwelcome side-effects -- Rex
+Patch16: qt-everywhere-opensource-src-4.7.0-beta2-kde4_plugins.patch 
+Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch 
 # use system ca-bundle certs, http://bugzilla.redhat.com/521911
 Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
@@ -58,7 +57,7 @@ Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
-Patch54: qt-x11-opensource-src-4.5.1-mysql_config.patch
+Patch54: qt-everywhere-opensource-src-4.7.0-beta2-mysql_config.patch
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 # Add s390x as 64bit and s390 as 31bit bigendian platform
@@ -416,8 +415,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 %patch5 -p1 -b .bz#437440-as_IN-437440
 %patch15 -p1 -b .enable_ft_lcdfilter
-%patch16 -p1 -b .kde4_plugins
-%patch19 -p1 -b .servicesfile
+#patch16 -p1 -b .kde4_plugins
+%patch19 -p1 -b .phonon_servicesfile
 %patch22 -p1 -b .system_ca_certificates
 %patch23 -p1 -b .glib_eventloop_nullcheck
 ## TODO: still worth carrying?  if so, upstream it.
@@ -1072,7 +1071,6 @@ fi
 %{_qt4_libdir}/libQtDesignerComponents.so.4*
 %{_qt4_libdir}/libQtGui.so.4*
 %{_qt4_libdir}/libQtHelp.so.4*
-%{_qt4_libdir}/libQtMediaServices.so.4*
 %{_qt4_libdir}/libQtMultimedia.so.4*
 %{_qt4_libdir}/libQtOpenGL.so.4*
 %{_qt4_libdir}/libQtScriptTools.so.4*
@@ -1086,12 +1084,10 @@ fi
 %endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
-%{_bindir}/qml
 %{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qt*config*
 %endif
 %{_qt4_bindir}/assistant*
-%{_qt4_bindir}/qml
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
 %{_qt4_bindir}/qt*config*
 %{_datadir}/applications/*qtconfig.desktop
@@ -1099,6 +1095,12 @@ fi
 
 
 %changelog
+* Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.26.beta1
+- rebase patches, avoiding use of patch fuzz
+- omit old qt-copy/kde-qt patches, pending review
+- omit kde4_plugin patch
+- ftbfs: qml/libQtMediaServices no longer included
+
 * Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.25.beta1
 - 4.7.0-beta2
 

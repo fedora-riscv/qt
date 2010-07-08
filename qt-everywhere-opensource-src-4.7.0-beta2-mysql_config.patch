@@ -1,16 +1,8 @@
-diff -up qt-x11-opensource-src-4.5.1/configure.mysql_config qt-x11-opensource-src-4.5.1/configure
---- qt-x11-opensource-src-4.5.1/configure.mysql_config	2009-05-04 09:14:37.105826464 -0500
-+++ qt-x11-opensource-src-4.5.1/configure	2009-05-04 09:15:26.747077312 -0500
-@@ -4334,6 +4334,7 @@ if [ "$CFG_ACCESSIBILITY" = "auto" ]; th
-     CFG_ACCESSIBILITY=yes
- fi
- 
-+set -x
- # auto-detect SQL-modules support
- for _SQLDR in $CFG_SQL_AVAILABLE; do
-         case $_SQLDR in
-@@ -4342,8 +4343,15 @@ for _SQLDR in $CFG_SQL_AVAILABLE; do
- 		[ -z "$CFG_MYSQL_CONFIG" ] && CFG_MYSQL_CONFIG=`$WHICH mysql_config`
+diff -up qt-everywhere-opensource-src-4.7.0-beta2/configure.mysql_config qt-everywhere-opensource-src-4.7.0-beta2/configure
+--- qt-everywhere-opensource-src-4.7.0-beta2/configure.mysql_config	2010-06-29 20:53:10.000000000 -0500
++++ qt-everywhere-opensource-src-4.7.0-beta2/configure	2010-07-08 08:30:32.148864934 -0500
+@@ -4849,8 +4849,15 @@ for _SQLDR in $CFG_SQL_AVAILABLE; do
+ 		[ -z "$CFG_MYSQL_CONFIG" ] && CFG_MYSQL_CONFIG=`"$WHICH" mysql_config`
                  if [ -x "$CFG_MYSQL_CONFIG" ]; then
                      QT_CFLAGS_MYSQL=`$CFG_MYSQL_CONFIG --include 2>/dev/null`
 +                    $CFG_MYSQL_CONFIG --pkglibdir &>/dev/null && \
