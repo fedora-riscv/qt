@@ -1085,10 +1085,12 @@ fi
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
 %{?dbus:%{_bindir}/qdbusviewer}
+%{_bindir}/qmlviewer
 %{_bindir}/qt*config*
 %endif
 %{_qt4_bindir}/assistant*
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
+%{_qt4_bindir}/qmlviewer
 %{_qt4_bindir}/qt*config*
 %{_datadir}/applications/*qtconfig.desktop
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
@@ -1099,7 +1101,7 @@ fi
 - rebase patches, avoiding use of patch fuzz
 - omit old qt-copy/kde-qt patches, pending review
 - omit kde4_plugin patch
-- ftbfs: qml/libQtMediaServices no longer included
+- ftbfs:s/qml/qmlviewer, libQtMediaServices no longer included
 
 * Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.25.beta1
 - 4.7.0-beta2
