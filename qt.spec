@@ -85,8 +85,6 @@ Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
 Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
 Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
-# based on http://qt.gitorious.org/+kde-developers/qt/kde-qt/commit/55ef01d93f8257b5927660290fc1ead0b2b74ec9.patch
-Patch217: qt-everywhere-opensource-src-4.7.0-beta1-QT_GRAPHICSSYSTEM.patch
 
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
@@ -448,7 +446,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch207 -p1 -b .kde-qt-0007
 %patch212 -p1 -b .kde-qt-0012
 %endif
-%patch217 -p1 -b .QT_GRAPHICSSYSTEM
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
