@@ -1097,13 +1097,13 @@ fi
 
 
 %changelog
-* Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.26.beta1
+* Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.26.beta2
 - rebase patches, avoiding use of patch fuzz
 - omit old qt-copy/kde-qt patches, pending review
 - omit kde4_plugin patch
 - ftbfs:s/qml/qmlviewer, libQtMediaServices no longer included
 
-* Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.25.beta1
+* Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.25.beta2
 - 4.7.0-beta2
 
 * Tue Jul 01 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.24.beta1
