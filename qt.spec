@@ -11,13 +11,13 @@
 # enable kde-qt integration/patches 
 #define kde_qt 1
 
-%define pre beta2
+%define pre rc1
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.26.%{pre}%{?dist}
+Release: 0.27.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -45,8 +45,6 @@ Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # omit for now, (seems?) causes unwelcome side-effects -- Rex
 Patch16: qt-everywhere-opensource-src-4.7.0-beta2-kde4_plugins.patch 
 Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch 
-# use system ca-bundle certs, http://bugzilla.redhat.com/521911
-Patch22: qt-x11-opensource-src-4.5.3-system_ca_certificates.patch 
 Requires: ca-certificates
 # may be upstreamable, not sure yet
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
@@ -68,8 +66,6 @@ Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 # security patches
 
 # upstream patches
-# https://bugs.webkit.org/show_bug.cgi?id=40567
-Patch100: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_gtk_init.patch
 # http://bugreports.qt.nokia.com/browse/QTBUG-10809
 Patch101: http://qt.gitorious.org/+qt-developers/qt/staging/commit/9a1b0695277a3864b42d082095962f8742cdcf04.patch
 
@@ -417,7 +413,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch15 -p1 -b .enable_ft_lcdfilter
 #patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .phonon_servicesfile
-%patch22 -p1 -b .system_ca_certificates
 %patch23 -p1 -b .glib_eventloop_nullcheck
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
@@ -430,7 +425,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # upstream patches
-%patch100 -p1 -b .qtwebkit_gtk_init
 %patch101 -p1 -b .QTBUG-10809
 
 # kde-qt branch
@@ -1097,6 +1091,9 @@ fi
 
 
 %changelog
+* Thu Aug 26 2010 Than Ngo <than@redhat.com> - 4.7.0-0.27.rc1
+- 4.7.0 rc1
+
 * Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.26.beta2
 - rebase patches, avoiding use of patch fuzz
 - omit old qt-copy/kde-qt patches, pending review
