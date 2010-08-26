@@ -66,8 +66,6 @@ Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 # security patches
 
 # upstream patches
-# http://bugreports.qt.nokia.com/browse/QTBUG-10809
-Patch101: http://qt.gitorious.org/+qt-developers/qt/staging/commit/9a1b0695277a3864b42d082095962f8742cdcf04.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -425,7 +423,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # upstream patches
-%patch101 -p1 -b .QTBUG-10809
 
 # kde-qt branch
 %if 0%{?kde_qt}
