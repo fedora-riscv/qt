@@ -17,7 +17,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.27.%{pre}%{?dist}
+Release: 0.28.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1088,7 +1088,7 @@ fi
 
 
 %changelog
-* Thu Aug 26 2010 Than Ngo <than@redhat.com> - 4.7.0-0.27.rc1
+* Thu Aug 26 2010 Than Ngo <than@redhat.com> - 4.7.0-0.28.rc1
 - 4.7.0 rc1
 
 * Thu Jul 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.26.beta2
