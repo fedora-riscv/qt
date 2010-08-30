@@ -17,7 +17,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.28.%{pre}%{?dist}
+Release: 0.29.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -39,7 +39,6 @@ Source5: qconfig-multilib.h
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
 Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
 Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
-Patch5: qt-all-opensource-src-4.4.0-rc1-as_IN-437440.patch
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 # omit for now, (seems?) causes unwelcome side-effects -- Rex
@@ -407,7 +406,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %prep
 %setup -q -n qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}
 
-%patch5 -p1 -b .bz#437440-as_IN-437440
 %patch15 -p1 -b .enable_ft_lcdfilter
 #patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .phonon_servicesfile
@@ -1088,6 +1086,9 @@ fi
 
 
 %changelog
+* Mon Aug 30 2010 Than Ngo <than@redhat.com> - 4.7.0-0.29.rc1
+- drop the patch, it's already fixed in upstream
+
 * Thu Aug 26 2010 Than Ngo <than@redhat.com> - 4.7.0-0.28.rc1
 - 4.7.0 rc1
 
