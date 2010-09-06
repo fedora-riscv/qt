@@ -1,0 +1,91 @@
+From be3dc286effc4307c5ef9737c9e34e449831e02c Mon Sep 17 00:00:00 2001
+From: Richard J. Moore <rich@kde.org>
+Date: Sun, 6 Jun 2010 22:10:08 +0100
+Subject: [PATCH] Fix Qt's handling of wildcards in SSL certificates
+
+Task-number: QTBUG-4455
+---
+ src/network/ssl/qsslsocket_openssl.cpp |   42 ++++++++++++++++++++++++++++---
+ src/network/ssl/qsslsocket_openssl_p.h |    1 +
+ 2 files changed, 39 insertions(+), 4 deletions(-)
+
+diff --git a/src/network/ssl/qsslsocket_openssl.cpp b/src/network/ssl/qsslsocket_openssl.cpp
+index 050fb1b..467842c 100644
+--- a/src/network/ssl/qsslsocket_openssl.cpp
++++ b/src/network/ssl/qsslsocket_openssl.cpp
+@@ -819,17 +819,16 @@ bool QSslSocketBackendPrivate::startHandshake()
+             QString peerName = (verificationPeerName.isEmpty () ? q->peerName() : verificationPeerName);
+             QString commonName = configuration.peerCertificate.subjectInfo(QSslCertificate::CommonName);
+ 
+-            QRegExp regexp(commonName, Qt::CaseInsensitive, QRegExp::Wildcard);
+-            if (!regexp.exactMatch(peerName)) {
++            if (!isMatchingHostname(commonName.lower(), peerName.lower())) {
+                 bool matched = false;
+                 foreach (const QString &altName, configuration.peerCertificate
+                          .alternateSubjectNames().values(QSsl::DnsEntry)) {
+-                    regexp.setPattern(altName);
+-                    if (regexp.exactMatch(peerName)) {
++                    if (isMatchingHostname(altName.lower(), peerName.lower())) {
+                         matched = true;
+                         break;
+                     }
+                 }
++
+                 if (!matched) {
+                     // No matches in common names or alternate names.
+                     QSslError error(QSslError::HostNameMismatch, configuration.peerCertificate);
+@@ -959,4 +958,39 @@ QList<QSslCertificate> QSslSocketBackendPrivate::STACKOFX509_to_QSslCertificates
+     return certificates;
+ }
+ 
++bool QSslSocketBackendPrivate::isMatchingHostname(const QString &cn, const QString &hostname)
++{
++    int wildcard = cn.indexOf(QChar('*', 0));
++
++    // Check this is a wildcard cert, if not then just compare the strings
++    if (wildcard < 0)
++        return cn == hostname;
++
++    int firstCnDot = cn.indexOf(QChar('.', 0));
++    int secondCnDot = cn.indexOf(QChar('.', 0), firstCnDot+1);
++
++    // Check at least 3 components
++    if ((-1 == secondCnDot) || (secondCnDot+1 >= cn.length()))
++        return false;
++
++    // Check * is last character of 1st component (ie. there's a following .)
++    if (wildcard+1 != firstCnDot)
++        return false;
++
++    // Check only one star
++    if (cn.lastIndexOf(QChar('*', 0)) != wildcard)
++        return false;
++
++    // Check characters preceding * (if any) match
++    if (wildcard && (hostname.leftRef(wildcard) != cn.leftRef(wildcard)))
++        return false;
++
++    // Check characters following first . match
++    if (hostname.midRef(hostname.indexOf(QChar('.', 0))) != cn.midRef(firstCnDot))
++        return false;
++
++    // Ok, I guess this was a wildcard CN and the hostname matches.
++    return true;
++}
++
+ QT_END_NAMESPACE
+diff --git a/src/network/ssl/qsslsocket_openssl_p.h b/src/network/ssl/qsslsocket_openssl_p.h
+index 3c08757..7754e22 100644
+--- a/src/network/ssl/qsslsocket_openssl_p.h
++++ b/src/network/ssl/qsslsocket_openssl_p.h
+@@ -116,6 +116,7 @@ public:
+ 
+     static QSslCipher QSslCipher_from_SSL_CIPHER(SSL_CIPHER *cipher);
+     static QList<QSslCertificate> STACKOFX509_to_QSslCertificates(STACK_OF(X509) *x509);
++    static bool isMatchingHostname(const QString &cn, const QString &hostname);
+ };
+ 
+ QT_END_NAMESPACE
+-- 
+1.6.1
+

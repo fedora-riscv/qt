@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.3
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -87,6 +87,7 @@ Patch117: qt-everywhere-opensource-src-4.6.3-CVE-2010-1773.patch
 Patch118: qt-everywhere-opensource-src-4.6.3-CVE-2010-1774.patch
 Patch119: qt-everywhere-opensource-src-4.6.3-CVE-2010-1119.patch
 Patch120: qt-everywhere-opensource-src-4.6.3-CVE-2010-1778.patch
+Patch121: qt-4.x-ssl-certificates-security.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -467,7 +468,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch118 -p1 -b .CVE-2010-1774
 %patch119 -p1 -b .CVE-2010-1119
 %patch120 -p1 -b .CVE-2010-1778
-
+%patch121 -p1 -b .security-ssl-cerficate
 
 # kde-qt branch
 %patch201 -p1 -b .kde-qt-0001
@@ -1084,6 +1085,9 @@ fi
 
 
 %changelog
+* Mon Sep 06 2010 Than Ngo <than@redhat.com> - 4.6.3-9
+- multiple Browser Wildcard Cerficate Validation Weakness
+
 * Tue Jul 01 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.3-8
 - use find_lang to package the qm files (#609749)
 - put the qm files into the correct subpackages
