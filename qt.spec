@@ -17,7 +17,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.29.%{pre}%{?dist}
+Release: 0.30.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -65,6 +65,8 @@ Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 # security patches
 
 # upstream patches
+# http://bugreports.qt.nokia.com/browse/QTBUG-12826
+Patch100: qt-everywhere-opensource-src-4.7.0-rc1-QTBUG-12826.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -421,6 +423,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # upstream patches
+%patch100 -p1 -b  .QTBUG-12826
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1086,6 +1089,9 @@ fi
 
 
 %changelog
+* Wed Sep 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.30.rc1
+- Crash in drawPixmap in Qt 4.7rc1 (#631845, QTBUG-12826)
+
 * Mon Aug 30 2010 Than Ngo <than@redhat.com> - 4.7.0-0.29.rc1
 - drop the patch, it's already fixed in upstream
 

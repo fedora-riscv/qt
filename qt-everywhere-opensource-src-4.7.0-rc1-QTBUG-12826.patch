@@ -1,0 +1,13 @@
+diff --git a/src/gui/painting/qpaintengine_x11.cpp b/src/gui/painting/qpaintengine_x11.cpp
+index e521e01..d430f77 100644
+--- a/src/gui/painting/qpaintengine_x11.cpp
++++ b/src/gui/painting/qpaintengine_x11.cpp
+@@ -1914,6 +1914,8 @@ void QX11PaintEngine::drawPixmap(const QRectF &r, const QPixmap &px, const QRect
+     int sh = qRound(sr.height());
+ 
+     QPixmap pixmap = qt_toX11Pixmap(px);
++    if (pixmap.isNull())
++        return;
+ 
+     if ((d->xinfo && d->xinfo->screen() != pixmap.x11Info().screen())
+         || (pixmap.x11Info().screen() != DefaultScreen(X11->display))) {
