@@ -1035,6 +1035,7 @@ fi
 %files webkit
 %defattr(-,root,root,-)
 %{_qt4_libdir}/libQtWebKit.so.4*
+%{_qt4_importdir}/QtWebkit/
 
 %files webkit-devel
 %defattr(-,root,root,-)
@@ -1051,7 +1052,8 @@ fi
 %files x11 -f qt-x11.lang
 %defattr(-,root,root,-)
 %{_sysconfdir}/rpm/macros.*
-%{_qt4_importdir}/
+%dir %{_qt4_importdir}/
+%{_qt4_importdir}/Qt/
 %if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so.4*
 %dir %{_datadir}/kde4/services/phononbackends/
@@ -1092,6 +1094,7 @@ fi
 %changelog
 * Thu Sep 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.31.rc1
 - -webkit-devel: add missing %%defattr
+- -webkit: move qml/webkit bits here
 
 * Wed Sep 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.30.rc1
 - Crash in drawPixmap in Qt 4.7rc1 (#631845, QTBUG-12826)
