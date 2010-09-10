@@ -17,7 +17,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.30.%{pre}%{?dist}
+Release: 0.31.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -1037,6 +1037,7 @@ fi
 %{_qt4_libdir}/libQtWebKit.so.4*
 
 %files webkit-devel
+%defattr(-,root,root-)
 %{_qt4_headerdir}/Qt/QtWebKit
 %{_qt4_headerdir}/Qt/qgraphicswebview.h
 %{_qt4_headerdir}/Qt/qweb*.h
@@ -1089,6 +1090,9 @@ fi
 
 
 %changelog
+* Thu Sep 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.31.rc1
+- -webkit-devel: add missing %%defattr
+
 * Wed Sep 08 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.30.rc1
 - Crash in drawPixmap in Qt 4.7rc1 (#631845, QTBUG-12826)
 
