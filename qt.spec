@@ -1037,7 +1037,7 @@ fi
 %{_qt4_libdir}/libQtWebKit.so.4*
 
 %files webkit-devel
-%defattr(-,root,root-)
+%defattr(-,root,root,-)
 %{_qt4_headerdir}/Qt/QtWebKit
 %{_qt4_headerdir}/Qt/qgraphicswebview.h
 %{_qt4_headerdir}/Qt/qweb*.h
