@@ -1035,7 +1035,7 @@ fi
 %files webkit
 %defattr(-,root,root,-)
 %{_qt4_libdir}/libQtWebKit.so.4*
-%{_qt4_importdir}/QtWebkit/
+%{_qt4_importdir}/QtWebKit/
 
 %files webkit-devel
 %defattr(-,root,root,-)
