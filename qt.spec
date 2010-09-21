@@ -11,19 +11,17 @@
 # enable kde-qt integration/patches 
 #define kde_qt 1
 
-%define pre rc1
-
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 0.31.%{pre}%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
@@ -65,8 +63,6 @@ Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 # security patches
 
 # upstream patches
-# http://bugreports.qt.nokia.com/browse/QTBUG-12826
-Patch100: qt-everywhere-opensource-src-4.7.0-rc1-QTBUG-12826.patch
 
 # kde-qt git patches
 Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
@@ -406,7 +402,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}
+%setup -q -n qt-everywhere-opensource-src-%{version}
 
 %patch15 -p1 -b .enable_ft_lcdfilter
 #patch16 -p1 -b .kde4_plugins
@@ -423,7 +419,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # upstream patches
-%patch100 -p1 -b  .QTBUG-12826
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1092,6 +1087,9 @@ fi
 
 
 %changelog
+* Tue Sep 21 2010 Than Ngo <than@redhat.com> - 4.7.0-1
+- 4.7.0
+
 * Thu Sep 09 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-0.31.rc1
 - -webkit-devel: add missing %%defattr
 - -webkit: move qml/webkit bits here
