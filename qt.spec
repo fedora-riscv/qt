@@ -18,10 +18,10 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
-License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FLT and MIT
+License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
 Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
@@ -73,7 +73,7 @@ Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
 # qtwebkit to search nspluginwrapper paths too
 Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 
-# indic Incorrect rendering
+# indic incorrect rendering
 Patch59: qt-4.6.3-bn-rendering-bz562049.patch
 Patch60: qt-4.6.3-bn-rendering-bz562058.patch
 Patch61: qt-4.6.3-indic-rendering-bz631732.patch
@@ -1095,6 +1095,9 @@ fi
 
 
 %changelog
+* Thu Sep 23 2010 Than Ngo <than@redhat.com> - 4.7.0-3
+- fix typo in license
+
 * Thu Sep 23 2010 Than Ngo <than@redhat.com> - 4.7.0-2
 - fix bz#562049, bn-IN Incorrect rendering
 - fix bz#562058, bn_IN init feature is not applied properly
