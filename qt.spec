@@ -84,7 +84,7 @@ Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 # upstream patches
 
 # kde-qt git patches
-Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
+Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
 Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow-p.patch
 Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
