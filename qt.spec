@@ -15,7 +15,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -59,6 +59,11 @@ Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
 # qtwebkit to search nspluginwrapper paths too
 Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
+# indic Incorrect rendering
+Patch59: qt-4.6.3-bn-rendering-bz562049.patch
+Patch60: qt-4.6.3-bn-rendering-bz562058.patch
+Patch61: qt-4.6.3-indic-rendering-bz631732.patch
+Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 
 # security patches
 
@@ -415,6 +420,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .s390x
 %patch58 -p1 -b .qtwebkit_pluginpath
+%patch59 -p1 -b .bn-rendering-bz562049
+%patch60 -p1 -b .bn-rendering-bz562058
+%patch61 -p1 -b .indic-rendering-bz631732
+%patch62 -p1 -b .indic-rendering-bz636399
 
 # security fixes
 
@@ -1087,6 +1096,12 @@ fi
 
 
 %changelog
+* Thu Sep 23 2010 Than Ngo <than@redhat.com> - 4.7.0-2
+- fix bz#562049, bn-IN Incorrect rendering
+- fix bz#562058, bn_IN init feature is not applied properly
+- fix bz#631732, indic invalid syllable's are not recognized properly
+- fix bz#636399, oriya script open type features are not applied properly
+
 * Tue Sep 21 2010 Than Ngo <than@redhat.com> - 4.7.0-1
 - 4.7.0
 
