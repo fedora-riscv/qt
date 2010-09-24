@@ -9,16 +9,19 @@
 #define no_javascript_jit  -no-javascript-jit
 
 # enable kde-qt integration/patches 
-#define kde_qt 1
+%define kde_qt 1
+
+# See http://bugzilla.redhat.com/223663
+%define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 1%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
-License: LGPLv2 with exceptions or GPLv3 with exceptions
+License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
 Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
@@ -27,22 +30,28 @@ Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
 
+# default Qt config file
 Source4: Trolltech.conf
 
-# See http://bugzilla.redhat.com/223663
-%define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
+# header file to workaround multilib issue
 Source5: qconfig-multilib.h
 
-# multilib hacks 
+# set default QMAKE_CFLAGS_RELEASE
 Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
-Patch3: qt-x11-opensource-src-4.2.2-multilib-QMAKEPATH.patch
+
+# get rid of timestamp which causes multilib problem
 Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
+
+# enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
+
 # include kde4 plugin path, http://bugzilla.redhat.com/498809
 # omit for now, (seems?) causes unwelcome side-effects -- Rex
 Patch16: qt-everywhere-opensource-src-4.7.0-beta2-kde4_plugins.patch 
+
+# phonon gstreamer services
 Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch 
-Requires: ca-certificates
+
 # may be upstreamable, not sure yet
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
@@ -50,32 +59,37 @@ Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
+
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
 Patch54: qt-everywhere-opensource-src-4.7.0-beta2-mysql_config.patch
+
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
+
 # Add s390x as 64bit and s390 as 31bit bigendian platform
 Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
+
 # qtwebkit to search nspluginwrapper paths too
 Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
+
+# indic incorrect rendering
+Patch59: qt-4.6.3-bn-rendering-bz562049.patch
+Patch60: qt-4.6.3-bn-rendering-bz562058.patch
+Patch61: qt-4.6.3-indic-rendering-bz631732.patch
+Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 
 # security patches
 
 # upstream patches
 
 # kde-qt git patches
-Patch201: 0001-This-patch-uses-object-name-as-a-fallback-for-window.patch
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
-Patch203: 0003-This-patch-changes-QObjectPrivateVersion-thus-preven.patch
 Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow-p.patch
 Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
-Patch206: 0006-Fix-configure.exe-to-do-an-out-of-source-build-on-wi.patch
-Patch207: 0007-When-using-qmake-outside-qt-src-tree-it-sometimes-ge.patch
-Patch208: 0008-This-patch-makes-the-raster-graphics-system-use-shar.patch
-Patch209: 0009-Restore-a-section-of-the-file-that-got-removed-due-t.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 
+# gstreamer logos
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
 Source11: hi16-phonon-gstreamer.png
 Source12: hi22-phonon-gstreamer.png
@@ -84,6 +98,7 @@ Source14: hi48-phonon-gstreamer.png
 Source15: hi64-phonon-gstreamer.png
 Source16: hi128-phonon-gstreamer.png
 
+# desktop files
 Source20: assistant.desktop
 Source21: designer.desktop
 Source22: linguist.desktop
@@ -135,10 +150,6 @@ Source31: hi48-app-qt4-logo.png
 %define _qt4_plugindir %{_qt4_prefix}/plugins
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
-
-%if "%{_qt4_libdir}" != "%{_libdir}"
-Prereq: /etc/ld.so.conf.d
-%endif
 
 BuildRequires: alsa-lib-devel
 BuildRequires: dbus-devel >= 0.62
@@ -199,6 +210,7 @@ Obsoletes: qgtkstyle < 0.1
 Provides:  qgtkstyle = 0.1-1
 Obsoletes: qt4-config < 4.5.0
 Provides: qt4-config = %{version}-%{release}
+Requires: ca-certificates
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -415,6 +427,10 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .s390x
 %patch58 -p1 -b .qtwebkit_pluginpath
+%patch59 -p1 -b .bn-rendering-bz562049
+%patch60 -p1 -b .bn-rendering-bz562058
+%patch61 -p1 -b .indic-rendering-bz631732
+%patch62 -p1 -b .indic-rendering-bz636399
 
 # security fixes
 
@@ -422,14 +438,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # kde-qt branch
 %if 0%{?kde_qt}
-%patch201 -p1 -b .kde-qt-0001
 %patch202 -p1 -b .kde-qt-0002
-%patch203 -p1 -b .kde-qt-0003
 %patch204 -p1 -b .kde-qt-0004
 %patch205 -p1 -b .kde-qt-0005
-%patch206 -p1 -b .kde-qt-0006
-# doesn't apply, does look like much of a big deal though
-#patch207 -p1 -b .kde-qt-0007
 %patch212 -p1 -b .kde-qt-0012
 %endif
 
@@ -452,9 +463,6 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 # don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
 %patch2 -p1
-%if "%{_qt4_datadir}" != "%{_qt4_prefix}"
-%patch3 -p1 -b .multilib-QMAKEPATH
-%endif
 %patch4 -p1 -b .uic_multilib
 
 sed -i \
@@ -1087,6 +1095,15 @@ fi
 
 
 %changelog
+* Thu Sep 23 2010 Than Ngo <than@redhat.com> - 4.7.0-3
+- fix typo in license
+
+* Thu Sep 23 2010 Than Ngo <than@redhat.com> - 4.7.0-2
+- fix bz#562049, bn-IN Incorrect rendering
+- fix bz#562058, bn_IN init feature is not applied properly
+- fix bz#631732, indic invalid syllable's are not recognized properly
+- fix bz#636399, oriya script open type features are not applied properly
+
 * Tue Sep 21 2010 Than Ngo <than@redhat.com> - 4.7.0-1
 - 4.7.0
 
