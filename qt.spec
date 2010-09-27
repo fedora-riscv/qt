@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -82,6 +82,7 @@ Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 # security patches
 
 # upstream patches
+Patch100: qt-everywhere-opensource-src-4.7.0-QTBUG-13567-QTreeView.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -435,6 +436,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # upstream patches
+%patch100 -p1 -b .QTBUG-13567-QTreeView
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1095,6 +1097,9 @@ fi
 
 
 %changelog
+* Mon Sep 27 2010 Than Ngo <than@redhat.com> - 4.7.0-4
+- apply upstream patch to fix QTreeView-regression 
+
 * Thu Sep 23 2010 Than Ngo <than@redhat.com> - 4.7.0-3
 - fix typo in license
 
