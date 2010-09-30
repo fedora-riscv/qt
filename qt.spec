@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.3
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -72,6 +72,9 @@ Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 # upstream or security patches
 # https://bugs.webkit.org/show_bug.cgi?id=40567
 Patch100: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_gtk_init.patch
+# http://bugreports.qt.nokia.com/browse/QTBUG-6185
+# http://qt.gitorious.org/qt/staging/commit/9e9a7bc29319d52c3e563bc2c5282cb7e6890eba
+Patch101: qt-everywhere-opensource-src-4.7.0-QTBUG-6185.patch
 Patch104: qt-everywhere-opensource-src-4.6.2-cve-2010-0051-lax-css-parsing-cross-domain-theft.patch
 Patch106: qt-everywhere-opensource-src-4.6.2-cve-2010-0656.patch
 Patch108: qt-everywhere-opensource-src-4.6.2-cve-2010-0648.patch
@@ -450,6 +453,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # upstream patches
 %patch100 -p1 -b .qtwebkit_gtk_init
+%patch101 -p1 -b .QTBUG-6185
 
 # security fixes
 %patch104 -p1 -b .cve-2010-0051-lax-css-parsing-cross-domain-theft
@@ -1084,6 +1088,9 @@ fi
 
 
 %changelog
+* Thu Sep 30 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.3-9
+- Wrong Cursor when widget become native on X11 (QTBUG-6185)
+
 * Tue Jul 01 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.6.3-8
 - use find_lang to package the qm files (#609749)
 - put the qm files into the correct subpackages
