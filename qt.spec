@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 3%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -81,7 +81,11 @@ Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 
 # security patches
 
-# upstream patches
+## upstream patches
+Patch100: qt-everywhere-opensource-src-4.7.0-QTBUG-13567-QTreeView.patch
+# http://bugreports.qt.nokia.com/browse/QTBUG-6185
+# http://qt.gitorious.org/qt/staging/commit/9e9a7bc29319d52c3e563bc2c5282cb7e6890eba
+Patch101: qt-everywhere-opensource-src-4.7.0-QTBUG-6185.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -435,6 +439,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 
 # upstream patches
+%patch100 -p1 -b .QTBUG-13567-QTreeView
+%patch101 -p1 -b .QTBUG-6185
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1095,6 +1101,12 @@ fi
 
 
 %changelog
+* Thu Sep 30 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-5
+- Wrong Cursor when widget become native on X11 (QTBUG-6185)
+
+* Mon Sep 27 2010 Than Ngo <than@redhat.com> - 4.7.0-4
+- apply upstream patch to fix QTreeView-regression (QTBUG-13567)
+
 * Thu Sep 23 2010 Than Ngo <than@redhat.com> - 4.7.0-3
 - fix typo in license
 
