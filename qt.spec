@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -78,6 +78,9 @@ Patch59: qt-4.6.3-bn-rendering-bz562049.patch
 Patch60: qt-4.6.3-bn-rendering-bz562058.patch
 Patch61: qt-4.6.3-indic-rendering-bz631732.patch
 Patch62: qt-4.6.3-indic-rendering-bz636399.patch
+
+# fix 24bit color issue
+Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
 # security patches
 
@@ -435,6 +438,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch60 -p1 -b .bn-rendering-bz562058
 %patch61 -p1 -b .indic-rendering-bz631732
 %patch62 -p1 -b .indic-rendering-bz636399
+%patch63 -p1 -b .bpp24
 
 # security fixes
 
@@ -1101,6 +1105,9 @@ fi
 
 
 %changelog
+* Fri Oct 15 2010 Than Ngo <than@redhat.com> - 4.7.0-6
+- apply patch to fix the color issue in 24bit mode (cirrus driver)
+
 * Thu Sep 30 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-5
 - Wrong Cursor when widget become native on X11 (QTBUG-6185)
 
