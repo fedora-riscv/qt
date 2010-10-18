@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -470,9 +470,10 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %endif
 
 # multilib hacks
-# don't use -b on mkspec files, else they get installed too.
 # multilib hacks no longer required
-%patch2 -p1
+%patch2 -p1 -b .multilib
+# drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
+rm -fv mkspecs/linux-g++*/qmake.conf.multilib
 %patch4 -p1 -b .uic_multilib
 
 sed -i \
@@ -1105,6 +1106,9 @@ fi
 
 
 %changelog
+* Mon Oct 18 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-7
+- qt-devel contains residues from patch run (#639463)
+
 * Fri Oct 15 2010 Than Ngo <than@redhat.com> - 4.7.0-6
 - apply patch to fix the color issue in 24bit mode (cirrus driver)
 
