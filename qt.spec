@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -82,8 +82,6 @@ Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 # fix 24bit color issue
 Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
-# security patches
-
 ## upstream patches
 Patch100: qt-everywhere-opensource-src-4.7.0-QTBUG-13567-QTreeView.patch
 # http://bugreports.qt.nokia.com/browse/QTBUG-6185
@@ -95,6 +93,9 @@ Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
 Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow-p.patch
 Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
+
+# security patches
+Patch300: qt-everywhere-opensource-src-4.7.0-CVE-2010-1822-crash-svg-image.patch
 
 # gstreamer logos
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
@@ -440,8 +441,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch62 -p1 -b .indic-rendering-bz636399
 %patch63 -p1 -b .bpp24
 
-# security fixes
-
 # upstream patches
 %patch100 -p1 -b .QTBUG-13567-QTreeView
 %patch101 -p1 -b .QTBUG-6185
@@ -453,6 +452,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch205 -p1 -b .kde-qt-0005
 %patch212 -p1 -b .kde-qt-0012
 %endif
+
+# security fixes
+%patch300 -p1 -b .CVE-2010-1822-crash-svg-image
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1106,6 +1108,9 @@ fi
 
 
 %changelog
+* Mon Oct 25 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.7.0-8
+- QtWebKit, CVE-2010-1822: crash by processing certain SVG images (#640290)
+
 * Mon Oct 18 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.0-7
 - qt-devel contains residues from patch run (#639463)
 
