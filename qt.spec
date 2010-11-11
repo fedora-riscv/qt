@@ -17,8 +17,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.7.0
-Release: 8%{?dist}
+Version: 4.7.1
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1108,6 +1108,9 @@ fi
 
 
 %changelog
+* Thu Nov 11 2010 Than Ngo <than@redhat.com> - 4.7.1-1
+- 4.7.1
+
 * Mon Oct 25 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.7.0-8
 - QtWebKit, CVE-2010-1822: crash by processing certain SVG images (#640290)
 
