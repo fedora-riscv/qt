@@ -83,10 +83,6 @@ Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
 ## upstream patches
-Patch100: qt-everywhere-opensource-src-4.7.0-QTBUG-13567-QTreeView.patch
-# http://bugreports.qt.nokia.com/browse/QTBUG-6185
-# http://qt.gitorious.org/qt/staging/commit/9e9a7bc29319d52c3e563bc2c5282cb7e6890eba
-Patch101: qt-everywhere-opensource-src-4.7.0-QTBUG-6185.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -442,8 +438,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch63 -p1 -b .bpp24
 
 # upstream patches
-%patch100 -p1 -b .QTBUG-13567-QTreeView
-%patch101 -p1 -b .QTBUG-6185
 
 # kde-qt branch
 %if 0%{?kde_qt}
