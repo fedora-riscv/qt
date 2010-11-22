@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -82,7 +82,9 @@ Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 # fix 24bit color issue
 Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
-## upstream patches
+# upstream patches
+# Reordering of Malayalam Rakar not working properly
+Patch100: qt-everywhere-opensource-src-4.7.1-ml_IN-bz528303
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -438,6 +440,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch63 -p1 -b .bpp24
 
 # upstream patches
+%patch100 -p1 -b .ml_IN-redering
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1102,6 +1105,9 @@ fi
 
 
 %changelog
+* Mon Nov 22 2010 Than Ngo <than@redhat.com> - 4.7.1-2
+- bz#528303, Reordering of Malayalam Rakar not working properly
+
 * Thu Nov 11 2010 Than Ngo <than@redhat.com> - 4.7.1-1
 - 4.7.1
 
