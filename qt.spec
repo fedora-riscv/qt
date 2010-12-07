@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -55,6 +55,9 @@ Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch
 # may be upstreamable, not sure yet
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
+
+# remove depenency of webkit in assistant
+Patch24: qt-everywhere-opensource-src-4.7.1-webkit.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -429,6 +432,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
+%patch24 -p1 -b .webkit
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1053,6 +1057,7 @@ fi
 %defattr(-,root,root,-)
 %{_qt4_libdir}/libQtWebKit.so.4*
 %{_qt4_importdir}/QtWebKit/
+%{_qt4_plugindir}/designer/libqwebview.so
 
 %files webkit-devel
 %defattr(-,root,root,-)
@@ -1090,6 +1095,9 @@ fi
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
+%if 0%{?webkit:1}
+%exclude %{_qt4_plugindir}/designer/libqwebview.so
+%endif
 #if "%{?phonon_backend}" == "-phonon-backend"
 %if 0%{?phonon_backend_packaged}
 %exclude %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
@@ -1109,6 +1117,10 @@ fi
 
 
 %changelog
+* Mon Dec 06 2010 Than Ngo <than@redhat.com> 4.7.1-4
+- bz#660287, using QTextBrowser in assistant to drop
+  qtwebkit dependency
+
 * Tue Nov 23 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.1-3
 - Fails to create debug build of Qt projects on mingw (#653674, QTBUG-14467)
 
