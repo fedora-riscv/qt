@@ -17,8 +17,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.7.0
-Release: 8%{?dist}
+Version: 4.7.1
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -56,6 +56,9 @@ Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 
+# remove dependency of webkit in assistant
+Patch24: qt-everywhere-opensource-src-4.7.1-webkit.patch
+
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
@@ -82,11 +85,16 @@ Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 # fix 24bit color issue
 Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
-## upstream patches
-Patch100: qt-everywhere-opensource-src-4.7.0-QTBUG-13567-QTreeView.patch
-# http://bugreports.qt.nokia.com/browse/QTBUG-6185
-# http://qt.gitorious.org/qt/staging/commit/9e9a7bc29319d52c3e563bc2c5282cb7e6890eba
-Patch101: qt-everywhere-opensource-src-4.7.0-QTBUG-6185.patch
+# Fails to create debug build of Qt projects on mingw (rhbz#653674)
+Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
+
+# upstream patches
+# Reordering of Malayalam Rakar not working properly
+Patch100: qt-everywhere-opensource-src-4.7.1-ml_IN-bz528303.patch
+
+# fix QTextCursor crash in Lokalize and Psi (QTBUG-15857, kde#249373, #660028)
+# http://qt.gitorious.org/qt/qt/commit/6ae84f1183e91c910ca92a55e37f8254ace805c0
+Patch101: qt-everywhere-opensource-src-4.7.1-qtextcursor-crash.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -428,6 +436,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
+%if 0%{?fedora} > 14
+%patch24 -p1 -b .webkit
+%endif
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -440,10 +451,11 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch61 -p1 -b .indic-rendering-bz631732
 %patch62 -p1 -b .indic-rendering-bz636399
 %patch63 -p1 -b .bpp24
+%patch64 -p1 -b .QTBUG-14467
 
 # upstream patches
-%patch100 -p1 -b .QTBUG-13567-QTreeView
-%patch101 -p1 -b .QTBUG-6185
+%patch100 -p1 -b .ml_IN-rendering
+%patch101 -p1 -b .qtextcursor-crash
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1052,6 +1064,7 @@ fi
 %defattr(-,root,root,-)
 %{_qt4_libdir}/libQtWebKit.so.4*
 %{_qt4_importdir}/QtWebKit/
+%{_qt4_plugindir}/designer/libqwebview.so
 
 %files webkit-devel
 %defattr(-,root,root,-)
@@ -1089,6 +1102,9 @@ fi
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
+%if 0%{?webkit:1}
+%exclude %{_qt4_plugindir}/designer/libqwebview.so
+%endif
 #if "%{?phonon_backend}" == "-phonon-backend"
 %if 0%{?phonon_backend_packaged}
 %exclude %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
@@ -1108,6 +1124,23 @@ fi
 
 
 %changelog
+* Wed Dec 08 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.7.1-5
+- make the Assistant QtWebKit dependency removal (#660287) F15+ only for now
+- fix QTextCursor crash in Lokalize and Psi (QTBUG-15857, kde#249373, #660028)
+- add some more NULL checks to the glib_eventloop_nullcheck patch (#622164)
+
+* Mon Dec 06 2010 Than Ngo <than@redhat.com> 4.7.1-4
+- bz#660287, using QTextBrowser in assistant to drop qtwebkit dependency
+
+* Tue Nov 23 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.7.1-3
+- Fails to create debug build of Qt projects on mingw (#653674, QTBUG-14467)
+
+* Mon Nov 22 2010 Than Ngo <than@redhat.com> - 4.7.1-2
+- bz#528303, Reordering of Malayalam Rakar not working properly
+
+* Thu Nov 11 2010 Than Ngo <than@redhat.com> - 4.7.1-1
+- 4.7.1
+
 * Mon Oct 25 2010 Jaroslav Reznik <jreznik@redhat.com> - 4.7.0-8
 - QtWebKit, CVE-2010-1822: crash by processing certain SVG images (#640290)
 
