@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1124,6 +1124,9 @@ fi
 
 
 %changelog
+* Fri Dec 24 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-6
+- rebuild (mysql)
+
 * Wed Dec 08 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.7.1-5
 - make the Assistant QtWebKit dependency removal (#660287) F15+ only for now
 - fix QTextCursor crash in Lokalize and Psi (QTBUG-15857, kde#249373, #660028)
