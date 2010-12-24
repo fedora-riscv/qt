@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -87,6 +87,9 @@ Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
 # Fails to create debug build of Qt projects on mingw (rhbz#653674)
 Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
+
+# fix QTreeView crash triggered by KPackageKit (patch by David Faure)
+Patch65: qt-everywhere-opensource-src-4.7.1-qtreeview-kpackagekit-crash.patch
 
 # upstream patches
 # Reordering of Malayalam Rakar not working properly
@@ -452,6 +455,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch62 -p1 -b .indic-rendering-bz636399
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
+%patch65 -p1 -b .qtreeview-kpackagekit-crash
 
 # upstream patches
 %patch100 -p1 -b .ml_IN-rendering
@@ -1124,6 +1128,9 @@ fi
 
 
 %changelog
+* Fri Dec 24 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.7.1-7
+- fix QTreeView crash triggered by KPackageKit (patch by David Faure)
+
 * Fri Dec 24 2010 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-6
 - rebuild (mysql)
 
