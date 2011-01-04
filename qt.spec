@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -408,7 +408,7 @@ Provides:  WebKit-qt = 1.0.0-1
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
-%if 0%{?phonon:1}
+%if 0%{?phonon:1} && 0%{?phonon_internal}
 Requires:  phonon-backend%{?_isa} >= %{phonon_version_major} 
 %endif
 %if 0%{?phonon_internal}
@@ -1128,6 +1128,9 @@ fi
 
 
 %changelog
+* Tue Jan 04 2011 Rex Dieter <rdieter@fedoraproject.org> -  4.7.1-8
+- only do Requires: phonon-backend if using qt's phonon
+
 * Fri Dec 24 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.7.1-7
 - fix QTreeView crash triggered by KPackageKit (patch by David Faure)
 
