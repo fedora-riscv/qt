@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -98,6 +98,9 @@ Patch100: qt-everywhere-opensource-src-4.7.1-ml_IN-bz528303.patch
 # fix QTextCursor crash in Lokalize and Psi (QTBUG-15857, kde#249373, #660028)
 # http://qt.gitorious.org/qt/qt/commit/6ae84f1183e91c910ca92a55e37f8254ace805c0
 Patch101: qt-everywhere-opensource-src-4.7.1-qtextcursor-crash.patch
+
+# qsortfilterproxymodel merge, http://qt.gitorious.org/qt/qt/merge_requests/934
+Patch102: qt-everywhere-opensource-src-4.7.1-qsortfilterproxymodel_merge934.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -460,6 +463,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 # upstream patches
 %patch100 -p1 -b .ml_IN-rendering
 %patch101 -p1 -b .qtextcursor-crash
+%patch102 -p1 -b .qsortfilterproxymodel_merge934
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1128,7 +1132,10 @@ fi
 
 
 %changelog
-* Tue Jan 04 2011 Rex Dieter <rdieter@fedoraproject.org> -  4.7.1-8
+* Thu Jan 06 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-9
+- qsortfilterproxymodel fix (merge_request/934)
+
+* Tue Jan 04 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-8
 - only do Requires: phonon-backend if using qt's phonon
 
 * Fri Dec 24 2010 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.7.1-7
