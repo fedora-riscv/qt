@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -26,9 +26,12 @@ Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
 Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
+# some 3rd-party apps expect this one
+Provides: libqt4 = %{version}-%{release}
 
 # default Qt config file
 Source4: Trolltech.conf
@@ -1132,6 +1135,9 @@ fi
 
 
 %changelog
+* Tue Jan 11 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-10
+- Provides: libqt4
+
 * Thu Jan 06 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-9
 - qsortfilterproxymodel fix (merge_request/934)
 
