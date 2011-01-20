@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 9%{?dist}
+Release: 9%{?dist}.1
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -442,9 +442,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
-%if 0%{?fedora} > 14
 %patch24 -p1 -b .webkit
-%endif
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1132,6 +1130,9 @@ fi
 
 
 %changelog
+* Thu Jan 20 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-9.1
+- apply the Assistant QtWebKit dependency removal (#660287) everywhere
+
 * Thu Jan 06 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-9
 - qsortfilterproxymodel fix (merge_request/934)
 
