@@ -617,7 +617,7 @@ desktop-file-install \
 %if 0%{?fedora} > 14
 desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
-  --vendir="qt4" \
+  --vendor="qt4" \
   --remove-key=NoDisplay \
   %{buildroot}%{_datadir}/applications/*qtconfig.desktop
 %endif
