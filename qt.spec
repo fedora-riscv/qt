@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 9%{?dist}.1
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -250,6 +250,15 @@ Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
 %description -n phonon-backend-gstreamer
 %{summary}.
 
+%package config
+Summary: Graphical configuration tool for programs using Qt 4 
+Group: User Interface/Desktops
+# introduced in 4.7.1-10 , for upgrade path
+Obsoletes: %{name}-x11%{?_isa} < 4.7.1-10
+Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+%description config 
+%{summary}.
+
 %define demos 1
 %package demos
 Summary: Demonstration applications for %{name}
@@ -428,6 +437,7 @@ Provides: %{name}-assistant = %{version}-%{release}
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
+%{?_isa:Provides: qt4-x11%{?_isa} = %{version}-%{release}}
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 
@@ -603,6 +613,14 @@ desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
   --vendor="qt4" \
   %{?docs:%{SOURCE20}} %{SOURCE21} %{SOURCE22} %{?demos:%{SOURCE23}} %{SOURCE24}
+
+%if 0%{?fedora} > 14
+desktop-file-install \
+  --dir=%{buildroot}%{_datadir}/applications \
+  --vendir="qt4" \
+  --remove-key=NoDisplay \
+  %{buildroot}%{_datadir}/applications/*qtconfig.desktop
+%endif
 
 ## pkg-config
 # strip extraneous dirs/libraries 
@@ -918,6 +936,14 @@ fi
 %dir %{_qt4_plugindir}/sqldrivers/
 %dir %{_qt4_translationdir}/
 
+%files config
+%defattr(-,root,root,-)
+%if "%{_qt4_bindir}" != "%{_bindir}"
+%{_bindir}/qt*config*
+%endif
+%{_qt4_bindir}/qt*config*
+%{_datadir}/applications/*qtconfig.desktop
+
 %if 0%{?demos}
 %files demos
 %defattr(-,root,root,-)
@@ -1119,17 +1145,19 @@ fi
 %{_bindir}/assistant*
 %{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qmlviewer
-%{_bindir}/qt*config*
 %endif
 %{_qt4_bindir}/assistant*
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
 %{_qt4_bindir}/qmlviewer
-%{_qt4_bindir}/qt*config*
-%{_datadir}/applications/*qtconfig.desktop
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 
 %changelog
+* Tue Jan 25 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-10
+- -config subpkg
+- qt-x11 pulls in phonon (#672088)
+- qtconfig.desktop: drop NoDisplay (f15+ only, for now)
+
 * Thu Jan 20 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-9.1
 - apply the Assistant QtWebKit dependency removal (#660287) everywhere
 
