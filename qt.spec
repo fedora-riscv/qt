@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -254,8 +254,8 @@ Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
 %package config
 Summary: Graphical configuration tool for programs using Qt 4 
 Group: User Interface/Desktops
-# introduced in 4.7.1-10 , for upgrade path
-Obsoletes: %{name}-x11%{?_isa} < 1:4.7.1-10
+# -config introduced in 4.7.1-10 , for upgrade path
+Obsoletes: %{name}-x11 < 1:4.7.1-10
 Obsoletes: qt4-config < 4.5.0
 Provides:  qt4-config = %{version}-%{release}
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -1157,6 +1157,9 @@ fi
 
 
 %changelog
+* Wed Jan 26 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-13
+- -config: fix Obsoletes for real this time
+
 * Wed Jan 26 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-12
 - fix qt-config related Obsoletes/Provides
 
