@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -233,8 +233,6 @@ BuildRequires: freetds-devel
 
 Obsoletes: qgtkstyle < 0.1
 Provides:  qgtkstyle = 0.1-1
-Obsoletes: qt4-config < 4.5.0
-Provides: qt4-config = %{version}-%{release}
 Requires: ca-certificates
 
 %description 
@@ -257,7 +255,9 @@ Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
 Summary: Graphical configuration tool for programs using Qt 4 
 Group: User Interface/Desktops
 # introduced in 4.7.1-10 , for upgrade path
-Obsoletes: %{name}-x11%{?_isa} < 4.7.1-10
+Obsoletes: %{name}-x11%{?_isa} < 1:4.7.1-10
+Obsoletes: qt4-config < 4.5.0
+Provides:  qt4-config = %{version}-%{release}
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description config 
 %{summary}.
@@ -1157,6 +1157,9 @@ fi
 
 
 %changelog
+* Wed Jan 26 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-12
+- fix qt-config related Obsoletes/Provides
+
 * Wed Jan 26 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-11
 - upstream fix for QTextCursor regression (QTBUG-15857, kde#249373)
 
