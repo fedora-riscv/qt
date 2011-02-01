@@ -255,6 +255,7 @@ Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
 Summary: Graphical configuration tool for programs using Qt 4 
 Group: User Interface/Desktops
 # -config introduced in 4.7.1-10 , for upgrade path
+# seems to tickle a pk bug, https://bugzilla.redhat.com/674326
 Obsoletes: %{name}-x11 < 1:4.7.1-10
 Obsoletes: qt4-config < 4.5.0
 Provides:  qt4-config = %{version}-%{release}
