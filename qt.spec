@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1158,6 +1158,9 @@ fi
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.7.1-14
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Wed Jan 26 2011 Rex Dieter <rdieter@fedoraproject.org> 4.7.1-13
 - -config: fix Obsoletes for real this time
 
