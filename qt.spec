@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -251,12 +251,23 @@ Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
 %description -n phonon-backend-gstreamer
 %{summary}.
 
+%package assistant
+Summary: Documentation browser for Qt 4
+Group: Documentation
+%if 0%{?sqlite:1}
+Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+%endif
+Provides: qt4-assistant = %{version}-%{release}
+Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+%description assistant
+%{summary}.
+
 %package config
 Summary: Graphical configuration tool for programs using Qt 4 
 Group: User Interface/Desktops
 # -config introduced in 4.7.1-10 , for upgrade path
 # seems to tickle a pk bug, https://bugzilla.redhat.com/674326
-Obsoletes: %{name}-x11 < 1:4.7.1-10
+#Obsoletes: %{name}-x11 < 1:4.7.1-10
 Obsoletes: qt4-config < 4.5.0
 Provides:  qt4-config = %{version}-%{release}
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -269,6 +280,13 @@ Summary: Demonstration applications for %{name}
 Group:   Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description demos
+%{summary}.
+
+%package designer-plugin-phonon
+Summary: Qt Designer plugin for phonon
+Group: System Environment/Libraries
+Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+%description designer-plugin-phonon
 %{summary}.
 
 %define docs 1
@@ -290,6 +308,7 @@ Qt Assistant
 Summary: Development files for the Qt toolkit
 Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-designer-plugin-phonon%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
 Requires: %{x_deps}
 Requires: libpng-devel
@@ -433,11 +452,6 @@ Provides:  phonon = %{phonon_version}-%{phonon_release}
 Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
 Provides:  qt4-phonon = %{version}-%{release}
 %endif
-%if 0%{?sqlite:1}
-Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-%endif
-Provides: qt4-assistant = %{version}-%{release}
-Provides: %{name}-assistant = %{version}-%{release}
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
@@ -456,7 +470,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 #patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
-%patch24 -p1 -b .webkit
+## make -assistant subpkg instead (#660287#9)
+#patch24 -p1 -b .webkit
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -618,14 +633,6 @@ desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
   --vendor="qt4" \
   %{?docs:%{SOURCE20}} %{SOURCE21} %{SOURCE22} %{?demos:%{SOURCE23}} %{SOURCE24}
-
-%if 0%{?fedora} > 14
-desktop-file-install \
-  --dir=%{buildroot}%{_datadir}/applications \
-  --vendor="qt4" \
-  --remove-key=NoDisplay \
-  %{buildroot}%{_datadir}/applications/*qtconfig.desktop
-%endif
 
 ## pkg-config
 # strip extraneous dirs/libraries 
@@ -842,6 +849,18 @@ rm -rf %{buildroot}
 
 %postun -p /sbin/ldconfig
 
+%post assistant
+touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans assistant 
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+
+%postun assistant 
+if [ $1 -eq 0 ] ; then
+touch --no-create %{_datadir}/icons/hicolor ||:
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
+
 %post devel
 touch --no-create %{_datadir}/icons/hicolor ||:
 
@@ -941,6 +960,15 @@ fi
 %dir %{_qt4_plugindir}/sqldrivers/
 %dir %{_qt4_translationdir}/
 
+%files assistant
+%defattr(-,root,root,-)
+%if "%{_qt4_bindir}" != "%{_bindir}"
+%{_bindir}/assistant*
+%endif
+%{_qt4_bindir}/assistant*
+%{_datadir}/applications/*assistant.desktop
+%{_datadir}/icons/hicolor/*/apps/assistant*
+
 %files config
 %defattr(-,root,root,-)
 %if "%{_qt4_bindir}" != "%{_bindir}"
@@ -959,6 +987,10 @@ fi
 %{_datadir}/applications/*qtdemo.desktop
 %{_qt4_demosdir}/
 %endif
+
+%files designer-plugin-phonon
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/designer/libphononwidgets.so
 
 %files devel -f qt-devel.lang
 %defattr(-,root,root,-)
@@ -1055,9 +1087,6 @@ fi
 %exclude %{_qt4_docdir}/qch/linguist.qch
 %{_qt4_docdir}/src/
 #{_qt4_prefix}/doc
-# Qt Assistant (bin moved to -x11)
-%{_datadir}/applications/*assistant.desktop
-%{_datadir}/icons/hicolor/*/apps/assistant*
 %endif
 
 %if 0%{?examples}
@@ -1139,6 +1168,7 @@ fi
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
+%exclude %{_qt4_plugindir}/designer/libphononwidgets.so
 %if 0%{?webkit:1}
 %exclude %{_qt4_plugindir}/designer/libqwebview.so
 %endif
@@ -1147,17 +1177,21 @@ fi
 %exclude %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 %endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
-%{_bindir}/assistant*
 %{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qmlviewer
 %endif
-%{_qt4_bindir}/assistant*
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
 %{_qt4_bindir}/qmlviewer
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 
 %changelog
+* Wed Feb 09 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-15
+- -assistant subpkg (#660287)
+- -config drop Obsoletes: qt-x11 (avoid/workaround #674326)
+- -config unconditionally drop NoDisplay (since we're dropping the Obsoletes too)
+- -designer-plugin-phonon subpkg (#672088)
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.7.1-14
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
