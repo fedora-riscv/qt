@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -143,6 +143,9 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
+## make -sqlite subpkg or not?
+## keeping the option around *very* short-term, in case we change our minds -- Rex
+#define sqlite_pkg 1 
 %define tds -plugin-sql-tds
 %define phonon -phonon
 %define phonon_backend -phonon-backend
@@ -227,6 +230,14 @@ BuildRequires: unixODBC-devel
 BuildRequires: sqlite-devel
 %endif
 
+%if ! 0%{?sqlite_pkg}
+Provides:  qt4-sqlite = %{version}-%{release}
+%{?_isa:Provides: qt4-sqlite%{?_isa} = %{version}-%{release}}
+Obsoletes: qt-sqlite < 1:4.7.1-15
+Provides:  qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release} 
+%{?_isa:Provides: qt-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}}
+%endif
+
 %if "%{?tds}" != "-no-sql-tds"
 BuildRequires: freetds-devel
 %endif
@@ -254,9 +265,9 @@ Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
 %package assistant
 Summary: Documentation browser for Qt 4
 Group: Documentation
-%if 0%{?sqlite:1}
+#if 0%{?sqlite_pkg:1}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-%endif
+#endif
 Provides: qt4-assistant = %{version}-%{release}
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description assistant
@@ -310,6 +321,9 @@ Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-designer-plugin-phonon%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
+#if 0%{?sqlite_pkg:1}
+Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+#endif
 Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
@@ -960,6 +974,12 @@ fi
 %dir %{_qt4_plugindir}/sqldrivers/
 %dir %{_qt4_translationdir}/
 
+%if 0%{?sqlite_pkg:1}
+%files sqlite
+%defattr(-,root,root,-)
+%endif
+%{_qt4_plugindir}/sqldrivers/libqsqlite*
+
 %files assistant
 %defattr(-,root,root,-)
 %if "%{_qt4_bindir}" != "%{_bindir}"
@@ -1113,12 +1133,6 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqlpsql*
 %endif
 
-%if "%{?sqlite}" == "-plugin-sql-sqlite"
-%files sqlite
-%defattr(-,root,root,-)
-%{_qt4_plugindir}/sqldrivers/libqsqlite*
-%endif
-
 %if "%{?tds}" == "-plugin-sql-tds"
 %files tds
 %defattr(-,root,root,-)
@@ -1186,6 +1200,9 @@ fi
 
 
 %changelog
+* Tue Feb 15 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-16
+- drop -sqlite subpkg, move into main (#677418) 
+
 * Wed Feb 09 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-15
 - -assistant subpkg (#660287)
 - -config drop Obsoletes: qt-x11 (avoid/workaround #674326)
