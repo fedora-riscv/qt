@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -233,7 +233,7 @@ BuildRequires: sqlite-devel
 %if ! 0%{?sqlite_pkg}
 Provides:  qt4-sqlite = %{version}-%{release}
 %{?_isa:Provides: qt4-sqlite%{?_isa} = %{version}-%{release}}
-Obsoletes: qt-sqlite < 1:4.7.1-15
+Obsoletes: qt-sqlite < 1:4.7.1-16
 Provides:  qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release} 
 %{?_isa:Provides: qt-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}}
 %endif
@@ -1200,6 +1200,9 @@ fi
 
 
 %changelog
+* Wed Feb 16 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-17
+- Obsoletes: qt-sqlite < 1:4.7.1-16
+
 * Tue Feb 15 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-16
 - drop -sqlite subpkg, move into main (#677418) 
 
