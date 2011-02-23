@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.1
-Release: 17%{?dist}
+Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -104,6 +104,11 @@ Patch102: qt-everywhere-opensource-4.7.1-QTBUG-15857-2.patch
 
 # qsortfilterproxymodel merge, http://qt.gitorious.org/qt/qt/merge_requests/934
 Patch103: qt-everywhere-opensource-src-4.7.1-qsortfilterproxymodel_merge934.patch
+# support -webkit-debug
+Patch104: http://qt.gitorious.org/qt/qt/commit/9e5a1b618ea7bf579c7b2d66a8844d606405bc6d.patch
+# followup adding support to webkit/JavaScriptCore too
+# UPSTREAM ME
+Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -158,7 +163,7 @@ Source31: hi48-app-qt4-logo.png
 %define phonon_version 4.3.80
 %define phonon_version_major 4.3
 %define phonon_release 1
-%define webkit -webkit
+%define webkit -webkit-debug
 %define gtkstyle -gtkstyle
 %define dbus -dbus-linked
 
@@ -506,6 +511,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch101 -p1 -b .qtextcursor-crash
 %patch102 -p1 -b .QTBUG-15857-2
 %patch103 -p1 -b .qsortfilterproxymodel_merge934
+%patch104 -p1 -b .webkit_debug
+%patch105 -p1 -b .webkit_debug_javascriptcore
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1200,6 +1207,9 @@ fi
 
 
 %changelog
+* Wed Feb 23 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-18
+- libQtWebKit.so has no debug info (#667175)
+
 * Wed Feb 16 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-17
 - Obsoletes: qt-sqlite < 1:4.7.1-16
 
