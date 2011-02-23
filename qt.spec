@@ -13,7 +13,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.6.3
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: LGPLv2 with exceptions or GPLv3 with exceptions
@@ -68,6 +68,15 @@ Patch56: qt-everywhere-opensource-src-4.6.2-webkit-s390x.patch
 Patch57: qt-everywhere-opensource-src-4.6.2-webkit-sparc64.patch
 # qtwebkit to search nspluginwrapper paths too
 Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
+# indic incorrect rendering
+Patch59: qt-4.6.3-bn-rendering-bz562049.patch
+Patch60: qt-4.6.3-bn-rendering-bz562058.patch
+Patch61: qt-4.6.3-indic-rendering-bz631732.patch
+Patch62: qt-4.6.3-indic-rendering-bz636399.patch
+# fix 24bit color issue
+Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
+# fix QTreeView crash triggered by KPackageKit (patch by David Faure)
+Patch65: qt-everywhere-opensource-src-4.7.1-qtreeview-kpackagekit-crash.patch
 
 # upstream or security patches
 # https://bugs.webkit.org/show_bug.cgi?id=40567
@@ -450,6 +459,12 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch56 -p1 -b .typecast_s390x
 %patch57 -p1 -b .typecast_sparc64
 %patch58 -p1 -b .qtwebkit_pluginpath
+%patch59 -p1 -b .bn-rendering-bz562049
+%patch60 -p1 -b .bn-rendering-bz562058
+%patch61 -p1 -b .indic-rendering-bz631732
+%patch62 -p1 -b .indic-rendering-bz636399
+%patch63 -p1 -b .bpp24
+%patch65 -p1 -b .qtreeview-kpackagekit-crash
 
 # upstream patches
 %patch100 -p1 -b .qtwebkit_gtk_init
@@ -1088,6 +1103,15 @@ fi
 
 
 %changelog
+* Wed Feb 23 2011 Rex Dieter <rdieter@fedoraproject.org> 4.6.3-10
+- patch to fix the color issue in 24bit mode (cirrus driver)
+- add some more NULL checks to the glib_eventloop_nullcheck patch (#622164)
+- fix QTreeView crash triggered by KPackageKit (patch by David Faure)
+- bn-IN Incorrect rendering (#562049)
+- bn_IN init feature is not applied properly (#562058)
+- indic invalid syllable's are not recognized properly (631732)
+- oriya script open type features are not applied properly (#636399)
+
 * Thu Sep 30 2010 Rex Dieter <rdieter@fedoraproject.org> - 4.6.3-9
 - Wrong Cursor when widget become native on X11 (QTBUG-6185)
 
