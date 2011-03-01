@@ -17,7 +17,7 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.7.1
+Version: 4.7.2
 Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
@@ -92,21 +92,7 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 Patch65: qt-everywhere-opensource-src-4.7.1-qtreeview-kpackagekit-crash.patch
 
 # upstream patches
-# Reordering of Malayalam Rakar not working properly
-Patch100: qt-everywhere-opensource-src-4.7.1-ml_IN-bz528303.patch
-
-# fix QTextCursor crash in Lokalize and Psi (QTBUG-15857, kde#249373, #660028)
-# http://qt.gitorious.org/qt/qt/commit/6ae84f1183e91c910ca92a55e37f8254ace805c0
-Patch101: qt-everywhere-opensource-src-4.7.1-qtextcursor-crash.patch
-# followup for regressions
-# http://qt.gitorious.org/qt/qt/commit/34c297faca93e1286573b2a01127e4e7af00aff2.patch
-Patch102: qt-everywhere-opensource-4.7.1-QTBUG-15857-2.patch
-
-# qsortfilterproxymodel merge, http://qt.gitorious.org/qt/qt/merge_requests/934
-Patch103: qt-everywhere-opensource-src-4.7.1-qsortfilterproxymodel_merge934.patch
-# support -webkit-debug
-Patch104: http://qt.gitorious.org/qt/qt/commit/9e5a1b618ea7bf579c7b2d66a8844d606405bc6d.patch
-# followup adding support to webkit/JavaScriptCore too
+# adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
 
@@ -507,11 +493,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 
 # upstream patches
-%patch100 -p1 -b .ml_IN-rendering
-%patch101 -p1 -b .qtextcursor-crash
-%patch102 -p1 -b .QTBUG-15857-2
-%patch103 -p1 -b .qsortfilterproxymodel_merge934
-%patch104 -p1 -b .webkit_debug
 %patch105 -p1 -b .webkit_debug_javascriptcore
 
 # kde-qt branch
@@ -1207,6 +1188,9 @@ fi
 
 
 %changelog
+* Tue Mar 01 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.2-1
+- 4.7.2
+
 * Wed Feb 23 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.1-18
 - libQtWebKit.so has no debug info (#667175)
 
