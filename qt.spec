@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 18%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -57,7 +57,7 @@ Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 
 # remove dependency of webkit in assistant
-Patch24: qt-everywhere-opensource-src-4.7.1-webkit.patch
+Patch24: qt-everywhere-opensource-src-4.7.1-assistant_no_webkit.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -98,7 +98,6 @@ Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
-Patch204: 0004-This-patch-adds-support-for-using-isystem-to-allow-p.patch
 Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
 Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 
@@ -476,7 +475,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
 ## make -assistant subpkg instead (#660287#9)
-#patch24 -p1 -b .webkit
+#patch24 -p1 -b .assistant_no_webkit
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -498,7 +497,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 # kde-qt branch
 %if 0%{?kde_qt}
 %patch202 -p1 -b .kde-qt-0002
-%patch204 -p1 -b .kde-qt-0004
 %patch205 -p1 -b .kde-qt-0005
 %patch212 -p1 -b .kde-qt-0012
 %endif
