@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -95,6 +95,8 @@ Patch65: qt-everywhere-opensource-src-4.7.1-qtreeview-kpackagekit-crash.patch
 # adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
+# Fix QNetworkConfigurationManager crash due to null private pointer. (QTBUG-17305, rhbz#682656)
+Patch106: http://qt.gitorious.org/qt/qt/commit/4d3b9aa83cf7f6d9f9b88d9936e5980629daac2a.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -493,6 +495,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
+%patch106 -p1 -b .QNetworkConfigurationManager-null-pointer
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1186,6 +1189,9 @@ fi
 
 
 %changelog
+* Mon Mar 07 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.2-2
+- Fix QNetworkConfigurationManager crash due to null private pointer (#682656)
+
 * Tue Mar 01 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.2-1
 - 4.7.2
 
