@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -150,7 +150,12 @@ Source31: hi48-app-qt4-logo.png
 %define phonon_version 4.3.80
 %define phonon_version_major 4.3
 %define phonon_release 1
+%ifarch s390
+# workaround memory exhaustion during linking of libQtWebKit on s390
+%define webkit -webkit
+%else
 %define webkit -webkit-debug
+%endif
 %define gtkstyle -gtkstyle
 %define dbus -dbus-linked
 
@@ -1189,6 +1194,9 @@ fi
 
 
 %changelog
+* Fri Mar 11 2011 Dan Horák <dan[at]danny.cz> 1:4.7.2-3
+- workaround memory exhaustion during linking of libQtWebKit on s390
+
 * Mon Mar 07 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.2-2
 - Fix QNetworkConfigurationManager crash due to null private pointer (#682656)
 
