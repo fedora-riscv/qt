@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1194,6 +1194,9 @@ fi
 
 
 %changelog
+* Tue Mar 22 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.2-4
+- rebuild (mysql)
+
 * Fri Mar 11 2011 Dan Horák <dan[at]danny.cz> 1:4.7.2-3
 - workaround memory exhaustion during linking of libQtWebKit on s390
 
