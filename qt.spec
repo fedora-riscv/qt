@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -106,6 +106,9 @@ Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 # security patches
 Patch300: qt-everywhere-opensource-src-4.7.0-CVE-2010-1822-crash-svg-image.patch
 Patch301: qt-ssl-QTBUG-18338.patch
+# http://qt.gitorious.org/+qt-developers/qt/staging/commit/b87528a71b66e786c11804d7b79e408aae612748
+# followup to 301
+Patch302: qt-ssl-QTBUG-18338-2.patch
 
 # gstreamer logos
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
@@ -509,6 +512,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 # security fixes
 %patch300 -p1 -b .CVE-2010-1822-crash-svg-image
 %patch301 -p1 -b .ssl-QTBUG-18338
+%patch302 -p1 -b .ssl-QTBUG-18338-2
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1189,6 +1193,9 @@ fi
 
 
 %changelog
+* Fri Mar 25 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-7
+- followup patch for QTBUG-18338, blacklist fraudulent SSL certifcates
+
 * Fri Mar 25 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-6
 - drop qt-designer-plugin-phonon
 
