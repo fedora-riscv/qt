@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -105,6 +105,7 @@ Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 
 # security patches
 Patch300: qt-everywhere-opensource-src-4.7.0-CVE-2010-1822-crash-svg-image.patch
+Patch301: qt-ssl-QTBUG-18338.patch
 
 # gstreamer logos
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
@@ -511,6 +512,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # security fixes
 %patch300 -p1 -b .CVE-2010-1822-crash-svg-image
+%patch301 -p1 -b .ssl-QTBUG-18338
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1194,6 +1196,9 @@ fi
 
 
 %changelog
+* Fri Mar 25 2011 Than Ngo <than@redhat.com> - 1:4.7.2-5
+- apply patch to fix QTBUG-18338, blacklist fraudulent SSL certifcates
+
 * Tue Mar 22 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.2-4
 - rebuild (mysql)
 
