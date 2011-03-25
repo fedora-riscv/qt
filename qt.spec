@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -291,13 +291,6 @@ Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description demos
 %{summary}.
 
-%package designer-plugin-phonon
-Summary: Qt Designer plugin for phonon
-Group: System Environment/Libraries
-Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-%description designer-plugin-phonon
-%{summary}.
-
 %define docs 1
 %package doc
 Summary: API documentation for %{name}
@@ -317,7 +310,6 @@ Qt Assistant
 Summary: Development files for the Qt toolkit
 Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-designer-plugin-phonon%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
 #if 0%{?sqlite_pkg:1}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -458,11 +450,15 @@ Group: System Environment/Libraries
 %if 0%{?phonon:1} && 0%{?phonon_internal}
 Requires:  phonon-backend%{?_isa} >= %{phonon_version_major} 
 %endif
+# include Obsoletes here to be safe(r) bootstrap-wise with phonon-4.5.0
+# that will Provides: it -- Rex
+Obsoletes: qt-designer-plugin-phonon < 1:4.7.2-6
 %if 0%{?phonon_internal}
 Obsoletes: phonon < 4.3.1-100
 Provides:  phonon = %{phonon_version}-%{phonon_release}
 Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
 Provides:  qt4-phonon = %{version}-%{release}
+Provides:  %{name}-designer-plugin-phonon = %{?epoch:%{epoch}:}%{version}-%{release} 
 %endif
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
@@ -820,6 +816,7 @@ rm -fv  %{buildroot}%{_includedir}/phonon/*.h
 rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
 #rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
 rm -fv %{buildroot}%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
+rm -fv %{buildroot}%{_qt4_plugindir}/designer/libphononwidgets.so
 %endif
 
 #if "%{?phonon_backend}" == "-phonon-backend"
@@ -1004,10 +1001,6 @@ fi
 %{_qt4_demosdir}/
 %endif
 
-%files designer-plugin-phonon
-%defattr(-,root,root,-)
-%{_qt4_plugindir}/designer/libphononwidgets.so
-
 %files devel -f qt-devel.lang
 %defattr(-,root,root,-)
 %{_qt4_bindir}/lconvert
@@ -1161,6 +1154,7 @@ fi
 %{_qt4_importdir}/Qt/
 %if 0%{?phonon_internal}
 %{_qt4_libdir}/libphonon.so.4*
+%{_qt4_plugindir}/designer/libphononwidgets.so
 %dir %{_datadir}/kde4/services/phononbackends/
 %{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
 %endif
@@ -1178,7 +1172,6 @@ fi
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
-%exclude %{_qt4_plugindir}/designer/libphononwidgets.so
 %if 0%{?webkit:1}
 %exclude %{_qt4_plugindir}/designer/libqwebview.so
 %endif
@@ -1196,6 +1189,9 @@ fi
 
 
 %changelog
+* Fri Mar 25 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-6
+- drop qt-designer-plugin-phonon
+
 * Fri Mar 25 2011 Than Ngo <than@redhat.com> - 1:4.7.2-5
 - apply patch to fix QTBUG-18338, blacklist fraudulent SSL certifcates
 
