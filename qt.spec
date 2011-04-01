@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -195,6 +195,7 @@ BuildRequires: NetworkManager-devel
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig
 BuildRequires: pulseaudio-libs-devel
+BuildRequires: rsync
 BuildRequires: zlib-devel
 
 ## In theory, should be as simple as:
@@ -342,6 +343,15 @@ This package contains the files necessary to develop
 applications using the Qt toolkit.  Includes:
 Qt Linguist
 
+# make a devel private subpkg or not?
+%define private 1
+%package devel-private
+Summary: Private headers for Qt toolkit 
+Group: Development/Libraries
+Requires: %{name}-devel = %{?epoch:%{epoch}:}%{version}-%{release}
+BuildArch: noarch
+%description devel-private
+%{summary}.
 
 %define examples 1
 %package examples
@@ -637,6 +647,15 @@ LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 rm -rf %{buildroot}
 
 make install INSTALL_ROOT=%{buildroot}
+
+%if 0%{?private}
+# install private headers
+# using rsync -R as easy way to preserve relative path names
+rsync -aR \
+  include/Qt{Core,Declarative,Gui,Script}/private \
+  src/{corelib,declarative,gui,script}/*/*_p.h \
+  %{buildroot}%{_qt4_prefix}/
+%endif
 
 # Add desktop file(s)
 desktop-file-install \
@@ -1090,6 +1109,14 @@ fi
 %exclude %{_qt4_libdir}/libQtWebKit_debug.so
 %exclude %{_libdir}/pkgconfig/QtWebKit.pc
 %endif
+%if 0%{?private}
+%exclude %{_qt4_headerdir}/*/private/
+
+%files devel-private
+%defattr(-,root,root,-)
+%{_qt4_headerdir}/*/private/
+%{_qt4_headerdir}/../src/*
+%endif
 
 %if 0%{?docs}
 %files doc
@@ -1193,6 +1220,9 @@ fi
 
 
 %changelog
+* Fri Apr 01 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-8
+- qt-creator/QmlDesigner requires qt private headers (#657498)
+
 * Fri Mar 25 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-7
 - followup patch for QTBUG-18338, blacklist fraudulent SSL certifcates
 
