@@ -651,10 +651,11 @@ make install INSTALL_ROOT=%{buildroot}
 %if 0%{?private}
 # install private headers
 # using rsync -R as easy way to preserve relative path names
+# we're cheating and using %%_prefix (/usr) directly here
 rsync -aR \
   include/Qt{Core,Declarative,Gui,Script}/private \
   src/{corelib,declarative,gui,script}/*/*_p.h \
-  %{buildroot}%{_qt4_prefix}/
+  %{buildroot}%{_prefix}/
 %endif
 
 # Add desktop file(s)
