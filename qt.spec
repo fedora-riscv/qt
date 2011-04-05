@@ -348,6 +348,7 @@ Qt Linguist
 %package devel-private
 Summary: Private headers for Qt toolkit 
 Group: Development/Libraries
+Provides: qt4-devel-private = %{version}-%{release}
 Requires: %{name}-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 BuildArch: noarch
 %description devel-private
