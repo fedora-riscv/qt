@@ -1123,7 +1123,7 @@ fi
 %{_qt4_headerdir}/../src/corelib/
 %{_qt4_headerdir}/../src/declarative/
 %{_qt4_headerdir}/../src/gui/
-%{_qt4_headerdir}/../src/script}
+%{_qt4_headerdir}/../src/script/
 %endif
 
 %if 0%{?docs}
