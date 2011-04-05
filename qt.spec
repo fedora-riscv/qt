@@ -1222,7 +1222,7 @@ fi
 
 %changelog
 * Fri Apr 01 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-8
-- qt-creator/QmlDesigner requires qt private headers (#657498)
+- -devel-private: qt-creator/QmlDesigner requires qt private headers (#657498)
 
 * Fri Mar 25 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-7
 - followup patch for QTBUG-18338, blacklist fraudulent SSL certifcates
