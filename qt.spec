@@ -1115,8 +1115,14 @@ fi
 
 %files devel-private
 %defattr(-,root,root,-)
-%{_qt4_headerdir}/*/private/
-%{_qt4_headerdir}/../src/*
+%{_qt4_headerdir}/QtCore/private/
+%{_qt4_headerdir}/QtDeclarative/private/
+%{_qt4_headerdir}/QtGui/private/
+%{_qt4_headerdir}/QtScript/private/
+%{_qt4_headerdir}/../src/corelib/
+%{_qt4_headerdir}/../src/declarative/
+%{_qt4_headerdir}/../src/gui/
+%{_qt4_headerdir}/../src/script}
 %endif
 
 %if 0%{?docs}
