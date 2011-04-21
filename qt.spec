@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.2
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1102,6 +1102,7 @@ fi
 %{_datadir}/icons/hicolor/*/apps/linguist*
 %{?docs:%{_qt4_docdir}/qch/linguist.qch}
 %if 0%{?webkit:1}
+%exclude %{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 %exclude %{_qt4_headerdir}/Qt/QtWebKit
 %exclude %{_qt4_headerdir}/Qt/qgraphicswebview.h
 %exclude %{_qt4_headerdir}/Qt/qweb*.h
@@ -1176,6 +1177,7 @@ fi
 
 %files webkit-devel
 %defattr(-,root,root,-)
+%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 %{_qt4_headerdir}/Qt/QtWebKit
 %{_qt4_headerdir}/Qt/qgraphicswebview.h
 %{_qt4_headerdir}/Qt/qweb*.h
@@ -1228,6 +1230,9 @@ fi
 
 
 %changelog
+* Thu Apr 21 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-9
+- -webkit-devel: move qt_webkit_version.pri here
+
 * Fri Apr 01 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-8
 - -devel-private: qt-creator/QmlDesigner requires qt private headers (#657498)
 
