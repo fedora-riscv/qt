@@ -17,8 +17,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.7.2
-Release: 9%{?dist}
+Version: 4.7.3
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1230,6 +1230,9 @@ fi
 
 
 %changelog
+* Thu May 05 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.3-1
+- 4.7.3
+
 * Thu Apr 21 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.2-9
 - -webkit-devel: move qt_webkit_version.pri here
 
