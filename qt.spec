@@ -862,8 +862,8 @@ rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 rm -fv %{buildroot}%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qgraphicswebview.h
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qweb*.h
-rm -fv %{buildroot}%{_qt4_headerdir}/QtWebKit/
-rm -fv %{buildroot}%{_qt4_importdir}/QtWebKit/
+rm -frv %{buildroot}%{_qt4_headerdir}/QtWebKit/
+rm -frv %{buildroot}%{_qt4_importdir}/QtWebKit/
 rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit.*
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
 %endif
