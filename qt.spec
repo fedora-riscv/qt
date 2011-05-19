@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -150,6 +150,12 @@ Source31: hi48-app-qt4-logo.png
 %define phonon_version 4.3.80
 %define phonon_version_major 4.3
 %define phonon_release 1
+%if 0%{?fedora} && 0%{?fedora} < 16
+# HACK: omit webkit from packaging
+# TODO: fixup build process to not build it either (but that means making use
+# of system qtwebkit where needed (like assistant, libqwebview designer plugin, ...)
+%define webkit_packaged 1
+%endif
 %ifarch s390
 # workaround memory exhaustion during linking of libQtWebKit on s390
 %define webkit -webkit
@@ -424,7 +430,7 @@ Provides: qt4-tds = %{version}-%{release}
 %description tds
 %{summary}.
 
-%if 0%{?webkit:1}
+%if 0%{?webkit_packaged}
 %package webkit
 Summary: Qt WebKit library
 Group: System Environment/Libraries
@@ -852,6 +858,16 @@ rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 %endif
 
+%if ! 0%{?webkit_packaged}
+rm -fv %{buildroot}%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
+rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qgraphicswebview.h
+rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qweb*.h
+rm -fv %{buildroot}%{_qt4_headerdir}/QtWebKit/
+rm -fv %{buildroot}%{_qt4_importdir}/QtWebKit/
+rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit.*
+rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
+%endif
+
 # remove qvfb translations, we don't ship qvfb
 rm -fv  %{buildroot}%{_qt4_translationdir}/qvfb_*.qm
 
@@ -899,7 +915,7 @@ touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
-%if 0%{?webkit:1}
+%if 0%{?webkit_packaged} 
 %post webkit -p /sbin/ldconfig
 
 %postun webkit -p /sbin/ldconfig
@@ -1095,7 +1111,7 @@ fi
 %{_datadir}/applications/*linguist.desktop
 %{_datadir}/icons/hicolor/*/apps/linguist*
 %{?docs:%{_qt4_docdir}/qch/linguist.qch}
-%if 0%{?webkit:1}
+%if 0%{?webkit_packaged}
 %exclude %{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 %exclude %{_qt4_headerdir}/Qt/QtWebKit
 %exclude %{_qt4_headerdir}/Qt/qgraphicswebview.h
@@ -1162,11 +1178,12 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
-%if 0%{?webkit:1}
+%if 0%{?webkit_packaged}
 %files webkit
 %defattr(-,root,root,-)
 %{_qt4_libdir}/libQtWebKit.so.4*
 %{_qt4_importdir}/QtWebKit/
+# FIXME ?  what do with this in webkit_packaged=0 case?  -- Rex
 %{_qt4_plugindir}/designer/libqwebview.so
 
 %files webkit-devel
@@ -1207,7 +1224,7 @@ fi
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
-%if 0%{?webkit:1}
+%if 0%{?webkit_packaged}
 %exclude %{_qt4_plugindir}/designer/libqwebview.so
 %endif
 #if "%{?phonon_backend}" == "-phonon-backend"
@@ -1224,6 +1241,9 @@ fi
 
 
 %changelog
+* Thu May 19 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-2
+- omit bundled webkit on f16+ (in favor of separately packaged qtwebkit)
+
 * Thu May 05 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.7.3-1
 - 4.7.3
 
