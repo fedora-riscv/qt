@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -865,6 +865,7 @@ rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qweb*.h
 rm -frv %{buildroot}%{_qt4_headerdir}/QtWebKit/
 rm -frv %{buildroot}%{_qt4_importdir}/QtWebKit/
 rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit.*
+rm -fv %{buildroot}%{_qt4_plugindir}/designer/libqwebview.so
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
 %endif
 
@@ -1241,6 +1242,9 @@ fi
 
 
 %changelog
+* Thu May 19 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-3
+- omit %%{_qt4_plugindir}/designer/libqwebview.so too
+
 * Thu May 19 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-2
 - omit bundled webkit on f16+ (in favor of separately packaged qtwebkit)
 
