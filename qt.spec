@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -45,9 +45,8 @@ Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
-# include kde4 plugin path, http://bugzilla.redhat.com/498809
-# omit for now, (seems?) causes unwelcome side-effects -- Rex
-Patch16: qt-everywhere-opensource-src-4.7.0-beta2-kde4_plugins.patch 
+# include multilib plugin paths, http://bugzilla.redhat.com/704840
+Patch16: qt-everywhere-opensource-src-4.7.3-multilib_qt_plugin_path.patch 
 
 # phonon gstreamer services
 Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch 
@@ -491,7 +490,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %setup -q -n qt-everywhere-opensource-src-%{version}
 
 %patch15 -p1 -b .enable_ft_lcdfilter
-#patch16 -p1 -b .kde4_plugins
+%patch16 -p1 -b .multilib_qt_plugin_path
 %patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
 ## make -assistant subpkg instead (#660287#9)
@@ -1242,6 +1241,9 @@ fi
 
 
 %changelog
+* Sat May 21 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-4
+- multilib QT_PLUGIN_PATH (#704840)
+
 * Thu May 19 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-3
 - omit %%{_qt4_plugindir}/designer/libqwebview.so too
 

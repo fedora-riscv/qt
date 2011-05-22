@@ -1,0 +1,19 @@
+diff -up qt-everywhere-opensource-src-4.7.3/src/corelib/kernel/qcoreapplication.cpp.qt_plugin_path qt-everywhere-opensource-src-4.7.3/src/corelib/kernel/qcoreapplication.cpp
+--- qt-everywhere-opensource-src-4.7.3/src/corelib/kernel/qcoreapplication.cpp.qt_plugin_path	2011-03-30 00:19:08.000000000 -0500
++++ qt-everywhere-opensource-src-4.7.3/src/corelib/kernel/qcoreapplication.cpp	2011-05-21 20:22:45.537241160 -0500
+@@ -2262,6 +2262,15 @@ QStringList QCoreApplication::libraryPat
+             if (!app_libpaths->contains(installPathPlugins))
+                 app_libpaths->append(installPathPlugins);
+         }
++
++        // hack in support for multilib qt4 plugin path -- Rex
++        QString qt4_multilibPathPlugins = QLatin1String("/usr/lib/qt4/plugins");
++        if (QFile::exists(qt4_multilibPathPlugins)) {
++            // Make sure we convert from backslashes to slashes.
++            // qt4_multilibPathPlugins = QDir(qt4_multilibPathPlugins).canonicalPath();
++            if (!app_libpaths->contains(qt4_multilibPathPlugins))
++                app_libpaths->append(qt4_multilibPathPlugins);
++        }
+ #endif
+ 
+         // If QCoreApplication is not yet instantiated,
