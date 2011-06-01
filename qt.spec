@@ -45,10 +45,6 @@ Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
-# include kde4 plugin path, http://bugzilla.redhat.com/498809
-# omit for now, (seems?) causes unwelcome side-effects -- Rex
-Patch16: qt-everywhere-opensource-src-4.7.0-beta2-kde4_plugins.patch 
-
 # phonon gstreamer services
 Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch 
 
@@ -483,7 +479,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %setup -q -n qt-everywhere-opensource-src-%{version}-tp
 
 %patch15 -p1 -b .enable_ft_lcdfilter
-#patch16 -p1 -b .kde4_plugins
 %patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
 ## make -assistant subpkg instead (#660287#9)
