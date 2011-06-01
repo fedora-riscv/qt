@@ -129,15 +129,6 @@ Source31: hi48-app-qt4-logo.png
 %define tds -plugin-sql-tds
 %define phonon -phonon
 %define phonon_backend -phonon-backend
-%if 0%{?rhel}
-# if building with -phonon, define to internal version (ie, Obsolete external phonon)
-%define phonon_internal 1
-# if -phonon-backend, include in packaging (else it's omitted)
-%define phonon_backend_packaged 1
-%endif
-%define phonon_version 4.3.80
-%define phonon_version_major 4.3
-%define phonon_release 1
 %if 0%{?fedora} && 0%{?fedora} < 16
 # HACK: omit webkit from packaging
 # TODO: fixup build process to not build it either (but that means making use
@@ -244,16 +235,6 @@ Qt is a software toolkit for developing applications.
 This package contains base tools, like string, xml, and network
 handling.
 
-%package -n phonon-backend-gstreamer
-Summary: Gstreamer phonon backend
-Group:   Applications/Multimedia
-Requires: phonon%{?_isa} >= %{phonon_version_major} 
-Provides: phonon-backend%{?_isa} = %{phonon_version}-%{phonon_release}
-Obsoletes: %{name}-backend-gst < 4.2.0-4
-Provides:  %{name}-backend-gst = %{phonon_version}-%{phonon_release}
-%description -n phonon-backend-gstreamer
-%{summary}.
-
 %package assistant
 Summary: Documentation browser for Qt 4
 Group: Documentation
@@ -314,10 +295,6 @@ Requires: libjpeg-devel
 Requires: pkgconfig
 %if 0%{?phonon:1}
 Provides: qt4-phonon-devel = %{version}-%{release}
-%endif
-%if 0%{?phonon_internal}
-Obsoletes: phonon-devel < 4.3.1-100
-Provides:  phonon-devel = %{phonon_version}-%{phonon_release}
 %endif
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
@@ -451,19 +428,9 @@ Provides:  WebKit-qt = 1.0.0-1
 %package x11
 Summary: Qt GUI-related libraries
 Group: System Environment/Libraries
-%if 0%{?phonon:1} && 0%{?phonon_internal}
-Requires:  phonon-backend%{?_isa} >= %{phonon_version_major} 
-%endif
 # include Obsoletes here to be safe(r) bootstrap-wise with phonon-4.5.0
 # that will Provides: it -- Rex
 Obsoletes: qt-designer-plugin-phonon < 1:4.7.2-6
-%if 0%{?phonon_internal}
-Obsoletes: phonon < 4.3.1-100
-Provides:  phonon = %{phonon_version}-%{phonon_release}
-Provides:  phonon%{?_isa} = %{phonon_version}-%{phonon_release}
-Provides:  qt4-phonon = %{version}-%{release}
-Provides:  %{name}-designer-plugin-phonon = %{?epoch:%{epoch}:}%{version}-%{release} 
-%endif
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
@@ -806,13 +773,7 @@ mkdir %{buildroot}%{_qt4_plugindir}/crypto
 mkdir %{buildroot}%{_qt4_plugindir}/gui_platform
 mkdir %{buildroot}%{_qt4_plugindir}/styles
 
-%if 0%{?phonon_internal}
-mkdir -p %{buildroot}%{_qt4_plugindir}/phonon_backend
-# needed by qtscriptgenerator 
-pushd %{buildroot}%{_qt4_headerdir}
-ln -s phonon Phonon
-popd
-%else
+## nuke bundled phonon bits
 rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
 rm -rfv %{buildroot}%{_libdir}/pkgconfig/phonon.pc
 # contents slightly different between phonon-4.3.1 and qt-4.5.0
@@ -823,21 +784,9 @@ rm -rfv %{buildroot}%{_qt4_headerdir}/phonon*
 #rm -rfv %{buildroot}%{_qt4_headerdir}/Qt/phonon*
 rm -fv %{buildroot}%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
 rm -fv %{buildroot}%{_qt4_plugindir}/designer/libphononwidgets.so
-%endif
-
-#if "%{?phonon_backend}" == "-phonon-backend"
-%if 0%{?phonon_backend_packaged}
-install -D -m 0644 %{SOURCE10} %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/phonon-gstreamer.svg
-install -D -m 0644 %{SOURCE11} %{buildroot}%{_datadir}/icons/hicolor/16x16/apps/phonon-gstreamer.png
-install -D -m 0644 %{SOURCE12} %{buildroot}%{_datadir}/icons/hicolor/22x22/apps/phonon-gstreamer.png
-install -D -m 0644 %{SOURCE13} %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/phonon-gstreamer.png
-install -D -m 0644 %{SOURCE14} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/phonon-gstreamer.png
-install -D -m 0644 %{SOURCE15} %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/phonon-gstreamer.png
-install -D -m 0644 %{SOURCE16} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/phonon-gstreamer.png
-%else
+# backend
 rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
-%endif
 
 %if ! 0%{?webkit_packaged}
 rm -fv %{buildroot}%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
@@ -916,27 +865,6 @@ if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
-
-#if "%{?phonon_backend}" == "-phonon-backend"
-%if 0%{?phonon_backend_packaged}
-%post -n phonon-backend-gstreamer
-touch --no-create %{_kde4_iconsdir}/hicolor &> /dev/null ||:
-
-%posttrans -n phonon-backend-gstreamer
-gtk-update-icon-cache %{_kde4_iconsdir}/hicolor &> /dev/null ||:
-
-%postun -n phonon-backend-gstreamer
-if [ $1 -eq 0 ] ; then
-  touch --no-create %{_kde4_iconsdir}/hicolor &> /dev/null ||:
-  gtk-update-icon-cache %{_kde4_iconsdir}/hicolor &> /dev/null ||:
-fi
-
-%files -n phonon-backend-gstreamer
-%defattr(-,root,root,-)
-%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
-%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
-%{_datadir}/icons/hicolor/*/apps/phonon-gstreamer.*
-%endif
 
 %files -f qt.lang
 %defattr(-,root,root,-)
@@ -1074,10 +1002,8 @@ fi
 %endif
 %{_qt4_datadir}/q3porting.xml
 %if 0%{?phonon:1}
+## nuke this one too?  -- Rex
 %{_qt4_libdir}/libphonon.prl
-%endif
-%if 0%{?phonon_internal}
-%{_qt4_libdir}/libphonon.so
 %endif
 %{_qt4_libdir}/libQt*.so
 %{_qt4_libdir}/libQtUiTools*.a
@@ -1186,12 +1112,6 @@ fi
 %{_sysconfdir}/rpm/macros.*
 %dir %{_qt4_importdir}/
 %{_qt4_importdir}/Qt/
-%if 0%{?phonon_internal}
-%{_qt4_libdir}/libphonon.so.4*
-%{_qt4_plugindir}/designer/libphononwidgets.so
-%dir %{_datadir}/kde4/services/phononbackends/
-%{_datadir}/dbus-1/interfaces/org.kde.Phonon.AudioOutput.xml
-%endif
 %{_qt4_libdir}/libQt3Support.so.4*
 %{_qt4_libdir}/libQtCLucene.so.4*
 %{_qt4_libdir}/libQtDesigner.so.4*
@@ -1209,10 +1129,6 @@ fi
 %if 0%{?webkit_packaged}
 %exclude %{_qt4_plugindir}/designer/libqwebview.so
 %endif
-#if "%{?phonon_backend}" == "-phonon-backend"
-%if 0%{?phonon_backend_packaged}
-%exclude %{_qt4_plugindir}/phonon_backend/*_gstreamer.so
-%endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qmlviewer
@@ -1225,6 +1141,7 @@ fi
 %changelog
 * Wed May 25 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.8.0-0.1.tp
 - 4.8.0-tp
+- drop phonon_internal, phonon_backend_packaged build options
 
 * Thu May 19 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-3
 - omit %%{_qt4_plugindir}/designer/libqwebview.so too
