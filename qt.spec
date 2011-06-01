@@ -81,6 +81,9 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 # fix QTreeView crash triggered by KPackageKit (patch by David Faure)
 Patch65: qt-everywhere-opensource-src-4.8.0-tp-qtreeview-kpackagekit-crash.patch
 
+# hack around openssl type mismatch wrt SSL_CTX_ctrl (with and without const)
+Patch66: qt-everywhere-opensource-src-4.8.0-tp-openssl.patch
+
 # upstream patches
 # adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
@@ -460,6 +463,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
+%patch66 -p1 -b .ssl
 
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
