@@ -17,14 +17,14 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.7.3
-Release: 3%{?dist}
+Version: 4.8.0
+Release: 0.1.tp%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}-tp.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
@@ -37,7 +37,7 @@ Source4: Trolltech.conf
 Source5: qconfig-multilib.h
 
 # set default QMAKE_CFLAGS_RELEASE
-Patch2: qt-x11-opensource-src-4.2.2-multilib-optflags.patch
+Patch2: qt-everywhere-opensource-src-4.8.0-tp-multilib-optflags.patch
 
 # get rid of timestamp which causes multilib problem
 Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
@@ -76,12 +76,6 @@ Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
 # qtwebkit to search nspluginwrapper paths too
 Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 
-# indic incorrect rendering
-Patch59: qt-4.6.3-bn-rendering-bz562049.patch
-Patch60: qt-4.6.3-bn-rendering-bz562058.patch
-Patch61: qt-4.6.3-indic-rendering-bz631732.patch
-Patch62: qt-4.6.3-indic-rendering-bz636399.patch
-
 # fix 24bit color issue
 Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
@@ -89,14 +83,12 @@ Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 
 # fix QTreeView crash triggered by KPackageKit (patch by David Faure)
-Patch65: qt-everywhere-opensource-src-4.7.1-qtreeview-kpackagekit-crash.patch
+Patch65: qt-everywhere-opensource-src-4.8.0-tp-qtreeview-kpackagekit-crash.patch
 
 # upstream patches
 # adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
-# Fix QNetworkConfigurationManager crash due to null private pointer. (QTBUG-17305, rhbz#682656)
-Patch106: http://qt.gitorious.org/qt/qt/commit/4d3b9aa83cf7f6d9f9b88d9936e5980629daac2a.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -488,7 +480,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-everywhere-opensource-src-%{version}
+%setup -q -n qt-everywhere-opensource-src-%{version}-tp
 
 %patch15 -p1 -b .enable_ft_lcdfilter
 #patch16 -p1 -b .kde4_plugins
@@ -503,17 +495,12 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .s390x
 %patch58 -p1 -b .qtwebkit_pluginpath
-%patch59 -p1 -b .bn-rendering-bz562049
-%patch60 -p1 -b .bn-rendering-bz562058
-%patch61 -p1 -b .indic-rendering-bz631732
-%patch62 -p1 -b .indic-rendering-bz636399
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
-%patch106 -p1 -b .QNetworkConfigurationManager-null-pointer
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -601,7 +588,6 @@ done
   -fontconfig \
   -largefile \
   -gtkstyle \
-  -qt-gif \
   -no-rpath \
   -reduce-relocations \
   -no-separate-debug-info \
@@ -1242,6 +1228,9 @@ fi
 
 
 %changelog
+* Wed May 25 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.8.0-0.1.tp
+- 4.8.0-tp
+
 * Thu May 19 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-3
 - omit %%{_qt4_plugindir}/designer/libqwebview.so too
 
