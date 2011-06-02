@@ -97,15 +97,6 @@ Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 # security patches
 Patch300: qt-everywhere-opensource-src-4.7.0-CVE-2010-1822-crash-svg-image.patch
 
-# gstreamer logos
-Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
-Source11: hi16-phonon-gstreamer.png
-Source12: hi22-phonon-gstreamer.png
-Source13: hi32-phonon-gstreamer.png
-Source14: hi48-phonon-gstreamer.png
-Source15: hi64-phonon-gstreamer.png
-Source16: hi128-phonon-gstreamer.png
-
 # desktop files
 Source20: assistant.desktop
 Source21: designer.desktop
@@ -959,6 +950,7 @@ fi
 %{_qt4_bindir}/pixeltool*
 %{_qt4_bindir}/qdoc3*
 %{_qt4_bindir}/qmake*
+%{_qt4_bindir}/qmlplugindump
 %{_qt4_bindir}/qt3to4
 %{_qt4_bindir}/qttracereplay
 %{_qt4_bindir}/rcc*
@@ -993,6 +985,7 @@ fi
 %endif
 %{_bindir}/qhelpconverter
 %{_bindir}/qhelpgenerator
+%{_bindir}/qmlplugindump
 %{_bindir}/xmlpatterns
 %{_bindir}/xmlpatternsvalidator
 %endif
