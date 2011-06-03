@@ -45,9 +45,6 @@ Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
-# phonon gstreamer services
-Patch19: qt-everywhere-opensource-src-4.7.0-beta2-phonon_servicesfile.patch 
-
 # may be upstreamable, not sure yet
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
@@ -440,7 +437,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %setup -q -n qt-everywhere-opensource-src-%{version}-tp
 
 %patch15 -p1 -b .enable_ft_lcdfilter
-%patch19 -p1 -b .phonon_servicesfile
 %patch23 -p1 -b .glib_eventloop_nullcheck
 ## make -assistant subpkg instead (#660287#9)
 #patch24 -p1 -b .assistant_no_webkit
