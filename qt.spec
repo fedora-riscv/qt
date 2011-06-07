@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -90,6 +90,9 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 
 # fix QTreeView crash triggered by KPackageKit (patch by David Faure)
 Patch65: qt-everywhere-opensource-src-4.7.1-qtreeview-kpackagekit-crash.patch
+
+# # bz#705348, Lohit fonts accidentally disable the bytecode interpreter for Qt
+Patch66: qt-everywhere-opensource-src-4.7.x-bz#705348-fontrendering.patch
 
 # upstream patches
 # adds debug support to webkit/JavaScriptCore
@@ -510,6 +513,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
+%patch66 -p1 -b .bz#705348-fontrendering
 
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
@@ -1242,6 +1246,9 @@ fi
 
 
 %changelog
+* Tue Jun 07 2011 Than Ngo <than@redhat.com> - 1:4.7.3-4
+- bz#705348, Lohit fonts accidentally disable the bytecode interpreter for Qt
+
 * Thu May 19 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-3
 - omit %%{_qt4_plugindir}/designer/libqwebview.so too
 
