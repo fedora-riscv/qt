@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.1.tp%{?dist}
+Release: 0.2.tp%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -85,6 +85,8 @@ Patch66: qt-everywhere-opensource-src-4.8.0-tp-openssl.patch
 # adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
+# bz#705348, per-font autohint fontconfig directives globally disable the bytecode interpreter 
+Patch107: QTBUG-19947-fontconfig-1.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -454,6 +456,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
+%patch107 -p1 -b .QTBUG-19947-fontconfig-1
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1132,6 +1135,9 @@ fi
 
 
 %changelog
+* Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.2.tp
+- fontconfig patch (#705347, QTBUG-19947)
+
 * Wed May 25 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.8.0-0.1.tp
 - 4.8.0-tp
 - drop phonon_internal, phonon_backend_packaged build options
