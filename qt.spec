@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -91,15 +91,14 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 # fix QTreeView crash triggered by KPackageKit (patch by David Faure)
 Patch65: qt-everywhere-opensource-src-4.7.1-qtreeview-kpackagekit-crash.patch
 
-# # bz#705348, Lohit fonts accidentally disable the bytecode interpreter for Qt
-Patch66: qt-everywhere-opensource-src-4.7.x-bz#705348-fontrendering.patch
-
 # upstream patches
 # adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
 # Fix QNetworkConfigurationManager crash due to null private pointer. (QTBUG-17305, rhbz#682656)
 Patch106: http://qt.gitorious.org/qt/qt/commit/4d3b9aa83cf7f6d9f9b88d9936e5980629daac2a.patch
+# bz#705348, per-font autohint fontconfig directives globally disable the bytecode interpreter 
+Patch107: QTBUG-19947-fontconfig-1.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -513,11 +512,12 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
-%patch66 -p1 -b .bz#705348-fontrendering
 
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
 %patch106 -p1 -b .QNetworkConfigurationManager-null-pointer
+%patch107 -p1 -b .QTBUG-19947-fontconfig-1
+
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1246,6 +1246,9 @@ fi
 
 
 %changelog
+* Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-5
+- updated fontconfig patch (#705347, QTBUG-19947)
+
 * Tue Jun 07 2011 Than Ngo <than@redhat.com> - 1:4.7.3-4
 - bz#705348, Lohit fonts accidentally disable the bytecode interpreter for Qt
 

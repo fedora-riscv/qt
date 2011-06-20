@@ -1,14 +1,51 @@
---- a/src/gui/text/qfontdatabase_x11.cpp	
-+++ a/src/gui/text/qfontdatabase_x11.cpp	
-@@ -1547,7 +1547,6 @@ static FcPattern *getFcPattern(const QFontPrivate *fp, int script, const QFontDe
+From d9f1c15f10e1a1d076ea4810e708a4c5419b73d2 Mon Sep 17 00:00:00 2001
+From: Jiang Jiang <jiang.jiang@nokia.com>
+Date: Mon, 20 Jun 2011 13:47:01 +0200
+Subject: [PATCH] Fix fontconfig usage in X11 font database
+
+We should do FcConfigSubstitute(0, pattern, FcMatchFont) on a
+FcPattern for query because the family list in it will contain
+almost all the families after FcConfigSubstitute(0, pattern,
+FcMatchPattern), then the test in <match target="font"> will
+almost always succeed. In general, FcMatchFont substitute
+should only be done on the FcPattern that we got after
+FcFontMatch() or FcFontRenderPrepare().
+
+Based on the suggestion of fontconfig author Behdad Esfahbod,
+this patch reorganized the tryPatternLoad logic so that it only
+does the QFontEngine creation part, FcPattern *match is retrieved
+outside of that function. In this way, the match pattern we got
+can be either from FcFontMatch() or after FcFontRenderPrepare()
+on one of the fonts we got from qt_fontSetForPattern(). Then we
+don't need to duplicate the pattern and add all criterias back
+with qt_addPatternProps(). It not only simplified the code a lot
+but also fix the way we apply FcMatchFont substitution. This
+substitution will either be done by FcFontMatch() or
+FcFontRenderPrepare, both implicitly.
+
+Task-number: QTBUG-2148, QTBUG-19947
+Reviewed-by: Eskil
+---
+ src/gui/text/qfontdatabase_x11.cpp |   55 +++++++++++++++---------------------
+ src/gui/text/qfontengine_x11.cpp   |   22 ++++----------
+ 2 files changed, 29 insertions(+), 48 deletions(-)
+
+diff --git a/src/gui/text/qfontdatabase_x11.cpp b/src/gui/text/qfontdatabase_x11.cpp
+index 754334c..958daa2 100644
+--- a/src/gui/text/qfontdatabase_x11.cpp
++++ b/src/gui/text/qfontdatabase_x11.cpp
+@@ -1566,9 +1566,8 @@ static FcPattern *getFcPattern(const QFontPrivate *fp, int script, const QFontDe
  
-     FcDefaultSubstitute(pattern);
+     qt_addPatternProps(pattern, fp->screen, script, request);
+ 
+-    FcDefaultSubstitute(pattern);
      FcConfigSubstitute(0, pattern, FcMatchPattern);
 -    FcConfigSubstitute(0, pattern, FcMatchFont);
++    FcDefaultSubstitute(pattern);
  
      // these should only get added to the pattern _after_ substitution
      // append the default fallback font for the specified script
-@@ -1585,35 +1584,20 @@ static void FcFontSetRemove(FcFontSet *fs, int at)
+@@ -1606,35 +1605,20 @@ static void FcFontSetRemove(FcFontSet *fs, int at)
          memmove(fs->fonts + at, fs->fonts + at + 1, len);
  }
  
@@ -47,7 +84,7 @@
      if (script != QUnicodeTables::Common) {
          // skip font if it doesn't support the language we want
          if (specialChars[script]) {
-@@ -1652,11 +1636,6 @@ static QFontEngine *tryPatternLoad(FcPattern *p, int screen,
+@@ -1673,11 +1657,6 @@ static QFontEngine *tryPatternLoad(FcPattern *p, int screen,
          }
      }
  done:
@@ -59,7 +96,7 @@
      return engine;
  }
  
-@@ -1705,14 +1684,22 @@ static QFontEngine *loadFc(const QFontPrivate *fp, int script, const QFontDef &r
+@@ -1726,14 +1705,26 @@ static QFontEngine *loadFc(const QFontPrivate *fp, int script, const QFontDef &r
  #endif
  
      QFontEngine *fe = 0;
@@ -71,27 +108,31 @@
      if (!fe) {
          FcFontSet *fs = qt_fontSetForPattern(pattern, request);
  
-+        match = 0;
++        if (match) {
++            FcPatternDestroy(match);
++            match = 0;
++        }
++
          if (fs) {
 -            for (int i = 0; !fe && i < fs->nfont; ++i)
 -                fe = tryPatternLoad(fs->fonts[i], fp->screen, request, script, &matchedPattern);
-+            for (int i = 0; i < fs->nfont; ++i) {
-+                match = FcFontRenderPrepare (NULL, pattern, fs->fonts[i]);
++            for (int i = 0; !fe && i < fs->nfont; ++i) {
++                match = FcFontRenderPrepare(NULL, pattern, fs->fonts[i]);
 +                fe = tryPatternLoad(match, fp->screen, request, script);
 +                if (fe)
 +                    break;
-+                FcPatternDestroy (match);
++                FcPatternDestroy(match);
 +                match = 0;
 +            }
              FcFontSetDestroy(fs);
          }
          FM_DEBUG("engine for script %d is %s\n", script, fe ? fe->fontDef.family.toLatin1().data(): "(null)");
-@@ -1720,11 +1707,11 @@ static QFontEngine *loadFc(const QFontPrivate *fp, int script, const QFontDef &r
+@@ -1741,11 +1732,11 @@ static QFontEngine *loadFc(const QFontPrivate *fp, int script, const QFontDef &r
      if (fe
          && script == QUnicodeTables::Common
          && !(request.styleStrategy & QFont::NoFontMerging) && !fe->symbol) {
 -        fe = new QFontEngineMultiFT(fe, matchedPattern, pattern, fp->screen, request);
-+        fe = new QFontEngineMultiFT(fe, pattern, fp->screen, request);
++        fe = new QFontEngineMultiFT(fe, match, pattern, fp->screen, request);
      } else {
          FcPatternDestroy(pattern);
 -        if (matchedPattern)
@@ -101,42 +142,36 @@
      }
      return fe;
  }
---- a/src/gui/text/qfontengine_x11.cpp	
-+++ a/src/gui/text/qfontengine_x11.cpp	
-@@ -863,11 +863,9 @@ glyph_t QFontEngineXLFD::glyphIndexToFreetypeGlyphIndex(glyph_t g) const
+diff --git a/src/gui/text/qfontengine_x11.cpp b/src/gui/text/qfontengine_x11.cpp
+index e3bfa5d..74c0130 100644
+--- a/src/gui/text/qfontengine_x11.cpp
++++ b/src/gui/text/qfontengine_x11.cpp
+@@ -863,11 +863,8 @@ glyph_t QFontEngineXLFD::glyphIndexToFreetypeGlyphIndex(glyph_t g) const
  // Multi FT engine
  // ------------------------------------------------------------------
  
 -static QFontEngine *engineForPattern(FcPattern *pattern, const QFontDef &request,
-+static QFontEngine *engineForPattern(FcPattern *match, const QFontDef &request,
-                                      int screen)
+-                                     int screen)
++static QFontEngine *engineForPattern(FcPattern *match, const QFontDef &request, int screen)
  {
 -    FcResult res;
 -    FcPattern *match = FcFontMatch(0, pattern, &res);
      QFontEngineX11FT *engine = new QFontEngineX11FT(match, request, screen);
      if (!engine->invalid())
          return engine;
-@@ -878,8 +876,8 @@ static QFontEngine *engineForPattern(FcPattern *pattern, const QFontDef &request
-     return fe;
+@@ -879,9 +876,9 @@ static QFontEngine *engineForPattern(FcPattern *pattern, const QFontDef &request
  }
  
--QFontEngineMultiFT::QFontEngineMultiFT(QFontEngine *fe, FcPattern *matchedPattern, FcPattern *p, int s, const QFontDef &req)
+ QFontEngineMultiFT::QFontEngineMultiFT(QFontEngine *fe, FcPattern *matchedPattern, FcPattern *p, int s, const QFontDef &req)
 -    : QFontEngineMulti(2), request(req), pattern(p), firstEnginePattern(matchedPattern), fontSet(0), screen(s)
-+QFontEngineMultiFT::QFontEngineMultiFT(QFontEngine *fe, FcPattern *p, int s, const QFontDef &req)
 +    : QFontEngineMulti(2), request(req), pattern(p), fontSet(0), screen(s)
  {
- 
+-
++    firstEnginePattern = FcPatternDuplicate(matchedPattern);
      engines[0] = fe;
-@@ -895,8 +893,6 @@ QFontEngineMultiFT::~QFontEngineMultiFT()
-     QMutexLocker locker(qt_fontdatabase_mutex());
- 
-     FcPatternDestroy(pattern);
--    if (firstEnginePattern)
--        FcPatternDestroy(firstEnginePattern);
-     if (fontSet)
-         FcFontSetDestroy(fontSet);
- }
-@@ -907,8 +903,6 @@ void QFontEngineMultiFT::loadEngine(int at)
+     engines.at(0)->ref.ref();
+     fontDef = engines[0]->fontDef;
+@@ -907,8 +904,6 @@ void QFontEngineMultiFT::loadEngine(int at)
      extern QMutex *qt_fontdatabase_mutex();
      QMutexLocker locker(qt_fontdatabase_mutex());
  
@@ -145,29 +180,15 @@
      extern QFontDef qt_FcPatternToQFontDef(FcPattern *pattern, const QFontDef &);
      extern FcFontSet *qt_fontSetForPattern(FcPattern *pattern, const QFontDef &request);
  
-@@ -926,36 +920,24 @@ void QFontEngineMultiFT::loadEngine(int at)
-             return;
-         }
- 
--        if (firstEnginePattern) {
--
--            if (!FcPatternEqual(firstEnginePattern, fontSet->fonts[0]))
--                firstFontIndex = 0;
--
--            FcPatternDestroy(firstEnginePattern);
--            firstEnginePattern = 0;
--        }
--
-         engines.resize(fontSet->nfont + 1 - firstFontIndex);
-     }
+@@ -940,22 +935,17 @@ void QFontEngineMultiFT::loadEngine(int at)
      Q_ASSERT(at < engines.size());
      Q_ASSERT(engines.at(at) == 0);
  
 -    FcPattern *pattern = FcPatternDuplicate(fontSet->fonts[at + firstFontIndex - 1]);
 -    qt_addPatternProps(pattern, screen, QUnicodeTables::Common, request);
-+    FcPattern *match = FcFontRenderPrepare (NULL, pattern, fontSet->fonts[at + firstFontIndex - 1]);
- 
+-
 -    QFontDef fontDef = qt_FcPatternToQFontDef(pattern, this->request);
++    FcPattern *match = FcFontRenderPrepare(NULL, pattern, fontSet->fonts[at + firstFontIndex - 1]);
 +    QFontDef fontDef = qt_FcPatternToQFontDef(match, this->request);
  
      // note: we use -1 for the script to make sure that we keep real
@@ -182,26 +203,9 @@
          QFontCache::instance()->insertEngine(key, fontEngine);
      }
 -    FcPatternDestroy(pattern);
-+    FcPatternDestroy(match);
      fontEngine->ref.ref();
      engines[at] = fontEngine;
  }
---- a/src/gui/text/qfontengine_x11_p.h	
-+++ a/src/gui/text/qfontengine_x11_p.h	
-@@ -140,7 +140,7 @@ private:
- class Q_GUI_EXPORT QFontEngineMultiFT : public QFontEngineMulti
- {
- public:
--    QFontEngineMultiFT(QFontEngine *fe, FcPattern *firstEnginePattern, FcPattern *p, int s, const QFontDef &request);
-+    QFontEngineMultiFT(QFontEngine *fe, FcPattern *p, int s, const QFontDef &request);
-     ~QFontEngineMultiFT();
- 
-     void loadEngine(int at);
-@@ -148,7 +148,6 @@ public:
- private:
-     QFontDef request;
-     FcPattern *pattern;
--    FcPattern *firstEnginePattern;
-     FcFontSet *fontSet;
-     int screen;
-     int firstFontIndex; // first font in fontset
+-- 
+1.7.4.1
+
