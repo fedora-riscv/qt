@@ -86,7 +86,7 @@ Patch66: qt-everywhere-opensource-src-4.8.0-tp-openssl.patch
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
 # bz#705348, per-font autohint fontconfig directives globally disable the bytecode interpreter 
-Patch107: QTBUG-19947-fontconfig-1.patch
+Patch107: QTBUG-19947-fontconfig-2.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -456,7 +456,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
-%patch107 -p1 -b .QTBUG-19947-fontconfig-1
+%patch107 -p1 -b .QTBUG-19947-fontconfig-2
 
 # kde-qt branch
 %if 0%{?kde_qt}
@@ -1135,7 +1135,7 @@ fi
 
 
 %changelog
-* Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.2.tp
+* Tue Jun 21 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.2.tp
 - fontconfig patch (#705347, QTBUG-19947)
 
 * Wed May 25 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.8.0-0.1.tp
