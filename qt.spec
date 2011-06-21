@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -98,7 +98,7 @@ Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
 # Fix QNetworkConfigurationManager crash due to null private pointer. (QTBUG-17305, rhbz#682656)
 Patch106: http://qt.gitorious.org/qt/qt/commit/4d3b9aa83cf7f6d9f9b88d9936e5980629daac2a.patch
 # bz#705348, per-font autohint fontconfig directives globally disable the bytecode interpreter 
-Patch107: QTBUG-19947-fontconfig-1.patch
+Patch107: QTBUG-19947-fontconfig-2.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -516,7 +516,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 # upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
 %patch106 -p1 -b .QNetworkConfigurationManager-null-pointer
-%patch107 -p1 -b .QTBUG-19947-fontconfig-1
+%patch107 -p1 -b .QTBUG-19947-fontconfig-2
 
 
 # kde-qt branch
@@ -1246,6 +1246,9 @@ fi
 
 
 %changelog
+* Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-6
+- fontconfig patch respin (#705347, QTBUG-19947)
+
 * Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-5
 - updated fontconfig patch (#705347, QTBUG-19947)
 
