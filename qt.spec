@@ -1247,10 +1247,10 @@ fi
 
 %changelog
 * Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-6
-- fontconfig patch respin (#705347, QTBUG-19947)
+- fontconfig patch respin (#705348, QTBUG-19947)
 
 * Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-5
-- updated fontconfig patch (#705347, QTBUG-19947)
+- updated fontconfig patch (#705348, QTBUG-19947)
 
 * Tue Jun 07 2011 Than Ngo <than@redhat.com> - 1:4.7.3-4
 - bz#705348, Lohit fonts accidentally disable the bytecode interpreter for Qt
