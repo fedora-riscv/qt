@@ -1136,7 +1136,7 @@ fi
 
 %changelog
 * Tue Jun 21 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.2.tp
-- fontconfig patch (#705347, QTBUG-19947)
+- fontconfig patch (#705348, QTBUG-19947)
 
 * Wed May 25 2011 Jaroslav Reznik <jreznik@redhat.com> 1:4.8.0-0.1.tp
 - 4.8.0-tp
