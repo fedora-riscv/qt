@@ -328,6 +328,14 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description examples
 %{summary}.
 
+%package qvfb
+Summary: Virtual frame buffer for Qt for Embedded Linux
+Group: Applications/Emulators
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description qvfb
+%{summary}.
+
 
 %package ibase
 Summary: IBase driver for Qt's SQL classes
@@ -599,6 +607,9 @@ done
 
 make %{?_smp_mflags}
 
+# TODO: consider patching tools/tools.pro to enable building this by default
+make %{?_smp_mflags} -C tools/qvfb
+
 # recreate .qm files
 LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 
@@ -607,6 +618,8 @@ LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 rm -rf %{buildroot}
 
 make install INSTALL_ROOT=%{buildroot}
+
+make install INSTALL_ROOT=%{buildroot} -C tools/qvfb
 
 %if 0%{?private}
 # install private headers
@@ -810,14 +823,12 @@ rm -fv %{buildroot}%{_qt4_plugindir}/designer/libqwebview.so
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
 %endif
 
-# remove qvfb translations, we don't ship qvfb
-rm -fv  %{buildroot}%{_qt4_translationdir}/qvfb_*.qm
-
 %find_lang qt --with-qt --without-mo
 
 %find_lang assistant --with-qt --without-mo
 %find_lang qt_help --with-qt --without-mo
 %find_lang qtconfig --with-qt --without-mo
+%find_lang qvfb --with-qt --without-mo
 cat assistant.lang qt_help.lang qtconfig.lang >qt-x11.lang
 
 %find_lang designer --with-qt --without-mo
@@ -1075,6 +1086,11 @@ fi
 %{_qt4_examplesdir}/
 %endif
 
+%files qvfb -f qvfb.lang
+%defattr(-,root,root,-)
+%{_bindir}/qvfb
+%{_qt4_bindir}/qvfb
+
 %if "%{?ibase}" == "-plugin-sql-ibase"
 %files ibase
 %defattr(-,root,root,-)
@@ -1160,6 +1176,7 @@ fi
 %changelog
 * Tue Jul 05 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.3.tp
 - Adding qt-sql-ibase driver for qt (#719002) 
+- qvfb subpackage (#718416)
 
 * Tue Jun 21 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.2.tp
 - fontconfig patch (#705348, QTBUG-19947)
