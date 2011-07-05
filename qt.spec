@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.2.tp%{?dist}
+Release: 0.3.tp%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -112,6 +112,7 @@ Source31: hi48-app-qt4-logo.png
 ## optional plugin bits
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
+%define ibase -plugin-sql-ibase
 %define mysql -plugin-sql-mysql
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
@@ -177,6 +178,10 @@ BuildRequires: zlib-devel
 ## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
 %define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libXv-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
 BuildRequires: %{x_deps}
+
+%if "%{?ibase}" != "-no-sql-ibase"
+BuildRequires: firebird-devel
+%endif
 
 %if "%{?mysql}" != "-no-sql-mysql"
 BuildRequires: mysql-devel >= 4.0
@@ -321,6 +326,17 @@ Group: Documentation
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description examples
+%{summary}.
+
+
+%package ibase
+Summary: IBase driver for Qt's SQL classes
+Group:  System Environment/Libraries
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:  qt4-ibase = %{version}-%{release}
+%{?_isa:Provides: qt4-ibase%{?_isa} = %{version}-%{release}}
+
+%description ibase
 %{summary}.
 
 
@@ -571,6 +587,7 @@ done
   -xmlpatterns \
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?webkit} %{!?webkit:-no-webkit } \
+  %{?ibase} \
   %{?mysql} \
   %{?psql} \
   %{?odbc} \
@@ -1058,6 +1075,12 @@ fi
 %{_qt4_examplesdir}/
 %endif
 
+%if "%{?ibase}" == "-plugin-sql-ibase"
+%files ibase
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/sqldrivers/libqsqlibase*
+%endif
+
 %if "%{?mysql}" == "-plugin-sql-mysql"
 %files mysql
 %defattr(-,root,root,-)
@@ -1135,6 +1158,9 @@ fi
 
 
 %changelog
+* Tue Jul 05 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.3.tp
+- Adding qt-sql-ibase driver for qt (#719002) 
+
 * Tue Jun 21 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.2.tp
 - fontconfig patch (#705348, QTBUG-19947)
 
