@@ -196,6 +196,7 @@ BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
 BuildRequires: libpng-devel
 BuildRequires: libtiff-devel
+BuildRequires: libXtst-devel
 BuildRequires: NetworkManager-devel
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig
