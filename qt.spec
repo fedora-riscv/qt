@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -133,6 +133,7 @@ Source31: hi48-app-qt4-logo.png
 ## optional plugin bits
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
+%define ibase -plugin-sql-ibase
 %define mysql -plugin-sql-mysql
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
@@ -207,6 +208,10 @@ BuildRequires: zlib-devel
 ## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
 %define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libXv-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
 BuildRequires: %{x_deps}
+
+%if "%{?ibase}" != "-no-sql-ibase"
+BuildRequires: firebird-devel
+%endif
 
 %if "%{?mysql}" != "-no-sql-mysql"
 BuildRequires: mysql-devel >= 4.0
@@ -365,6 +370,25 @@ Group: Documentation
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 
 %description examples
+%{summary}.
+
+%package qvfb
+Summary: Virtual frame buffer for Qt for Embedded Linux
+Group: Applications/Emulators
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+
+%description qvfb
+%{summary}.
+
+
+%package ibase
+Summary: IBase driver for Qt's SQL classes
+Group:  System Environment/Libraries
+Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:  qt4-ibase = %{version}-%{release}
+%{?_isa:Provides: qt4-ibase%{?_isa} = %{version}-%{release}}
+
+%description ibase
 %{summary}.
 
 
@@ -633,6 +657,7 @@ done
   -xmlpatterns \
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?webkit} %{!?webkit:-no-webkit } \
+  %{?ibase} \
   %{?mysql} \
   %{?psql} \
   %{?odbc} \
@@ -644,6 +669,9 @@ done
 
 make %{?_smp_mflags}
 
+# TODO: consider patching tools/tools.pro to enable building this by default
+make %{?_smp_mflags} -C tools/qvfb
+
 # recreate .qm files
 LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 
@@ -652,6 +680,8 @@ LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 rm -rf %{buildroot}
 
 make install INSTALL_ROOT=%{buildroot}
+
+make install INSTALL_ROOT=%{buildroot} -C tools/qvfb
 
 %if 0%{?private}
 # install private headers
@@ -873,14 +903,12 @@ rm -fv %{buildroot}%{_qt4_plugindir}/designer/libqwebview.so
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
 %endif
 
-# remove qvfb translations, we don't ship qvfb
-rm -fv  %{buildroot}%{_qt4_translationdir}/qvfb_*.qm
-
 %find_lang qt --with-qt --without-mo
 
 %find_lang assistant --with-qt --without-mo
 %find_lang qt_help --with-qt --without-mo
 %find_lang qtconfig --with-qt --without-mo
+%find_lang qvfb --with-qt --without-mo
 cat assistant.lang qt_help.lang qtconfig.lang >qt-x11.lang
 
 %find_lang designer --with-qt --without-mo
@@ -1159,6 +1187,17 @@ fi
 %{_qt4_examplesdir}/
 %endif
 
+%files qvfb -f qvfb.lang
+%defattr(-,root,root,-)
+%{_bindir}/qvfb
+%{_qt4_bindir}/qvfb
+
+%if "%{?ibase}" == "-plugin-sql-ibase"
+%files ibase
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/sqldrivers/libqsqlibase*
+%endif
+
 %if "%{?mysql}" == "-plugin-sql-mysql"
 %files mysql
 %defattr(-,root,root,-)
@@ -1246,6 +1285,10 @@ fi
 
 
 %changelog
+* Thu Jul 07 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-7
+- Adding qt-sql-ibase driver for qt (#719002)
+- qvfb subpackage (#718416)
+
 * Mon Jun 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-6
 - fontconfig patch respin (#705348, QTBUG-19947)
 
