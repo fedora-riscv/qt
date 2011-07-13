@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.3.tp%{?dist}
+Release: 0.4.tp%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -971,6 +971,7 @@ fi
 
 %files devel -f qt-devel.lang
 %defattr(-,root,root,-)
+%{_sysconfdir}/rpm/macros.*
 %{_qt4_bindir}/lconvert
 %{_qt4_bindir}/lrelease*
 %{_qt4_bindir}/lupdate*
@@ -1145,7 +1146,6 @@ fi
 
 %files x11 -f qt-x11.lang
 %defattr(-,root,root,-)
-%{_sysconfdir}/rpm/macros.*
 %dir %{_qt4_importdir}/
 %{_qt4_importdir}/Qt/
 %{_qt4_libdir}/libQt3Support.so.4*
@@ -1175,6 +1175,9 @@ fi
 
 
 %changelog
+* Wed Jul 13 2011 Than Ngo <than@redhat.com> - 1:4.8.0-0.4.tp
+- move macros.* to -devel
+
 * Tue Jul 05 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.3.tp
 - Adding qt-sql-ibase driver for qt (#719002) 
 - qvfb subpackage (#718416)
