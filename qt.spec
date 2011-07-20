@@ -386,6 +386,9 @@ Qt libraries used for drawing widgets and OpenGL items.
 %setup -q -n qt-everywhere-opensource-src-%{version}
 
 
+%patch2 -p1 -b .multilib-optflags
+# drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
+rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch4 -p1 -b .uic_multilib
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
@@ -417,11 +420,6 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %ifarch x86_64
 %define platform linux-g++
 %endif
-
-%patch2 -p1 -b .multilib
-# drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
-rm -fv mkspecs/linux-g++*/qmake.conf.multilib
-%patch4 -p1 -b .uic_multilib
 
 sed -i \
   -e "s|-O2|$RPM_OPT_FLAGS|g" \
