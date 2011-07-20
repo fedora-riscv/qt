@@ -4,13 +4,6 @@
 # -no-pch disables precompiled headers, make ccache-friendly
 %define no_pch -no-pch
 
-## disable javascript JIT compiler (selinux crasher)
-## WAS https://bugs.webkit.org/show_bug.cgi?id=35154
-#define no_javascript_jit  -no-javascript-jit
-
-# enable kde-qt integration/patches 
-%define kde_qt 1
-
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 
@@ -18,14 +11,15 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.4.tp%{?dist}
+Release: 0.5.beta1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}-tp.tar.gz
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}-beta1.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
@@ -49,9 +43,6 @@ Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 
-# remove dependency of webkit in assistant
-Patch24: qt-everywhere-opensource-src-4.7.1-assistant_no_webkit.patch
-
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
@@ -62,12 +53,6 @@ Patch54: qt-everywhere-opensource-src-4.7.0-beta2-mysql_config.patch
 
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
-
-# Add s390x as 64bit and s390 as 31bit bigendian platform
-Patch56: qt-everywhere-opensource-src-4.7.0-beta1-s390x.patch
-
-# qtwebkit to search nspluginwrapper paths too
-Patch58: qt-everywhere-opensource-src-4.7.0-beta1-qtwebkit_pluginpath.patch
 
 # fix 24bit color issue
 Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
@@ -82,19 +67,8 @@ Patch65: qt-everywhere-opensource-src-4.8.0-tp-qtreeview-kpackagekit-crash.patch
 Patch66: qt-everywhere-opensource-src-4.8.0-tp-openssl.patch
 
 # upstream patches
-# adds debug support to webkit/JavaScriptCore
-# UPSTREAM ME
-Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
-# bz#705348, per-font autohint fontconfig directives globally disable the bytecode interpreter 
-Patch107: QTBUG-19947-fontconfig-2.patch
-
-# kde-qt git patches
-Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
-Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
-Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 
 # security patches
-Patch300: qt-everywhere-opensource-src-4.7.0-CVE-2010-1822-crash-svg-image.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -123,18 +97,8 @@ Source31: hi48-app-qt4-logo.png
 %define tds -plugin-sql-tds
 %define phonon -phonon
 %define phonon_backend -phonon-backend
-%if 0%{?fedora} && 0%{?fedora} < 16
-# HACK: omit webkit from packaging
-# TODO: fixup build process to not build it either (but that means making use
-# of system qtwebkit where needed (like assistant, libqwebview designer plugin, ...)
-%define webkit_packaged 1
-%endif
-%ifarch s390
-# workaround memory exhaustion during linking of libQtWebKit on s390
-%define webkit -webkit
-%else
-%define webkit -webkit-debug
-%endif
+# FIXME/TODO: use system webkit for assistant, examples/webkit, demos/browser
+#define webkit -webkit
 %define gtkstyle -gtkstyle
 %define dbus -dbus-linked
 
@@ -325,18 +289,18 @@ BuildArch: noarch
 Summary: Programming examples for %{name}
 Group: Documentation
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-
 %description examples
 %{summary}.
 
+## FIXME, ftbfs -- rex
+## .obj/release-shared/qwssignalhandler.o: In function `QWSSignalHandler::clear()': qwssignalhandler.cpp:(.text+0x349): undefined reference to `QWSLock::~QWSLock()'
+#define qvfb 1
 %package qvfb
 Summary: Virtual frame buffer for Qt for Embedded Linux
 Group: Applications/Emulators
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-
 %description qvfb
 %{summary}.
-
 
 %package ibase
 Summary: IBase driver for Qt's SQL classes
@@ -344,10 +308,8 @@ Group:  System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides:  qt4-ibase = %{version}-%{release}
 %{?_isa:Provides: qt4-ibase%{?_isa} = %{version}-%{release}}
-
 %description ibase
 %{summary}.
-
 
 %package mysql
 Summary: MySQL driver for Qt's SQL classes
@@ -358,10 +320,8 @@ Provides:  qt4-MySQL = %{version}-%{release}
 Obsoletes: qt4-mysql < %{version}-%{release}
 Provides:  qt4-mysql = %{version}-%{release}
 %{?_isa:Provides: qt4-mysql%{?_isa} = %{version}-%{release}}
-
 %description mysql 
 %{summary}.
-
 
 %package odbc 
 Summary: ODBC driver for Qt's SQL classes
@@ -372,10 +332,8 @@ Provides:  qt4-ODBC = %{version}-%{release}
 Obsoletes: qt4-odbc < %{version}-%{release}
 Provides:  qt4-odbc = %{version}-%{release}
 %{?_isa:Provides: qt4-odbc%{?_isa} = %{version}-%{release}}
-
 %description odbc 
 %{summary}.
-
 
 %package postgresql 
 Summary: PostgreSQL driver for Qt's SQL classes
@@ -386,7 +344,6 @@ Provides:  qt4-PostgreSQL = %{version}-%{release}
 Obsoletes: qt4-postgresql < %{version}-%{release}
 Provides:  qt4-postgresql = %{version}-%{release}
 %{?_isa:Provides: qt4-postgresql%{?_isa} = %{version}-%{release}}
-
 %description postgresql 
 %{summary}.
 
@@ -399,7 +356,6 @@ Provides:  qt4-SQLite = %{version}-%{release}
 Obsoletes: qt4-sqlite < %{version}-%{release}
 Provides:  qt4-sqlite = %{version}-%{release}
 %{?_isa:Provides: qt4-sqlite%{?_isa} = %{version}-%{release}}
-
 %description sqlite
 %{summary}.
 
@@ -409,39 +365,8 @@ Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-tds = %{version}-%{release}
 %{?_isa:Provides: qt4-tds%{?_isa} = %{version}-%{release}}
-
 %description tds
 %{summary}.
-
-%if 0%{?webkit_packaged}
-%package webkit
-Summary: Qt WebKit library
-Group: System Environment/Libraries
-Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Provides: qt4-webkit = %{version}-%{release}
-Provides: qt4-webkit%{?_isa} = %{version}-%{release}
-#Provides:  QtWebKit = 1.0.0-1
-Obsoletes: WebKit-qt < 1.0.0-1
-Provides:  WebKit-qt = 1.0.0-1
-%description webkit
-%{summary}.
-
-%package webkit-devel
-Summary: Development files for %{name}-webkit-devel 
-Group: System Environment/Libraries
-# for upgrade path prior to -webkit splits
-Obsoletes: qt-devel < 1:4.7.0-0.9
-Obsoletes: qt4-devel < 4.7.0-0.9 
-Requires: %{name}-webkit%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Requires: %{name}-devel%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Provides: qt4-webkit-devel = %{version}-%{release}
-Provides: qt4-webkit-devel%{?_isa} = %{version}-%{release}
-#Provides:  QtWebKit-devel = 1.0.0-1
-Obsoletes: WebKit-qt < 1.0.0-1
-Provides:  WebKit-qt = 1.0.0-1
-%description webkit-devel
-%{summary}.
-%endif
 
 %package x11
 Summary: Qt GUI-related libraries
@@ -453,45 +378,30 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
 %{?_isa:Provides: qt4-x11%{?_isa} = %{version}-%{release}}
-Requires(post): /sbin/ldconfig
-Requires(postun): /sbin/ldconfig
-
 %description x11
 Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-everywhere-opensource-src-%{version}-tp
+%setup -q -n qt-everywhere-opensource-src-%{version}
 
+
+%patch4 -p1 -b .uic_multilib
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
-## make -assistant subpkg instead (#660287#9)
-#patch24 -p1 -b .assistant_no_webkit
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
-%patch56 -p1 -b .s390x
-%patch58 -p1 -b .qtwebkit_pluginpath
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 %patch66 -p1 -b .ssl
 
 # upstream patches
-%patch105 -p1 -b .webkit_debug_javascriptcore
-%patch107 -p1 -b .QTBUG-19947-fontconfig-2
-
-# kde-qt branch
-%if 0%{?kde_qt}
-%patch202 -p1 -b .kde-qt-0002
-%patch205 -p1 -b .kde-qt-0005
-%patch212 -p1 -b .kde-qt-0012
-%endif
 
 # security fixes
-%patch300 -p1 -b .CVE-2010-1822-crash-svg-image
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -508,8 +418,6 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %define platform linux-g++
 %endif
 
-# multilib hacks
-# multilib hacks no longer required
 %patch2 -p1 -b .multilib
 # drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
 rm -fv mkspecs/linux-g++*/qmake.conf.multilib
@@ -517,11 +425,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib
 
 sed -i \
   -e "s|-O2|$RPM_OPT_FLAGS|g" \
-  -e "s|g++.conf|g++-multilib.conf|g" mkspecs/%{platform}/qmake.conf
+  -e "s|g++.conf|g++-multilib.conf|g" \
+  mkspecs/%{platform}/qmake.conf
 
-sed -e "s|^QMAKE_CFLAGS_RELEASE|#QMAKE_CFLAGS_RELEASE|g" \
-  mkspecs/common/g++.conf > mkspecs/common/g++-multilib.conf
-  
 %if "%{_qt4_libdir}" == "%{_libdir}"
   sed -i -e "s|^QMAKE_LIBDIR_QT.*=.*|QMAKE_LIBDIR_QT       =|" mkspecs/common/linux.conf
 %endif
@@ -543,9 +449,6 @@ done
 
 %build
 
-# add '-importdir %{_qt4_importdir}' when it works, right now fails with:
-# %{_qt4_importdir} unknown argument
-
 # build shared, threaded (default) libraries
 ./configure -v \
   -confirm-license \
@@ -558,6 +461,7 @@ done
   -docdir %{_qt4_docdir} \
   -examplesdir %{_qt4_examplesdir} \
   -headerdir %{_qt4_headerdir} \
+  -importdir %{_qt4_importdir} \
   -libdir %{_qt4_libdir} \
   -plugindir %{_qt4_plugindir} \
   -sysconfdir %{_qt4_sysconfdir} \
@@ -609,7 +513,7 @@ done
 make %{?_smp_mflags}
 
 # TODO: consider patching tools/tools.pro to enable building this by default
-make %{?_smp_mflags} -C tools/qvfb
+%{?qvfb:make %{?_smp_mflags} -C tools/qvfb}
 
 # recreate .qm files
 LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
@@ -618,9 +522,16 @@ LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 %install
 rm -rf %{buildroot}
 
+mkdir -p %{buildroot}%{_qt4_docdir}/{html,qch,src}
+
 make install INSTALL_ROOT=%{buildroot}
 
+%if 0%{?qbfb}
 make install INSTALL_ROOT=%{buildroot} -C tools/qvfb
+%find_lang qvfb --with-qt --without-mo}
+%else
+rm -f %{buildroot}%{_qt4_translationdir}/qvfb*.qm
+%endif
 
 %if 0%{?private}
 # install private headers
@@ -636,7 +547,7 @@ rsync -aR \
 desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
   --vendor="qt4" \
-  %{?docs:%{SOURCE20}} %{SOURCE21} %{SOURCE22} %{?demos:%{SOURCE23}} %{SOURCE24}
+  %{SOURCE20} %{SOURCE21} %{SOURCE22} %{?demos:%{SOURCE23}} %{SOURCE24}
 
 ## pkg-config
 # strip extraneous dirs/libraries 
@@ -716,14 +627,6 @@ popd
   install -p -m644 -D %{SOURCE5} %{buildroot}%{_qt4_headerdir}/QtCore/qconfig-multilib.h
   ln -sf qconfig-multilib.h %{buildroot}%{_qt4_headerdir}/QtCore/qconfig.h
   ln -sf ../QtCore/qconfig.h %{buildroot}%{_qt4_headerdir}/Qt/qconfig.h
-
-%if "%{_qt4_datadir}" != "%{_qt4_prefix}"
-# multilib: mkspecs hacks, unfortunately, breaks some stuff
-  mkdir %{buildroot}%{_qt4_prefix}/mkspecs
-  mv %{buildroot}%{_qt4_datadir}/mkspecs/{default,linux-g++*,qconfig.pri} \
-     %{buildroot}%{_qt4_prefix}/mkspecs/
-  ln -s %{_qt4_datadir}/mkspecs/common %{buildroot}%{_qt4_prefix}/mkspecs/common
-%endif
 %endif
 
 %if "%{_qt4_libdir}" != "%{_libdir}"
@@ -737,11 +640,9 @@ install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
-%if 0%{?docs}
 # assistant icons
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/assistant.png
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/assistant.png
-%endif
 # designer icons
 install -p -m644 -D tools/designer/src/designer/images/designer.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/designer.png
 # linguist icons
@@ -812,8 +713,7 @@ rm -fv %{buildroot}%{_qt4_plugindir}/designer/libphononwidgets.so
 # backend
 rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
-
-%if ! 0%{?webkit_packaged}
+# nuke bundled webkit bits 
 rm -fv %{buildroot}%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qgraphicswebview.h
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qweb*.h
@@ -822,14 +722,12 @@ rm -frv %{buildroot}%{_qt4_importdir}/QtWebKit/
 rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit.*
 rm -fv %{buildroot}%{_qt4_plugindir}/designer/libqwebview.so
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
-%endif
 
 %find_lang qt --with-qt --without-mo
 
 %find_lang assistant --with-qt --without-mo
 %find_lang qt_help --with-qt --without-mo
 %find_lang qtconfig --with-qt --without-mo
-%find_lang qvfb --with-qt --without-mo
 cat assistant.lang qt_help.lang qtconfig.lang >qt-x11.lang
 
 %find_lang designer --with-qt --without-mo
@@ -869,12 +767,6 @@ touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
-%if 0%{?webkit_packaged} 
-%post webkit -p /sbin/ldconfig
-
-%postun webkit -p /sbin/ldconfig
-%endif
-
 %post x11
 /sbin/ldconfig
 touch --no-create %{_datadir}/icons/hicolor ||:
@@ -907,10 +799,11 @@ fi
 %else
 %dir %{_qt4_datadir}
 %endif
-%if 0%{?docs}
 %dir %{_qt4_docdir}
+%dir %{_qt4_docdir}/html/
 %dir %{_qt4_docdir}/qch/
-%endif
+%dir %{_qt4_docdir}/src/
+
 %if "%{_qt4_sysconfdir}" != "%{_sysconfdir}"
 %dir %{_qt4_sysconfdir}
 %endif
@@ -1045,17 +938,6 @@ fi
 %{_datadir}/applications/*linguist.desktop
 %{_datadir}/icons/hicolor/*/apps/linguist*
 %{?docs:%{_qt4_docdir}/qch/linguist.qch}
-%if 0%{?webkit_packaged}
-%exclude %{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
-%exclude %{_qt4_headerdir}/Qt/QtWebKit
-%exclude %{_qt4_headerdir}/Qt/qgraphicswebview.h
-%exclude %{_qt4_headerdir}/Qt/qweb*.h
-%exclude %{_qt4_headerdir}/QtWebKit/
-%exclude %{_qt4_libdir}/libQtWebKit.prl
-%exclude %{_qt4_libdir}/libQtWebKit.so
-%exclude %{_qt4_libdir}/libQtWebKit_debug.so
-%exclude %{_libdir}/pkgconfig/QtWebKit.pc
-%endif
 %if 0%{?private}
 %exclude %{_qt4_headerdir}/*/private/
 
@@ -1074,11 +956,11 @@ fi
 %if 0%{?docs}
 %files doc
 %defattr(-,root,root,-)
-%{_qt4_docdir}/html
+%{_qt4_docdir}/html/*
 %{_qt4_docdir}/qch/*.qch
 %exclude %{_qt4_docdir}/qch/designer.qch
 %exclude %{_qt4_docdir}/qch/linguist.qch
-%{_qt4_docdir}/src/
+%{_qt4_docdir}/src/*
 #{_qt4_prefix}/doc
 %endif
 
@@ -1088,10 +970,12 @@ fi
 %{_qt4_examplesdir}/
 %endif
 
+%if 0%{?qvfb}
 %files qvfb -f qvfb.lang
 %defattr(-,root,root,-)
 %{_bindir}/qvfb
 %{_qt4_bindir}/qvfb
+%endif
 
 %if "%{?ibase}" == "-plugin-sql-ibase"
 %files ibase
@@ -1123,27 +1007,6 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
-%if 0%{?webkit_packaged}
-%files webkit
-%defattr(-,root,root,-)
-%{_qt4_libdir}/libQtWebKit.so.4*
-%{_qt4_importdir}/QtWebKit/
-# FIXME ?  what do with this in webkit_packaged=0 case?  -- Rex
-%{_qt4_plugindir}/designer/libqwebview.so
-
-%files webkit-devel
-%defattr(-,root,root,-)
-%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
-%{_qt4_headerdir}/Qt/QtWebKit
-%{_qt4_headerdir}/Qt/qgraphicswebview.h
-%{_qt4_headerdir}/Qt/qweb*.h
-%{_qt4_headerdir}/QtWebKit/
-%{_qt4_libdir}/libQtWebKit.prl
-%{_qt4_libdir}/libQtWebKit.so
-%{_qt4_libdir}/libQtWebKit_debug.so
-%{_libdir}/pkgconfig/QtWebKit.pc
-%endif
-
 %files x11 -f qt-x11.lang
 %defattr(-,root,root,-)
 %dir %{_qt4_importdir}/
@@ -1162,9 +1025,6 @@ fi
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
 %exclude %{_qt4_plugindir}/sqldrivers
-%if 0%{?webkit_packaged}
-%exclude %{_qt4_plugindir}/designer/libqwebview.so
-%endif
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qmlviewer
@@ -1175,6 +1035,12 @@ fi
 
 
 %changelog
+* Wed Jul 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.5.tp
+- 4.8.0-beta1
+- drop webkit_packaged conditional
+- drop old patches
+- drop qvfb (for now, ftbfs)
+
 * Wed Jul 13 2011 Than Ngo <than@redhat.com> - 1:4.8.0-0.4.tp
 - move macros.* to -devel
 
