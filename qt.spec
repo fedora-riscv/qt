@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -583,10 +583,6 @@ sed -i \
 sed -e "s|^QMAKE_CFLAGS_RELEASE|#QMAKE_CFLAGS_RELEASE|g" \
   mkspecs/common/g++.conf > mkspecs/common/g++-multilib.conf
   
-%if "%{_qt4_libdir}" == "%{_libdir}"
-  sed -i -e "s|^QMAKE_LIBDIR_QT.*=.*|QMAKE_LIBDIR_QT       =|" mkspecs/common/linux.conf
-%endif
-
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
 sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
 
@@ -1286,6 +1282,9 @@ fi
 
 
 %changelog
+* Sat Jul 23 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-8
+- fix QMAKE_LIBDIR_QT, for missing QT_SHARED define (#725183)
+
 * Thu Jul 07 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-7
 - Adding qt-sql-ibase driver for qt (#719002)
 - qvfb subpackage (#718416)
