@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.5.beta1%{?dist}
+Release: 0.6.beta1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -425,10 +425,6 @@ sed -i \
   -e "s|-O2|$RPM_OPT_FLAGS|g" \
   -e "s|g++.conf|g++-multilib.conf|g" \
   mkspecs/%{platform}/qmake.conf
-
-%if "%{_qt4_libdir}" == "%{_libdir}"
-  sed -i -e "s|^QMAKE_LIBDIR_QT.*=.*|QMAKE_LIBDIR_QT       =|" mkspecs/common/linux.conf
-%endif
 
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
 sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
@@ -1033,7 +1029,10 @@ fi
 
 
 %changelog
-* Wed Jul 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.5.tp
+* Sat Jul 23 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.6.beta1
+- fix QMAKE_LIBDIR_QT, for missing QT_SHARED define (#725183)
+
+* Wed Jul 20 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.5.beta1
 - 4.8.0-beta1
 - drop webkit_packaged conditional
 - drop old patches
