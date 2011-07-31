@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.7.beta1%{?dist}
+Release: 0.8.beta1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -675,7 +675,7 @@ EOF
 mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4 %{name}
-%%_qt47 %{version}
+%%_qt48 %{version}
 %%_qt4_version %{version}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
@@ -1033,6 +1033,9 @@ fi
 
 
 %changelog
+* Sun Jul 31 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.8.beta1
+- macros.qt4: s|_qt47|_qt48|
+
 * Thu Jul 28 2011 Dan Horák <dan[at]danny.cz> 1:4.8.0-0.7.beta1
 - fix the outdated standalone copy of JavaScriptCore
 
