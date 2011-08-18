@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.8.beta1%{?dist}
+Release: 0.9.beta1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -94,16 +94,15 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
-## make -sqlite subpkg or not?
-## keeping the option around *very* short-term, in case we change our minds -- Rex
-#define sqlite_pkg 1 
 %define tds -plugin-sql-tds
+
 %define phonon -phonon
 %define phonon_backend -phonon-backend
+%define dbus -dbus-linked
+%define graphicssystem -graphicssystem raster
+%define gtkstyle -gtkstyle
 # FIXME/TODO: use system webkit for assistant, examples/webkit, demos/browser
 #define webkit -webkit
-%define gtkstyle -gtkstyle
-%define dbus -dbus-linked
 
 # See http://bugzilla.redhat.com/196901
 %define _qt4 %{name}
@@ -179,13 +178,11 @@ BuildRequires: unixODBC-devel
 BuildRequires: sqlite-devel
 %endif
 
-%if ! 0%{?sqlite_pkg}
 Provides:  qt4-sqlite = %{version}-%{release}
 %{?_isa:Provides: qt4-sqlite%{?_isa} = %{version}-%{release}}
 Obsoletes: qt-sqlite < 1:4.7.1-16
 Provides:  qt-sqlite = %{?epoch:%{epoch}:}%{version}-%{release} 
 %{?_isa:Provides: qt-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}}
-%endif
 
 %if "%{?tds}" != "-no-sql-tds"
 BuildRequires: freetds-devel
@@ -204,9 +201,7 @@ handling.
 %package assistant
 Summary: Documentation browser for Qt 4
 Group: Documentation
-#if 0%{?sqlite_pkg:1}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-#endif
 Provides: qt4-assistant = %{version}-%{release}
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description assistant
@@ -252,9 +247,7 @@ Summary: Development files for the Qt toolkit
 Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
-#if 0%{?sqlite_pkg:1}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-#endif
 Requires: %{x_deps}
 Requires: libpng-devel
 Requires: libjpeg-devel
@@ -348,18 +341,6 @@ Obsoletes: qt4-postgresql < %{version}-%{release}
 Provides:  qt4-postgresql = %{version}-%{release}
 %{?_isa:Provides: qt4-postgresql%{?_isa} = %{version}-%{release}}
 %description postgresql 
-%{summary}.
-
-%package sqlite
-Summary: SQLite driver for Qt's SQL classes
-Group: System Environment/Libraries
-Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-Obsoletes: qt4-SQLite < %{version}-%{release}
-Provides:  qt4-SQLite = %{version}-%{release}
-Obsoletes: qt4-sqlite < %{version}-%{release}
-Provides:  qt4-sqlite = %{version}-%{release}
-%{?_isa:Provides: qt4-sqlite%{?_isa} = %{version}-%{release}}
-%description sqlite
 %{summary}.
 
 %package tds
@@ -497,6 +478,7 @@ done
   -openssl-linked \
   -xmlpatterns \
   %{?dbus} %{!?dbus:-no-dbus} \
+  %{?graphicssystem} \
   %{?webkit} %{!?webkit:-no-webkit } \
   %{?ibase} \
   %{?mysql} \
@@ -825,11 +807,6 @@ fi
 %dir %{_qt4_plugindir}/crypto/
 %dir %{_qt4_plugindir}/sqldrivers/
 %dir %{_qt4_translationdir}/
-
-%if 0%{?sqlite_pkg:1}
-%files sqlite
-%defattr(-,root,root,-)
-%endif
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
 
 %files assistant
@@ -1033,6 +1010,10 @@ fi
 
 
 %changelog
+* Wed Aug 17 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.9.beta1
+- -graphicssystem raster
+- drop sqlite_pkg option
+
 * Sun Jul 31 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.8.beta1
 - macros.qt4: s|_qt47|_qt48|
 
