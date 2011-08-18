@@ -1011,7 +1011,7 @@ fi
 
 %changelog
 * Wed Aug 17 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.9.beta1
-- -graphicssystem raster
+- -graphicssystem raster (#712617)
 - drop sqlite_pkg option
 
 * Sun Jul 31 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.8.beta1
