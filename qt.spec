@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.3
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -144,12 +144,6 @@ Source31: hi48-app-qt4-logo.png
 %define tds -plugin-sql-tds
 %define phonon -phonon
 %define phonon_backend -phonon-backend
-%if 0%{?rhel}
-# if building with -phonon, define to internal version (ie, Obsolete external phonon)
-%define phonon_internal 1
-# if -phonon-backend, include in packaging (else it's omitted)
-%define phonon_backend_packaged 1
-%endif
 %define phonon_version 4.3.80
 %define phonon_version_major 4.3
 %define phonon_release 1
@@ -1282,6 +1276,9 @@ fi
 
 
 %changelog
+* Sat Aug 27 2011 Than Ngo <than@redhat.com> - 1:4.7.3-9
+- drop unused rhel conditional
+
 * Sat Jul 23 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.3-8
 - fix QMAKE_LIBDIR_QT, for missing QT_SHARED define (#725183)
 
