@@ -92,8 +92,6 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 # adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
-# Fix QNetworkConfigurationManager crash due to null private pointer. (QTBUG-17305, rhbz#682656)
-Patch106: http://qt.gitorious.org/qt/qt/commit/4d3b9aa83cf7f6d9f9b88d9936e5980629daac2a.patch
 # bz#705348, per-font autohint fontconfig directives globally disable the bytecode interpreter 
 Patch107: QTBUG-19947-fontconfig-2.patch
 
@@ -530,9 +528,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 ## upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
-# no longer applies, I *think* it's no longer needed, though
-# should be reviewed by another set of eyes -- rex
-#patch106 -p1 -b .QNetworkConfigurationManager-null-pointer
 %patch107 -p1 -b .QTBUG-19947-fontconfig-2
 
 
