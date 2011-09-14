@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.9.beta1%{?dist}
+Release: 0.10.beta1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -83,6 +83,9 @@ Source24: qtconfig.desktop
 # upstream qt4-logo, http://trolltech.com/images/products/qt/qt4-logo
 Source30: hi128-app-qt4-logo.png
 Source31: hi48-app-qt4-logo.png
+
+# fix missing CSS styles and JS functions in the generated HTML documentation, omitted from the upstream tarball
+Source100: qt-doc-4.8.0-patch.tar.bz2
 
 ## BOOTSTRAPPING, undef docs, demos, examples, phonon, webkit
 
@@ -368,6 +371,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 %prep
 %setup -q -n qt-everywhere-opensource-src-%{version}
+%setup -D -a 100 -n qt-everywhere-opensource-src-%{version}
 
 
 %patch2 -p1 -b .multilib-optflags
@@ -398,7 +402,7 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
 # some 64bit platforms assume -64 suffix, https://bugzilla.redhat.com/569542
 %if "%{?__isa_bits}"  == "64"
-%define platform linux-g++-64                                                                      
+%define platform linux-g++-64
 %endif
 
 # https://bugzilla.redhat.com/478481
@@ -1010,6 +1014,10 @@ fi
 
 
 %changelog
+* Wed Sep 14 2011 Lukas Tinkl <ltinkl@redhat.com> 1:4.8.0-0.10.beta1
+- fix missing CSS styles and JS functions in the generated HTML
+  documentation, omitted from the upstream tarball
+
 * Wed Aug 17 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.9.beta1
 - -graphicssystem raster (#712617)
 - drop sqlite_pkg option
