@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1269,6 +1269,10 @@ fi
 
 
 %changelog
+* Fri Sep 16 2011 Lukas Tinkl <ltinkl@redhat.com> - 1:4.7.4-2
+- respun upstream tarball to fix offline HTML docu
+  (https://bugreports.qt.nokia.com/browse/QTBUG-21454)
+
 * Thu Sep 01 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-1
 - 4.7.4
 
