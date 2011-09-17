@@ -712,6 +712,7 @@ rm -frv %{buildroot}%{_qt4_importdir}/QtWebKit/
 rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit.*
 rm -fv %{buildroot}%{_qt4_plugindir}/designer/libqwebview.so
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
+rm -frv %{buildroot}%{_qt4_prefix}/tests/
 
 %find_lang qt --with-qt --without-mo
 
