@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.10.beta1%{?dist}
+Release: 0.11.beta1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -105,7 +105,7 @@ Source100: qt-doc-4.8.0-patch.tar.bz2
 %define graphicssystem -graphicssystem raster
 %define gtkstyle -gtkstyle
 # FIXME/TODO: use system webkit for assistant, examples/webkit, demos/browser
-#define webkit -webkit
+%define webkit -webkit
 
 # See http://bugzilla.redhat.com/196901
 %define _qt4 %{name}
@@ -1014,6 +1014,9 @@ fi
 
 
 %changelog
+* Sat Sep 17 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.11.beta1
+- ./configure -webkit
+
 * Wed Sep 14 2011 Lukas Tinkl <ltinkl@redhat.com> 1:4.8.0-0.10.beta1
 - fix missing CSS styles and JS functions in the generated HTML
   documentation, omitted from the upstream tarball
@@ -1026,7 +1029,7 @@ fi
 - macros.qt4: s|_qt47|_qt48|
 
 * Thu Jul 28 2011 Dan Horák <dan[at]danny.cz> 1:4.8.0-0.7.beta1
-- fix the outdated standalone copy of JavaScriptCore
+- fix the outdated standalone copy of JavaScriptCore (s390)
 
 * Sat Jul 23 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.0-0.6.beta1
 - fix QMAKE_LIBDIR_QT, for missing QT_SHARED define (#725183)
