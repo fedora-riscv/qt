@@ -69,6 +69,10 @@ Patch66: qt-everywhere-opensource-src-4.8.0-tp-openssl.patch
 # fix the outdated standalone copy of JavaScriptCore
 Patch67: qt-everywhere-opensource-src-4.8.0-beta1-s390.patch
 
+# https://bugs.webkit.org/show_bug.cgi?id=63941
+# -Wall + -Werror = fail
+Patch68: webkit-qtwebkit-2.2-no_Werror.patch
+
 # upstream patches
 
 # security patches
@@ -370,9 +374,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-everywhere-opensource-src-%{version}
-%setup -D -a 100 -n qt-everywhere-opensource-src-%{version}
-
+%setup -q -n qt-everywhere-opensource-src-%{version} -a 100
+#setup -q -D -a 100 -n qt-everywhere-opensource-src-%{version}
 
 %patch2 -p1 -b .multilib-optflags
 # drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
@@ -390,6 +393,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 %patch66 -p1 -b .ssl
 %patch67 -p1 -b .s390
+pushd src/3rdparty/webkit
+%patch68 -p1 -b .no_Werror
+popd
 
 # upstream patches
 
