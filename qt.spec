@@ -7,17 +7,25 @@
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 
+%define snap 20111002
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.11.beta1%{?dist}
+Release: 0.12.%{snap}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://www.qtsoftware.com/
+%if 0%{?snap:1}
+# git clone git://gitorious.org/qt/qt.git ; cd qt
+# git archive --prefix qt-everywhere-opensource-src-%{version}/ 4.8 | xz -9 
+Source0: qt-everywhere-opensource-src-4.8.0-20111002.tar.xz
+%else
 Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}-beta1.tar.gz
+%endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Obsoletes: qt4 < %{version}-%{release}
@@ -63,9 +71,6 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 # fix QTreeView crash triggered by KPackageKit (patch by David Faure)
 Patch65: qt-everywhere-opensource-src-4.8.0-tp-qtreeview-kpackagekit-crash.patch
 
-# hack around openssl type mismatch wrt SSL_CTX_ctrl (with and without const)
-Patch66: qt-everywhere-opensource-src-4.8.0-tp-openssl.patch
-
 # fix the outdated standalone copy of JavaScriptCore
 Patch67: qt-everywhere-opensource-src-4.8.0-beta1-s390.patch
 
@@ -87,9 +92,6 @@ Source24: qtconfig.desktop
 # upstream qt4-logo, http://trolltech.com/images/products/qt/qt4-logo
 Source30: hi128-app-qt4-logo.png
 Source31: hi48-app-qt4-logo.png
-
-# fix missing CSS styles and JS functions in the generated HTML documentation, omitted from the upstream tarball
-Source100: qt-doc-4.8.0-patch.tar.bz2
 
 ## BOOTSTRAPPING, undef docs, demos, examples, phonon, webkit
 
@@ -374,8 +376,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 
 %prep
-%setup -q -n qt-everywhere-opensource-src-%{version} -a 100
-#setup -q -D -a 100 -n qt-everywhere-opensource-src-%{version}
+%setup -q -n qt-everywhere-opensource-src-%{version} 
 
 %patch2 -p1 -b .multilib-optflags
 # drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
@@ -391,7 +392,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
-%patch66 -p1 -b .ssl
 %patch67 -p1 -b .s390
 pushd src/3rdparty/webkit
 %patch68 -p1 -b .no_Werror
@@ -508,11 +508,14 @@ make %{?_smp_mflags}
 # recreate .qm files
 LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
 
+%if 0%{?snap:1}
+# fixup/generate docs
+LD_LIBRARY_PATH=`pwd`/lib QT_PLUGIN_PATH=`pwd`/plugins make docs
+%endif
+
 
 %install
 rm -rf %{buildroot}
-
-mkdir -p %{buildroot}%{_qt4_docdir}/{html,qch,src}
 
 make install INSTALL_ROOT=%{buildroot}
 
@@ -774,7 +777,11 @@ fi
 
 %files -f qt.lang
 %defattr(-,root,root,-)
-%doc README LGPL_EXCEPTION.txt LICENSE.LGPL LICENSE.GPL3
+%if ! 0%{?snap}
+%doc README 
+%doc LICENSE.GPL3
+%endif
+%doc LICENSE.LGPL LGPL_EXCEPTION.txt
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -1021,6 +1028,9 @@ fi
 
 
 %changelog
+* Mon Oct 03 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.12.20111002
+- 20111002 4.8 branch snapshot
+
 * Sat Sep 17 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.11.beta1
 - ./configure -webkit
 
