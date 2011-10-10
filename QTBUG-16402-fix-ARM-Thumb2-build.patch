@@ -1,0 +1,23 @@
+diff -up qt-everywhere-opensource-src-4.7.4/src/corelib/arch/qatomic_armv6.h.thumb qt-everywhere-opensource-src-4.7.4/src/corelib/arch/qatomic_armv6.h
+--- qt-everywhere-opensource-src-4.7.4/src/corelib/arch/qatomic_armv6.h.thumb	2011-09-17 20:01:15.636182558 +0200
++++ qt-everywhere-opensource-src-4.7.4/src/corelib/arch/qatomic_armv6.h	2011-09-17 20:04:06.752642585 +0200
+@@ -144,6 +144,9 @@ inline bool QBasicAtomicInt::testAndSetO
+     asm volatile("0:\n"
+                  "ldrex %[result], [%[_q_value]]\n"
+                  "eors %[result], %[result], %[expectedValue]\n"
++#ifdef __thumb__
++                 "itt eq\n"
++#endif
+                  "strexeq %[result], %[newValue], [%[_q_value]]\n"
+                  "teqeq %[result], #1\n"
+                  "beq 0b\n"
+@@ -202,6 +205,9 @@ Q_INLINE_TEMPLATE bool QBasicAtomicPoint
+     asm volatile("0:\n"
+                  "ldrex %[result], [%[_q_value]]\n"
+                  "eors %[result], %[result], %[expectedValue]\n"
++#ifdef __thumb__
++                 "itt eq\n"
++#endif
+                  "strexeq %[result], %[newValue], [%[_q_value]]\n"
+                  "teqeq %[result], #1\n"
+                  "beq 0b\n"

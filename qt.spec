@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -94,6 +94,7 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
 # bz#705348, per-font autohint fontconfig directives globally disable the bytecode interpreter 
 Patch107: QTBUG-19947-fontconfig-2.patch
+Patch108: QTBUG-16402-fix-ARM-Thumb2-build.patch
 
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
@@ -529,6 +530,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 ## upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
 %patch107 -p1 -b .QTBUG-19947-fontconfig-2
+# Merged in 4.8.
+%patch108 -p1 -b .QTBUG-16402-fix-ARM-Thumb2-build
 
 
 # kde-qt branch
@@ -590,6 +593,20 @@ done
 # add '-importdir %{_qt4_importdir}' when it works, right now fails with:
 # %{_qt4_importdir} unknown argument
 
+# This should go away if/when qt supports ARMv7
+if [ -d src/corelib/arch/armv7/ -o -f src/corelib/arch/qatomic_armv7.h ]; then
+  echo "ERROR: This version of qt supports ARMv7. Please remove -arch armv6 override from spec file"
+  exit 1
+fi
+%ifarch armv7hl armv7hnl
+%define qt_arch -arch armv6
+%endif
+
+# Force explicit neon mode instead of auto detection
+%ifarch armv7hl
+%define qt_neon -no-neon
+%endif
+
 # build shared, threaded (default) libraries
 ./configure -v \
   -confirm-license \
@@ -617,6 +634,8 @@ done
   -no-rpath \
   -reduce-relocations \
   -no-separate-debug-info \
+  %{?qt_arch} \
+  %{?qt_neon} \
   %{?phonon} %{!?phonon:-no-phonon} \
   %{?phonon_backend} \
   %{?no_pch} \
@@ -1269,6 +1288,10 @@ fi
 
 
 %changelog
+* Fri Sep 16 2011 Henrik Nordstrom <henrik@henriknordstrom.net> - 1:4.7.4-3
+- Set proper architecture flags for armv7hl and admv7hnl (#744701)
+- fix ARM Thumb2 build (QTBUG-16402)
+
 * Fri Sep 16 2011 Lukas Tinkl <ltinkl@redhat.com> - 1:4.7.4-2
 - respun upstream tarball to fix offline HTML docu
   (https://bugreports.qt.nokia.com/browse/QTBUG-21454)
