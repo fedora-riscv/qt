@@ -7,13 +7,11 @@
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 
-%define snap 20111002
-
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.12.%{snap}%{?dist}
+Release: 0.13.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -24,7 +22,7 @@ Url: http://www.qtsoftware.com/
 # git archive --prefix qt-everywhere-opensource-src-%{version}/ 4.8 | xz -9 
 Source0: qt-everywhere-opensource-src-4.8.0-20111002.tar.xz
 %else
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}-beta1.tar.gz
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}-rc1.tar.gz
 %endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -1028,6 +1026,9 @@ fi
 
 
 %changelog
+* Thu Oct 13 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.13.rc1
+- 4.8.0-rc1
+
 * Mon Oct 03 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.12.20111002
 - 20111002 4.8 branch snapshot
 
