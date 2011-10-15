@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.14.rc1%{?dist}
+Release: 0.15.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -75,6 +75,9 @@ Patch67: qt-everywhere-opensource-src-4.8.0-beta1-s390.patch
 # https://bugs.webkit.org/show_bug.cgi?id=63941
 # -Wall + -Werror = fail
 Patch68: webkit-qtwebkit-2.2-no_Werror.patch
+
+# revert qlist.h commit that seems to induce crashes in qDeleteAll<QList (QTBUG-22037)
+Patch69: qt-everywhere-opensource-src-4.8.0-QTBUG-22037.patch
 
 # upstream patches
 
@@ -392,6 +395,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 pushd src/3rdparty/webkit
 %patch68 -p1 -b .no_Werror
 popd
+%patch69 -p1 -b .QTBUG-22037
 
 # upstream patches
 
@@ -1024,6 +1028,9 @@ fi
 
 
 %changelog
+* Sat Oct 15 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.15.rc1
+- revert qlist.h commit that seems to induce crashes in qDeleteAll<QList... (QTBUG-22037)
+
 * Sat Oct 15 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.14.rc1
 - pkgconfig-style deps
 
