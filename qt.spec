@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.13.rc1%{?dist}
+Release: 0.14.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -128,29 +128,29 @@ Source31: hi48-app-qt4-logo.png
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
 
-BuildRequires: alsa-lib-devel
-BuildRequires: dbus-devel >= 0.62
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: findutils
-BuildRequires: fontconfig-devel
-BuildRequires: glib2-devel
 BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
-BuildRequires: libpng-devel
 BuildRequires: libtiff-devel
-BuildRequires: libXtst-devel
-BuildRequires: NetworkManager-devel
-BuildRequires: openssl-devel
 BuildRequires: pkgconfig
-BuildRequires: pulseaudio-libs-devel
+BuildRequires: pkgconfig(alsa) 
+BuildRequires: pkgconfig(dbus-1)
+BuildRequires: pkgconfig(fontconfig)
+BuildRequires: pkgconfig(glib-2.0)
+BuildRequires: pkgconfig(NetworkManager)
+BuildRequires: pkgconfig(openssl)
+BuildRequires: pkgconfig(libpng12)
+BuildRequires: pkgconfig(libpulse)
+BuildRequires: pkgconfig(xtst) 
+BuildRequires: pkgconfig(zlib)
 BuildRequires: rsync
-BuildRequires: zlib-devel
 
 ## In theory, should be as simple as:
 #define x_deps libGL-devel libGLU-devel
 ## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
-%define x_deps libICE-devel libSM-devel libXcursor-devel libXext-devel libXfixes-devel libXft-devel libXi-devel libXinerama-devel libXrandr-devel libXrender-devel libXt-devel libXv-devel libX11-devel xorg-x11-proto-devel libGL-devel libGLU-devel
+%define x_deps pkgconfig(ice) pkgconfig(sm) pkgconfig(xcursor) pkgconfig(xext) pkgconfig(xfixes) pkgconfig(xft) pkgconfig(xi) pkgconfig(xinerama) pkgconfig(xrandr) pkgconfig(xrender) pkgconfig(xt) pkgconfig(xv) pkgconfig(x11) pkgconfig(xproto) pkgconfig(gl) pkgconfig(glu) 
 BuildRequires: %{x_deps}
 
 %if "%{?ibase}" != "-no-sql-ibase"
@@ -162,18 +162,16 @@ BuildRequires: mysql-devel >= 4.0
 %endif
 
 %if "%{?phonon_backend}" == "-phonon-backend"
-BuildRequires: gstreamer-devel
-BuildRequires: gstreamer-plugins-base-devel 
+BuildRequires: pkgconfig(gstreamer-0.10) 
+BuildRequires: pkgconfig(gstreamer-plugins-base-0.10) 
 %endif
 
 %if "%{?gtkstyle}" == "-gtkstyle"
-BuildRequires: gtk2-devel
+BuildRequires: pkgconfig(gtk+-2.0) 
 %endif
 
 %if "%{?psql}" != "-no-sql-psql"
 BuildRequires: postgresql-devel
-# added deps to workaround http://bugzilla.redhat.com/440673
-BuildRequires: krb5-devel libxslt-devel openssl-devel pam-devel readline-devel zlib-devel
 %endif
 
 %if "%{?odbc}" != "-no-sql-odbc"
@@ -182,7 +180,7 @@ BuildRequires: unixODBC-devel
 
 %if "%{?sqlite}" != "-no-sql-sqlite"
 %define _system_sqlite -system-sqlite
-BuildRequires: sqlite-devel
+BuildRequires: pkgconfig(sqlite3) 
 %endif
 
 Provides:  qt4-sqlite = %{version}-%{release}
@@ -1026,6 +1024,9 @@ fi
 
 
 %changelog
+* Sat Oct 15 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.14.rc1
+- pkgconfig-style deps
+
 * Thu Oct 13 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.13.rc1
 - 4.8.0-rc1
 
