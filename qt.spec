@@ -457,7 +457,8 @@ Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-webkit = %{version}-%{release}
 Provides: qt4-webkit%{?_isa} = %{version}-%{release}
-#Provides:  QtWebKit = 1.0.0-1
+Provides: qtwebkit = 2.0-1
+Provides: qtwebkit%{?_isa} = 2.0-1
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
 %description webkit
@@ -473,7 +474,8 @@ Requires: %{name}-webkit%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-devel%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-webkit-devel = %{version}-%{release}
 Provides: qt4-webkit-devel%{?_isa} = %{version}-%{release}
-#Provides:  QtWebKit-devel = 1.0.0-1
+Provides: qtwebkit-devel = 2.0-1
+Provides: qtwebkit-devel%{?_isa} = 2.0-1
 Obsoletes: WebKit-qt < 1.0.0-1
 Provides:  WebKit-qt = 1.0.0-1
 %description webkit-devel
@@ -1294,6 +1296,7 @@ fi
 %changelog
 * Mon Oct 17 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-4
 - Qt doesn't close orphaned file descriptors after printing (#746601, QTBUG-14724)
+- -webkit: Provides: qtwebkit(-devel)
 
 * Fri Sep 16 2011 Henrik Nordstrom <henrik@henriknordstrom.net> - 1:4.7.4-3
 - Set proper architecture flags for armv7hl and admv7hnl (#744701)
