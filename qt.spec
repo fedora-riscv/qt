@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -87,6 +87,9 @@ Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
 
 # Fails to create debug build of Qt projects on mingw (rhbz#653674)
 Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
+
+# Qt doesn't close orphaned file descriptors after printing (#746601, QTBUG-14724)
+Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch
 
 # upstream patches
 # adds debug support to webkit/JavaScriptCore
@@ -526,6 +529,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch62 -p1 -b .indic-rendering-bz636399
 %patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
+%patch70 -p1 -b .QTBUG-14724
 
 ## upstream patches
 %patch105 -p1 -b .webkit_debug_javascriptcore
@@ -1288,6 +1292,9 @@ fi
 
 
 %changelog
+* Mon Oct 17 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-4
+- Qt doesn't close orphaned file descriptors after printing (#746601, QTBUG-14724)
+
 * Fri Sep 16 2011 Henrik Nordstrom <henrik@henriknordstrom.net> - 1:4.7.4-3
 - Set proper architecture flags for armv7hl and admv7hnl (#744701)
 - fix ARM Thumb2 build (QTBUG-16402)
