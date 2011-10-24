@@ -11,12 +11,12 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.17.rc1%{?dist}
+Release: 0.18.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
-Url: http://www.qtsoftware.com/
+Url: http://qt.nokia.com/
 %if 0%{?snap:1}
 # git clone git://gitorious.org/qt/qt.git ; cd qt
 # git archive --prefix qt-everywhere-opensource-src-%{version}/ 4.8 | xz -9 
@@ -1036,6 +1036,9 @@ fi
 
 
 %changelog
+* Mon Oct 24 2011 Than Ngo <than@redhat.com> 4.8.0-0.18.rc1
+- bz#748297, update the URL of qt packages
+
 * Tue Oct 18 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.17.rc1
 - Buttons in Qt applications not clickable when run under gnome-shell (#742658, QTBUG-21900)
 
