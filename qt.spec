@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.20.rc1%{?dist}
+Release: 0.21.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1041,6 +1041,9 @@ fi
 
 
 %changelog
+* Thu Oct 27 2011 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.0-0.21.rc1
+- fix missing NULL check in the toLocalFile patch (fixes Digikam segfault)
+
 * Thu Oct 27 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.20.rc1
 - restore qt-4.7-compatible behavior to QUrl.toLocalFile (#749213)
 
