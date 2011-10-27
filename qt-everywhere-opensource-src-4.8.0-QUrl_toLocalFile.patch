@@ -7,7 +7,7 @@ diff -up qt-everywhere-opensource-src-4.8.0/src/corelib/io/qurl.cpp.toLocalFile 
      // the call to isLocalFile() also ensures that we're parsed
 -    if (!isLocalFile())
 +    // Treat URLs with no scheme as local for backward compatibility
-+    if (!d || (!isLocalFile() && !d->scheme.isEmpty()))
++    if (!isLocalFile() && !d->scheme.isEmpty())
          return QString();
  
      QString tmp;
