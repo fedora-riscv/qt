@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.19.rc1%{?dist}
+Release: 0.20.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -84,6 +84,10 @@ Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch
 
 # Buttons in Qt applications not clickable when run under gnome-shell (#742658, QTBUG-21900)
 Patch71:  qt-everywhere-opensource-src-4.8.0-QTBUG-21900.patch
+
+# restore Qt-4.7 behavior (which kde needs) to QUrl.toLocalfile
+# https://bugzilla.redhat.com/show_bug.cgi?id=749213
+Patch72: qt-everywhere-opensource-src-4.8.0-QUrl_toLocalFile.patch
 
 # upstream patches
 
@@ -404,6 +408,7 @@ popd
 %patch69 -p1 -b .QTBUG-22037
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
+%patch72 -p1 -b .QUrl_toLocalFile
 
 # upstream patches
 
@@ -1036,6 +1041,9 @@ fi
 
 
 %changelog
+* Thu Oct 27 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.20.rc1
+- restore qt-4.7-compatible behavior to QUrl.toLocalFile (#749213)
+
 * Wed Oct 26 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.8.0-0.19.rc1
 - Rebuilt for glibc bug#747377
 
