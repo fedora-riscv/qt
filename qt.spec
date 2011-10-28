@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -82,9 +82,6 @@ Patch60: qt-4.6.3-bn-rendering-bz562058.patch
 Patch61: qt-4.6.3-indic-rendering-bz631732.patch
 Patch62: qt-4.6.3-indic-rendering-bz636399.patch
 
-# fix 24bit color issue
-Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
-
 # Fails to create debug build of Qt projects on mingw (rhbz#653674)
 Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 
@@ -92,6 +89,9 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch
 
 # upstream patches
+# Applications crash when using a visual with 24 bits per pixel 
+# https://bugreports.qt.nokia.com/browse/QTBUG-21754
+Patch100: qt-everywhere-opensource-src-4.7.4-QTBUG-21754.patch
 # adds debug support to webkit/JavaScriptCore
 # UPSTREAM ME
 Patch105: qt-everywhere-opensource-src-4.7.1-webkit_debug_javascriptcore.patch
@@ -529,11 +529,11 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch60 -p1 -b .bn-rendering-bz562058
 %patch61 -p1 -b .indic-rendering-bz631732
 %patch62 -p1 -b .indic-rendering-bz636399
-%patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch70 -p1 -b .QTBUG-14724
 
 ## upstream patches
+%patch100 -p1 -b .QTBUG-21754
 %patch105 -p1 -b .webkit_debug_javascriptcore
 %patch107 -p1 -b .QTBUG-19947-fontconfig-2
 # Merged in 4.8.
@@ -1294,6 +1294,9 @@ fi
 
 
 %changelog
+* Fri Oct 28 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-5
+- crash when using a visual with 24 bits per pixel (QTBUG-21754)
+
 * Mon Oct 17 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-4
 - Qt doesn't close orphaned file descriptors after printing (#746601, QTBUG-14724)
 - -webkit: Provides: qtwebkit(-devel)
