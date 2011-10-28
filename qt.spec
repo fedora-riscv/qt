@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.21.rc1%{?dist}
+Release: 0.22.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -88,6 +88,10 @@ Patch71:  qt-everywhere-opensource-src-4.8.0-QTBUG-21900.patch
 # restore Qt-4.7 behavior (which kde needs) to QUrl.toLocalfile
 # https://bugzilla.redhat.com/show_bug.cgi?id=749213
 Patch72: qt-everywhere-opensource-src-4.8.0-QUrl_toLocalFile.patch
+
+# QtWebKit wtf library: GMutex is a union rather than a struct in GLib >= 2.31
+# fixes FTBFS: https://bugs.webkit.org/show_bug.cgi?id=69840
+Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
 
 # upstream patches
 
@@ -409,6 +413,11 @@ popd
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
 %patch72 -p1 -b .QUrl_toLocalFile
+%if 0%{?fedora} > 16
+# This quick fix works ONLY with GLib >= 2.31. It's harder to fix this portably.
+# See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
+%patch73 -p1 -b .qtwebkit-glib231
+%endif
 
 # upstream patches
 
@@ -1041,6 +1050,9 @@ fi
 
 
 %changelog
+* Fri Oct 28 2011 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.0-0.22.rc1
+- fix FTBFS in QtWebKit's wtf library with GLib 2.31
+
 * Thu Oct 27 2011 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.0-0.21.rc1
 - fix missing NULL check in the toLocalFile patch (fixes Digikam segfault)
 
