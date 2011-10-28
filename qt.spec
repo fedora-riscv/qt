@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.22.rc1%{?dist}
+Release: 0.23.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -60,9 +60,6 @@ Patch54: qt-everywhere-opensource-src-4.7.0-beta2-mysql_config.patch
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 
-# fix 24bit color issue
-Patch63: qt-everywhere-opensource-src-4.7.0-bpp24.patch
-
 # Fails to create debug build of Qt projects on mingw (rhbz#653674)
 Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 
@@ -94,6 +91,9 @@ Patch72: qt-everywhere-opensource-src-4.8.0-QUrl_toLocalFile.patch
 Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
 
 # upstream patches
+# Applications crash when using a visual with 24 bits per pixel 
+# https://bugreports.qt.nokia.com/browse/QTBUG-21754
+Patch100: qt-everywhere-opensource-src-4.8.0-QTBUG-21754.patch
 
 # security patches
 
@@ -402,7 +402,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
-%patch63 -p1 -b .bpp24
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 %patch67 -p1 -b .s390
@@ -420,6 +419,7 @@ popd
 %endif
 
 # upstream patches
+%patch100 -p1 -b .QTBUG-21754
 
 # security fixes
 
@@ -1050,6 +1050,9 @@ fi
 
 
 %changelog
+* Fri Oct 28 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.23.rc1
+- crash when using a visual with 24 bits per pixel (#749647,QTBUG-21754)
+
 * Fri Oct 28 2011 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.0-0.22.rc1
 - fix FTBFS in QtWebKit's wtf library with GLib 2.31
 
