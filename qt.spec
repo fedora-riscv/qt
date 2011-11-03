@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -87,6 +87,13 @@ Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
 
 # Qt doesn't close orphaned file descriptors after printing (#746601, QTBUG-14724)
 Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch
+
+# workaround aliasing issues in declarative/qml (#748936, QTBUG-19736) 
+Patch73: qt-everywhere-opensource-src-4.7.4-qml_no_strict_aliasing.patch
+
+# workaround
+# sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 
 # upstream patches
 # Applications crash when using a visual with 24 bits per pixel 
@@ -531,6 +538,8 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch62 -p1 -b .indic-rendering-bz636399
 %patch64 -p1 -b .QTBUG-14467
 %patch70 -p1 -b .QTBUG-14724
+%patch73 -p1 -b .qml_no_strict_aliasing
+%patch74 -p1 -b .tds_no_strict_aliasing
 
 ## upstream patches
 %patch100 -p1 -b .QTBUG-21754
@@ -1294,6 +1303,10 @@ fi
 
 
 %changelog
+* Thu Nov 03 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-6
+- build declarative/qml with -fno-strict-aliasing (#748936, QTBUG-19736)
+- build tds sql driver with -fno-strict-aliasing
+
 * Fri Oct 28 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-5
 - crash when using a visual with 24 bits per pixel (QTBUG-21754)
 
