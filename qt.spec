@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.23.rc1%{?dist}
+Release: 0.24.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -89,6 +89,10 @@ Patch72: qt-everywhere-opensource-src-4.8.0-QUrl_toLocalFile.patch
 # QtWebKit wtf library: GMutex is a union rather than a struct in GLib >= 2.31
 # fixes FTBFS: https://bugs.webkit.org/show_bug.cgi?id=69840
 Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
+
+# workaround
+# sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
+Patch74: qt-everywhere-opensource-src-4.8.0-tds_no_strict_aliasing.patch
 
 # upstream patches
 # Applications crash when using a visual with 24 bits per pixel 
@@ -417,6 +421,7 @@ popd
 # See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
 %patch73 -p1 -b .qtwebkit-glib231
 %endif
+%patch74 -p1 -b .tds_no_strict_aliasing
 
 # upstream patches
 %patch100 -p1 -b .QTBUG-21754
@@ -1050,6 +1055,9 @@ fi
 
 
 %changelog
+* Thu Nov 03 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.24.rc1
+- build tds sql driver with -fno-strict-aliasing 
+
 * Fri Oct 28 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.23.rc1
 - crash when using a visual with 24 bits per pixel (#749647,QTBUG-21754)
 

@@ -1,0 +1,12 @@
+diff -up qt-everywhere-opensource-src-4.8.0/src/sql/drivers/tds/qsql_tds.pri.tds_no_strict_aliasing qt-everywhere-opensource-src-4.8.0/src/sql/drivers/tds/qsql_tds.pri
+--- qt-everywhere-opensource-src-4.8.0/src/sql/drivers/tds/qsql_tds.pri.tds_no_strict_aliasing	2011-10-03 22:44:31.000000000 -0500
++++ qt-everywhere-opensource-src-4.8.0/src/sql/drivers/tds/qsql_tds.pri	2011-11-03 12:06:16.333816559 -0500
+@@ -4,7 +4,7 @@ SOURCES += $$PWD/qsql_tds.cpp
+ unix|win32-g++*: {
+     LIBS *= $$QT_LFLAGS_TDS
+     !contains(LIBS, .*sybdb.*):LIBS += -lsybdb
+-    QMAKE_CXXFLAGS *= $$QT_CFLAGS_TDS
++    QMAKE_CXXFLAGS *= $$QT_CFLAGS_TDS -fno-strict-aliasing
+ } else:win32-borland {
+     LIBS *= $(BCB)/lib/PSDK/NTWDBLIB.LIB
+ } else {
