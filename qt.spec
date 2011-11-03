@@ -92,7 +92,7 @@ Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
 
 # workaround
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-Patch74: qt-everywhere-opensource-src-4.8.0-tds_no_strict_aliasing.patch
+Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 
 # upstream patches
 # Applications crash when using a visual with 24 bits per pixel 
