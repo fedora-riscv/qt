@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.25.rc1%{?dist}
+Release: 0.24.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -93,9 +93,6 @@ Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
 # workaround
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
 Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
-
-# workaround aliasing issues in declarative/qml (#748936, QTBUG-19736) 
-Patch75: qt-everywhere-opensource-src-4.7.4-qml_no_strict_aliasing.patch
 
 # upstream patches
 # Applications crash when using a visual with 24 bits per pixel 
@@ -425,7 +422,6 @@ popd
 %patch73 -p1 -b .qtwebkit-glib231
 %endif
 %patch74 -p1 -b .tds_no_strict_aliasing
-%patch75 -p1 -b .qml_no_strict_aliasing
 
 # upstream patches
 %patch100 -p1 -b .QTBUG-21754
@@ -1059,9 +1055,6 @@ fi
 
 
 %changelog
-* Thu Nov 03 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.25.rc1
-- build declarative/qml with -fno-strict-aliasing (#748936, QTBUG-19736)
-
 * Thu Nov 03 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.24.rc1
 - build tds sql driver with -fno-strict-aliasing 
 
