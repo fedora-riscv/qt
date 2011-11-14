@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.24.rc1%{?dist}
+Release: 0.25.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -162,7 +162,7 @@ BuildRequires: pkgconfig(fontconfig)
 BuildRequires: pkgconfig(glib-2.0)
 BuildRequires: pkgconfig(NetworkManager)
 BuildRequires: pkgconfig(openssl)
-BuildRequires: pkgconfig(libpng12)
+BuildRequires: pkgconfig(libpng)
 BuildRequires: pkgconfig(libpulse)
 BuildRequires: pkgconfig(xtst) 
 BuildRequires: pkgconfig(zlib)
@@ -275,8 +275,6 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{x_deps}
-Requires: libpng-devel
-Requires: libjpeg-devel
 Requires: pkgconfig
 %if 0%{?phonon:1}
 Provides: qt4-phonon-devel = %{version}-%{release}
@@ -698,7 +696,9 @@ mkdir -p %{buildroot}%{_sysconfdir}/rpm
 cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4 %{name}
 %%_qt48 %{version}
+%%_qt4_epoch %{epoch}
 %%_qt4_version %{version}
+%%_qt4_evr %{epoch}:%{version}-%{release}
 %%_qt4_prefix %%{_libdir}/qt4
 %%_qt4_bindir %%{_qt4_prefix}/bin
 %%_qt4_datadir %%{_qt4_prefix}
@@ -1055,6 +1055,11 @@ fi
 
 
 %changelog
+* Mon Nov 14 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.25.rc1
+- BuildRequires: pkgconfig(libpng)
+- -devel: drop Requires: libpng-devel libjpeg-devel 
+- qt4.macros: +%%_qt4_epoch, %%_qt4_evr
+
 * Thu Nov 03 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.24.rc1
 - build tds sql driver with -fno-strict-aliasing 
 
