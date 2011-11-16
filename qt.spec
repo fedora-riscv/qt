@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -109,7 +109,6 @@ Patch108: QTBUG-16402-fix-ARM-Thumb2-build.patch
 # kde-qt git patches
 Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
 Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
-Patch212: 0012-Add-context-to-tr-calls-in-QShortcut.patch
 
 # security patches
 Patch300: qt-everywhere-opensource-src-4.7.0-CVE-2010-1822-crash-svg-image.patch
@@ -553,7 +552,6 @@ Qt libraries used for drawing widgets and OpenGL items.
 %if 0%{?kde_qt}
 %patch202 -p1 -b .kde-qt-0002
 %patch205 -p1 -b .kde-qt-0005
-%patch212 -p1 -b .kde-qt-0012
 %endif
 
 # security fixes
@@ -1303,6 +1301,9 @@ fi
 
 
 %changelog
+* Wed Nov 16 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-7
+- drop kde-qt 0012 patch, it's broken if not upstream (#704882)
+
 * Thu Nov 03 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-6
 - build declarative/qml with -fno-strict-aliasing (#748936, QTBUG-19736)
 - build tds sql driver with -fno-strict-aliasing
