@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.25.rc1%{?dist}
+Release: 0.26.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -93,6 +93,9 @@ Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
 # workaround
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
 Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
+
+# workaround crash on ppc64
+Patch75: qt-ppc64-crash.patch
 
 # upstream patches
 # Applications crash when using a visual with 24 bits per pixel 
@@ -420,6 +423,7 @@ popd
 %patch73 -p1 -b .qtwebkit-glib231
 %endif
 %patch74 -p1 -b .tds_no_strict_aliasing
+%patch75 -p1 -b .ppc64-crash
 
 # upstream patches
 %patch100 -p1 -b .QTBUG-21754
@@ -1055,6 +1059,9 @@ fi
 
 
 %changelog
+* Wed Nov 30 2011 Than Ngo <than@redhat.com> - 4.8.0-0.26.rc1
+- workaround crash on ppc64
+
 * Mon Nov 14 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.25.rc1
 - BuildRequires: pkgconfig(libpng)
 - -devel: drop Requires: libpng-devel libjpeg-devel 
