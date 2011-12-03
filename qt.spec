@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.26.rc1%{?dist}
+Release: 0.27.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -48,6 +48,9 @@ Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # may be upstreamable, not sure yet
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
+
+# workaround for a MOC issue with Boost 1.48 headers (#756395)
+Patch24: qt-everywhere-opensource-src-4.8.0-rc1-moc-boost148.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -402,6 +405,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch4 -p1 -b .uic_multilib
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
+%patch24 -p1 -b .moc-boost148
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1059,6 +1063,9 @@ fi
 
 
 %changelog
+* Sat Dec 03 2011 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.0-0.27.rc1
+- work around a MOC issue with Boost 1.48 headers (#756395)
+
 * Wed Nov 30 2011 Than Ngo <than@redhat.com> - 4.8.0-0.26.rc1
 - workaround crash on ppc64
 
