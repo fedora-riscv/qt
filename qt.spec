@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.27.rc1%{?dist}
+Release: 0.28.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -166,6 +166,7 @@ BuildRequires: pkgconfig(alsa)
 BuildRequires: pkgconfig(dbus-1)
 BuildRequires: pkgconfig(fontconfig)
 BuildRequires: pkgconfig(glib-2.0)
+BuildRequires: pkgconfig(icu-i18n)
 BuildRequires: pkgconfig(NetworkManager)
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(libpng)
@@ -518,6 +519,7 @@ done
   -xrender \
   -xkb \
   -glib \
+  -icu \
   -openssl-linked \
   -xmlpatterns \
   %{?dbus} %{!?dbus:-no-dbus} \
@@ -1063,6 +1065,9 @@ fi
 
 
 %changelog
+* Sun Dec 04 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.28.rc1
+- Control whether icu support is built (#759923)
+
 * Sat Dec 03 2011 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.0-0.27.rc1
 - work around a MOC issue with Boost 1.48 headers (#756395)
 
