@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.28.rc1%{?dist}
+Release: 0.29.rc1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -104,6 +104,9 @@ Patch75: qt-ppc64-crash.patch
 # Applications crash when using a visual with 24 bits per pixel 
 # https://bugreports.qt.nokia.com/browse/QTBUG-21754
 Patch100: qt-everywhere-opensource-src-4.8.0-QTBUG-21754.patch
+# Revert "Improved performance of mapFromGlobal/mapToGlobal on X11" (QTBUG-22420)
+# Fixes the position of misplaced mouse input
+Patch101: qt-everywhere-opensource-src-4.8.0-QTBUG-22420-revert-x11-map-global.patch
 
 # security patches
 
@@ -432,6 +435,7 @@ popd
 
 # upstream patches
 %patch100 -p1 -b .QTBUG-21754
+%patch101 -p1 -b .QTBUG-22420-revert-x11-map-global.patch
 
 # security fixes
 
@@ -1065,6 +1069,9 @@ fi
 
 
 %changelog
+* Mon Dec 12 2011 Jaroslav Reznik <jreznik@redhat.com> 4.8.0-0.29.rc1
+- Fixes the position of misplaced mouse input (QTBUG-22420)
+
 * Sun Dec 04 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-0.28.rc1
 - Control whether icu support is built (#759923)
 
