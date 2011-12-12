@@ -435,7 +435,7 @@ popd
 
 # upstream patches
 %patch100 -p1 -b .QTBUG-21754
-%patch101 -p1 -b .QTBUG-22420-revert-x11-map-global.patch
+%patch101 -p1 -b .QTBUG-22420-revert-x11-map-global
 
 # security fixes
 
