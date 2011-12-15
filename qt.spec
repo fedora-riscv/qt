@@ -11,19 +11,13 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 0.29.rc1%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://qt.nokia.com/
-%if 0%{?snap:1}
-# git clone git://gitorious.org/qt/qt.git ; cd qt
-# git archive --prefix qt-everywhere-opensource-src-%{version}/ 4.8 | xz -9 
-Source0: qt-everywhere-opensource-src-4.8.0-20111002.tar.xz
-%else
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}-rc1.tar.gz
-%endif
+Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Obsoletes: qt4 < %{version}-%{release}
@@ -101,12 +95,6 @@ Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 Patch75: qt-ppc64-crash.patch
 
 # upstream patches
-# Applications crash when using a visual with 24 bits per pixel 
-# https://bugreports.qt.nokia.com/browse/QTBUG-21754
-Patch100: qt-everywhere-opensource-src-4.8.0-QTBUG-21754.patch
-# Revert "Improved performance of mapFromGlobal/mapToGlobal on X11" (QTBUG-22420)
-# Fixes the position of misplaced mouse input
-Patch101: qt-everywhere-opensource-src-4.8.0-QTBUG-22420-revert-x11-map-global.patch
 
 # security patches
 
@@ -434,8 +422,6 @@ popd
 %patch75 -p1 -b .ppc64-crash
 
 # upstream patches
-%patch100 -p1 -b .QTBUG-21754
-%patch101 -p1 -b .QTBUG-22420-revert-x11-map-global
 
 # security fixes
 
@@ -546,11 +532,6 @@ make %{?_smp_mflags}
 
 # recreate .qm files
 LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
-
-%if 0%{?snap:1}
-# fixup/generate docs
-LD_LIBRARY_PATH=`pwd`/lib QT_PLUGIN_PATH=`pwd`/plugins make docs
-%endif
 
 
 %install
@@ -818,11 +799,7 @@ fi
 
 %files -f qt.lang
 %defattr(-,root,root,-)
-%if ! 0%{?snap}
-%doc README 
-%doc LICENSE.GPL3
-%endif
-%doc LICENSE.LGPL LGPL_EXCEPTION.txt
+%doc README LICENSE.GPL3 LICENSE.LGPL LGPL_EXCEPTION.txt
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -1069,6 +1046,9 @@ fi
 
 
 %changelog
+* Thu Dec 15 2011 Jaroslav Reznik <jreznik@redhat.com> 4.8.0-1
+- 4.8.0
+
 * Mon Dec 12 2011 Jaroslav Reznik <jreznik@redhat.com> 4.8.0-0.29.rc1
 - Fixes the position of misplaced mouse input (QTBUG-22420)
 
