@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -93,6 +93,9 @@ Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 
 # workaround crash on ppc64
 Patch75: qt-ppc64-crash.patch
+
+# add missing method for QBasicAtomicPointer on s390(x)
+Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
 # upstream patches
 
@@ -420,6 +423,7 @@ popd
 %endif
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch75 -p1 -b .ppc64-crash
+%patch76 -p1 -b .s390-atomic
 
 # upstream patches
 
@@ -1046,6 +1050,9 @@ fi
 
 
 %changelog
+* Mon Dec 19 2011 Dan Horák <dan[at]dannu.cz> 4.8.0-2
+- add missing method for QBasicAtomicPointer on s390(x)
+
 * Thu Dec 15 2011 Jaroslav Reznik <jreznik@redhat.com> 4.8.0-1
 - 4.8.0
 
