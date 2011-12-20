@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -96,6 +96,9 @@ Patch75: qt-ppc64-crash.patch
 
 # add missing method for QBasicAtomicPointer on s390(x)
 Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
+
+# don't spam if libicu is not present at runtime
+Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
 
 # upstream patches
 
@@ -424,6 +427,7 @@ popd
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch75 -p1 -b .ppc64-crash
 %patch76 -p1 -b .s390-atomic
+%patch77 -p1 -b .icu_no_spam
 
 # upstream patches
 
@@ -1050,6 +1054,9 @@ fi
 
 
 %changelog
+* Tue Dec 20 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-3
+- don't spam if libicu is not present at runtime (#759923)
+
 * Mon Dec 19 2011 Dan Horák <dan[at]dannu.cz> 4.8.0-2
 - add missing method for QBasicAtomicPointer on s390(x)
 
