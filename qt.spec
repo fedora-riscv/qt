@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -99,6 +99,10 @@ Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
 # don't spam if libicu is not present at runtime
 Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
+
+# avoid dropping events, which lead to "ghost entries in kde task manager" problem
+# https://bugs.kde.org/show_bug.cgi?id=275469
+Patch78: qt-everywhere-opensource-src-4.8.0-filter_event.patch
 
 # upstream patches
 
@@ -316,9 +320,7 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description examples
 %{summary}.
 
-## FIXME, ftbfs -- rex
-## .obj/release-shared/qwssignalhandler.o: In function `QWSSignalHandler::clear()': qwssignalhandler.cpp:(.text+0x349): undefined reference to `QWSLock::~QWSLock()'
-#define qvfb 1
+%define qvfb 1
 %package qvfb
 Summary: Virtual frame buffer for Qt for Embedded Linux
 Group: Applications/Emulators
@@ -428,6 +430,7 @@ popd
 %patch75 -p1 -b .ppc64-crash
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_spam
+%patch78 -p1 -b .filter_events
 
 # upstream patches
 
@@ -1054,6 +1057,10 @@ fi
 
 
 %changelog
+* Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-4
+- filter event patch, avoid "ghost entries in kde taskbar" problem (kde#275469)
+- re-enable -qvfb
+
 * Tue Dec 20 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-3
 - don't spam if libicu is not present at runtime (#759923)
 
