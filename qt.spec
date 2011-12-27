@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -94,6 +94,9 @@ Patch73: qt-everywhere-opensource-src-4.7.4-qml_no_strict_aliasing.patch
 # workaround
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
 Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
+
+# avoid dropping events, which lead to "ghost entries in kde task manager" problem
+Patch75: qt-everywhere-opensource-src-4.7.4-filter_event.patch
 
 # upstream patches
 # Applications crash when using a visual with 24 bits per pixel 
@@ -539,6 +542,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 %patch70 -p1 -b .QTBUG-14724
 %patch73 -p1 -b .qml_no_strict_aliasing
 %patch74 -p1 -b .tds_no_strict_aliasing
+%patch75 -p1 -b .filter_event
 
 ## upstream patches
 %patch100 -p1 -b .QTBUG-21754
@@ -1301,6 +1305,9 @@ fi
 
 
 %changelog
+* Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-8
+- filter event patch, an attempt to avoid "ghost entries in kde taskbar" problem
+
 * Wed Nov 16 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-7
 - drop kde-qt 0012 patch, it's broken if not upstream (#704882)
 
