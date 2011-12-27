@@ -320,7 +320,7 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description examples
 %{summary}.
 
-%define qvfb 1
+#define qvfb 1
 %package qvfb
 Summary: Virtual frame buffer for Qt for Embedded Linux
 Group: Applications/Emulators
@@ -1059,7 +1059,6 @@ fi
 %changelog
 * Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-4
 - filter event patch, avoid "ghost entries in kde taskbar" problem (kde#275469)
-- re-enable -qvfb
 
 * Tue Dec 20 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-3
 - don't spam if libicu is not present at runtime (#759923)
