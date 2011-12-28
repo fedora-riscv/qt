@@ -556,7 +556,7 @@ make install INSTALL_ROOT=%{buildroot}
 
 %if 0%{?qvfb}
 make install INSTALL_ROOT=%{buildroot} -C tools/qvfb
-%find_lang qvfb --with-qt --without-mo}
+%find_lang qvfb --with-qt --without-mo
 %else
 rm -f %{buildroot}%{_qt4_translationdir}/qvfb*.qm
 %endif
