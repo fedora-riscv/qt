@@ -554,7 +554,7 @@ rm -rf %{buildroot}
 
 make install INSTALL_ROOT=%{buildroot}
 
-%if 0%{?qbfb}
+%if 0%{?qvfb}
 make install INSTALL_ROOT=%{buildroot} -C tools/qvfb
 %find_lang qvfb --with-qt --without-mo}
 %else
