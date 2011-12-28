@@ -105,7 +105,7 @@ Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
 Patch78: qt-everywhere-opensource-src-4.8.0-filter_event.patch
 
 # fix qvfb build
-Patch79 qt-everywhere-opensource-src-4.8.0-qvfb.patch
+Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
 
 # upstream patches
 
