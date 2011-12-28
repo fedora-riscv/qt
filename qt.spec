@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -103,6 +103,9 @@ Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
 # avoid dropping events, which lead to "ghost entries in kde task manager" problem
 # https://bugs.kde.org/show_bug.cgi?id=275469
 Patch78: qt-everywhere-opensource-src-4.8.0-filter_event.patch
+
+# fix qvfb build
+Patch79 qt-everywhere-opensource-src-4.8.0-qvfb.patch
 
 # upstream patches
 
@@ -320,7 +323,7 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description examples
 %{summary}.
 
-#define qvfb 1
+%define qvfb 1
 %package qvfb
 Summary: Virtual frame buffer for Qt for Embedded Linux
 Group: Applications/Emulators
@@ -431,6 +434,7 @@ popd
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_spam
 %patch78 -p1 -b .filter_events
+%patch79 -p1 -b .qvfb
 
 # upstream patches
 
@@ -1057,6 +1061,9 @@ fi
 
 
 %changelog
+* Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-5
+- fix qvfb 
+
 * Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-4
 - filter event patch, avoid "ghost entries in kde taskbar" problem (kde#275469)
 
