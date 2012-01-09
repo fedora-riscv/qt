@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -110,6 +110,8 @@ Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
 # upstream patches
 
 # security patches
+# CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
+Patch200: qt-4.8.0-CVE-2011-3922-bz#772125.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -439,6 +441,7 @@ popd
 # upstream patches
 
 # security fixes
+%patch200 -p1 -b .CVE-2011-3922
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1061,6 +1064,9 @@ fi
 
 
 %changelog
+* Mon Jan 09 2012 Than Ngo <than@redhat.com> - 4.8.0-6
+- bz#772128, CVE-2011-3922, Stack-based buffer overflow in embedded harfbuzz code
+
 * Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-5
 - fix qvfb 
 
