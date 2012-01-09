@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -114,7 +114,10 @@ Patch202: 0002-This-patch-makes-override-redirect-windows-popup-men.patch
 Patch205: 0005-When-tabs-are-inserted-or-removed-in-a-QTabBar.patch
 
 # security patches
+# CVE-2010-1822, WebKit: DoS (crash) by processing certain SVG images
 Patch300: qt-everywhere-opensource-src-4.7.0-CVE-2010-1822-crash-svg-image.patch
+# CVE-2011-3922, stack-based buffer overflow in embedded harfbuzz code
+Patch301: qt-4.8.0-CVE-2011-3922-bz#772125.patch
 
 # gstreamer logos
 Source10: http://gstreamer.freedesktop.org/data/images/artwork/gstreamer-logo.svg
@@ -560,6 +563,7 @@ Qt libraries used for drawing widgets and OpenGL items.
 
 # security fixes
 %patch300 -p1 -b .CVE-2010-1822-crash-svg-image
+%patch301 -p1 -b .CVE-2011-3922-bz#772125
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1305,6 +1309,9 @@ fi
 
 
 %changelog
+* Mon Jan 09 2012 Than Ngo <than@redhat.com> - 1:4.7.4-9
+- bz#772128, CVE-2011-3922, Stack-based buffer overflow in embedded harfbuzz code
+
 * Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-8
 - filter event patch, an attempt to avoid "ghost entries in kde taskbar" problem
 
