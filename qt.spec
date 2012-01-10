@@ -18,7 +18,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.7.4
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -96,6 +96,7 @@ Patch73: qt-everywhere-opensource-src-4.7.4-qml_no_strict_aliasing.patch
 Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 
 # avoid dropping events, which lead to "ghost entries in kde task manager" problem
+# https://bugs.kde.org/275469
 Patch75: qt-everywhere-opensource-src-4.7.4-filter_event.patch
 
 # upstream patches
@@ -1309,11 +1310,14 @@ fi
 
 
 %changelog
+* Tue Jan 10 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-10
+- improved filter_event patch (kde#275469)
+
 * Mon Jan 09 2012 Than Ngo <than@redhat.com> - 1:4.7.4-9
 - bz#772128, CVE-2011-3922, Stack-based buffer overflow in embedded harfbuzz code
 
 * Tue Dec 27 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-8
-- filter event patch, an attempt to avoid "ghost entries in kde taskbar" problem
+- filter event patch, an attempt to avoid "ghost entries in kde taskbar" (kde#275469)
 
 * Wed Nov 16 2011 Rex Dieter <rdieter@fedoraproject.org> 1:4.7.4-7
 - drop kde-qt 0012 patch, it's broken if not upstream (#704882)
