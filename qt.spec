@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1064,6 +1064,9 @@ fi
 
 
 %changelog
+* Tue Jan 10 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-7
+- improved filter_event patch (kde#275469)
+
 * Mon Jan 09 2012 Than Ngo <than@redhat.com> - 4.8.0-6
 - bz#772128, CVE-2011-3922, Stack-based buffer overflow in embedded harfbuzz code
 
