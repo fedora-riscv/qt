@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -106,6 +106,12 @@ Patch78: qt-everywhere-opensource-src-4.8.0-filter_event.patch
 
 # fix qvfb build
 Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
+
+# gcc doesn't support flag -fuse-ld=gold
+Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
+
+# gcc-4.7 build issue
+Patch81: qt-everywhere-opensource-src-4.8.0-gcc-4.7.patch
 
 # upstream patches
 
@@ -437,6 +443,8 @@ popd
 %patch77 -p1 -b .icu_no_spam
 %patch78 -p1 -b .filter_events
 %patch79 -p1 -b .qvfb
+%patch80 -p1 -b .ld.gold
+%patch81 -p1 -b .gcc-4.7
 
 # upstream patches
 
@@ -1064,6 +1072,10 @@ fi
 
 
 %changelog
+* Tue Jan 24 2012 Than Ngo <than@redhat.com> - 4.8.0-8
+- disable Using gold linker, g++ doesn't support flags gold linker
+- fix gcc-4.7 issue
+
 * Tue Jan 10 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-7
 - improved filter_event patch (kde#275469)
 
