@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -34,7 +34,7 @@ Source5: qconfig-multilib.h
 Patch2: qt-everywhere-opensource-src-4.8.0-tp-multilib-optflags.patch
 
 # get rid of timestamp which causes multilib problem
-Patch4: qt-everywhere-opensource-src-4.7.0-beta1-uic_multilib.patch
+Patch4: qt-everywhere-opensource-src-4.8.0-timestamp.patch
 
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
@@ -1072,6 +1072,9 @@ fi
 
 
 %changelog
+* Mon Feb 20 2012 Than Ngo <than@redhat.com> - 4.8.0-9
+- get rid of timestamp which causes multilib problem
+
 * Tue Jan 24 2012 Than Ngo <than@redhat.com> - 4.8.0-8
 - disable Using gold linker, g++ doesn't support flags gold linker
 - fix gcc-4.7 issue
