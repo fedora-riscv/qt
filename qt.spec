@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.0
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -269,6 +269,7 @@ Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Summary: Demonstration applications for %{name}
 Group:   Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-doc
 %description demos
 %{summary}.
 
@@ -1072,6 +1073,9 @@ fi
 
 
 %changelog
+* Wed Feb 22 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-10
+- -demos: Requires: -doc (#795859)
+
 * Mon Feb 20 2012 Than Ngo <than@redhat.com> - 4.8.0-9
 - get rid of timestamp which causes multilib problem
 
