@@ -68,7 +68,7 @@ Patch67: qt-everywhere-opensource-src-4.8.0-beta1-s390.patch
 
 # https://bugs.webkit.org/show_bug.cgi?id=63941
 # -Wall + -Werror = fail
-Patch68: webkit-qtwebkit-2.2-no_Werror.patch
+Patch68: qt-4.8.1-webkit-no_Werror.patch
 
 # revert qlist.h commit that seems to induce crashes in qDeleteAll<QList (QTBUG-22037)
 Patch69: qt-everywhere-opensource-src-4.8.0-QTBUG-22037.patch
@@ -78,10 +78,6 @@ Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch
 
 # Buttons in Qt applications not clickable when run under gnome-shell (#742658, QTBUG-21900)
 Patch71:  qt-everywhere-opensource-src-4.8.0-QTBUG-21900.patch
-
-# restore Qt-4.7 behavior (which kde needs) to QUrl.toLocalfile
-# https://bugzilla.redhat.com/show_bug.cgi?id=749213
-Patch72: qt-everywhere-opensource-src-4.8.0-QUrl_toLocalFile.patch
 
 # QtWebKit wtf library: GMutex is a union rather than a struct in GLib >= 2.31
 # fixes FTBFS: https://bugs.webkit.org/show_bug.cgi?id=69840
@@ -99,10 +95,6 @@ Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
 # don't spam if libicu is not present at runtime
 Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
-
-# avoid dropping events, which lead to "ghost entries in kde task manager" problem
-# https://bugs.kde.org/show_bug.cgi?id=275469
-Patch78: qt-everywhere-opensource-src-4.8.0-filter_event.patch
 
 # fix qvfb build
 Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
@@ -426,13 +418,10 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 %patch67 -p1 -b .s390
-pushd src/3rdparty/webkit
 %patch68 -p1 -b .no_Werror
-popd
 %patch69 -p1 -b .QTBUG-22037
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
-%patch72 -p1 -b .QUrl_toLocalFile
 %if 0%{?fedora} > 16
 # This quick fix works ONLY with GLib >= 2.31. It's harder to fix this portably.
 # See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
@@ -442,7 +431,6 @@ popd
 %patch75 -p1 -b .ppc64-crash
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_spam
-%patch78 -p1 -b .filter_events
 %patch79 -p1 -b .qvfb
 %patch80 -p1 -b .ld.gold
 %patch81 -p1 -b .gcc-4.7
