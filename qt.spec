@@ -10,8 +10,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.0
-Release: 10%{?dist}
+Version: 4.8.1
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1073,6 +1073,9 @@ fi
 
 
 %changelog
+* Wed Mar 28 2012 Than Ngo <than@redhat.com> - 4.8.1-1
+- 4.8.1
+
 * Wed Feb 22 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-10
 - -demos: Requires: -doc (#795859)
 
