@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -650,7 +650,7 @@ popd
 
 %ifarch %{multilib_archs}
 # multilib: qconfig.h
-  mv %{buildroot}%{_qt4_headerdir}/Qt/qconfig.h %{buildroot}%{_qt4_headerdir}/QtCore/qconfig-%{_arch}.h
+  mv %{buildroot}%{_qt4_headerdir}/Qt/qconfig.h %{buildroot}%{_qt4_headerdir}/QtCore/qconfig-%{__isa_bits}.h
   install -p -m644 -D %{SOURCE5} %{buildroot}%{_qt4_headerdir}/QtCore/qconfig-multilib.h
   ln -sf qconfig-multilib.h %{buildroot}%{_qt4_headerdir}/QtCore/qconfig.h
   ln -sf ../QtCore/qconfig.h %{buildroot}%{_qt4_headerdir}/Qt/qconfig.h
@@ -658,7 +658,7 @@ popd
 
 %if "%{_qt4_libdir}" != "%{_libdir}"
   mkdir -p %{buildroot}/etc/ld.so.conf.d
-  echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{_arch}.conf
+  echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{__isa_bits}.conf
 %endif
 
 # Trolltech.conf
@@ -1060,6 +1060,9 @@ fi
 
 
 %changelog
+* Thu Mar 29 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-3
+- Header file name mismatch in qt-devel i686 (#808087)
+
 * Thu Mar 29 2012 Than Ngo <than@redhat.com> - 4.8.1-2
 - add correct flags
 
