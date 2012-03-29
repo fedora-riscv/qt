@@ -10,8 +10,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.0
-Release: 10%{?dist}
+Version: 4.8.1
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -68,7 +68,7 @@ Patch67: qt-everywhere-opensource-src-4.8.0-beta1-s390.patch
 
 # https://bugs.webkit.org/show_bug.cgi?id=63941
 # -Wall + -Werror = fail
-Patch68: webkit-qtwebkit-2.2-no_Werror.patch
+Patch68: qt-4.8.1-webkit-no_Werror.patch
 
 # revert qlist.h commit that seems to induce crashes in qDeleteAll<QList (QTBUG-22037)
 Patch69: qt-everywhere-opensource-src-4.8.0-QTBUG-22037.patch
@@ -78,10 +78,6 @@ Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch
 
 # Buttons in Qt applications not clickable when run under gnome-shell (#742658, QTBUG-21900)
 Patch71:  qt-everywhere-opensource-src-4.8.0-QTBUG-21900.patch
-
-# restore Qt-4.7 behavior (which kde needs) to QUrl.toLocalfile
-# https://bugzilla.redhat.com/show_bug.cgi?id=749213
-Patch72: qt-everywhere-opensource-src-4.8.0-QUrl_toLocalFile.patch
 
 # QtWebKit wtf library: GMutex is a union rather than a struct in GLib >= 2.31
 # fixes FTBFS: https://bugs.webkit.org/show_bug.cgi?id=69840
@@ -99,10 +95,6 @@ Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
 # don't spam if libicu is not present at runtime
 Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
-
-# avoid dropping events, which lead to "ghost entries in kde task manager" problem
-# https://bugs.kde.org/show_bug.cgi?id=275469
-Patch78: qt-everywhere-opensource-src-4.8.0-filter_event.patch
 
 # fix qvfb build
 Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
@@ -269,6 +261,7 @@ Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Summary: Demonstration applications for %{name}
 Group:   Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{name}-doc
 %description demos
 %{summary}.
 
@@ -425,13 +418,10 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 %patch67 -p1 -b .s390
-pushd src/3rdparty/webkit
 %patch68 -p1 -b .no_Werror
-popd
 %patch69 -p1 -b .QTBUG-22037
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
-%patch72 -p1 -b .QUrl_toLocalFile
 %if 0%{?fedora} > 16
 # This quick fix works ONLY with GLib >= 2.31. It's harder to fix this portably.
 # See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
@@ -441,7 +431,6 @@ popd
 %patch75 -p1 -b .ppc64-crash
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_spam
-%patch78 -p1 -b .filter_events
 %patch79 -p1 -b .qvfb
 %patch80 -p1 -b .ld.gold
 %patch81 -p1 -b .gcc-4.7
@@ -466,10 +455,9 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %define platform linux-g++
 %endif
 
-sed -i \
-  -e "s|-O2|$RPM_OPT_FLAGS|g" \
-  -e "s|g++.conf|g++-multilib.conf|g" \
-  mkspecs/%{platform}/qmake.conf
+sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
+  mkspecs/%{platform}/qmake.conf \
+  mkspecs/common/g*base.conf
 
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
 sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
@@ -662,7 +650,7 @@ popd
 
 %ifarch %{multilib_archs}
 # multilib: qconfig.h
-  mv %{buildroot}%{_qt4_headerdir}/Qt/qconfig.h %{buildroot}%{_qt4_headerdir}/QtCore/qconfig-%{_arch}.h
+  mv %{buildroot}%{_qt4_headerdir}/Qt/qconfig.h %{buildroot}%{_qt4_headerdir}/QtCore/qconfig-%{__isa_bits}.h
   install -p -m644 -D %{SOURCE5} %{buildroot}%{_qt4_headerdir}/QtCore/qconfig-multilib.h
   ln -sf qconfig-multilib.h %{buildroot}%{_qt4_headerdir}/QtCore/qconfig.h
   ln -sf ../QtCore/qconfig.h %{buildroot}%{_qt4_headerdir}/Qt/qconfig.h
@@ -670,7 +658,7 @@ popd
 
 %if "%{_qt4_libdir}" != "%{_libdir}"
   mkdir -p %{buildroot}/etc/ld.so.conf.d
-  echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{_arch}.conf
+  echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{__isa_bits}.conf
 %endif
 
 # Trolltech.conf
@@ -1072,8 +1060,17 @@ fi
 
 
 %changelog
-* Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.8.0-10
-- Rebuilt for c++ ABI breakage
+* Thu Mar 29 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-3
+- Header file name mismatch in qt-devel i686 (#808087)
+
+* Thu Mar 29 2012 Than Ngo <than@redhat.com> - 4.8.1-2
+- add correct flags
+
+* Wed Mar 28 2012 Than Ngo <than@redhat.com> - 4.8.1-1
+- 4.8.1
+
+* Wed Feb 22 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.0-10
+- -demos: Requires: -doc (#795859)
 
 * Mon Feb 20 2012 Than Ngo <than@redhat.com> - 4.8.0-9
 - get rid of timestamp which causes multilib problem

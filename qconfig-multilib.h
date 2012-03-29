@@ -4,24 +4,17 @@
  *
  * DO NOT INCLUDE THE NEW FILE DIRECTLY -- ALWAYS INCLUDE THIS ONE INSTEAD. */
 
-#if defined(__x86_64__)
-# include <QtCore/qconfig-x86_64.h>
-#elif defined(__i386__)
-# include <QtCore/qconfig-i386.h>
-#elif defined(__powerpc64__)
-# include <QtCore/qconfig-ppc64.h>
-#elif defined(__powerpc__)
-# include <QtCore/qconfig-ppc.h>
-#elif defined(__s390x__)
-# include <QtCore/qconfig-s390x.h>
-#elif defined(__s390__)
-# include <QtCore/qconfig-s390.h> 
-#elif defined(__sparc__) && defined (__arch64__)
-# include <QtCore/qconfig-sparc64.h>
-#elif defined(__sparc__)
-# include <QtCore/qconfig-sparc.h>
+#ifndef QCONFIG_MULTILIB_H
+#define QCONFIG_MULTILIB_H
+#include <bits/wordsize.h>
+
+#if __WORDSIZE == 32
+#include "QtCore/qconfig-32.h"
+#elif __WORDSIZE == 64
+#include "QtCore/qconfig-64.h"
 #else
-/* Should never reach this point, if so see bugzilla.redhat.com/223663 */
-#error "This qt4-devel package does not work your architecture?"
+#error "unexpected value for __WORDSIZE macro"
+#endif
+
 #endif
 
