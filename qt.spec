@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -455,10 +455,9 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %define platform linux-g++
 %endif
 
-sed -i \
-  -e "s|-O2|$RPM_OPT_FLAGS|g" \
-  -e "s|g++.conf|g++-multilib.conf|g" \
-  mkspecs/%{platform}/qmake.conf
+sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
+  mkspecs/%{platform}/qmake.conf \
+  mkspecs/common/g*base.conf
 
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
 sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
@@ -1061,6 +1060,9 @@ fi
 
 
 %changelog
+* Thu Mar 29 2012 Than Ngo <than@redhat.com> - 4.8.1-2
+- add correct flags
+
 * Wed Mar 28 2012 Than Ngo <than@redhat.com> - 4.8.1-1
 - 4.8.1
 
