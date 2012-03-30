@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -106,6 +106,8 @@ Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
 Patch81: qt-everywhere-opensource-src-4.8.0-gcc-4.7.patch
 
 # upstream patches
+# http://codereview.qt-project.org/#change,22006
+Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -436,6 +438,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch81 -p1 -b .gcc-4.7
 
 # upstream patches
+%patch100 -p1 -b .QTgaHandler
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1060,6 +1063,9 @@ fi
 
 
 %changelog
+* Fri Mar 30 2012 Than Ngo <than@redhat.com> - 4.8.1-4
+- Fix QTgaHandler::canRead() not obeying image plugin specs
+
 * Thu Mar 29 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-3
 - Header file name mismatch in qt-devel i686 (#808087)
 
