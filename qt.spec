@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -108,6 +108,9 @@ Patch81: qt-everywhere-opensource-src-4.8.0-gcc-4.7.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
+# Fix a crash in cursorToX() when new block is added
+# http://codereview.qt-project.org/22142
+Patch101: qt-everywhere-opensource-src-4.8.1-QTBUG-24718.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -439,6 +442,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
+%patch101 -p1 -b .QTBUG-24718
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1063,6 +1067,9 @@ fi
 
 
 %changelog
+* Tue Apr 03 2012 Jaroslav Reznik <jreznik@redhat.com> - 4.8.1-5
+- Fix a crash in cursorToX() when new block is added (QTBUG-24718)
+
 * Fri Mar 30 2012 Than Ngo <than@redhat.com> - 4.8.1-4
 - Fix QTgaHandler::canRead() not obeying image plugin specs
 
