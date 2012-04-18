@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 5%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -45,6 +45,10 @@ Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 
 # workaround for a MOC issue with Boost 1.48 headers (#756395)
 Patch24: qt-everywhere-opensource-src-4.8.0-rc1-moc-boost148.patch
+
+# hack out largely useless (to users) warnings about qdbusconnection
+# (often in kde apps), keep an eye on https://git.reviewboard.kde.org/r/103699/
+Patch25: qt-everywhere-opensource-src-4.8.1-qdbusconnection_no_debug.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -93,8 +97,8 @@ Patch75: qt-ppc64-crash.patch
 # add missing method for QBasicAtomicPointer on s390(x)
 Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
-# don't spam if libicu is not present at runtime
-Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
+# don't spam in release/no_debug mode if libicu is not present at runtime
+Patch77:  qt-everywhere-opensource-src-4.8.1-icu_no_debug.patch
 
 # fix qvfb build
 Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
@@ -415,6 +419,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
 %patch24 -p1 -b .moc-boost148
+%patch25 -p1 -b .qdbusconnection_no_debug.patch
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -427,7 +432,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch69 -p1 -b .QTBUG-22037
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
-%if 0%{?fedora} > 16
+%if 0%{?fedora} > 16 || 0%{?rhel} > 6
 # This quick fix works ONLY with GLib >= 2.31. It's harder to fix this portably.
 # See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
 %patch73 -p1 -b .qtwebkit-glib231
@@ -435,7 +440,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch75 -p1 -b .ppc64-crash
 %patch76 -p1 -b .s390-atomic
-%patch77 -p1 -b .icu_no_spam
+%patch77 -p1 -b .icu_no_debug
 %patch79 -p1 -b .qvfb
 %patch80 -p1 -b .ld.gold
 %patch81 -p1 -b .gcc-4.7
@@ -1067,6 +1072,12 @@ fi
 
 
 %changelog
+* Wed Apr 18 2012 Than Ngo <than@redhat.com> - 4.8.1-7
+- add rhel condition
+
+* Tue Apr 17 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-6
+- omit qdbusconnection warnings in release/no-debug mode
+
 * Tue Apr 03 2012 Jaroslav Reznik <jreznik@redhat.com> - 4.8.1-5
 - Fix a crash in cursorToX() when new block is added (QTBUG-24718)
 
