@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -432,7 +432,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch69 -p1 -b .QTBUG-22037
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
-%if 0%{?fedora} > 16
+%if 0%{?fedora} > 16 || 0%{?rhel} > 6
 # This quick fix works ONLY with GLib >= 2.31. It's harder to fix this portably.
 # See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
 %patch73 -p1 -b .qtwebkit-glib231
@@ -1072,6 +1072,9 @@ fi
 
 
 %changelog
+* Wed Apr 18 2012 Than Ngo <than@redhat.com> - 4.8.1-7
+- add rhel condition
+
 * Tue Apr 17 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-6
 - omit qdbusconnection warnings in release/no-debug mode
 
