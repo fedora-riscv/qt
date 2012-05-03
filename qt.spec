@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -142,14 +142,18 @@ Source31: hi48-app-qt4-logo.png
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
 %define tds -plugin-sql-tds
-
 %define phonon -phonon
 %define phonon_backend -phonon-backend
 %define dbus -dbus-linked
 %define graphicssystem -graphicssystem raster
 %define gtkstyle -gtkstyle
+%if 0%{?fedora}
 # FIXME/TODO: use system webkit for assistant, examples/webkit, demos/browser
 %define webkit -webkit
+%endif
+%if 0%{?rhel}
+%define no_javascript_jit -no-javascript-jit
+%endif
 
 # See http://bugzilla.redhat.com/196901
 %define _qt4 %{name}
@@ -679,11 +683,14 @@ install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
+
 # assistant icons
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/assistant.png
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/assistant.png
+
 # designer icons
 install -p -m644 -D tools/designer/src/designer/images/designer.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/designer.png
+
 # linguist icons
 for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
@@ -754,6 +761,7 @@ rm -fv %{buildroot}%{_qt4_plugindir}/designer/libphononwidgets.so
 # backend
 rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
+
 # nuke bundled webkit bits 
 rm -fv %{buildroot}%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qgraphicswebview.h
@@ -1072,6 +1080,9 @@ fi
 
 
 %changelog
+* Thu May 03 2012 Than Ngo <than@redhat.com> - 4.8.1-8
+- add rhel/fedora condition
+
 * Wed Apr 18 2012 Than Ngo <than@redhat.com> - 4.8.1-7
 - add rhel condition
 
