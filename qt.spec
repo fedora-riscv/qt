@@ -11,7 +11,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1080,6 +1080,9 @@ fi
 
 
 %changelog
+* Tue May 08 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-9
+- rebuild (libtiff)
+
 * Thu May 03 2012 Than Ngo <than@redhat.com> - 4.8.1-8
 - add rhel/fedora condition
 
