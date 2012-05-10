@@ -7,6 +7,11 @@
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 
+%if 0%{?fedora} > 16
+# use external qt_settings pkg
+%define qt_settings 1
+%endif
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
@@ -23,6 +28,9 @@ BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
 %{?_isa:Provides: qt4%{?_isa} = %{version}-%{release}}
+
+# default Qt config file
+Source4: Trolltech.conf
 
 # header file to workaround multilib issue
 Source5: qconfig-multilib.h
@@ -238,7 +246,9 @@ BuildRequires: freetds-devel
 Obsoletes: qgtkstyle < 0.1
 Provides:  qgtkstyle = 0.1-1
 Requires: ca-certificates
+%if 0%{?qt_settings}
 Requires: qt-settings
+%endif
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -675,6 +685,11 @@ popd
   echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{__isa_bits}.conf
 %endif
 
+%if ! 0%{?qt_settings}
+# Trolltech.conf
+install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
+%endif
+
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
@@ -851,6 +866,9 @@ fi
 
 %if "%{_qt4_sysconfdir}" != "%{_sysconfdir}"
 %dir %{_qt4_sysconfdir}
+%endif
+%if ! 0%{?qt_settings}
+%config(noreplace) %{_qt4_sysconfdir}/Trolltech.conf
 %endif
 %{_qt4_datadir}/phrasebooks/
 %{_qt4_libdir}/libQtCore.so.4*
@@ -1075,7 +1093,7 @@ fi
 
 %changelog
 * Thu May 10 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-10
-- Requires: qt-settings
+- Requires: qt-settings (f17+)
 
 * Tue May 08 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-9
 - rebuild (libtiff)
