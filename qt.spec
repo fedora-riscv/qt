@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -57,6 +57,9 @@ Patch25: qt-everywhere-opensource-src-4.8.1-qdbusconnection_no_debug.patch
 
 # lrelease-qt4 tries to run qmake not qmake-qt4 (http://bugzilla.redhat.com/820767)
 Patch26: qt-everywhere-opensource-src-4.8.1-linguist_qmake-qt4.patch
+
+# enable debuginfo in libQt3Support
+Patch27: qt-everywhere-opensource-src-4.8.1-qt3support_debuginfo.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -436,6 +439,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch24 -p1 -b .moc-boost148
 %patch25 -p1 -b .qdbusconnection_no_debug.patch
 %patch26 -p1 -b .linguist_qtmake-qt4
+%patch27 -p1 -b .qt3support_debuginfo
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1096,6 +1100,9 @@ fi
 
 
 %changelog
+* Fri May 11 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-12
+- enable debuginfo in libQt3Support
+
 * Fri May 11 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-11
 - lrelease-qt4 tries to run qmake not qmake-qt4 (#820767)
 
