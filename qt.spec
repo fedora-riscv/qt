@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -54,6 +54,9 @@ Patch24: qt-everywhere-opensource-src-4.8.0-rc1-moc-boost148.patch
 # hack out largely useless (to users) warnings about qdbusconnection
 # (often in kde apps), keep an eye on https://git.reviewboard.kde.org/r/103699/
 Patch25: qt-everywhere-opensource-src-4.8.1-qdbusconnection_no_debug.patch
+
+# lrelease-qt4 tries to run qmake not qmake-qt4 (http://bugzilla.redhat.com/820767)
+Patch26: qt-everywhere-opensource-src-4.8.1-linguist_qmake-qt4.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -432,6 +435,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch23 -p1 -b .glib_eventloop_nullcheck
 %patch24 -p1 -b .moc-boost148
 %patch25 -p1 -b .qdbusconnection_no_debug.patch
+%patch26 -p1 -b .linguist_qtmake-qt4
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1092,6 +1096,9 @@ fi
 
 
 %changelog
+* Fri May 11 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-11
+- lrelease-qt4 tries to run qmake not qmake-qt4 (#820767)
+
 * Thu May 10 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-10
 - Requires: qt-settings (f17+)
 
