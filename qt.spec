@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -102,9 +102,6 @@ Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
 Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 
-# workaround crash on ppc64
-Patch75: qt-ppc64-crash.patch
-
 # add missing method for QBasicAtomicPointer on s390(x)
 Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
@@ -126,6 +123,9 @@ Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
 # Fix a crash in cursorToX() when new block is added
 # http://codereview.qt-project.org/22142
 Patch101: qt-everywhere-opensource-src-4.8.1-QTBUG-24718.patch
+# fix crash on big endian machines
+# https://bugreports.qt-project.org/browse/QTBUG-22960
+Patch102: qt-everywhere-opensource-src-4.8.1-type.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -458,7 +458,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch73 -p1 -b .qtwebkit-glib231
 %endif
 %patch74 -p1 -b .tds_no_strict_aliasing
-%patch75 -p1 -b .ppc64-crash
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_debug
 %patch79 -p1 -b .qvfb
@@ -468,6 +467,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
 %patch101 -p1 -b .QTBUG-24718
+%patch102 -p1 -b .bigendian
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1100,6 +1100,9 @@ fi
 
 
 %changelog
+* Wed May 16 2012 Than Ngo <than@redhat.com> - 4.8.1-13
+- add upstream patch to fix crash on big endian machine
+
 * Fri May 11 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-12
 - enable debuginfo in libQt3Support
 
