@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -147,12 +147,10 @@ Source31: hi48-app-qt4-logo.png
 ## optional plugin bits
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
-%define ibase -plugin-sql-ibase
 %define mysql -plugin-sql-mysql
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
-%define tds -plugin-sql-tds
 %define phonon -phonon
 %define phonon_backend -phonon-backend
 %define dbus -dbus-linked
@@ -161,9 +159,13 @@ Source31: hi48-app-qt4-logo.png
 %if 0%{?fedora}
 # FIXME/TODO: use system webkit for assistant, examples/webkit, demos/browser
 %define webkit -webkit
+%define ibase -plugin-sql-ibase
+%define tds -plugin-sql-tds
 %endif
 %if 0%{?rhel}
 %define no_javascript_jit -no-javascript-jit
+%define ibase -no-sql-ibase
+%define tds -no-sql-tds
 %endif
 
 # See http://bugzilla.redhat.com/196901
@@ -1099,6 +1101,9 @@ fi
 
 
 %changelog
+* Fri May 18 2012 Than Ngo <than@redhat.com> - 4.8.1-15
+- add rhel/fedora condition
+
 * Thu May 17 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-14
 - Can't build 32bit Qt release application on 64bit (#822710)
 
