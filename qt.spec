@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.1
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -488,8 +488,7 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %endif
 
 sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
-  mkspecs/%{platform}/qmake.conf \
-  mkspecs/common/g*base.conf
+  mkspecs/%{platform}/qmake.conf 
 
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
 sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
@@ -1100,6 +1099,9 @@ fi
 
 
 %changelog
+* Thu May 17 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-14
+- Can't build 32bit Qt release application on 64bit (#822710)
+
 * Wed May 16 2012 Than Ngo <than@redhat.com> - 4.8.1-13
 - add upstream patch to fix crash on big endian machine
 
