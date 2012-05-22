@@ -108,14 +108,8 @@ Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 # don't spam in release/no_debug mode if libicu is not present at runtime
 Patch77:  qt-everywhere-opensource-src-4.8.1-icu_no_debug.patch
 
-# fix qvfb build
-Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
-
 # gcc doesn't support flag -fuse-ld=gold
 Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
-
-# gcc-4.7 build issue
-Patch81: qt-everywhere-opensource-src-4.8.0-gcc-4.7.patch
 
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
@@ -459,9 +453,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_debug
-%patch79 -p1 -b .qvfb
 %patch80 -p1 -b .ld.gold
-%patch81 -p1 -b .gcc-4.7
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
