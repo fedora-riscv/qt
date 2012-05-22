@@ -7,7 +7,7 @@
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 
-%if 0%{?fedora} > 16
+%if 0%{?fedora} > 16 || 0%{?rhel} > 6
 # use external qt_settings pkg
 %define qt_settings 1
 %endif
@@ -15,14 +15,14 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.1
-Release: 15%{?dist}
+Version: 4.8.2
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://qt.nokia.com/
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
+Source0: http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Obsoletes: qt4 < %{version}-%{release}
@@ -108,21 +108,12 @@ Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 # don't spam in release/no_debug mode if libicu is not present at runtime
 Patch77:  qt-everywhere-opensource-src-4.8.1-icu_no_debug.patch
 
-# fix qvfb build
-Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
-
 # gcc doesn't support flag -fuse-ld=gold
 Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
-
-# gcc-4.7 build issue
-Patch81: qt-everywhere-opensource-src-4.8.0-gcc-4.7.patch
 
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
-# Fix a crash in cursorToX() when new block is added
-# http://codereview.qt-project.org/22142
-Patch101: qt-everywhere-opensource-src-4.8.1-QTBUG-24718.patch
 # fix crash on big endian machines
 # https://bugreports.qt-project.org/browse/QTBUG-22960
 Patch102: qt-everywhere-opensource-src-4.8.1-type.patch
@@ -462,13 +453,10 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_debug
-%patch79 -p1 -b .qvfb
 %patch80 -p1 -b .ld.gold
-%patch81 -p1 -b .gcc-4.7
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
-%patch101 -p1 -b .QTBUG-24718
 %patch102 -p1 -b .bigendian
 
 # security fixes
@@ -1101,6 +1089,9 @@ fi
 
 
 %changelog
+* Tue May 22 2012 Than Ngo <than@redhat.com> - 4.8.2-1
+- 4.8.2
+
 * Fri May 18 2012 Than Ngo <than@redhat.com> - 4.8.1-15
 - add rhel/fedora condition
 
