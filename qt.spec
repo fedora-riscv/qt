@@ -7,17 +7,22 @@
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
 
+%if 0%{?fedora} > 16 || 0%{?rhel} > 6
+# use external qt_settings pkg
+%define qt_settings 1
+%endif
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.1
-Release: 5%{?dist}
+Version: 4.8.2
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://qt.nokia.com/
-Source0: http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-%{version}.tar.gz
+Source0: http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-%{version}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Obsoletes: qt4 < %{version}-%{release}
@@ -45,6 +50,16 @@ Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 
 # workaround for a MOC issue with Boost 1.48 headers (#756395)
 Patch24: qt-everywhere-opensource-src-4.8.0-rc1-moc-boost148.patch
+
+# hack out largely useless (to users) warnings about qdbusconnection
+# (often in kde apps), keep an eye on https://git.reviewboard.kde.org/r/103699/
+Patch25: qt-everywhere-opensource-src-4.8.1-qdbusconnection_no_debug.patch
+
+# lrelease-qt4 tries to run qmake not qmake-qt4 (http://bugzilla.redhat.com/820767)
+Patch26: qt-everywhere-opensource-src-4.8.1-linguist_qmake-qt4.patch
+
+# enable debuginfo in libQt3Support
+Patch27: qt-everywhere-opensource-src-4.8.1-qt3support_debuginfo.patch
 
 ## upstreamable bits
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
@@ -87,30 +102,21 @@ Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
 Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 
-# workaround crash on ppc64
-Patch75: qt-ppc64-crash.patch
-
 # add missing method for QBasicAtomicPointer on s390(x)
 Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
-# don't spam if libicu is not present at runtime
-Patch77:  qt-everywhere-opensource-src-4.8.0-icu_no_spam.patch
-
-# fix qvfb build
-Patch79: qt-everywhere-opensource-src-4.8.0-qvfb.patch
+# don't spam in release/no_debug mode if libicu is not present at runtime
+Patch77:  qt-everywhere-opensource-src-4.8.1-icu_no_debug.patch
 
 # gcc doesn't support flag -fuse-ld=gold
 Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
 
-# gcc-4.7 build issue
-Patch81: qt-everywhere-opensource-src-4.8.0-gcc-4.7.patch
-
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
-# Fix a crash in cursorToX() when new block is added
-# http://codereview.qt-project.org/22142
-Patch101: qt-everywhere-opensource-src-4.8.1-QTBUG-24718.patch
+# fix crash on big endian machines
+# https://bugreports.qt-project.org/browse/QTBUG-22960
+Patch102: qt-everywhere-opensource-src-4.8.1-type.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -132,20 +138,26 @@ Source31: hi48-app-qt4-logo.png
 ## optional plugin bits
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
-%define ibase -plugin-sql-ibase
 %define mysql -plugin-sql-mysql
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
-%define tds -plugin-sql-tds
-
 %define phonon -phonon
 %define phonon_backend -phonon-backend
 %define dbus -dbus-linked
 %define graphicssystem -graphicssystem raster
 %define gtkstyle -gtkstyle
+%if 0%{?fedora}
 # FIXME/TODO: use system webkit for assistant, examples/webkit, demos/browser
 %define webkit -webkit
+%define ibase -plugin-sql-ibase
+%define tds -plugin-sql-tds
+%endif
+%if 0%{?rhel}
+%define no_javascript_jit -no-javascript-jit
+%define ibase -no-sql-ibase
+%define tds -no-sql-tds
+%endif
 
 # See http://bugzilla.redhat.com/196901
 %define _qt4 %{name}
@@ -233,6 +245,9 @@ BuildRequires: freetds-devel
 Obsoletes: qgtkstyle < 0.1
 Provides:  qgtkstyle = 0.1-1
 Requires: ca-certificates
+%if 0%{?qt_settings}
+Requires: qt-settings
+%endif
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -415,6 +430,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
 %patch24 -p1 -b .moc-boost148
+%patch25 -p1 -b .qdbusconnection_no_debug.patch
+%patch26 -p1 -b .linguist_qtmake-qt4
+%patch27 -p1 -b .qt3support_debuginfo
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -427,22 +445,19 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch69 -p1 -b .QTBUG-22037
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
-%if 0%{?fedora} > 16
+%if 0%{?fedora} > 16 || 0%{?rhel} > 6
 # This quick fix works ONLY with GLib >= 2.31. It's harder to fix this portably.
 # See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
 %patch73 -p1 -b .qtwebkit-glib231
 %endif
 %patch74 -p1 -b .tds_no_strict_aliasing
-%patch75 -p1 -b .ppc64-crash
 %patch76 -p1 -b .s390-atomic
-%patch77 -p1 -b .icu_no_spam
-%patch79 -p1 -b .qvfb
+%patch77 -p1 -b .icu_no_debug
 %patch80 -p1 -b .ld.gold
-%patch81 -p1 -b .gcc-4.7
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
-%patch101 -p1 -b .QTBUG-24718
+%patch102 -p1 -b .bigendian
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -463,8 +478,7 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %endif
 
 sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
-  mkspecs/%{platform}/qmake.conf \
-  mkspecs/common/g*base.conf
+  mkspecs/%{platform}/qmake.conf 
 
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
 sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
@@ -668,17 +682,22 @@ popd
   echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{__isa_bits}.conf
 %endif
 
+%if ! 0%{?qt_settings}
 # Trolltech.conf
 install -p -m644 -D %{SOURCE4} %{buildroot}%{_qt4_sysconfdir}/Trolltech.conf
+%endif
 
 # qt4-logo (generic) icons
 install -p -m644 -D %{SOURCE30} %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qt4-logo.png
 install -p -m644 -D %{SOURCE31} %{buildroot}%{_datadir}/icons/hicolor/48x48/apps/qt4-logo.png
+
 # assistant icons
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/assistant.png
 install -p -m644 -D tools/assistant/tools/assistant/images/assistant-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/assistant.png
+
 # designer icons
 install -p -m644 -D tools/designer/src/designer/images/designer.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/designer.png
+
 # linguist icons
 for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
@@ -749,6 +768,7 @@ rm -fv %{buildroot}%{_qt4_plugindir}/designer/libphononwidgets.so
 # backend
 rm -fv %{buildroot}%{_qt4_plugindir}/phonon_backend/*_gstreamer.so
 rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
+
 # nuke bundled webkit bits 
 rm -fv %{buildroot}%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qgraphicswebview.h
@@ -844,7 +864,9 @@ fi
 %if "%{_qt4_sysconfdir}" != "%{_sysconfdir}"
 %dir %{_qt4_sysconfdir}
 %endif
+%if ! 0%{?qt_settings}
 %config(noreplace) %{_qt4_sysconfdir}/Trolltech.conf
+%endif
 %{_qt4_datadir}/phrasebooks/
 %{_qt4_libdir}/libQtCore.so.4*
 %if 0%{?dbus:1}
@@ -1067,6 +1089,39 @@ fi
 
 
 %changelog
+* Tue May 22 2012 Than Ngo <than@redhat.com> - 4.8.2-1
+- 4.8.2
+
+* Fri May 18 2012 Than Ngo <than@redhat.com> - 4.8.1-15
+- add rhel/fedora condition
+
+* Thu May 17 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-14
+- Can't build 32bit Qt release application on 64bit (#822710)
+
+* Wed May 16 2012 Than Ngo <than@redhat.com> - 4.8.1-13
+- add upstream patch to fix crash on big endian machine
+
+* Fri May 11 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-12
+- enable debuginfo in libQt3Support
+
+* Fri May 11 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-11
+- lrelease-qt4 tries to run qmake not qmake-qt4 (#820767)
+
+* Thu May 10 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-10
+- Requires: qt-settings (f17+)
+
+* Tue May 08 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-9
+- rebuild (libtiff)
+
+* Thu May 03 2012 Than Ngo <than@redhat.com> - 4.8.1-8
+- add rhel/fedora condition
+
+* Wed Apr 18 2012 Than Ngo <than@redhat.com> - 4.8.1-7
+- add rhel condition
+
+* Tue Apr 17 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.1-6
+- omit qdbusconnection warnings in release/no-debug mode
+
 * Tue Apr 03 2012 Jaroslav Reznik <jreznik@redhat.com> - 4.8.1-5
 - Fix a crash in cursorToX() when new block is added (QTBUG-24718)
 
