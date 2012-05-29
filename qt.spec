@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.2
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1089,6 +1089,9 @@ fi
 
 
 %changelog
+* Tue May 29 2012 Than Ngo <than@redhat.com> - 4.8.2-2
+- fix bz#820767, lrelease-qt4 tries to run qmake not qmake-qt4
+
 * Tue May 22 2012 Than Ngo <than@redhat.com> - 4.8.2-1
 - 4.8.2
 
