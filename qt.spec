@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.2
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -117,6 +117,8 @@ Patch81: ./qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
+# text cursor blinks not in the current cell (kde#296490)
+Patch101: qt-Fix-cursor-truncate-to-include-line-position.patch
 # fix crash on big endian machines
 # https://bugreports.qt-project.org/browse/QTBUG-22960
 Patch102: qt-everywhere-opensource-src-4.8.1-type.patch
@@ -461,6 +463,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
+%patch101 -p1 -b .fix_cursor_blink
 %patch102 -p1 -b .bigendian
 
 # security fixes
@@ -1093,6 +1096,9 @@ fi
 
 
 %changelog
+* Thu Jul 05 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.2-4
+- text cursor blinks not in the current cell (kde#296490)
+
 * Tue Jun 19 2012 Than Ngo <than@redhat.com> - 4.8.2-3
 - fix bz#810500, fix crash in assistant
 
