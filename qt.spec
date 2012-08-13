@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.2
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -122,6 +122,10 @@ Patch101: qt-Fix-cursor-truncate-to-include-line-position.patch
 # fix crash on big endian machines
 # https://bugreports.qt-project.org/browse/QTBUG-22960
 Patch102: qt-everywhere-opensource-src-4.8.1-type.patch
+# fix JIT crash
+# https://bugreports.qt-project.org/browse/QTBUG-23871
+# https://bugs.kde.org/show_bug.cgi?id=297661
+Patch103: qt-Fix-JIT-crash-on-x86-64-avoid-32-bit-branch-offset-o.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -465,6 +469,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch100 -p1 -b .QTgaHandler
 %patch101 -p1 -b .fix_cursor_blink
 %patch102 -p1 -b .bigendian
+%patch103 -p1 -b .QtScript_JIT
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1096,6 +1101,9 @@ fi
 
 
 %changelog
+* Mon Aug 13 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.2-5
+- fix QtScript JIT crash (QTBUG-23871, kde#297661) 
+
 * Thu Jul 05 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.2-4
 - text cursor blinks not in the current cell (kde#296490)
 
