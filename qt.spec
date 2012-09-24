@@ -116,7 +116,7 @@ Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
 # fix JIT crash
 # https://bugreports.qt-project.org/browse/QTBUG-23871
 # https://bugs.kde.org/show_bug.cgi?id=297661
-# REVERT for now, http://bugzilla.redhat.com/853587
+# REVERT for now, http://bugzilla.redhat.com/853587, https://bugreports.qt-project.org/browse/QTBUG-27322
 Patch103: qt-Fix-JIT-crash-on-x86-64-avoid-32-bit-branch-offset-o.patch
 
 # security patches
