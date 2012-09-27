@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.2
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -131,6 +131,8 @@ Patch103: qt-Fix-JIT-crash-on-x86-64-avoid-32-bit-branch-offset-o.patch
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
 Patch200: qt-4.8.0-CVE-2011-3922-bz#772125.patch
+# disable compression for SSL/TLS to avoid CRIME
+Patch201: 0041-Disable-SSL-compression-by-default.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -474,6 +476,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
+%patch201 -p1 -b .Disable-SSL-compression
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1102,6 +1105,9 @@ fi
 
 
 %changelog
+* Thu Sep 27 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.2-7
+- upstream disable-SSL-compression patch
+
 * Tue Sep 04 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.2-6
 - revert "fix QtScript JIT crash" patch, causes frequent segmentation faults (#853587)
 
