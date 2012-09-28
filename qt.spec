@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.3
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -113,6 +113,9 @@ Patch81: ./qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
+# find qdevice.pri even for installed qt builds
+# https://codereview.qt-project.org/#change,34507
+Patch101: qt-everywhere-opensource-src-4.8.3-qdevice_pri.patch
 # fix JIT crash
 # https://bugreports.qt-project.org/browse/QTBUG-23871
 # https://bugs.kde.org/show_bug.cgi?id=297661
@@ -456,6 +459,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
+%patch101 -p1 -b .qdevice_pri
 ## 4.8.3 includes this patch, revert it to avoid regressions for now -- rex
 %patch103 -p1 -R -b .QtScript_JIT
 
@@ -1090,6 +1094,9 @@ fi
 
 
 %changelog
+* Fri Sep 28 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-3
+- find qdevice.pri even for installed qt builds
+
 * Thu Sep 27 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-2
 - upstream disable-SSL-compression patch
 
