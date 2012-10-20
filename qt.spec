@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.3
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -485,8 +485,12 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
   mkspecs/%{platform}/qmake.conf 
 
+sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 $RPM_LD_FLAGS|" \
+  mkspecs/common/g++-unix.conf
+
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
-sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
+sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" \
+  mkspecs/common/linux.conf 
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -1094,6 +1098,9 @@ fi
 
 
 %changelog
+* Sat Oct 20 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-4
+- $RPM_LD_FLAGS should be propagated to qmake's defaults (#868554)
+
 * Fri Sep 28 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-3
 - find qdevice.pri even for installed qt builds
 
