@@ -15,14 +15,14 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.2
-Release: 7%{?dist}
+Version: 4.8.3
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url: http://qt.nokia.com/
-Source0: http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-%{version}.tar.gz
+Source0: http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Obsoletes: qt4 < %{version}-%{release}
@@ -53,7 +53,7 @@ Patch24: qt-everywhere-opensource-src-4.8.0-rc1-moc-boost148.patch
 
 # hack out largely useless (to users) warnings about qdbusconnection
 # (often in kde apps), keep an eye on https://git.reviewboard.kde.org/r/103699/
-Patch25: qt-everywhere-opensource-src-4.8.1-qdbusconnection_no_debug.patch
+Patch25: qt-everywhere-opensource-src-4.8.3-qdbusconnection_no_debug.patch
 
 # lrelease-qt4 tries to run qmake not qmake-qt4 (http://bugzilla.redhat.com/820767)
 Patch26: qt-everywhere-opensource-src-4.8.1-linguist_qmake-qt4.patch
@@ -83,7 +83,7 @@ Patch67: qt-everywhere-opensource-src-4.8.0-beta1-s390.patch
 
 # https://bugs.webkit.org/show_bug.cgi?id=63941
 # -Wall + -Werror = fail
-Patch68: qt-4.8.1-webkit-no_Werror.patch
+Patch68: qt-everywhere-opensource-src-4.8.3-no_Werror.patch
 
 # revert qlist.h commit that seems to induce crashes in qDeleteAll<QList (QTBUG-22037)
 Patch69: qt-everywhere-opensource-src-4.8.0-QTBUG-22037.patch
@@ -94,10 +94,6 @@ Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch
 # Buttons in Qt applications not clickable when run under gnome-shell (#742658, QTBUG-21900)
 Patch71:  qt-everywhere-opensource-src-4.8.0-QTBUG-21900.patch
 
-# QtWebKit wtf library: GMutex is a union rather than a struct in GLib >= 2.31
-# fixes FTBFS: https://bugs.webkit.org/show_bug.cgi?id=69840
-Patch73: qt-everywhere-opensource-src-4.8.0-qtwebkit-glib231.patch
-
 # workaround
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
 Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
@@ -106,7 +102,7 @@ Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
 Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 
 # don't spam in release/no_debug mode if libicu is not present at runtime
-Patch77:  qt-everywhere-opensource-src-4.8.1-icu_no_debug.patch
+Patch77: qt-everywhere-opensource-src-4.8.3-icu_no_debug.patch
 
 # gcc doesn't support flag -fuse-ld=gold
 Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
@@ -117,15 +113,13 @@ Patch81: ./qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
-# text cursor blinks not in the current cell (kde#296490)
-Patch101: qt-Fix-cursor-truncate-to-include-line-position.patch
-# fix crash on big endian machines
-# https://bugreports.qt-project.org/browse/QTBUG-22960
-Patch102: qt-everywhere-opensource-src-4.8.1-type.patch
+# find qdevice.pri even for installed qt builds
+# https://codereview.qt-project.org/#change,34507
+Patch101: qt-everywhere-opensource-src-4.8.3-qdevice_pri.patch
 # fix JIT crash
 # https://bugreports.qt-project.org/browse/QTBUG-23871
 # https://bugs.kde.org/show_bug.cgi?id=297661
-# REVERT for now, http://bugzilla.redhat.com/853587
+# REVERT for now, http://bugzilla.redhat.com/853587, https://bugreports.qt-project.org/browse/QTBUG-27322
 Patch103: qt-Fix-JIT-crash-on-x86-64-avoid-32-bit-branch-offset-o.patch
 
 # security patches
@@ -442,7 +436,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
 %patch24 -p1 -b .moc-boost148
-%patch25 -p1 -b .qdbusconnection_no_debug.patch
+%patch25 -p1 -b .qdbusconnection_no_debug
 %patch26 -p1 -b .linguist_qtmake-qt4
 %patch27 -p1 -b .qt3support_debuginfo
 ## TODO: still worth carrying?  if so, upstream it.
@@ -457,11 +451,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch69 -p1 -b .QTBUG-22037
 %patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
-%if 0%{?fedora} > 16 || 0%{?rhel} > 6
-# This quick fix works ONLY with GLib >= 2.31. It's harder to fix this portably.
-# See https://bugs.webkit.org/show_bug.cgi?id=69840 for the gory details.
-%patch73 -p1 -b .qtwebkit-glib231
-%endif
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_debug
@@ -470,9 +459,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
-%patch101 -p1 -b .fix_cursor_blink
-%patch102 -p1 -b .bigendian
-#patch103 -p1 -b .QtScript_JIT
+%patch101 -p1 -b .qdevice_pri
+## 4.8.3 includes this patch, revert it to avoid regressions for now -- rex
+%patch103 -p1 -R -b .QtScript_JIT
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -496,8 +485,12 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
   mkspecs/%{platform}/qmake.conf 
 
+sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 $RPM_LD_FLAGS|" \
+  mkspecs/common/g++-unix.conf
+
 # undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
-sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" mkspecs/common/linux.conf 
+sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" \
+  mkspecs/common/linux.conf 
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -1105,8 +1098,18 @@ fi
 
 
 %changelog
-* Thu Sep 27 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.2-7
+* Sat Oct 20 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-4
+- $RPM_LD_FLAGS should be propagated to qmake's defaults (#868554)
+
+* Fri Sep 28 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-3
+- find qdevice.pri even for installed qt builds
+
+* Thu Sep 27 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-2
 - upstream disable-SSL-compression patch
+
+* Thu Sep 13 2012 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.3-1
+- qt-4.8.3 final
+- revert QtScript-JIT commit
 
 * Tue Sep 04 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.2-6
 - revert "fix QtScript JIT crash" patch, causes frequent segmentation faults (#853587)
