@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.3
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -108,7 +108,13 @@ Patch77: qt-everywhere-opensource-src-4.8.3-icu_no_debug.patch
 Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
 
 # https://bugzilla.redhat.com/show_bug.cgi?id=810500
-Patch81: ./qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
+Patch81: qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
+
+# https://bugzilla.redhat.com/show_bug.cgi?id=694385
+# https://bugs.kde.org/show_bug.cgi?id=249217
+# https://bugreports.qt-project.org/browse/QTBUG-4862
+# QDir::homePath() should account for an empty HOME environment variable on X11
+Patch82: qt-everywhere-opensource-src-4.8.3-QTBUG-4862.patch
 
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
@@ -456,6 +462,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch77 -p1 -b .icu_no_debug
 %patch80 -p1 -b .ld.gold
 %patch81 -p1 -b .assistant-crash
+%patch82 -p1 -b .QTBUG-4862
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
@@ -1098,6 +1105,9 @@ fi
 
 
 %changelog
+* Mon Oct 22 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-5
+- QDir::homePath() should account for an empty $HOME (QTBUG-4862, kde#249217, #694385)
+
 * Sat Oct 20 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-4
 - $RPM_LD_FLAGS should be propagated to qmake's defaults (#868554)
 
