@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.3
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1105,6 +1105,9 @@ fi
 
 
 %changelog
+* Tue Oct 23 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.3-6
+- fix/respin qdevice_pri patch
+
 * Mon Oct 22 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-5
 - QDir::homePath() should account for an empty $HOME (QTBUG-4862, kde#249217, #694385)
 
