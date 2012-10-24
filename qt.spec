@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.3
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -127,6 +127,9 @@ Patch101: qt-everywhere-opensource-src-4.8.3-qdevice_pri.patch
 # https://bugs.kde.org/show_bug.cgi?id=297661
 # REVERT for now, http://bugzilla.redhat.com/853587, https://bugreports.qt-project.org/browse/QTBUG-27322
 Patch103: qt-Fix-JIT-crash-on-x86-64-avoid-32-bit-branch-offset-o.patch
+# followup for fix JIT crash
+# https://bugreports.qt-project.org/browse/QTBUG-27322
+Patch104:  qt-everywhere-opensource-src-4.8.3-QTBUG-27322.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -468,7 +471,8 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch100 -p1 -b .QTgaHandler
 %patch101 -p1 -b .qdevice_pri
 ## 4.8.3 includes this patch, revert it to avoid regressions for now -- rex
-%patch103 -p1 -R -b .QtScript_JIT
+#patch103 -p1 -R -b .QtScript_JIT
+%patch104 -p1 -b .QTBUG-27322
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1105,7 +1109,10 @@ fi
 
 
 %changelog
-* Tue Oct 23 2012 Rex Dieter <rdieter@fedoraproject.org> 4.8.3-6
+* Wed Oct 24 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-7
+- Crash in Qt script (QTBUG-27322)
+
+* Tue Oct 23 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-6
 - fix/respin qdevice_pri patch
 
 * Mon Oct 22 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-5
