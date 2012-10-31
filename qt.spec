@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.3
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -115,6 +115,9 @@ Patch81: qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
 # https://bugreports.qt-project.org/browse/QTBUG-4862
 # QDir::homePath() should account for an empty HOME environment variable on X11
 Patch82: qt-everywhere-opensource-src-4.8.3-QTBUG-4862.patch
+
+# poll support
+Patch83: qt-4.8-poll.patch
 
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
@@ -466,6 +469,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch80 -p1 -b .ld.gold
 %patch81 -p1 -b .assistant-crash
 %patch82 -p1 -b .QTBUG-4862
+%patch83 -p1 -b .poll
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
@@ -1109,6 +1113,10 @@ fi
 
 
 %changelog
+* Wed Oct 31 2012 Than Ngo <than@redhat.com> - 1:4.8.3-8
+- add poll support to fix QAbstractSocket errors with more than
+  1024 file descriptors, thanks Florian for the patch
+
 * Wed Oct 24 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.3-7
 - Crash in Qt script (QTBUG-27322)
 
