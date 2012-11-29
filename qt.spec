@@ -15,8 +15,8 @@
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.3
-Release: 8%{?dist}
+Version: 4.8.4
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -88,9 +88,6 @@ Patch68: qt-everywhere-opensource-src-4.8.3-no_Werror.patch
 # revert qlist.h commit that seems to induce crashes in qDeleteAll<QList (QTBUG-22037)
 Patch69: qt-everywhere-opensource-src-4.8.0-QTBUG-22037.patch
 
-# Qt doesn't close orphaned file descriptors after printing (#746601, QTBUG-14724)
-Patch70: qt-everywhere-opensource-src-4.8.0-QTBUG-14724.patch 
-
 # Buttons in Qt applications not clickable when run under gnome-shell (#742658, QTBUG-21900)
 Patch71:  qt-everywhere-opensource-src-4.8.0-QTBUG-21900.patch
 
@@ -122,23 +119,10 @@ Patch83: qt-4.8-poll.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
-# find qdevice.pri even for installed qt builds
-# https://codereview.qt-project.org/#change,34507
-Patch101: qt-everywhere-opensource-src-4.8.3-qdevice_pri.patch
-# fix JIT crash
-# https://bugreports.qt-project.org/browse/QTBUG-23871
-# https://bugs.kde.org/show_bug.cgi?id=297661
-# REVERT for now, http://bugzilla.redhat.com/853587, https://bugreports.qt-project.org/browse/QTBUG-27322
-Patch103: qt-Fix-JIT-crash-on-x86-64-avoid-32-bit-branch-offset-o.patch
-# followup for fix JIT crash
-# https://bugreports.qt-project.org/browse/QTBUG-27322
-Patch104:  qt-everywhere-opensource-src-4.8.3-QTBUG-27322.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
 Patch200: qt-4.8.0-CVE-2011-3922-bz#772125.patch
-# disable compression for SSL/TLS to avoid CRIME
-Patch201: 0041-Disable-SSL-compression-by-default.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -461,7 +445,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch67 -p1 -b .s390
 %patch68 -p1 -b .no_Werror
 %patch69 -p1 -b .QTBUG-22037
-%patch70 -p1 -b .QTBUG-14724
 %patch71 -p1 -b .QTBUG-21900
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch76 -p1 -b .s390-atomic
@@ -473,14 +456,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
-%patch101 -p1 -b .qdevice_pri
-## 4.8.3 includes this patch, revert it to avoid regressions for now -- rex
-#patch103 -p1 -R -b .QtScript_JIT
-%patch104 -p1 -b .QTBUG-27322
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
-%patch201 -p1 -b .Disable-SSL-compression
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1113,6 +1091,9 @@ fi
 
 
 %changelog
+* Thu Nov 29 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-1
+- 4.8.4
+
 * Wed Oct 31 2012 Than Ngo <than@redhat.com> - 1:4.8.3-8
 - add poll support to fix QAbstractSocket errors with more than
   1024 file descriptors, thanks Florian for the patch
