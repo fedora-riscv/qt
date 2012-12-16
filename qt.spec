@@ -897,9 +897,11 @@ fi
 %{_qt4_demosdir}/
 %endif
 
+%if "%{?webkit}" == "-webkit"
 %files designer-plugin-webkit
 %defattr(-,root,root,-)
 %{_qt4_plugindir}/designer/libqwebview.so
+%endif
 
 %post devel
 touch --no-create %{_datadir}/icons/hicolor ||:
