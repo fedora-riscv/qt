@@ -302,6 +302,13 @@ BuildArch: noarch
 %{summary}.  Includes:
 Qt Assistant
 
+%package designer-plugin-webkit
+Summary: Qt designer plugin for WebKit
+Group: Development/Libraries
+Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+%description designer-plugin-webkit
+%{summary}.
+
 %package devel
 Summary: Development files for the Qt toolkit
 Group: Development/Libraries
@@ -778,7 +785,6 @@ rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qweb*.h
 rm -frv %{buildroot}%{_qt4_headerdir}/QtWebKit/
 rm -frv %{buildroot}%{_qt4_importdir}/QtWebKit/
 rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit.*
-rm -fv %{buildroot}%{_qt4_plugindir}/designer/libqwebview.so
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
 rm -frv %{buildroot}%{_qt4_prefix}/tests/
 
@@ -799,46 +805,7 @@ rm -rf %{buildroot}
 
 
 %post -p /sbin/ldconfig
-
 %postun -p /sbin/ldconfig
-
-%post assistant
-touch --no-create %{_datadir}/icons/hicolor ||:
-
-%posttrans assistant 
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-
-%postun assistant 
-if [ $1 -eq 0 ] ; then
-touch --no-create %{_datadir}/icons/hicolor ||:
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-fi
-
-%post devel
-touch --no-create %{_datadir}/icons/hicolor ||:
-
-%posttrans devel
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-
-%postun devel
-if [ $1 -eq 0 ] ; then
-touch --no-create %{_datadir}/icons/hicolor ||:
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-fi
-
-%post x11
-/sbin/ldconfig
-touch --no-create %{_datadir}/icons/hicolor ||:
-
-%posttrans x11
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-
-%postun x11
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-touch --no-create %{_datadir}/icons/hicolor ||:
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-fi
 
 %files -f qt.lang
 %defattr(-,root,root,-)
@@ -890,6 +857,18 @@ fi
 %dir %{_qt4_translationdir}/
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
 
+%post assistant
+touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans assistant
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+
+%postun assistant
+if [ $1 -eq 0 ] ; then
+touch --no-create %{_datadir}/icons/hicolor ||:
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
+
 %files assistant
 %defattr(-,root,root,-)
 %if "%{_qt4_bindir}" != "%{_bindir}"
@@ -917,6 +896,22 @@ fi
 %{_datadir}/applications/*qtdemo.desktop
 %{_qt4_demosdir}/
 %endif
+
+%files designer-plugin-webkit
+%defattr(-,root,root,-)
+%{_qt4_plugindir}/designer/libqwebview.so
+
+%post devel
+touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans devel
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+
+%postun devel
+if [ $1 -eq 0 ] ; then
+touch --no-create %{_datadir}/icons/hicolor ||:
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
 
 %files devel -f qt-devel.lang
 %defattr(-,root,root,-)
@@ -1063,6 +1058,20 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
+%post x11
+/sbin/ldconfig
+touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans x11
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+
+%postun x11
+/sbin/ldconfig
+if [ $1 -eq 0 ] ; then
+touch --no-create %{_datadir}/icons/hicolor ||:
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
+
 %files x11 -f qt-x11.lang
 %defattr(-,root,root,-)
 %dir %{_qt4_importdir}/
@@ -1091,7 +1100,8 @@ fi
 
 
 %changelog
-* Sat Dec 15 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-2
+* Sun Dec 16 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-2
+- -designer-plugin-webkit subpkg (#887501)
 - fix/prune/changelog
 
 * Thu Nov 29 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-1
