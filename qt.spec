@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1091,6 +1091,9 @@ fi
 %{_qt4_libdir}/libQtSvg.so.4*
 %{_qt4_plugindir}/*
 %exclude %{_qt4_plugindir}/crypto
+%if "%{?webkit}" == "-webkit"
+%exclude %{_qt4_plugindir}/designer/libqwebview.so
+%endif
 %exclude %{_qt4_plugindir}/sqldrivers
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{?dbus:%{_bindir}/qdbusviewer}
@@ -1102,6 +1105,9 @@ fi
 
 
 %changelog
+* Thu Jan 03 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-3
+- -x11: %%exclude %%{_qt4_plugindir}/designer/libqwebview.so
+
 * Sun Dec 16 2012 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-2
 - -designer-plugin-webkit subpkg (#887501)
 - fix/prune/changelog
