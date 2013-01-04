@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -122,6 +122,10 @@ Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
 # QSslSocket may report incorrect errors when certificate verification fails
 # https://codereview.qt-project.org/#change,42461
 Patch101: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
+# backported from Qt5 (essentially)
+# http://bugzilla.redhat.com/702493
+# https://bugreports.qt-project.org/browse/QTBUG-5545
+Patch102: qt-everywhere-opensource-src-4.8.4-qgtkstyle_disable_gtk_theme_check.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -467,6 +471,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
 %patch101 -p1 -b .0054
+%patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1109,6 +1114,9 @@ fi
 
 
 %changelog
+* Fri Jan 04 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-5
+- QGtkStyle was unable to detect the current GTK+ theme (#702493, QTBUG-5545))
+
 * Fri Jan 04 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-4
 - QSslSocket may report incorrect errors when certificate verification fails
 
