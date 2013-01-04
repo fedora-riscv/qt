@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -119,6 +119,9 @@ Patch83: qt-4.8-poll.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
+# QSslSocket may report incorrect errors when certificate verification fails
+# https://codereview.qt-project.org/#change,42461
+Patch101: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -463,6 +466,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
+%patch101 -p1 -b .0054
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1105,6 +1109,9 @@ fi
 
 
 %changelog
+* Fri Jan 04 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-4
+- QSslSocket may report incorrect errors when certificate verification fails
+
 * Thu Jan 03 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-3
 - -x11: %%exclude %%{_qt4_plugindir}/designer/libqwebview.so
 
