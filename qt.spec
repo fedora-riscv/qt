@@ -48,9 +48,6 @@ Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 # workaround for gdal/grass crashers wrt glib_eventloop null deref's
 Patch23: qt-everywhere-opensource-src-4.6.3-glib_eventloop_nullcheck.patch
 
-# workaround for a MOC issue with Boost 1.48 headers (#756395)
-Patch24: qt-everywhere-opensource-src-4.8.0-rc1-moc-boost148.patch
-
 # hack out largely useless (to users) warnings about qdbusconnection
 # (often in kde apps), keep an eye on https://git.reviewboard.kde.org/r/103699/
 Patch25: qt-everywhere-opensource-src-4.8.3-qdbusconnection_no_debug.patch
@@ -126,6 +123,8 @@ Patch101: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
 Patch102: qt-everywhere-opensource-src-4.8.4-qgtkstyle_disable_gtk_theme_check.patch
+# workaround for a MOC issue with Boost 1.48 headers (#756395)
+Patch103: 0013-Fix-moc-from-choking-on-boost-headers.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -445,7 +444,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch4 -p1 -b .uic_multilib
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
-%patch24 -p1 -b .moc-boost148
 %patch25 -p1 -b .qdbusconnection_no_debug
 %patch26 -p1 -b .linguist_qtmake-qt4
 %patch27 -p1 -b .qt3support_debuginfo
@@ -472,6 +470,8 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch100 -p1 -b .QTgaHandler
 %patch101 -p1 -b .0054
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
+%patch103 -p1 -b .moc-boost148
+
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
