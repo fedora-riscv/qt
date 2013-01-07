@@ -16,7 +16,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -116,15 +116,19 @@ Patch83: qt-4.8-poll.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
-# QSslSocket may report incorrect errors when certificate verification fails
-# https://codereview.qt-project.org/#change,42461
-Patch101: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
 Patch102: qt-everywhere-opensource-src-4.8.4-qgtkstyle_disable_gtk_theme_check.patch
 # workaround for a MOC issue with Boost 1.48 headers (#756395)
-Patch103: 0013-Fix-moc-from-choking-on-boost-headers.patch
+Patch113: 0013-Fix-moc-from-choking-on-boost-headers.patch
+# QSslSocket may report incorrect errors when certificate verification fails
+# https://codereview.qt-project.org/#change,42461
+Patch154: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
+# http://lists.qt-project.org/pipermail/announce/2013-January/000021.html
+Patch180: 0080-SSL-certificates-blacklist-mis-issued-Turktrust-cert.patch
+# another set similar to 0080
+Patch190: 0090-QtNetwork-blacklist-two-more-certificates.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
@@ -468,10 +472,11 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
-%patch101 -p1 -b .0054
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
-%patch103 -p1 -b .moc-boost148
-
+%patch113 -p1 -b .moc-boost148
+%patch154 -p1 -b .0054
+%patch180 -p1 -b .0080
+%patch190 -p1 -b .0090
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
@@ -1114,6 +1119,9 @@ fi
 
 
 %changelog
+* Mon Jan 07 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-6
+- blacklist unauthorized SSL certificates by Türktrust
+
 * Fri Jan 04 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-5
 - QGtkStyle was unable to detect the current GTK+ theme (#702493, QTBUG-5545))
 
