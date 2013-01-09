@@ -991,15 +991,14 @@ fi
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
-%{_bindir}/pixeltool*
 %{_bindir}/moc*
 %{_bindir}/qmake*
-%{_bindir}/rcc*
 %{_bindir}/uic*
 %{_bindir}/designer*
 %{_bindir}/linguist*
 %if ! 0%{?qtchooser}
 %{_bindir}/lconvert
+%{_bindir}/pixeltool
 %{_bindir}/qdoc3
 %{_bindir}/qt3to4
 %{_bindir}/qttracereplay
@@ -1011,6 +1010,7 @@ fi
 %{_bindir}/qhelpconverter
 %{_bindir}/qhelpgenerator
 %{_bindir}/qmlplugindump
+%{_bindir}/rcc
 %{_bindir}/xmlpatterns
 %{_bindir}/xmlpatternsvalidator
 %endif
