@@ -677,9 +677,7 @@ for i in * ; do
     assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
       mv $i ../../../bin/${i}-qt4
       ln -s ../../../bin/${i}-qt4 .
-%if ! 0%{?qtchooser}
       ln -s ../../../bin/${i}-qt4 $i
-%endif
       ;;
     *)
 %if ! 0%{?qtchooser}
