@@ -1150,8 +1150,8 @@ fi
 %endif
 %exclude %{_qt4_plugindir}/sqldrivers
 %if "%{_qt4_bindir}" != "%{_bindir}"
-%{?dbus:%{_bindir}/qdbusviewer}
 %if ! 0%{?qtchooser}
+%{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qmlviewer
 %endif
 %endif
