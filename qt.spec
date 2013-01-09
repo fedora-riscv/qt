@@ -801,10 +801,11 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_translationdir %%{_datadir}/qt4/translations 
 EOF
 
-# create/own stuff under %%_qt4_plugindir
-mkdir %{buildroot}%{_qt4_plugindir}/crypto
-mkdir %{buildroot}%{_qt4_plugindir}/gui_platform
-mkdir %{buildroot}%{_qt4_plugindir}/styles
+# create/own stuff under %%_qt4_docdir
+mkdir -p %{buildroot}%{_qt4_docdir}/{html,qch,src}
+
+ # create/own stuff under %%_qt4_plugindir
+mkdir -p %{buildroot}%{_qt4_plugindir}/{crypto,gui_platform,styles}
 
 ## nuke bundled phonon bits
 rm -fv  %{buildroot}%{_qt4_libdir}/libphonon.so*
