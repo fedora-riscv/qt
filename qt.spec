@@ -6,17 +6,21 @@
 
 # See http://bugzilla.redhat.com/223663
 %define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
+%define multilib_basearchs x86_64 ppc64 s390x sparc64
 
 %if 0%{?fedora} > 16 || 0%{?rhel} > 6
 # use external qt_settings pkg
 %define qt_settings 1
 %endif
 
+# use qtchooser (default off, for now)
+#define qtchooser 1
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -259,6 +263,11 @@ Provides:  qgtkstyle = 0.1-1
 Requires: ca-certificates
 %if 0%{?qt_settings}
 Requires: qt-settings
+%endif
+%if 0%{?qtchooser}
+Requires: qtchooser
+%else
+Conflicts: qtchooser
 %endif
 
 %description 
@@ -668,11 +677,15 @@ for i in * ; do
     assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
       mv $i ../../../bin/${i}-qt4
       ln -s ../../../bin/${i}-qt4 .
+%if ! 0%{?qtchooser}
       ln -s ../../../bin/${i}-qt4 $i
+%endif
       ;;
     *)
+%if ! 0%{?qtchooser}
       mv $i ../../../bin/
       ln -s ../../../bin/$i .
+%endif
       ;;
   esac
 done
@@ -703,6 +716,22 @@ popd
 %if "%{_qt4_libdir}" != "%{_libdir}"
   mkdir -p %{buildroot}/etc/ld.so.conf.d
   echo "%{_qt4_libdir}" > %{buildroot}/etc/ld.so.conf.d/qt4-%{__isa_bits}.conf
+%endif
+
+# qtchooser conf
+%if 0%{?qtchooser}
+  mkdir -p %{buildroot}%{_sysconfdir}/xdg/qtchooser
+  pushd    %{buildroot}%{_sysconfdir}/xdg/qtchooser
+  echo "%{_qt4_bindir}" >  qt4.conf
+  echo "%{_qt4_prefix}" >> qt4.conf
+  ln -s qt4.conf default.conf
+  %ifarch %{multilib_archs}
+    mv qt4.conf qt4-%{__isa_bits}.conf
+    %ifarch %{multilib_basearchs}
+      ln -sf qt4-%{__isa_bits}.conf qt4.conf
+    %endif
+  %endif
+  popd
 %endif
 
 %if ! 0%{?qt_settings}
@@ -824,6 +853,10 @@ rm -rf %{buildroot}
 %files -f qt.lang
 %defattr(-,root,root,-)
 %doc README LICENSE.GPL3 LICENSE.LGPL LGPL_EXCEPTION.txt
+%if 0%{?qtchooser}
+# not editable config files, so not using %%config here
+%{_sysconfdir}/xdg/qtchooser/*.conf
+%endif
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
 %dir %{_qt4_libdir}
@@ -854,7 +887,9 @@ rm -rf %{buildroot}
 %{_qt4_libdir}/libQtCore.so.4*
 %if 0%{?dbus:1}
 %if "%{_qt4_bindir}" != "%{_bindir}"
+%if ! 0%{?qtchooser}
 %{_bindir}/qdbus
+%endif
 %endif
 %{_qt4_bindir}/qdbus
 %{_qt4_libdir}/libQtDBus.so.4*
@@ -954,19 +989,20 @@ fi
 %{_qt4_bindir}/xmlpatterns
 %{_qt4_bindir}/xmlpatternsvalidator
 %if "%{_qt4_bindir}" != "%{_bindir}"
-%{_bindir}/lconvert
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
 %{_bindir}/pixeltool*
 %{_bindir}/moc*
-%{_bindir}/qdoc3
 %{_bindir}/qmake*
-%{_bindir}/qt3to4
-%{_bindir}/qttracereplay
 %{_bindir}/rcc*
 %{_bindir}/uic*
 %{_bindir}/designer*
 %{_bindir}/linguist*
+%if ! 0%{?qtchooser}
+%{_bindir}/lconvert
+%{_bindir}/qdoc3
+%{_bindir}/qt3to4
+%{_bindir}/qttracereplay
 %{_bindir}/qcollectiongenerator
 %if 0%{?dbus:1}
 %{_bindir}/qdbuscpp2xml
@@ -977,6 +1013,7 @@ fi
 %{_bindir}/qmlplugindump
 %{_bindir}/xmlpatterns
 %{_bindir}/xmlpatternsvalidator
+%endif
 %endif
 %if "%{_qt4_headerdir}" != "%{_includedir}"
 %dir %{_qt4_headerdir}/
@@ -1040,7 +1077,9 @@ fi
 %if 0%{?qvfb}
 %files qvfb -f qvfb.lang
 %defattr(-,root,root,-)
+%if ! 0%{?qtchooser}
 %{_bindir}/qvfb
+%endif
 %{_qt4_bindir}/qvfb
 %endif
 
@@ -1111,7 +1150,9 @@ fi
 %exclude %{_qt4_plugindir}/sqldrivers
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{?dbus:%{_bindir}/qdbusviewer}
+%if ! 0%{?qtchooser}
 %{_bindir}/qmlviewer
+%endif
 %endif
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
 %{_qt4_bindir}/qmlviewer
@@ -1119,6 +1160,9 @@ fi
 
 
 %changelog
+* Wed Jan 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-7
+- add qtchooser support (disabled by default)
+
 * Mon Jan 07 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-6
 - blacklist unauthorized SSL certificates by Türktrust
 
