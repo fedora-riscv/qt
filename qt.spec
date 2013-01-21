@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1159,6 +1159,9 @@ fi
 
 
 %changelog
+* Mon Jan 21 2013 Adam Tkac <atkac redhat com> - 1:4.8.4-8
+- rebuild due to "jpeg8-ABI" feature drop
+
 * Wed Jan 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-7
 - add qtchooser support (disabled by default)
 
