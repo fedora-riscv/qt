@@ -13,8 +13,8 @@
 %define qt_settings 1
 %endif
 
-# use qtchooser (default off, for now)
-#define qtchooser 1
+# enable qtchooser support
+%define qtchooser 1
 
 Summary: Qt toolkit
 Name:    qt
