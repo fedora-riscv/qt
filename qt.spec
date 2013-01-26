@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1145,6 +1145,9 @@ fi
 
 
 %changelog
+* Sat Jan 26 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-10
+- rebuild (icu)
+
 * Thu Jan 24 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-9
 - make qtchooser support non-conflicting
 
