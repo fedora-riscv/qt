@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -137,6 +137,7 @@ Patch190: 0090-QtNetwork-blacklist-two-more-certificates.patch
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
 Patch200: qt-4.8.0-CVE-2011-3922-bz#772125.patch
+Patch201: qt-4.8-CVE-2013-0254.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -484,6 +485,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # security fixes
 %patch200 -p1 -b .CVE-2011-3922
+%patch201 -p1 -b .qsharedmemory-security
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1145,6 +1147,9 @@ fi
 
 
 %changelog
+* Mon Feb 04 2013 Than Ngo <than@redhat.com> - 4.8.4-11
+- backport: fix security flaw was found in the way QSharedMemory class, CVE-2013-0254
+
 * Sat Jan 26 2013 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.4-10
 - rebuild (icu)
 
