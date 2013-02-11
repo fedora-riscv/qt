@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -63,6 +63,9 @@ Patch26: qt-everywhere-opensource-src-4.8.1-linguist_qmake-qt4.patch
 Patch27: qt-everywhere-opensource-src-4.8.1-qt3support_debuginfo.patch
 
 ## upstreamable bits
+# add support for pkgconfig's Requires.private to qmake
+Patch50: qt-everywhere-opensource-src-4.8.4-qmake_pkgconfig_requires_private.patch
+
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 
@@ -456,6 +459,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch25 -p1 -b .qdbusconnection_no_debug
 %patch26 -p1 -b .linguist_qtmake-qt4
 %patch27 -p1 -b .qt3support_debuginfo
+%patch50 -p1 -b .qmake_pkgconfig_requires_private
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1147,6 +1151,9 @@ fi
 
 
 %changelog
+* Mon Feb 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-13
+- qmake: add support for pkgconfig Requires.private
+
 * Mon Feb 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-12
 - add more moc/boost workarounds, thanks boost-1.53 (QTBUG-22829)
 
