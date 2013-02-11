@@ -1,0 +1,33 @@
+Parent:     a1bc10b7 (Make sure QGraphicsItem notifies changes to focusScopeItem.)
+Author:     David E. Narváez <david.narvaez@computer.org>
+AuthorDate: 2013-01-30 06:13:00 -0500
+Commit:     David E. Narváez <david.narvaez@computer.org>
+CommitDate: 2013-01-30 06:13:00 -0500
+
+Avoid calling metacall directly from the property animation code
+
+Calling metacall directly will cause an invalid read when the
+object in question is a QDeclarativeVMEMetaObject. See a full
+explanation at the bug report.
+
+Task-Number: QTBUG-29082
+Change-Id: Ia2772bce409876861b7004320641b0c4e8996fa8
+diff --git a/src/corelib/animation/qpropertyanimation.cpp b/src/corelib/animation/qpropertyanimation.cpp
+index 31b129a..bcf82bf 100644
+--- a/src/corelib/animation/qpropertyanimation.cpp
++++ b/src/corelib/animation/qpropertyanimation.cpp
+@@ -133,13 +133,7 @@
+         return;
+     }
+ 
+-    if (newValue.userType() == propertyType) {
+-        //no conversion is needed, we directly call the QMetaObject::metacall
+-        void *data = const_cast<void*>(newValue.constData());
+-        QMetaObject::metacall(targetValue, QMetaObject::WriteProperty, propertyIndex, &data);
+-    } else {
+-        targetValue->setProperty(propertyName.constData(), newValue);
+-    }
++    targetValue->setProperty(propertyName.constData(), newValue);
+ }
+ 
+ /*!

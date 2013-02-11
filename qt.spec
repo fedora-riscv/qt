@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -123,6 +123,8 @@ Patch83: qt-4.8-poll.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
+#  https://bugreports.qt-project.org/browse/QTBUG-29082
+Patch101:  qt-everywhere-opensource-src-4.8.4-QTBUG-29082.patch
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
@@ -481,6 +483,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
+%patch101 -p1 -b .QTBUG-29082
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 %patch113 -p1 -b .QTBUG-22829
 %patch154 -p1 -b .0054
@@ -1151,6 +1154,9 @@ fi
 
 
 %changelog
+* Mon Feb 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-14
+- SIGSEGV when called from QMetaObject::metaCall (QTBUG-29082, kde#311751)
+
 * Mon Feb 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-13
 - qmake: add support for pkgconfig Requires.private
 
