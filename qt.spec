@@ -125,6 +125,8 @@ Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
 # https://bugreports.qt-project.org/browse/QTBUG-5545
 Patch102: qt-everywhere-opensource-src-4.8.4-qgtkstyle_disable_gtk_theme_check.patch
 # workaround for a MOC issue with Boost 1.48 headers (#756395)
+# FIXME: add PROGRAM_OPTIONS_VP_2003_05_19 (boost/program_options.hpp) akonadi
+# FIXME: add PYTHON_DWA2002810_HPP (boost/python.hpp) avogadro
 Patch113: 0013-Fix-moc-from-choking-on-boost-headers.patch
 # QSslSocket may report incorrect errors when certificate verification fails
 # https://codereview.qt-project.org/#change,42461
