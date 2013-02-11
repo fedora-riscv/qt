@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -124,10 +124,8 @@ Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
 Patch102: qt-everywhere-opensource-src-4.8.4-qgtkstyle_disable_gtk_theme_check.patch
-# workaround for a MOC issue with Boost 1.48 headers (#756395)
-# FIXME: add PROGRAM_OPTIONS_VP_2003_05_19 (boost/program_options.hpp) akonadi
-# FIXME: add PYTHON_DWA2002810_HPP (boost/python.hpp) avogadro
-Patch113: 0013-Fix-moc-from-choking-on-boost-headers.patch
+# workaround for MOC issues with Boost headers (#756395,QTBUG-22829)
+Patch113: qt-everywhere-opensource-src-4.8.4-QTBUG-22829.patch
 # QSslSocket may report incorrect errors when certificate verification fails
 # https://codereview.qt-project.org/#change,42461
 Patch154: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
@@ -480,7 +478,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
-%patch113 -p1 -b .moc-boost148
+%patch113 -p1 -b .QTBUG-22829
 %patch154 -p1 -b .0054
 %patch180 -p1 -b .0080
 %patch190 -p1 -b .0090
@@ -1149,6 +1147,9 @@ fi
 
 
 %changelog
+* Mon Feb 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-12
+- add more moc/boost workarounds, thanks boost-1.53 (QTBUG-22829)
+
 * Mon Feb 04 2013 Than Ngo <than@redhat.com> - 4.8.4-11
 - backport: fix security flaw was found in the way QSharedMemory class, CVE-2013-0254
 
