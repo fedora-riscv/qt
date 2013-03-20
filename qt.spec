@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -134,15 +134,27 @@ Patch113: qt-everywhere-opensource-src-4.8.4-QTBUG-22829.patch
 # QSslSocket may report incorrect errors when certificate verification fails
 # https://codereview.qt-project.org/#change,42461
 Patch154: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
+
+## upstream git
+# QSslSocket may report incorrect errors when certificate verification fails
+# https://codereview.qt-project.org/#change,42461
+Patch254: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
+Patch257: 0057-Update-defaultNumberingSystem-value-for-some-indic-a.patch
+Patch267: 0067-Allow-qmljsdebugger-argument-and-value-to-be-separat.patch
 # http://lists.qt-project.org/pipermail/announce/2013-January/000021.html
-Patch180: 0080-SSL-certificates-blacklist-mis-issued-Turktrust-cert.patch
+Patch280: 0080-SSL-certificates-blacklist-mis-issued-Turktrust-cert.patch
 # another set similar to 0080
-Patch190: 0090-QtNetwork-blacklist-two-more-certificates.patch
+Patch290: 0090-QtNetwork-blacklist-two-more-certificates.patch
+Patch310: 0110-QUrl-fromUserInput-fix-for-urls-without-a-host.patch
+Patch312: 0112-Limit-the-range-of-the-QUrlPrivate-port-to-1-to-6553.patch
+Patch324: 0124-QtDBus-Garbage-collect-deleted-objects-now-and-then.patch
+Patch325: 0125-QTBUG-15319-fix-shortcuts-with-secondary-Xkb-layout.patch
+Patch414: 0214-Fix-multiselection-by-CTRL-click-in-QFileDialog-KDE.patch
 
 # security patches
 # CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
-Patch200: qt-4.8.0-CVE-2011-3922-bz#772125.patch
-Patch201: qt-4.8-CVE-2013-0254.patch
+Patch500: qt-4.8.0-CVE-2011-3922-bz#772125.patch
+Patch501: qt-4.8-CVE-2013-0254.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -486,13 +498,20 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch101 -p1 -b .QTBUG-29082
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 %patch113 -p1 -b .QTBUG-22829
-%patch154 -p1 -b .0054
-%patch180 -p1 -b .0080
-%patch190 -p1 -b .0090
+%patch254 -p1 -b .0054
+%patch257 -p1 -b .0057
+%patch267 -p1 -b .0067
+%patch280 -p1 -b .0080
+%patch290 -p1 -b .0090
+%patch310 -p1 -b .0110
+%patch312 -p1 -b .0112
+%patch324 -p1 -b .0124
+%patch325 -p1 -b .0125
+%patch414 -p1 -b .0214
 
 # security fixes
-%patch200 -p1 -b .CVE-2011-3922
-%patch201 -p1 -b .qsharedmemory-security
+%patch500 -p1 -b .CVE-2011-3922
+%patch501 -p1 -b .qsharedmemory-security
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1154,6 +1173,9 @@ fi
 
 
 %changelog
+* Wed Mar 20 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-15
+- pull in a few more upstream fixes
+
 * Mon Feb 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-14
 - SIGSEGV when called from QMetaObject::metaCall (QTBUG-29082, kde#311751)
 
