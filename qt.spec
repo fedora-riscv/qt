@@ -1182,8 +1182,7 @@ fi
 
 
 %changelog
-* Fri Apr 19 2013 Rex Dieter <rdieter@fedoraproject.org> 
-- 4.8.4-16
+* Fri Apr 19 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-16
 - update URL (#859286)
 - include qdbusviewer .desktop/icon
 - .desktop files: +mime scriptlets, +GenericName keys
