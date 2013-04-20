@@ -1,5 +1,6 @@
 [Desktop Entry]
 Name=Qt4 Assistant 
+GenericName=Documentation viewer
 Comment=Shows Qt4 documentation and examples
 Exec=assistant-qt4
 Icon=assistant

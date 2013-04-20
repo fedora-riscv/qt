@@ -20,12 +20,12 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
-Url: http://qt.nokia.com/
+Url:     http://qt-project.org/
 Source0: http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -160,8 +160,9 @@ Patch501: qt-4.8-CVE-2013-0254.patch
 Source20: assistant.desktop
 Source21: designer.desktop
 Source22: linguist.desktop
-Source23: qtdemo.desktop
-Source24: qtconfig.desktop
+Source23: qdbusviewer.desktop
+Source24: qtdemo.desktop
+Source25: qtconfig.desktop
 
 # upstream qt4-logo, http://trolltech.com/images/products/qt/qt4-logo
 Source30: hi128-app-qt4-logo.png
@@ -650,7 +651,7 @@ rsync -aR \
 desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
   --vendor="qt4" \
-  %{SOURCE20} %{SOURCE21} %{SOURCE22} %{?demos:%{SOURCE23}} %{SOURCE24}
+  %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{?demos:%{SOURCE24}} %{SOURCE25}
 
 ## pkg-config
 # strip extraneous dirs/libraries 
@@ -774,6 +775,10 @@ for icon in tools/linguist/linguist/images/icons/linguist-*-32.png ; do
   size=$(echo $(basename ${icon}) | cut -d- -f2)
   install -p -m644 -D ${icon} %{buildroot}%{_datadir}/icons/hicolor/${size}x${size}/apps/linguist.png
 done
+
+# qdbusviewer icons
+install -p -m644 -D tools/qdbus/qdbusviewer/images/qdbusviewer.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/qdbusviewer.png
+install -p -m644 -D tools/qdbus/qdbusviewer/images/qdbusviewer-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qdbusviewer.png
 
 # Qt.pc
 cat >%{buildroot}%{_libdir}/pkgconfig/Qt.pc<<EOF
@@ -976,11 +981,13 @@ touch --no-create %{_datadir}/icons/hicolor ||:
 
 %posttrans devel
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+update-desktop-database -q &> /dev/null ||:
 
 %postun devel
 if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+update-desktop-database -q &> /dev/null ||:
 fi
 
 %files devel -f qt-devel.lang
@@ -1168,11 +1175,19 @@ fi
 %{_bindir}/qmlviewer
 %endif
 %{?dbus:%{_qt4_bindir}/qdbusviewer}
+%{?dbus:%{_datadir}/applications/*qdbusviewer.desktop}
+%{?dbus:%{_datadir}/icons/hicolor/*/apps/qdbusviewer.*}
 %{_qt4_bindir}/qmlviewer
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 
 %changelog
+* Fri Apr 19 2013 Rex Dieter <rdieter@fedoraproject.org> 
+- 4.8.4-16
+- update URL (#859286)
+- include qdbusviewer .desktop/icon
+- .desktop files: +mime scriptlets, +GenericName keys
+
 * Wed Mar 20 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-15
 - pull in a few more upstream fixes
 
