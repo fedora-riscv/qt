@@ -647,7 +647,7 @@ rsync -aR \
   %{buildroot}%{_prefix}/
 %endif
 
-# Add desktop file(s)
+# Add desktop files, --vendor=qt4 helps avoid possible conflicts with qt3/qt5
 desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
   --vendor="qt4" \
