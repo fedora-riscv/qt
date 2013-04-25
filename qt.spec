@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1182,6 +1182,9 @@ fi
 
 
 %changelog
+* Thu Apr 25 2013 Than Ngo <than@redhat.com> - 4.8.4-17
+- Desktop file sanity, drop key "Encoding", it's deprecated
+
 * Fri Apr 19 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-16
 - update URL (#859286)
 - include qdbusviewer .desktop/icon
