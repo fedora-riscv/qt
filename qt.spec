@@ -20,7 +20,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.4
-Release: 18%{?dist}
+Release: 19%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -135,7 +135,8 @@ Patch113: qt-everywhere-opensource-src-4.8.4-QTBUG-22829.patch
 # https://codereview.qt-project.org/#change,42461
 Patch154: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
 # https://codereview.qt-project.org/#change,55874
-Patch155: qt-everywhere-opensource-src-4.8-QTBUG-27809.patch
+# REVERT, causes regressions http://bugzilla.redhat.com/968794
+#Patch155: qt-everywhere-opensource-src-4.8-QTBUG-27809.patch
 
 ## upstream git
 # QSslSocket may report incorrect errors when certificate verification fails
@@ -501,7 +502,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch101 -p1 -b .QTBUG-29082
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 %patch113 -p1 -b .QTBUG-22829
-%patch155 -p1 -b .QTBUG-27809
+#patch155 -p1 -b .QTBUG-27809
 %patch254 -p1 -b .0054
 %patch257 -p1 -b .0057
 %patch267 -p1 -b .0067
@@ -1185,6 +1186,9 @@ fi
 
 
 %changelog
+* Thu May 30 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-19
+- drop QTBUG-27809 candidate fix, causes regressions (#968794)
+
 * Tue May 28 2013 Than Ngo <than@redhat.com> - 4.8.4-18
 - QTBUG-27809, fix multiple calls to QDBusPendingReply::waitForFinished on separate objects
 
