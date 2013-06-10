@@ -16,17 +16,23 @@
 # use qtchooser (default off, for now)
 #define qtchooser 1
 
+%define pre rc
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.4
-Release: 19%{?dist}
+Version: 4.8.5
+Release: 0.1.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url:     http://qt-project.org/
+%if 0%{?pre:1}
+Source0: http://download.qt-project.org/snapshots/qt/4.8/%{version}-%{pre}/qt-everywhere-opensource-src-%{version}-RC.tar.gz
+%else
 Source0: http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
+%endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Obsoletes: qt4 < %{version}-%{release}
@@ -43,7 +49,7 @@ Source5: qconfig-multilib.h
 Patch2: qt-everywhere-opensource-src-4.8.0-tp-multilib-optflags.patch
 
 # get rid of timestamp which causes multilib problem
-Patch4: qt-everywhere-opensource-src-4.8.0-timestamp.patch
+Patch4: qt-everywhere-opensource-src-4.8.5-uic_multilib.patch
 
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
@@ -77,7 +83,7 @@ Patch54: qt-everywhere-opensource-src-4.7.0-beta2-mysql_config.patch
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 
 # Fails to create debug build of Qt projects on mingw (rhbz#653674)
-Patch64: qt-everywhere-opensource-src-4.7.1-QTBUG-14467.patch
+Patch64: qt-everywhere-opensource-src-4.8.5-QTBUG-14467.patch
 
 # fix QTreeView crash triggered by KPackageKit (patch by David Faure)
 Patch65: qt-everywhere-opensource-src-4.8.0-tp-qtreeview-kpackagekit-crash.patch
@@ -93,11 +99,11 @@ Patch68: qt-everywhere-opensource-src-4.8.3-no_Werror.patch
 Patch69: qt-everywhere-opensource-src-4.8.0-QTBUG-22037.patch
 
 # Buttons in Qt applications not clickable when run under gnome-shell (#742658, QTBUG-21900)
-Patch71:  qt-everywhere-opensource-src-4.8.0-QTBUG-21900.patch
+Patch71:  qt-everywhere-opensource-src-4.8.5-QTBUG-21900.patch
 
 # workaround
 # sql/drivers/tds/qsql_tds.cpp:341:49: warning: dereferencing type-punned pointer will break strict-aliasing rules [-Wstrict-aliasing]
-Patch74: qt-everywhere-opensource-src-4.7.4-tds_no_strict_aliasing.patch
+Patch74: qt-everywhere-opensource-src-4.8.5-tds_no_strict_aliasing.patch
 
 # add missing method for QBasicAtomicPointer on s390(x)
 Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
@@ -115,7 +121,7 @@ Patch81: qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
 # https://bugs.kde.org/show_bug.cgi?id=249217
 # https://bugreports.qt-project.org/browse/QTBUG-4862
 # QDir::homePath() should account for an empty HOME environment variable on X11
-Patch82: qt-everywhere-opensource-src-4.8.3-QTBUG-4862.patch
+Patch82: qt-everywhere-opensource-src-4.8.5-QTBUG-4862.patch
 
 # poll support
 Patch83: qt-4.8-poll.patch
@@ -123,41 +129,20 @@ Patch83: qt-4.8-poll.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
-#  https://bugreports.qt-project.org/browse/QTBUG-29082
-Patch101:  qt-everywhere-opensource-src-4.8.4-QTBUG-29082.patch
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
-Patch102: qt-everywhere-opensource-src-4.8.4-qgtkstyle_disable_gtk_theme_check.patch
-# workaround for MOC issues with Boost headers (#756395,QTBUG-22829)
-Patch113: qt-everywhere-opensource-src-4.8.4-QTBUG-22829.patch
-# QSslSocket may report incorrect errors when certificate verification fails
-# https://codereview.qt-project.org/#change,42461
-Patch154: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
+Patch102: qt-everywhere-opensource-src-4.8.5-qgtkstyle_disable_gtk_theme_check.patch
+# workaround for MOC issues with Boost headers (#756395)
+# https://bugreports.qt-project.org/browse/QTBUG-22829
+Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
 # https://codereview.qt-project.org/#change,55874
 # REVERT, causes regressions http://bugzilla.redhat.com/968794
 #Patch155: qt-everywhere-opensource-src-4.8-QTBUG-27809.patch
 
 ## upstream git
-# QSslSocket may report incorrect errors when certificate verification fails
-# https://codereview.qt-project.org/#change,42461
-Patch254: 0054-Fix-binary-incompatibility-between-openssl-versions.patch
-Patch257: 0057-Update-defaultNumberingSystem-value-for-some-indic-a.patch
-Patch267: 0067-Allow-qmljsdebugger-argument-and-value-to-be-separat.patch
-# http://lists.qt-project.org/pipermail/announce/2013-January/000021.html
-Patch280: 0080-SSL-certificates-blacklist-mis-issued-Turktrust-cert.patch
-# another set similar to 0080
-Patch290: 0090-QtNetwork-blacklist-two-more-certificates.patch
-Patch310: 0110-QUrl-fromUserInput-fix-for-urls-without-a-host.patch
-Patch312: 0112-Limit-the-range-of-the-QUrlPrivate-port-to-1-to-6553.patch
-Patch324: 0124-QtDBus-Garbage-collect-deleted-objects-now-and-then.patch
-Patch325: 0125-QTBUG-15319-fix-shortcuts-with-secondary-Xkb-layout.patch
-Patch414: 0214-Fix-multiselection-by-CTRL-click-in-QFileDialog-KDE.patch
 
 # security patches
-# CVE-2011-3922 qt: Stack-based buffer overflow in embedded harfbuzz code
-Patch500: qt-4.8.0-CVE-2011-3922-bz#772125.patch
-Patch501: qt-4.8-CVE-2013-0254.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -234,10 +219,9 @@ BuildRequires: pkgconfig(xtst)
 BuildRequires: pkgconfig(zlib)
 BuildRequires: rsync
 
-## In theory, should be as simple as:
-#define x_deps libGL-devel libGLU-devel
-## but, "xorg-x11-devel: missing dep on libGL/libGLU" - http://bugzilla.redhat.com/211898 
-%define x_deps pkgconfig(ice) pkgconfig(sm) pkgconfig(xcursor) pkgconfig(xext) pkgconfig(xfixes) pkgconfig(xft) pkgconfig(xi) pkgconfig(xinerama) pkgconfig(xrandr) pkgconfig(xrender) pkgconfig(xt) pkgconfig(xv) pkgconfig(x11) pkgconfig(xproto) pkgconfig(gl) pkgconfig(glu) 
+%define gl_deps pkgconfig(gl) pkgconfig(glu)
+%define x_deps pkgconfig(ice) pkgconfig(sm) pkgconfig(xcursor) pkgconfig(xext) pkgconfig(xfixes) pkgconfig(xft) pkgconfig(xi) pkgconfig(xinerama) pkgconfig(xrandr) pkgconfig(xrender) pkgconfig(xt) pkgconfig(xv) pkgconfig(x11) pkgconfig(xproto)
+BuildRequires: %{gl_deps}
 BuildRequires: %{x_deps}
 
 %if "%{?ibase}" != "-no-sql-ibase"
@@ -351,6 +335,7 @@ Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+Requires: %{gl_deps}
 Requires: %{x_deps}
 Requires: pkgconfig
 %if 0%{?phonon:1}
@@ -499,24 +484,11 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
-%patch101 -p1 -b .QTBUG-29082
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 %patch113 -p1 -b .QTBUG-22829
 #patch155 -p1 -b .QTBUG-27809
-%patch254 -p1 -b .0054
-%patch257 -p1 -b .0057
-%patch267 -p1 -b .0067
-%patch280 -p1 -b .0080
-%patch290 -p1 -b .0090
-%patch310 -p1 -b .0110
-%patch312 -p1 -b .0112
-%patch324 -p1 -b .0124
-%patch325 -p1 -b .0125
-%patch414 -p1 -b .0214
 
 # security fixes
-%patch500 -p1 -b .CVE-2011-3922
-%patch501 -p1 -b .qsharedmemory-security
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1186,6 +1158,9 @@ fi
 
 
 %changelog
+* Sun Jun 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.1.rc
+- 4.8.5-RC
+
 * Thu May 30 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.4-19
 - drop QTBUG-27809 candidate fix, causes regressions (#968794)
 
