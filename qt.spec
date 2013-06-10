@@ -13,6 +13,11 @@
 %define qt_settings 1
 %endif
 
+%define rpm_macros_dir %{_sysconfdir}/rpm
+%if 0%{?fedora} > 18
+%define rpm_macros_dir %{_rpmconfigdir}/macros.d
+%endif
+
 # use qtchooser (default off, for now)
 #define qtchooser 1
 
@@ -22,7 +27,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 0.1.%{pre}%{?dist}
+Release: 0.2.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -779,8 +784,8 @@ Version: %{version}
 EOF
 
 # rpm macros
-mkdir -p %{buildroot}%{_sysconfdir}/rpm
-cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
+mkdir -p %{buildroot}%{rpm_macros_dir}
+cat >%{buildroot}%{rpm_macros_dir}/macros.qt4<<EOF
 %%_qt4 %{name}
 %%_qt48 %{version}
 %%_qt4_epoch %{epoch}
@@ -799,6 +804,12 @@ cat >%{buildroot}%{_sysconfdir}/rpm/macros.qt4<<EOF
 %%_qt4_qmake %%{_qt4_bindir}/qmake
 %%_qt4_sysconfdir %%{_sysconfdir}
 %%_qt4_translationdir %%{_datadir}/qt4/translations 
+
+%%qmake_qt4 \\
+  %%{_qt4_qmake} \\\\\\
+    QMAKE_CFLAGS="\${CFLAGS:-%%optflags}" \\\\\\
+    QMAKE_CXXFLAGS="\${CXXFLAGS:-%%optflags}" \\\\\\
+    QMAKE_LFLAGS="\${LDFLAGS:-%%?__global_ldflags}"
 EOF
 
 # create/own stuff under %%_qt4_docdir
@@ -968,7 +979,7 @@ fi
 
 %files devel -f qt-devel.lang
 %defattr(-,root,root,-)
-%{_sysconfdir}/rpm/macros.*
+%{rpm_macros_dir}/macros.qt4
 %{_qt4_bindir}/lconvert
 %{_qt4_bindir}/lrelease*
 %{_qt4_bindir}/lupdate*
@@ -1158,6 +1169,9 @@ fi
 
 
 %changelog
+* Mon Jun 10 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.2.rc
+- RFE: Add %qmake_qt4 macro (#870199)
+
 * Sun Jun 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.1.rc
 - 4.8.5-RC
 
