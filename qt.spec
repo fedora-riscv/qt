@@ -21,20 +21,20 @@
 # use qtchooser (default off, for now)
 #define qtchooser 1
 
-%define pre rc
+%define pre rc2
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 0.2.%{pre}%{?dist}
+Release: 0.3.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url:     http://qt-project.org/
 %if 0%{?pre:1}
-Source0: http://download.qt-project.org/snapshots/qt/4.8/%{version}-%{pre}/qt-everywhere-opensource-src-%{version}-RC.tar.gz
+Source0: http://download.qt-project.org/snapshots/qt/4.8/%{version}-%{pre}/qt-everywhere-opensource-src-%{version}-RC2.tar.gz
 %else
 Source0: http://releases.qt-project.org/qt4/source/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}.tar.gz
 %endif
@@ -1169,6 +1169,9 @@ fi
 
 
 %changelog
+* Mon Jun 10 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.3.rc2
+- 4.8.5-rc2
+
 * Mon Jun 10 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.2.rc
 - RFE: Add %%qmake_qt4 macro (#870199)
 
