@@ -1170,7 +1170,7 @@ fi
 
 %changelog
 * Mon Jun 10 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.2.rc
-- RFE: Add %qmake_qt4 macro (#870199)
+- RFE: Add %%qmake_qt4 macro (#870199)
 
 * Sun Jun 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.1.rc
 - 4.8.5-RC
