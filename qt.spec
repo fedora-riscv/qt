@@ -27,7 +27,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 0.3.%{pre}%{?dist}
+Release: 0.4.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -72,6 +72,9 @@ Patch26: qt-everywhere-opensource-src-4.8.1-linguist_qmake-qt4.patch
 
 # enable debuginfo in libQt3Support
 Patch27: qt-everywhere-opensource-src-4.8.1-qt3support_debuginfo.patch
+
+# kde4/multilib QT_PLUGIN_PATH
+Patch28: qt-everywhere-opensource-src-4.8.5-qt_plugin_path.patch
 
 ## upstreamable bits
 # add support for pkgconfig's Requires.private to qmake
@@ -467,6 +470,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch25 -p1 -b .qdbusconnection_no_debug
 %patch26 -p1 -b .linguist_qtmake-qt4
 %patch27 -p1 -b .qt3support_debuginfo
+%patch28 -p1 -b .qt_plugin_path
 %patch50 -p1 -b .qmake_pkgconfig_requires_private
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
@@ -1169,6 +1173,9 @@ fi
 
 
 %changelog
+* Tue Jun 18 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.4.rc2
+- (re)add kde4/multilib QT_PLUGIN_PATH
+
 * Mon Jun 10 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.3.rc2
 - 4.8.5-rc2
 
