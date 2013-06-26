@@ -13,10 +13,14 @@
 %define qt_settings 1
 %endif
 
-%define rpm_macros_dir %{_sysconfdir}/rpm
-%if 0%{?fedora} > 18
+%if 0%{?_rpmconfigdir:1}
 %define rpm_macros_dir %{_rpmconfigdir}/macros.d
+%else
+%define rpm_macros_dir %{_sysconfdir}/rpm
 %endif
+
+# trim changelog included in binary rpms
+%global _changelog_trimtime %(date +%s -d "1 year ago")
 
 # use qtchooser (default off, for now)
 #define qtchooser 1
@@ -27,7 +31,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 0.5.%{pre}%{?dist}
+Release: 0.6.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1173,6 +1177,10 @@ fi
 
 
 %changelog
+* Wed Jun 26 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.6.rc2
+- trim changelog
+- cleaner rpm_macros_dir handling
+
 * Fri Jun 21 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-0.5.rc2
 - drop multilib portion from qt_plugin_path.patch
 
