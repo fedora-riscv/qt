@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -458,6 +458,15 @@ Provides:  qt4-x11 = %{version}-%{release}
 %{?_isa:Provides: qt4-x11%{?_isa} = %{version}-%{release}}
 %description x11
 Qt libraries used for drawing widgets and OpenGL items.
+
+%package -n qdbusviewer
+Summary: D-Bus debugger and viewer
+# When split out from qt-x11
+Obsoletes: qt-x11 < 1:4.8.5-2
+Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+%description -n qdbusviewer
+QDbusviewer can be used to inspect D-Bus objects of running programs
+and invoke methods on those objects.
 
 
 %prep
@@ -1164,17 +1173,38 @@ fi
 %endif
 %exclude %{_qt4_plugindir}/sqldrivers
 %if "%{_qt4_bindir}" != "%{_bindir}"
-%{?dbus:%{_bindir}/qdbusviewer}
 %{_bindir}/qmlviewer
 %endif
-%{?dbus:%{_qt4_bindir}/qdbusviewer}
-%{?dbus:%{_datadir}/applications/*qdbusviewer.desktop}
-%{?dbus:%{_datadir}/icons/hicolor/*/apps/qdbusviewer.*}
 %{_qt4_bindir}/qmlviewer
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
+%if 0%{?dbus:1}
+%post -n qdbusviewer
+touch --no-create %{_datadir}/icons/hicolor ||:
+
+%posttrans -n qdbusviewer
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+
+%postun -n qdusviewer
+if [ $1 -eq 0 ] ; then
+touch --no-create %{_datadir}/icons/hicolor ||:
+gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+fi
+
+%files -n qdbusviewer
+%if "%{_qt4_bindir}" != "%{_bindir}"
+%{?dbus:%{_bindir}/qdbusviewer}
+%endif
+%{_qt4_bindir}/qdbusviewer
+%{_datadir}/applications/*qdbusviewer.desktop}
+%{_datadir}/icons/hicolor/*/apps/qdbusviewer.*
+%endif
+
 
 %changelog
+* Tue Jul 02 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-2
+- qdbusviewer subpkg (#968336)
+
 * Tue Jul 02 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-1
 - 4.8.5 (final)
 
