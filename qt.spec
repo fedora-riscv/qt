@@ -1185,7 +1185,7 @@ touch --no-create %{_datadir}/icons/hicolor ||:
 %posttrans -n qdbusviewer
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
-%postun -n qdusviewer
+%postun -n qdbusviewer
 if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
