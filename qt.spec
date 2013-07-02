@@ -459,12 +459,12 @@ Provides:  qt4-x11 = %{version}-%{release}
 %description x11
 Qt libraries used for drawing widgets and OpenGL items.
 
-%package -n qdbusviewer
+%package qdbusviewer
 Summary: D-Bus debugger and viewer
 # When split out from qt-x11
 Obsoletes: qt-x11 < 1:4.8.5-2
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
-%description -n qdbusviewer
+%description qdbusviewer
 QDbusviewer can be used to inspect D-Bus objects of running programs
 and invoke methods on those objects.
 
@@ -1179,19 +1179,19 @@ fi
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %if 0%{?dbus:1}
-%post -n qdbusviewer
+%post qdbusviewer
 touch --no-create %{_datadir}/icons/hicolor ||:
 
-%posttrans -n qdbusviewer
+%posttrans qdbusviewer
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 
-%postun -n qdbusviewer
+%postun qdbusviewer
 if [ $1 -eq 0 ] ; then
 touch --no-create %{_datadir}/icons/hicolor ||:
 gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
-%files -n qdbusviewer
+%files qdbusviewer
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{?dbus:%{_bindir}/qdbusviewer}
 %endif
