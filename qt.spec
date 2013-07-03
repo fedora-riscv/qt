@@ -647,7 +647,7 @@ rsync -aR \
 desktop-file-install \
   --dir=%{buildroot}%{_datadir}/applications \
   --vendor="qt4" \
-  %{SOURCE20} %{SOURCE21} %{SOURCE22} %{SOURCE23} %{?demos:%{SOURCE24}} %{SOURCE25}
+  %{SOURCE20} %{SOURCE21} %{SOURCE22} %{?dbus:%{SOURCE23}} %{?demos:%{SOURCE24}} %{SOURCE25}
 
 ## pkg-config
 # strip extraneous dirs/libraries 
@@ -1193,10 +1193,10 @@ fi
 
 %files qdbusviewer
 %if "%{_qt4_bindir}" != "%{_bindir}"
-%{?dbus:%{_bindir}/qdbusviewer}
+%{_bindir}/qdbusviewer
 %endif
 %{_qt4_bindir}/qdbusviewer
-%{_datadir}/applications/*qdbusviewer.desktop}
+%{_datadir}/applications/*qdbusviewer.desktop
 %{_datadir}/icons/hicolor/*/apps/qdbusviewer.*
 %endif
 
