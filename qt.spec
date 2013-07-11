@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -57,6 +57,12 @@ Patch2: qt-everywhere-opensource-src-4.8.0-tp-multilib-optflags.patch
 
 # get rid of timestamp which causes multilib problem
 Patch4: qt-everywhere-opensource-src-4.8.5-uic_multilib.patch
+
+# reduce debuginfo in qtwebkit (webcore)
+Patch5: qt-everywhere-opensource-src-4.8.5-webcore_debuginfo.patch
+
+# reduce debuginfo in qtscript (javascriptcore)
+Patch6: qt-everywhere-opensource-src-4.8.5-javascriptcore_debuginfo.patch
 
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
@@ -476,6 +482,8 @@ and invoke methods on those objects.
 # drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
 rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch4 -p1 -b .uic_multilib
+%patch5 -p1 -b .webcore_debuginfo
+%patch6 -p1 -b .javascriptcore_debuginfo
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
 %patch25 -p1 -b .qdbusconnection_no_debug
@@ -1202,6 +1210,9 @@ fi
 
 
 %changelog
+* Thu Jul 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-3
+- reduce debuginfo in qtwebkit(webcore) and qtscript(javascriptcore)
+
 * Tue Jul 02 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-2
 - qdbusviewer subpkg (#968336)
 
