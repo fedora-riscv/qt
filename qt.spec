@@ -22,14 +22,14 @@
 # trim changelog included in binary rpms
 %global _changelog_trimtime %(date +%s -d "1 year ago")
 
-# use qtchooser (default off, for now)
-#define qtchooser 1
+# support qtchooser
+%define qtchooser 1
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1211,6 +1211,9 @@ fi
 
 
 %changelog
+* Tue Jul 30 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-6
+- enable qtchooser support
+
 * Tue Jul 30 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-5
 - revert upstream postgresql driver changes wrt escaping (QTBUG-30076)
 
