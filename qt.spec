@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -142,6 +142,10 @@ Patch83: qt-4.8-poll.patch
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
 Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
+# REVERT fix for https://bugreports.qt-project.org/browse/QTBUG-30076
+# (hopefully just a short-term fix/hack until there's something better)
+# regresses/changes postgresql driver behavior
+Patch101: qt-everywhere-opensource-src-4.8.5-QTBUG-30076.patch
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
@@ -508,6 +512,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream patches
 %patch100 -p1 -b .QTgaHandler
+%patch101 -p1 -R -b .QTBUG-30076
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 %patch113 -p1 -b .QTBUG-22829
 #patch155 -p1 -b .QTBUG-27809
@@ -1206,6 +1211,9 @@ fi
 
 
 %changelog
+* Tue Jul 30 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-5
+- revert upstream postgresql driver changes wrt escaping (QTBUG-30076)
+
 * Thu Jul 11 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-4
 - drop qtscript(javascriptcore) debuginfo patch, savings not significant
 
