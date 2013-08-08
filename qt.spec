@@ -13,7 +13,7 @@
 %define qt_settings 1
 %endif
 
-%if 0%{?_rpmconfigdir:1}
+%if 0%{?fedora} > 18
 %define rpm_macros_dir %{_rpmconfigdir}/macros.d
 %else
 %define rpm_macros_dir %{_sysconfdir}/rpm
@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 6%{?dist}
+Release: 6%{?dist}.1
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1211,6 +1211,9 @@ fi
 
 
 %changelog
+* Thu Aug 08 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-6.1
+- qt4 rpm macros not found by rpm in F18 (#994739)
+
 * Tue Jul 30 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-6
 - enable qtchooser support
 
