@@ -227,7 +227,11 @@ BuildRequires: pkgconfig(alsa)
 BuildRequires: pkgconfig(dbus-1)
 BuildRequires: pkgconfig(fontconfig)
 BuildRequires: pkgconfig(glib-2.0)
+%if 0%{?fedora} || 0%{?rhel} > 6
 BuildRequires: pkgconfig(icu-i18n)
+%else
+BuildRequires: libicu-devel
+%endif
 BuildRequires: pkgconfig(NetworkManager)
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(libpng)
