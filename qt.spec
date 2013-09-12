@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -150,6 +150,10 @@ Patch101: qt-everywhere-opensource-src-4.8.5-QTBUG-30076.patch
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
 Patch102: qt-everywhere-opensource-src-4.8.5-qgtkstyle_disable_gtk_theme_check.patch
+# revert fix for QTBUG-15319, fixes regression QTBUG-32908
+# http://bugzilla.redhat.com/968367
+# https://bugreports.qt-project.org/browse/QTBUG-32908
+Patch103: QTBUG-15319-fix-shortcuts-with-secondary-Xkb-layout.patch
 # workaround for MOC issues with Boost headers (#756395)
 # https://bugreports.qt-project.org/browse/QTBUG-22829
 Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
@@ -518,6 +522,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch100 -p1 -b .QTgaHandler
 %patch101 -p1 -R -b .QTBUG-30076
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
+%patch103 -p1 -R -b .QTBUG-15319
 %patch113 -p1 -b .QTBUG-22829
 #patch155 -p1 -b .QTBUG-27809
 
@@ -1215,6 +1220,9 @@ fi
 
 
 %changelog
+* Thu Sep 12 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-8
+- Keyboard shortcuts doesn't work for russian keyboard layout (#968367, QTBUG-32908)
+
 * Mon Aug 26 2013 Jon Ciesla <limburgher@gmail.com> - 4.8.5-7
 - libmng rebuild.
 
