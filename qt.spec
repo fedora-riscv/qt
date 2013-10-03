@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -707,19 +707,17 @@ rm -rf %{buildroot}%{_qt4_prefix}/doc
 ln -s  ../../share/doc/qt4 %{buildroot}%{_qt4_prefix}/doc
 %endif
 
-# let rpm handle binaries conflicts
+# hardlink files to %{_bindir}, add -qt4 postfix to not conflict
 mkdir %{buildroot}%{_bindir}
 pushd %{buildroot}%{_qt4_bindir}
 for i in * ; do
   case "${i}" in
     assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
-      mv $i ../../../bin/${i}-qt4
-      ln -s ../../../bin/${i}-qt4 .
-      ln -s ../../../bin/${i}-qt4 $i
+      ln -v  ${i} %{buildroot}%{_bindir}/${i}-qt4
+      ln -sv ${i} ${i}-qt4
       ;;
     *)
-      mv $i ../../../bin/
-      ln -s ../../../bin/$i .
+      ln -v  ${i} %{buildroot}%{_bindir}/${i}
       ;;
   esac
 done
@@ -1220,6 +1218,9 @@ fi
 
 
 %changelog
+* Thu Oct 03 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-9
+- rework %%_bindir %%_qt4_bindir links to be more qtchooser friendly
+
 * Thu Sep 12 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-8
 - Keyboard shortcuts doesn't work for russian keyboard layout (#968367, QTBUG-32908)
 
