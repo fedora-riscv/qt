@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -60,6 +60,9 @@ Patch4: qt-everywhere-opensource-src-4.8.5-uic_multilib.patch
 
 # reduce debuginfo in qtwebkit (webcore)
 Patch5: qt-everywhere-opensource-src-4.8.5-webcore_debuginfo.patch
+
+# cups16 printer discovery
+Patch6: qt-cupsEnumDests.patch
 
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
@@ -488,6 +491,10 @@ and invoke methods on those objects.
 rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch4 -p1 -b .uic_multilib
 %patch5 -p1 -b .webcore_debuginfo
+# ie, where cups-1.6+ is present
+%if 0%{?fedora} > 18
+%patch6 -p1 -b .cupsEnumDests
+%endif
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
 %patch25 -p1 -b .qdbusconnection_no_debug
@@ -1213,6 +1220,9 @@ fi
 
 
 %changelog
+* Wed Oct 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-11
+- Discover printers shared by CUPS 1.6 (#980952)
+
 * Mon Oct 07 2013 Daniel Vrátil <dvratil@redhat.com> 4.8.5-10
 - drop revert of the PostgreSQL driver patch (fixed in Akonadi 1.10.3)
 
