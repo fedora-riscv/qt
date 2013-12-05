@@ -1229,7 +1229,7 @@ fi
 
 %changelog
 * Thu Dec 05 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-12
-- XML Entity Expansion	Denial of Service (CVE-2013-4549)
+- XML Entity Expansion Denial of Service (CVE-2013-4549)
 
 * Wed Oct 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-11
 - Discover printers shared by CUPS 1.6 (#980952)
