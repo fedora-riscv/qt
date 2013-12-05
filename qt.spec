@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -161,8 +161,14 @@ Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
 #Patch155: qt-everywhere-opensource-src-4.8-QTBUG-27809.patch
 
 ## upstream git
+# related prereq patch to 0162 below
+Patch1147: 0147-Disallow-deep-or-widely-nested-entity-references.patch
+# CVE-2013-4549
+# http://lists.qt-project.org/pipermail/announce/2013-December/000036.html
+# https://codereview.qt-project.org/#change,71010
+Patch1162: 0162-Fully-expand-entities-to-ensure-deep-or-widely-neste.patch
 
-# security patches
+## security patches
 
 # desktop files
 Source20: assistant.desktop
@@ -529,6 +535,8 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 #patch155 -p1 -b .QTBUG-27809
 
 # security fixes
+%patch1147 -p1 -b .0147
+%patch1162 -p1 -b .0162
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1220,6 +1228,9 @@ fi
 
 
 %changelog
+* Thu Dec 05 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-12
+- XML Entity Expansion	Denial of Service (CVE-2013-4549)
+
 * Wed Oct 09 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-11
 - Discover printers shared by CUPS 1.6 (#980952)
 
