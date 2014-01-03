@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -159,6 +159,10 @@ Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
 # https://codereview.qt-project.org/#change,55874
 # REVERT, causes regressions http://bugzilla.redhat.com/968794
 #Patch155: qt-everywhere-opensource-src-4.8-QTBUG-27809.patch
+
+# aarch64 support
+# https://bugreports.qt-project.org/browse/QTBUG-35442
+Patch180: qt-aarch64.patch
 
 ## upstream git
 # related prereq patch to 0162 below
@@ -534,6 +538,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch113 -p1 -b .QTBUG-22829
 #patch155 -p1 -b .QTBUG-27809
 
+# aarch64
+%patch180 -p1 -b .aarch64
+
 # security fixes
 %patch1147 -p1 -b .0147
 %patch1162 -p1 -b .0162
@@ -551,6 +558,11 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 # https://bugzilla.redhat.com/478481
 %ifarch x86_64
 %define platform linux-g++
+%endif
+
+# qt mkspecs makes assumptions about CFLAGS where it should distro defaults
+%ifarch aarch64
+%define platform linux-g++-aarch64
 %endif
 
 sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
@@ -1228,6 +1240,9 @@ fi
 
 
 %changelog
+* Mon Dec 23 2013 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.5-13
+- Add support for aarch64 (#1046360) 
+
 * Thu Dec 05 2013 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-12
 - XML Entity Expansion Denial of Service (CVE-2013-4549)
 
