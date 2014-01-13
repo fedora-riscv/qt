@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -141,6 +141,12 @@ Patch82: qt-everywhere-opensource-src-4.8.5-QTBUG-4862.patch
 
 # poll support
 Patch83: qt-4.8-poll.patch
+
+# fix QTBUG-35459 (too low entityCharacterLimit=1024 for CVE-2013-4549)
+Patch84: qt-everywhere-opensource-src-4.8.5-QTBUG-35459.patch
+
+# fix QTBUG-35460 (error message for CVE-2013-4549 is misspelled)
+Patch85: qt-everywhere-opensource-src-4.8.5-QTBUG-35460.patch
 
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
@@ -544,6 +550,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 # security fixes
 %patch1147 -p1 -b .0147
 %patch1162 -p1 -b .0162
+# regression fixes for the security fixes
+%patch84 -p1 -b .QTBUG-35459
+%patch85 -p1 -b .QTBUG-35460
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1240,6 +1249,10 @@ fi
 
 
 %changelog
+* Mon Jan 13 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.8.5-14
+- fix QTBUG-35459 (too low entityCharacterLimit=1024 for CVE-2013-4549)
+- fix QTBUG-35460 (error message for CVE-2013-4549 is misspelled)
+
 * Mon Dec 23 2013 Peter Robinson <pbrobinson@fedoraproject.org> 4.8.5-13
 - Add support for aarch64 (#1046360) 
 
