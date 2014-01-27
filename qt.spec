@@ -29,7 +29,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -852,6 +852,7 @@ cat >%{buildroot}%{rpm_macros_dir}/macros.qt4<<EOF
 %%_qt4_demosdir %%{_qt4_prefix}/demos
 %%_qt4_docdir %%{_docdir}/qt4
 %%_qt4_examples %%{_qt4_prefix}/examples
+%%_qt4_examplesdir %%{_qt4_prefix}/examples
 %%_qt4_headerdir %%{_includedir}
 %%_qt4_importdir %%{_qt4_prefix}/imports
 %%_qt4_libdir %%{_libdir}
@@ -1242,6 +1243,9 @@ fi
 
 
 %changelog
+* Sun Jan 26 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-16
+- macros.qt4: ++%%_qt4_examplesdir (keep %%_qt4_examples around for compatibility)
+
 * Fri Jan 17 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.8.5-15
 - drop "Discover printers shared by CUPS 1.6 (#980952)" (#1054312, #980952#c18)
 
