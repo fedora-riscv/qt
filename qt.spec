@@ -13,11 +13,7 @@
 %define qt_settings 1
 %endif
 
-%if 0%{?fedora} > 18
-%define rpm_macros_dir %{_rpmconfigdir}/macros.d
-%else
-%define rpm_macros_dir %{_sysconfdir}/rpm
-%endif
+%global rpm_macros_dir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 # trim changelog included in binary rpms
 %global _changelog_trimtime %(date +%s -d "1 year ago")
@@ -29,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1243,6 +1239,9 @@ fi
 
 
 %changelog
+* Sat Feb 01 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-17
+- better %%rpm_macros_dir handling
+
 * Sun Jan 26 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-16
 - macros.qt4: ++%%_qt4_examplesdir (keep %%_qt4_examples around for compatibility)
 
