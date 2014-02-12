@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 17%{?dist}
+Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1239,6 +1239,9 @@ fi
 
 
 %changelog
+* Wed Feb 12 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-18
+- rebuild (libicu)
+
 * Sat Feb 01 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-17
 - better %%rpm_macros_dir handling
 
