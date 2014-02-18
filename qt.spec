@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 18%{?dist}
+Release: 19%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -569,8 +569,10 @@ sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
 sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 $RPM_LD_FLAGS|" \
   mkspecs/common/g++-unix.conf
 
-# undefine QMAKE_STRIP, so we get useful -debuginfo pkgs
-sed -i -e "s|^QMAKE_STRIP.*=.*|QMAKE_STRIP             =|" \
+# undefine QMAKE_STRIP (and friends), so we get useful -debuginfo pkgs (#193602)
+sed -i \
+  -e 's|^QMAKE_STRIP             =.*|QMAKE_STRIP             =|' \
+  -e 's|^QMAKE_STRIPFLAGS_LIB   +=.*|QMAKE_STRIPFLAGS_LIB   +=|' \
   mkspecs/common/linux.conf 
 
 # set correct lib path
@@ -1239,6 +1241,9 @@ fi
 
 
 %changelog
+* Tue Feb 18 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-19
+- cleanup QMAKE_STRIP handling
+
 * Wed Feb 12 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-18
 - rebuild (libicu)
 
