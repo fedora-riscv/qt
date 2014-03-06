@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 19%{?dist}
+Release: 20%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -140,6 +140,9 @@ Patch84: qt-everywhere-opensource-src-4.8.5-QTBUG-35459.patch
 
 # fix QTBUG-35460 (error message for CVE-2013-4549 is misspelled)
 Patch85: qt-everywhere-opensource-src-4.8.5-QTBUG-35460.patch
+
+# systemtrayicon plugin support (for appindicators)
+Patch86: kubuntu_14_systemtrayicon.diff
 
 # upstream patches
 # http://codereview.qt-project.org/#change,22006
@@ -542,6 +545,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
 %patch85 -p1 -b .QTBUG-35460
+%patch86 -p1 -b .systemtrayicon
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1241,6 +1245,9 @@ fi
 
 
 %changelog
+* Thu Mar 06 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-20
+- systemtrayicon plugin support (from kubuntu)
+
 * Tue Feb 18 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-19
 - cleanup QMAKE_STRIP handling
 
