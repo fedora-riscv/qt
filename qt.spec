@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 21%{?dist}
+Release: 22%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -89,7 +89,7 @@ Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 
 # fix invalid assumptions about mysql_config --libs
 # http://bugzilla.redhat.com/440673
-Patch54: qt-everywhere-opensource-src-4.7.0-beta2-mysql_config.patch
+Patch54: qt-everywhere-opensource-src-4.8.5-mysql_config.patch
 
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
@@ -1248,6 +1248,9 @@ fi
 
 
 %changelog
+* Fri Mar 07 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-22
+- respin mysql_config patch
+
 * Fri Mar 07 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-21
 - restore qt-cupsEnumDests.patch (#980952)
 
