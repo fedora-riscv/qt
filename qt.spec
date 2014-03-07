@@ -158,9 +158,6 @@ Patch103: QTBUG-15319-fix-shortcuts-with-secondary-Xkb-layout.patch
 # workaround for MOC issues with Boost headers (#756395)
 # https://bugreports.qt-project.org/browse/QTBUG-22829
 Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
-# https://codereview.qt-project.org/#change,55874
-# REVERT, causes regressions http://bugzilla.redhat.com/968794
-#Patch155: qt-everywhere-opensource-src-4.8-QTBUG-27809.patch
 
 # aarch64 support
 # https://bugreports.qt-project.org/browse/QTBUG-35442
@@ -534,7 +531,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 %patch103 -p1 -R -b .QTBUG-15319
 %patch113 -p1 -b .QTBUG-22829
-#patch155 -p1 -b .QTBUG-27809
 
 # aarch64
 %patch180 -p1 -b .aarch64
