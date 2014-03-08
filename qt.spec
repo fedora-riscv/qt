@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 22%{?dist}
+Release: 23%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -577,10 +577,7 @@ sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 $RPM_LD_FLAGS|" \
   mkspecs/common/g++-unix.conf
 
 # undefine QMAKE_STRIP (and friends), so we get useful -debuginfo pkgs (#193602)
-sed -i \
-  -e 's|^QMAKE_STRIP             =.*|QMAKE_STRIP             =|' \
-  -e 's|^QMAKE_STRIPFLAGS_LIB   +=.*|QMAKE_STRIPFLAGS_LIB   +=|' \
-  mkspecs/common/linux.conf 
+sed -i -e 's|^\(QMAKE_STRIP.*=\).*$|\1|g' mkspecs/common/linux.conf
 
 # set correct lib path
 if [ "%{_lib}" == "lib64" ] ; then
@@ -1248,6 +1245,9 @@ fi
 
 
 %changelog
+* Sat Mar 08 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.5-23
+- fix QMAKE_STRIP handling (#1074041)
+
 * Fri Mar 07 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-22
 - respin mysql_config patch
 
