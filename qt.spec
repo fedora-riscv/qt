@@ -5,8 +5,8 @@
 %define no_pch -no-pch
 
 # See http://bugzilla.redhat.com/223663
-%define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9
-%define multilib_basearchs x86_64 ppc64 s390x sparc64
+%define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9 ppc64le
+%define multilib_basearchs x86_64 ppc64 s390x sparc64 ppc64le
 
 %if 0%{?fedora} > 16 || 0%{?rhel} > 6
 # use external qt_settings pkg
@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.5
-Release: 23%{?dist}
+Release: 24%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -162,9 +162,10 @@ Patch103: QTBUG-15319-fix-shortcuts-with-secondary-Xkb-layout.patch
 # https://bugreports.qt-project.org/browse/QTBUG-22829
 Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
 
-# aarch64 support
-# https://bugreports.qt-project.org/browse/QTBUG-35442
+# aarch64 support, https://bugreports.qt-project.org/browse/QTBUG-35442
 Patch180: qt-aarch64.patch
+# ppc64le support
+Patch181: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
 
 ## upstream git
 # related prereq patch to 0162 below
@@ -539,8 +540,8 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch103 -p1 -R -b .QTBUG-15319
 %patch113 -p1 -b .QTBUG-22829
 
-# aarch64
 %patch180 -p1 -b .aarch64
+%patch181 -p1 -b .ppc64le
 
 # security fixes
 %patch1147 -p1 -b .0147
@@ -1245,6 +1246,9 @@ fi
 
 
 %changelog
+* Wed Mar 26 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-24
+- support ppc64le arch (#1081216)
+
 * Sat Mar 08 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.5-23
 - fix QMAKE_STRIP handling (#1074041)
 
