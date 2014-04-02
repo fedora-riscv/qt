@@ -21,18 +21,20 @@
 # support qtchooser
 %define qtchooser 1
 
+%define pre rc1
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.5
-Release: 24%{?dist}
+Version: 4.8.6
+Release: 0.1.%{pre}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url:     http://qt-project.org/
 %if 0%{?pre:1}
-Source0: http://download.qt-project.org/snapshots/qt/4.8/%{version}-%{pre}/qt-everywhere-opensource-src-%{version}-%{pre}.tar.gz
+Source0: http://download.qt-project.org/development_releases/qt/4.8/%{version}-%{pre}/qt-everywhere-opensource-src-%{version}-%{pre}.tar.gz
 %else
 Source0: http://download.qt-project.org/official_releases/qt/4.8/%{version}/qt-everywhere-opensource-src-%{version}.tar.gz
 %endif
@@ -101,7 +103,7 @@ Patch64: qt-everywhere-opensource-src-4.8.5-QTBUG-14467.patch
 Patch65: qt-everywhere-opensource-src-4.8.0-tp-qtreeview-kpackagekit-crash.patch
 
 # fix the outdated standalone copy of JavaScriptCore
-Patch67: qt-everywhere-opensource-src-4.8.0-beta1-s390.patch
+Patch67: qt-everywhere-opensource-src-4.8.6-s390.patch
 
 # https://bugs.webkit.org/show_bug.cgi?id=63941
 # -Wall + -Werror = fail
@@ -123,9 +125,6 @@ Patch76: qt-everywhere-opensource-src-4.8.0-s390-atomic.patch
 # don't spam in release/no_debug mode if libicu is not present at runtime
 Patch77: qt-everywhere-opensource-src-4.8.3-icu_no_debug.patch
 
-# gcc doesn't support flag -fuse-ld=gold
-Patch80: qt-everywhere-opensource-src-4.8.0-ld-gold.patch
-
 # https://bugzilla.redhat.com/show_bug.cgi?id=810500
 Patch81: qt-everywhere-opensource-src-4.8.2--assistant-crash.patch
 
@@ -141,23 +140,14 @@ Patch83: qt-4.8-poll.patch
 # fix QTBUG-35459 (too low entityCharacterLimit=1024 for CVE-2013-4549)
 Patch84: qt-everywhere-opensource-src-4.8.5-QTBUG-35459.patch
 
-# fix QTBUG-35460 (error message for CVE-2013-4549 is misspelled)
-Patch85: qt-everywhere-opensource-src-4.8.5-QTBUG-35460.patch
-
 # systemtrayicon plugin support (for appindicators)
-Patch86: kubuntu_14_systemtrayicon.diff
+Patch86: qt-everywhere-opensource-src-4.8.6-systemtrayicon.patch
 
 # upstream patches
-# http://codereview.qt-project.org/#change,22006
-Patch100: qt-everywhere-opensource-src-4.8.1-qtgahandle.patch
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
 # https://bugreports.qt-project.org/browse/QTBUG-5545
 Patch102: qt-everywhere-opensource-src-4.8.5-qgtkstyle_disable_gtk_theme_check.patch
-# revert fix for QTBUG-15319, fixes regression QTBUG-32908
-# http://bugzilla.redhat.com/968367
-# https://bugreports.qt-project.org/browse/QTBUG-32908
-Patch103: QTBUG-15319-fix-shortcuts-with-secondary-Xkb-layout.patch
 # workaround for MOC issues with Boost headers (#756395)
 # https://bugreports.qt-project.org/browse/QTBUG-22829
 Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
@@ -168,12 +158,6 @@ Patch180: qt-aarch64.patch
 Patch181: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
 
 ## upstream git
-# related prereq patch to 0162 below
-Patch1147: 0147-Disallow-deep-or-widely-nested-entity-references.patch
-# CVE-2013-4549
-# http://lists.qt-project.org/pipermail/announce/2013-December/000036.html
-# https://codereview.qt-project.org/#change,71010
-Patch1162: 0162-Fully-expand-entities-to-ensure-deep-or-widely-neste.patch
 
 ## security patches
 
@@ -529,26 +513,20 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch74 -p1 -b .tds_no_strict_aliasing
 %patch76 -p1 -b .s390-atomic
 %patch77 -p1 -b .icu_no_debug
-%patch80 -p1 -b .ld.gold
 %patch81 -p1 -b .assistant-crash
 %patch82 -p1 -b .QTBUG-4862
 %patch83 -p1 -b .poll
 
 # upstream patches
-%patch100 -p1 -b .QTgaHandler
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
-%patch103 -p1 -R -b .QTBUG-15319
 %patch113 -p1 -b .QTBUG-22829
 
 %patch180 -p1 -b .aarch64
 %patch181 -p1 -b .ppc64le
 
 # security fixes
-%patch1147 -p1 -b .0147
-%patch1162 -p1 -b .0162
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
-%patch85 -p1 -b .QTBUG-35460
 %patch86 -p1 -b .systemtrayicon
 
 # drop -fexceptions from $RPM_OPT_FLAGS
@@ -562,13 +540,8 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %endif
 
 # https://bugzilla.redhat.com/478481
-%ifarch x86_64
+%ifarch x86_64 aarch64
 %define platform linux-g++
-%endif
-
-# qt mkspecs makes assumptions about CFLAGS where it should distro defaults
-%ifarch aarch64
-%define platform linux-g++-aarch64
 %endif
 
 sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
@@ -907,7 +880,8 @@ rm -frv %{buildroot}%{_qt4_prefix}/tests/
 %find_lang assistant --with-qt --without-mo
 %find_lang qt_help --with-qt --without-mo
 %find_lang qtconfig --with-qt --without-mo
-cat assistant.lang qt_help.lang qtconfig.lang >qt-x11.lang
+%find_lang qtscript --with-qt --without-mo
+cat assistant.lang qt_help.lang qtconfig.lang qtscript.lang >qt-x11.lang
 
 %find_lang designer --with-qt --without-mo
 %find_lang linguist --with-qt --without-mo
@@ -1246,6 +1220,10 @@ fi
 
 
 %changelog
+* Tue Apr 01 2014 Rex Dieter <rdieter@fedoraproject.org> 
+- 4.8.6-0.1.rc1
+- 4.8.6-rc1
+
 * Wed Mar 26 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-24
 - support ppc64le arch (#1081216)
 
