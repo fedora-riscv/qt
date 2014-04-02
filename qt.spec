@@ -154,8 +154,9 @@ Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
 
 # aarch64 support, https://bugreports.qt-project.org/browse/QTBUG-35442
 Patch180: qt-aarch64.patch
+Patch181: qtwebkit-aarch64.patch
 # ppc64le support
-Patch181: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
+Patch185: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
 
 ## upstream git
 
@@ -522,7 +523,10 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch113 -p1 -b .QTBUG-22829
 
 %patch180 -p1 -b .aarch64
-%patch181 -p1 -b .ppc64le
+pushd src/3rdparty/webkit/
+%patch181 -p1 -b .qtwebkit-aarch64
+popd
+%patch185 -p1 -b .ppc64le
 
 # security fixes
 # regression fixes for the security fixes
