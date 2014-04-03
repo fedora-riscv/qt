@@ -1220,8 +1220,7 @@ fi
 
 
 %changelog
-* Tue Apr 01 2014 Rex Dieter <rdieter@fedoraproject.org> 
-- 4.8.6-0.1.rc1
+* Tue Apr 01 2014 Rex Dieter <rdieter@fedoraproject.org> - 4.8.6-0.1.rc1
 - 4.8.6-rc1
 
 * Wed Mar 26 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.5-24
