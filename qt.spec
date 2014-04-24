@@ -21,13 +21,11 @@
 # support qtchooser
 %define qtchooser 1
 
-%define pre rc2
-
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 0.2.%{pre}%{?dist}
+Release: 1%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1220,6 +1218,9 @@ fi
 
 
 %changelog
+* Thu Apr 24 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-1
+- 4.8.6 (final)
+
 * Tue Apr 15 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-0.2.rc2
 - 4.8.6-rc2
 
