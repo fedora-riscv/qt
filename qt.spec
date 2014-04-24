@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -158,6 +158,8 @@ Patch185: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
 ## upstream git
 
 ## security patches
+# https://bugreports.qt-project.org/browse/QTBUG-38367
+Patch200: qt-everywhere-opensource-src-4.8.6-QTBUG-38367.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -526,6 +528,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
 %patch86 -p1 -b .systemtrayicon
+%patch200 -p1 -b .QTBUG-38367
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1218,6 +1221,9 @@ fi
 
 
 %changelog
+* Thu Apr 24 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-2
+- DoS vulnerability in the GIF image handler (QTBUG-38367)
+
 * Thu Apr 24 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-1
 - 4.8.6 (final)
 
