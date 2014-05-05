@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -490,7 +490,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch5 -p1 -b .webcore_debuginfo
 # ie, where cups-1.6+ is present
 %if 0%{?fedora} > 18
-%patch6 -p1 -b .cupsEnumDests
+#patch6 -p1 -b .cupsEnumDests
 %endif
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
@@ -532,12 +532,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
-
-# add -fno-delete-null-pointer-checks in attempt to workaround
-# https://bugzilla.redhat.com/1091482
-%if 0%{?fedora} > 20
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fno-delete-null-pointer-checks -fno-tree-vrp"
-%endif
 
 %define platform linux-g++
 
@@ -1227,6 +1221,10 @@ fi
 
 
 %changelog
+* Mon May 05 2014 Rex Dieter <rdieter@fedoraproject.org> - 4.8.6-5
+- drop f21 gcc-4.9 workarounds (they didn't work)
+- omit qt-cupsEnumDests.patch, again, pending more testing (#980952)
+
 * Fri Apr 25 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-4
 - -fno-tree-vrp (#1091482)
 
