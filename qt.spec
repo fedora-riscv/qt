@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -532,6 +532,12 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
+
+# add -fno-devirtualize in attempt to workaround
+# https://bugzilla.redhat.com/1091482 , http://gcc.gnu.org/bugzilla/show_bug.cgi?id=60965
+%if 0%{?fedora} > 20
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -fno-devirtualize"
+%endif
 
 %define platform linux-g++
 
@@ -1221,6 +1227,9 @@ fi
 
 
 %changelog
+* Mon May 05 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-6
+- try -fno-devirtualize workaround fc21+ (#1091482, gcc #60965)
+
 * Mon May 05 2014 Rex Dieter <rdieter@fedoraproject.org> - 4.8.6-5
 - drop f21 gcc-4.9 workarounds (they didn't work)
 - omit qt-cupsEnumDests.patch, again, pending more testing (#980952)
