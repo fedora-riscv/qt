@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -156,10 +156,13 @@ Patch180: qt-aarch64.patch
 Patch185: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
 
 ## upstream git
+Patch210: 0010-QDbus-Fix-a-b-comparison.patch
+Patch225: 0025-Fix-visual-index-lookup-in-QTreeViewPrivate-adjustVi.patch
+Patch234: 0034-Fix-raster-graphics-on-X11-RGB30.patch
 
 ## security patches
 # https://bugreports.qt-project.org/browse/QTBUG-38367
-Patch200: qt-everywhere-opensource-src-4.8.6-QTBUG-38367.patch
+Patch300: qt-everywhere-opensource-src-4.8.6-QTBUG-38367.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -524,11 +527,16 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch180 -p1 -b .aarch64
 %patch185 -p1 -b .ppc64le
 
+# upstream git
+%patch210 -p1 -b .0010
+%patch225 -p1 -b .0025
+%patch234 -p1 -b .0034
+
 # security fixes
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
 %patch86 -p1 -b .systemtrayicon
-%patch200 -p1 -b .QTBUG-38367
+%patch300 -p1 -b .QTBUG-38367
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1221,6 +1229,12 @@ fi
 
 
 %changelog
+* Tue Jun 03 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-8
+- backport selected upstream commits...
+- Fix visual index lookup (QTBUG-37813)
+- RGB30 fix (QTBUG-25998,#1018566)
+- QDBus comparison
+
 * Wed May 07 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-7
 - gcc should be fixed, drop workaround (#1091482)
 
