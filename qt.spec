@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -140,6 +140,11 @@ Patch84: qt-everywhere-opensource-src-4.8.5-QTBUG-35459.patch
 
 # systemtrayicon plugin support (for appindicators)
 Patch86: qt-everywhere-opensource-src-4.8.6-systemtrayicon.patch
+
+# fixes for LibreOffice from the upstream Qt bug tracker (#1105422):
+Patch87: qt-everywhere-opensource-src-4.8.6-QTBUG-34614.patch
+Patch88: qt-everywhere-opensource-src-4.8.6-QTBUG-37380.patch
+Patch89: qt-everywhere-opensource-src-4.8.6-QTBUG-38585.patch
 
 # upstream patches
 # backported from Qt5 (essentially)
@@ -519,6 +524,9 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch81 -p1 -b .assistant-crash
 %patch82 -p1 -b .QTBUG-4862
 %patch83 -p1 -b .poll
+%patch87 -p0 -b .QTBUG-34614
+%patch88 -p1 -b .QTBUG-37380
+%patch89 -p0 -b .QTBUG-38585
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -1229,6 +1237,9 @@ fi
 
 
 %changelog
+* Fri Jun 06 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.6-9
+- apply proposed fixes for QTBUG-34614,37380,38585 for LibreOffice (#1105422)
+
 * Tue Jun 03 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-8
 - backport selected upstream commits...
 - Fix visual index lookup (QTBUG-37813)
