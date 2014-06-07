@@ -524,7 +524,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch81 -p1 -b .assistant-crash
 %patch82 -p1 -b .QTBUG-4862
 %patch83 -p1 -b .poll
-%patch87 -p1 -b .QTBUG-34614
+%patch87 -p0 -b .QTBUG-34614
 %patch88 -p1 -b .QTBUG-37380
 %patch89 -p0 -b .QTBUG-38585
 
@@ -1237,7 +1237,7 @@ fi
 
 
 %changelog
-* Sat Jun 07 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.6-9
+* Fri Jun 06 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.6-9
 - apply proposed fixes for QTBUG-34614,37380,38585 for LibreOffice (#1105422)
 
 * Tue Jun 03 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-8

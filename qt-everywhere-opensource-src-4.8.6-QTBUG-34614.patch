@@ -1,7 +1,6 @@
-diff -ur qt-everywhere-opensource-src-4.8.6/src/corelib/kernel/qeventdispatcher_glib.cpp qt-everywhere-opensource-src-4.8.6-QTBUG-34614/src/corelib/kernel/qeventdispatcher_glib.cpp
---- qt-everywhere-opensource-src-4.8.6/src/corelib/kernel/qeventdispatcher_glib.cpp	2014-04-10 20:37:11.000000000 +0200
-+++ qt-everywhere-opensource-src-4.8.6-QTBUG-34614/src/corelib/kernel/qeventdispatcher_glib.cpp	2014-06-07 02:18:42.000000000 +0200
-@@ -248,22 +248,30 @@
+--- src/corelib/kernel/qeventdispatcher_glib.cpp.sav	2014-03-28 15:26:37.000000000 +0100
++++ src/corelib/kernel/qeventdispatcher_glib.cpp	2014-04-24 09:44:09.358659204 +0200
+@@ -255,22 +255,30 @@ struct GPostEventSource
      GSource source;
      QAtomicInt serialNumber;
      int lastSerialNumber;
@@ -33,7 +32,7 @@ diff -ur qt-everywhere-opensource-src-4.8.6/src/corelib/kernel/qeventdispatcher_
      return (!canWait
              || (source->serialNumber != source->lastSerialNumber));
  }
-@@ -277,8 +285,14 @@
+@@ -284,8 +292,14 @@ static gboolean postEventSourceDispatch(
  {
      GPostEventSource *source = reinterpret_cast<GPostEventSource *>(s);
      source->lastSerialNumber = source->serialNumber;
@@ -50,7 +49,7 @@ diff -ur qt-everywhere-opensource-src-4.8.6/src/corelib/kernel/qeventdispatcher_
      return true; // i dunno, george...
  }
  
-@@ -322,6 +336,7 @@
+@@ -329,6 +343,7 @@ QEventDispatcherGlibPrivate::QEventDispa
      postEventSource = reinterpret_cast<GPostEventSource *>(g_source_new(&postEventSourceFuncs,
                                                                          sizeof(GPostEventSource)));
      postEventSource->serialNumber = 1;
@@ -58,26 +57,25 @@ diff -ur qt-everywhere-opensource-src-4.8.6/src/corelib/kernel/qeventdispatcher_
      postEventSource->d = this;
      g_source_set_can_recurse(&postEventSource->source, true);
      g_source_attach(&postEventSource->source, mainContext);
-@@ -415,6 +430,7 @@
+@@ -423,6 +438,7 @@ bool QEventDispatcherGlib::processEvents
  
      // tell postEventSourcePrepare() and timerSource about any new flags
      QEventLoop::ProcessEventsFlags savedFlags = d->timerSource->processEventsFlags;
 +    d->postEventSource->processEventsFlags = flags;
      d->timerSource->processEventsFlags = flags;
+     d->socketNotifierSource->processEventsFlags = flags;
  
-     if (!(flags & QEventLoop::EventLoopExec)) {
-@@ -426,6 +442,7 @@
+@@ -435,6 +451,7 @@ bool QEventDispatcherGlib::processEvents
      while (!result && canWait)
          result = g_main_context_iteration(d->mainContext, canWait);
  
 +    d->postEventSource->processEventsFlags = savedFlags;
      d->timerSource->processEventsFlags = savedFlags;
+     d->socketNotifierSource->processEventsFlags = savedFlags;
  
-     if (canWait)
-diff -ur qt-everywhere-opensource-src-4.8.6/src/corelib/kernel/qeventdispatcher_unix.cpp qt-everywhere-opensource-src-4.8.6-QTBUG-34614/src/corelib/kernel/qeventdispatcher_unix.cpp
---- qt-everywhere-opensource-src-4.8.6/src/corelib/kernel/qeventdispatcher_unix.cpp	2014-04-10 20:37:11.000000000 +0200
-+++ qt-everywhere-opensource-src-4.8.6-QTBUG-34614/src/corelib/kernel/qeventdispatcher_unix.cpp	2014-06-07 02:18:42.000000000 +0200
-@@ -905,7 +905,15 @@
+--- src/corelib/kernel/qeventdispatcher_unix.cpp.sav	2013-06-07 07:16:52.000000000 +0200
++++ src/corelib/kernel/qeventdispatcher_unix.cpp	2014-04-24 09:43:06.927589535 +0200
+@@ -905,7 +905,15 @@ bool QEventDispatcherUNIX::processEvents
  
      // we are awake, broadcast it
      emit awake();
