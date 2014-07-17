@@ -25,7 +25,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 9%{?dist}
+Release: 9%{?dist}.1
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1237,6 +1237,9 @@ fi
 
 
 %changelog
+* Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-9.1
+- rebuild (for pulseaudio, bug #1117683)
+
 * Sat Jun 07 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> 4.8.6-9
 - apply proposed fixes for QTBUG-34614,37380,38585 for LibreOffice (#1105422)
 
