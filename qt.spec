@@ -21,11 +21,9 @@
 # support qtchooser
 %define qtchooser 1
 %if 0%{?qtchooser}
-%ifarch %{multilib_archs}
 %define priority 20
 %ifarch %{multilib_basearchs}
 %define priority 25
-%endif
 %endif
 %endif
 
@@ -307,7 +305,7 @@ Requires: ca-certificates
 %if 0%{?qt_settings}
 Requires: qt-settings
 %endif
-%if 0%{?qtchooser} && 0%{?priority:1}
+%if 0%{?qtchooser}
 Requires(post): %{_sbindir}/update-alternatives
 Requires(postun): %{_sbindir}/update-alternatives
 %endif
@@ -339,7 +337,7 @@ Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description config 
 %{summary}.
 
-#define demos 1
+%define demos 1
 %package demos
 Summary: Demonstration applications for %{name}
 Group:   Documentation
@@ -407,7 +405,7 @@ BuildArch: noarch
 %description devel-private
 %{summary}.
 
-#define examples 1
+%define examples 1
 %package examples
 Summary: Programming examples for %{name}
 Group: Documentation
@@ -783,14 +781,10 @@ popd
 %if 0%{?qtchooser}
   mkdir -p %{buildroot}%{_sysconfdir}/xdg/qtchooser
   pushd    %{buildroot}%{_sysconfdir}/xdg/qtchooser
-  echo "%{_qt4_bindir}" >  qt4.conf
-  echo "%{_qt4_prefix}" >> qt4.conf
-  %if 0%{?priority:1}
-    mv qt4.conf qt4-%{__isa_bits}.conf
-    touch default.conf qt4.conf
-  %else
-    ln -s qt4.conf default.conf
-  %endif
+  echo "%{_qt4_bindir}" >  qt4-%{__isa_bits}.conf
+  echo "%{_qt4_prefix}" >> qt4-%{__isa_bits}.conf
+  # alternatives targets
+  touch default.conf qt4.conf
   popd
 %endif
 
@@ -922,7 +916,7 @@ rm -rf %{buildroot}
 
 %post
 /sbin/ldconfig
-%if 0%{?qtchooser} && 0%{?priority:1}
+%if 0%{?qtchooser}
 %{_sbindir}/update-alternatives \
   --install %{_sysconfdir}/xdg/qtchooser/qt4.conf \
   qtchooser-qt4 \
@@ -938,7 +932,7 @@ rm -rf %{buildroot}
 
 %postun
 /sbin/ldconfig
-%if 0%{?qtchooser} && 0%{?priority:1}
+%if 0%{?qtchooser}
 if [ $1 -eq 0 ]; then
 %{_sbindir}/update-alternatives  \
   --remove qtchooser-qt4 \
@@ -956,14 +950,9 @@ fi
 %if 0%{?qtchooser}
 %dir %{_sysconfdir}/xdg/qtchooser
 # not editable config files, so not using %%config here
-%if 0%{?priority:1}
 %ghost %{_sysconfdir}/xdg/qtchooser/default.conf
 %ghost %{_sysconfdir}/xdg/qtchooser/qt4.conf
 %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf
-%else
-%{_sysconfdir}/xdg/qtchooser/default.conf
-%{_sysconfdir}/xdg/qtchooser/qt4.conf
-%endif
 %endif
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
@@ -1282,7 +1271,6 @@ fi
 %changelog
 * Wed Jul 23 2014 Rex Dieter <rdieter@fedoraproject.org> - 4.8.6-10
 - use alternatives to fix qtchooser conf's in non-basearch multilib case (#1122316)
-- disable demos/examples for quick test build
 
 * Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-9.1
 - rebuild (for pulseaudio, bug #1117683)
