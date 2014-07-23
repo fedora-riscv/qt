@@ -1282,7 +1282,7 @@ fi
 %changelog
 * Wed Jul 23 2014 Rex Dieter <rdieter@fedoraproject.org> - 4.8.6-10
 - use alternatives to fix qtchooser conf's in non-basearch multilib case (#1122316)
-- fix build when demos/examples are disabled
+- disable demos/examples for quick test build
 
 * Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-9.1
 - rebuild (for pulseaudio, bug #1117683)
