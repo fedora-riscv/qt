@@ -20,12 +20,20 @@
 
 # support qtchooser
 %define qtchooser 1
+%if 0%{?qtchooser}
+%ifarch %{multilib_archs}
+%define priority 20
+%ifarch %{multilib_basearchs}
+%define priority 25
+%endif
+%endif
+%endif
 
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 9%{?dist}.1
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -299,6 +307,10 @@ Requires: ca-certificates
 %if 0%{?qt_settings}
 Requires: qt-settings
 %endif
+%if 0%{?qtchooser} && 0%{?priority:1}
+Requires(post): %{_sbindir}/update-alternatives
+Requires(postun): %{_sbindir}/update-alternatives
+%endif
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -327,7 +339,7 @@ Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description config 
 %{summary}.
 
-%define demos 1
+#define demos 1
 %package demos
 Summary: Demonstration applications for %{name}
 Group:   Documentation
@@ -395,7 +407,7 @@ BuildArch: noarch
 %description devel-private
 %{summary}.
 
-%define examples 1
+#define examples 1
 %package examples
 Summary: Programming examples for %{name}
 Group: Documentation
@@ -773,12 +785,11 @@ popd
   pushd    %{buildroot}%{_sysconfdir}/xdg/qtchooser
   echo "%{_qt4_bindir}" >  qt4.conf
   echo "%{_qt4_prefix}" >> qt4.conf
-  ln -s qt4.conf default.conf
-  %ifarch %{multilib_archs}
+  %if 0%{?priority:1}
     mv qt4.conf qt4-%{__isa_bits}.conf
-    %ifarch %{multilib_basearchs}
-      ln -sf qt4-%{__isa_bits}.conf qt4.conf
-    %endif
+    touch default.conf qt4.conf
+  %else
+    ln -s qt4.conf default.conf
   %endif
   popd
 %endif
@@ -909,8 +920,35 @@ cat designer.lang linguist.lang >qt-devel.lang
 rm -rf %{buildroot}
 
 
-%post -p /sbin/ldconfig
-%postun -p /sbin/ldconfig
+%post
+/sbin/ldconfig
+%if 0%{?qtchooser} && 0%{?priority:1}
+%{_sbindir}/update-alternatives \
+  --install %{_sysconfdir}/xdg/qtchooser/qt4.conf \
+  qtchooser-qt4 \
+  %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf \
+  %{priority}
+
+%{_sbindir}/update-alternatives \
+  --install %{_sysconfdir}/xdg/qtchooser/default.conf \
+  qtchooser-default \
+  %{_sysconfdir}/xdg/qtchooser/qt4.conf \
+  %{priority}
+%endif
+
+%postun
+/sbin/ldconfig
+%if 0%{?qtchooser} && 0%{?priority:1}
+if [ $1 -eq 0 ]; then
+%{_sbindir}/update-alternatives  \
+  --remove qtchooser-qt4 \
+  %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf
+
+%{_sbindir}/update-alternatives  \
+  --remove qtchooser-default \
+  %{_sysconfdir}/xdg/qtchooser/qt4.conf
+fi
+%endif
 
 %files -f qt.lang
 %defattr(-,root,root,-)
@@ -918,7 +956,14 @@ rm -rf %{buildroot}
 %if 0%{?qtchooser}
 %dir %{_sysconfdir}/xdg/qtchooser
 # not editable config files, so not using %%config here
-%{_sysconfdir}/xdg/qtchooser/*.conf
+%if 0%{?priority:1}
+%ghost %{_sysconfdir}/xdg/qtchooser/default.conf
+%ghost %{_sysconfdir}/xdg/qtchooser/qt4.conf
+%{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf
+%else
+%{_sysconfdir}/xdg/qtchooser/default.conf
+%{_sysconfdir}/xdg/qtchooser/qt4.conf
+%endif
 %endif
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
@@ -996,16 +1041,16 @@ fi
 %{_qt4_bindir}/qt*config*
 %{_datadir}/applications/*qtconfig.desktop
 
-%if 0%{?demos}
 %files demos
 %defattr(-,root,root,-)
+%if 0%{?demos}
 %{_qt4_bindir}/qt*demo*
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qt*demo*
 %endif
 %{_datadir}/applications/*qtdemo.desktop
-%{_qt4_demosdir}/
 %endif
+%{_qt4_demosdir}/
 
 %if "%{?webkit}" == "-webkit"
 %files designer-plugin-webkit
@@ -1129,11 +1174,9 @@ fi
 #{_qt4_prefix}/doc
 %endif
 
-%if 0%{?examples}
 %files examples
 %defattr(-,root,root,-)
 %{_qt4_examplesdir}/
-%endif
 
 %if 0%{?qvfb}
 %files qvfb -f qvfb.lang
@@ -1237,6 +1280,10 @@ fi
 
 
 %changelog
+* Wed Jul 23 2014 Rex Dieter <rdieter@fedoraproject.org> - 4.8.6-10
+- use alternatives to fix qtchooser conf's in non-basearch multilib case (#1122316)
+- fix build when demos/examples are disabled
+
 * Thu Jul 17 2014 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-9.1
 - rebuild (for pulseaudio, bug #1117683)
 
