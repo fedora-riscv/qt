@@ -31,7 +31,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 10%{?dist}
+Release: 11%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -196,8 +196,10 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
+%if 0%{?fedora} < 21 && 0%{?rhel} < 8
 %define phonon -phonon
 %define phonon_backend -phonon-backend
+%endif
 %define dbus -dbus-linked
 %define graphicssystem -graphicssystem raster
 %define gtkstyle -gtkstyle
@@ -1269,6 +1271,9 @@ fi
 
 
 %changelog
+* Tue Aug 12 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.8.6-11
+- drop Phonon-GStreamer0.10 support from qtconfig-qt4 on F21+ (#1123112)
+
 * Wed Jul 23 2014 Rex Dieter <rdieter@fedoraproject.org> - 4.8.6-10
 - use alternatives to fix qtchooser conf's in non-basearch multilib case (#1122316)
 
