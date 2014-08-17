@@ -31,7 +31,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1271,6 +1271,9 @@ fi
 
 
 %changelog
+* Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.8.6-12
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
 * Tue Aug 12 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.8.6-11
 - drop Phonon-GStreamer0.10 support from qtconfig-qt4 on F21+ (#1123112)
 
