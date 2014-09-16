@@ -759,6 +759,7 @@ for i in * ; do
       ln -v  ${i} %{buildroot}%{_bindir}/${i}
       ln -v  ${i} %{buildroot}%{_bindir}/${i}-qt4
       ln -sv ${i} ${i}-qt4
+      ;;
     *)
       ln -v  ${i} %{buildroot}%{_bindir}/${i}
       ;;
