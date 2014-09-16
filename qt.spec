@@ -31,7 +31,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -168,12 +168,17 @@ Patch185: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
 
 ## upstream git
 Patch210: 0010-QDbus-Fix-a-b-comparison.patch
+Patch223: 0023-Don-t-crash-on-broken-GIF-images.patch
 Patch225: 0025-Fix-visual-index-lookup-in-QTreeViewPrivate-adjustVi.patch
+Patch230: 0030-Memory-and-file-descriptor-leak-in-QFontCache.patch
 Patch234: 0034-Fix-raster-graphics-on-X11-RGB30.patch
+Patch247: 0047-QSslCertificate-blacklist-NIC-certificates-from-Indi.patch
+Patch265: 0065-Fix-QPainter-drawPolyline-painting-errors-with-cosme.patch
+Patch266: 0066-Allow-Qt4-to-also-build-in-ppc64-el-le.patch
+Patch267: 0067-Fix-AArch64-arm64-detection.patch
+Patch272: 0072-Fix-font-cache-check-in-QFontEngineFT-recalcAdvances.patch
 
 ## security patches
-# https://bugreports.qt-project.org/browse/QTBUG-38367
-Patch300: qt-everywhere-opensource-src-4.8.6-QTBUG-38367.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -549,14 +554,20 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
 # upstream git
 %patch210 -p1 -b .0010
+%patch223 -p1 -b .0023
 %patch225 -p1 -b .0025
+%patch230 -p1 -b .0030
 %patch234 -p1 -b .0034
+%patch247 -p1 -b .0047
+%patch265 -p1 -b .0065
+%patch266 -p1 -b .0066
+%patch267 -p1 -b .0067
+%patch272 -p1 -b .0072
 
 # security fixes
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
 %patch86 -p1 -b .systemtrayicon
-%patch300 -p1 -b .QTBUG-38367
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1073,6 +1084,7 @@ fi
 %{_qt4_bindir}/pixeltool*
 %{_qt4_bindir}/qdoc3*
 %{_qt4_bindir}/qmake*
+%{_qt4_bindir}/qmlviewer
 %{_qt4_bindir}/qmlplugindump
 %{_qt4_bindir}/qt3to4
 %{_qt4_bindir}/qttracereplay
@@ -1091,16 +1103,17 @@ fi
 %{_bindir}/lrelease*
 %{_bindir}/lupdate*
 %{_bindir}/moc*
-%{_bindir}/qmake*
 %{_bindir}/uic*
 %{_bindir}/designer*
 %{_bindir}/linguist*
 %{_bindir}/lconvert
 %{_bindir}/pixeltool
+%{_bindir}/qcollectiongenerator
 %{_bindir}/qdoc3
+%{_bindir}/qmake*
+%{_bindir}/qmlviewer
 %{_bindir}/qt3to4
 %{_bindir}/qttracereplay
-%{_bindir}/qcollectiongenerator
 %if 0%{?dbus:1}
 %{_bindir}/qdbuscpp2xml
 %{_bindir}/qdbusxml2cpp
@@ -1241,10 +1254,6 @@ fi
 %exclude %{_qt4_plugindir}/designer/libqwebview.so
 %endif
 %exclude %{_qt4_plugindir}/sqldrivers
-%if "%{_qt4_bindir}" != "%{_bindir}"
-%{_bindir}/qmlviewer
-%endif
-%{_qt4_bindir}/qmlviewer
 %{_datadir}/icons/hicolor/*/apps/qt4-logo.*
 
 %if 0%{?dbus:1}
@@ -1271,6 +1280,10 @@ fi
 
 
 %changelog
+* Tue Sep 16 2014 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.6-13
+- move qmlviewer to -devel
+- pull in some upstream fixes
+
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.8.6-12
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
 
