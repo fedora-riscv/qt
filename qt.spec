@@ -749,10 +749,16 @@ mkdir %{buildroot}%{_bindir}
 pushd %{buildroot}%{_qt4_bindir}
 for i in * ; do
   case "${i}" in
+    # qt3 stuff
     assistant|designer|linguist|lrelease|lupdate|moc|qmake|qtconfig|qtdemo|uic)
       ln -v  ${i} %{buildroot}%{_bindir}/${i}-qt4
       ln -sv ${i} ${i}-qt4
       ;;
+    # qt5/qtchooser stuff
+    qmlviewer)
+      ln -v  ${i} %{buildroot}%{_bindir}/${i}
+      ln -v  ${i} %{buildroot}%{_bindir}/${i}-qt4
+      ln -sv ${i} ${i}-qt4
     *)
       ln -v  ${i} %{buildroot}%{_bindir}/${i}
       ;;
@@ -1081,7 +1087,7 @@ fi
 %{_qt4_bindir}/pixeltool*
 %{_qt4_bindir}/qdoc3*
 %{_qt4_bindir}/qmake*
-%{_qt4_bindir}/qmlviewer
+%{_qt4_bindir}/qmlviewer*
 %{_qt4_bindir}/qmlplugindump
 %{_qt4_bindir}/qt3to4
 %{_qt4_bindir}/qttracereplay
@@ -1108,7 +1114,7 @@ fi
 %{_bindir}/qcollectiongenerator
 %{_bindir}/qdoc3
 %{_bindir}/qmake*
-%{_bindir}/qmlviewer
+%{_bindir}/qmlviewer*
 %{_bindir}/qt3to4
 %{_bindir}/qttracereplay
 %if 0%{?dbus:1}
@@ -1278,7 +1284,7 @@ fi
 
 %changelog
 * Tue Sep 16 2014 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.6-13
-- move qmlviewer to -devel
+- qmlviewer: -qt4 wrapper, move to -devel
 - pull in some upstream fixes
 
 * Sun Aug 17 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 1:4.8.6-12
