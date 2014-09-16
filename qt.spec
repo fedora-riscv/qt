@@ -163,8 +163,6 @@ Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
 
 # aarch64 support, https://bugreports.qt-project.org/browse/QTBUG-35442
 Patch180: qt-aarch64.patch
-# ppc64le support
-Patch185: qt-everywhere-opensource-src-4.8-ppc64le_support.patch
 
 ## upstream git
 Patch210: 0010-QDbus-Fix-a-b-comparison.patch
@@ -550,7 +548,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch113 -p1 -b .QTBUG-22829
 
 %patch180 -p1 -b .aarch64
-%patch185 -p1 -b .ppc64le
 
 # upstream git
 %patch210 -p1 -b .0010
