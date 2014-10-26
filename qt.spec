@@ -13,6 +13,10 @@
 %define qt_settings 1
 %endif
 
+%if 0%{?fedora}
+%global system_clucene 1
+%endif
+
 %global rpm_macros_dir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 # trim changelog included in binary rpms
@@ -31,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -152,6 +156,9 @@ Patch87: qt-everywhere-opensource-src-4.8.6-QTBUG-37380.patch
 Patch88: qt-everywhere-opensource-src-4.8.6-QTBUG-34614.patch
 Patch89: qt-everywhere-opensource-src-4.8.6-QTBUG-38585.patch
 
+# build against the system clucene09-core
+Patch90: qt-everywhere-opensource-src-4.8.6-system-clucene.patch
+
 # upstream patches
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
@@ -263,6 +270,10 @@ BuildRequires: rsync
 %define x_deps pkgconfig(ice) pkgconfig(sm) pkgconfig(xcursor) pkgconfig(xext) pkgconfig(xfixes) pkgconfig(xft) pkgconfig(xi) pkgconfig(xinerama) pkgconfig(xrandr) pkgconfig(xrender) pkgconfig(xt) pkgconfig(xv) pkgconfig(x11) pkgconfig(xproto)
 BuildRequires: %{gl_deps}
 BuildRequires: %{x_deps}
+
+%if 0%{?system_clucene}
+BuildRequires: clucene09-core-devel >= 0.9.21b-12
+%endif
 
 %if "%{?ibase}" != "-no-sql-ibase"
 BuildRequires: firebird-devel
@@ -543,6 +554,12 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch88 -p0 -b .QTBUG-34614
 %patch89 -p0 -b .QTBUG-38585
 
+%if 0%{?system_clucene}
+%patch90 -p1 -b .system_clucene
+# delete bundled copy
+rm -rf src/3rdparty/clucene
+%endif
+
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
 %patch113 -p1 -b .QTBUG-22829
@@ -564,6 +581,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 # security fixes
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
+
 %patch86 -p1 -b .systemtrayicon
 
 # drop -fexceptions from $RPM_OPT_FLAGS
@@ -1284,6 +1302,9 @@ fi
 
 
 %changelog
+* Sun Oct 26 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.6-14
+- build against the system clucene09-core (same patch as for qt5-qttools)
+
 * Tue Sep 16 2014 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.6-13
 - qmlviewer: -qt4 wrapper, move to -devel
 - pull in some upstream fixes
