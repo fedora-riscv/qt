@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 14%{?dist}
+Release: 15%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1302,6 +1302,9 @@ fi
 
 
 %changelog
+* Sat Nov 01 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.6-15
+- sync system-clucene patch from qt5-qttools (some QDir::mkpath in QtCLucene)
+
 * Sun Oct 26 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.6-14
 - build against the system clucene09-core (same patch as for qt5-qttools)
 
