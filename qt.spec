@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -225,7 +225,8 @@ Source31: hi48-app-qt4-logo.png
 %define tds -no-sql-tds
 %endif
 
-# See http://bugzilla.redhat.com/196901
+# macros, be mindful to keep sync'd with macros.qt4
+Source1: macros.qt4
 %define _qt4 %{name}
 %define _qt4_prefix %{_libdir}/qt4
 %define _qt4_bindir %{_qt4_prefix}/bin
@@ -872,34 +873,14 @@ Version: %{version}
 EOF
 
 # rpm macros
-mkdir -p %{buildroot}%{rpm_macros_dir}
-cat >%{buildroot}%{rpm_macros_dir}/macros.qt4<<EOF
-%%_qt4 %{name}
-%%_qt48 %{version}
-%%_qt4_epoch %{epoch}
-%%_qt4_version %{version}
-%%_qt4_evr %{epoch}:%{version}-%{release}
-%%_qt4_prefix %%{_libdir}/qt4
-%%_qt4_bindir %%{_qt4_prefix}/bin
-%%_qt4_datadir %%{_qt4_prefix}
-%%_qt4_demosdir %%{_qt4_prefix}/demos
-%%_qt4_docdir %%{_docdir}/qt4
-%%_qt4_examples %%{_qt4_prefix}/examples
-%%_qt4_examplesdir %%{_qt4_prefix}/examples
-%%_qt4_headerdir %%{_includedir}
-%%_qt4_importdir %%{_qt4_prefix}/imports
-%%_qt4_libdir %%{_libdir}
-%%_qt4_plugindir %%{_qt4_prefix}/plugins
-%%_qt4_qmake %%{_qt4_bindir}/qmake
-%%_qt4_sysconfdir %%{_sysconfdir}
-%%_qt4_translationdir %%{_datadir}/qt4/translations 
-
-%%qmake_qt4 \\
-  %%{_qt4_qmake} \\\\\\
-    QMAKE_CFLAGS="\${CFLAGS:-%%optflags}" \\\\\\
-    QMAKE_CXXFLAGS="\${CXXFLAGS:-%%optflags}" \\\\\\
-    QMAKE_LFLAGS="\${LDFLAGS:-%%?__global_ldflags}"
-EOF
+install -p -m644 -D %{SOURCE1} \
+  %{buildroot}%{rpm_macros_dir}/macros.qt4
+sed -i \
+  -e "s|@@NAME@@|%{name}|g" \
+  -e "s|@@EPOCH@@|%{?epoch}%{!?epoch:0}|g" \
+  -e "s|@@VERSION@@|%{version}|g" \
+  -e "s|@@EVR@@|%{?epoch:%{epoch:}}%{version}-%{release}|g" \
+  %{buildroot}%{rpm_macros_dir}/macros.qt4
 
 # create/own stuff under %%_qt4_docdir
 mkdir -p %{buildroot}%{_qt4_docdir}/{html,qch,src}
@@ -1302,6 +1283,9 @@ fi
 
 
 %changelog
+* Mon Nov 03 2014 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-16
+- macros.qt4: standalone, improved %%qmake_qt4 macro (sync'd with qt5 version)
+
 * Sat Nov 01 2014 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.6-15
 - sync system-clucene patch from qt5-qttools (some QDir::mkpath in QtCLucene)
 
