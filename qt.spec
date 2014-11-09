@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1283,6 +1283,9 @@ fi
 
 
 %changelog
+* Sun Nov 09 2014 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-17
+- Broken qmake_qt4 in /usr/lib/rpm/macros.d/macros.qt4 (#1161927)
+
 * Mon Nov 03 2014 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-16
 - macros.qt4: standalone, improved %%qmake_qt4 macro (sync'd with qt5 version)
 

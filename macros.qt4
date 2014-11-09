@@ -24,7 +24,7 @@
   QMAKE_CFLAGS_RELEASE="${CFLAGS:-%optflags}" \\\
   QMAKE_CXXFLAGS_DEBUG="${CXXFLAGS:-%optflags}" \\\
   QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-%optflags}" \\\
-  QMAKE_LFLAGS_DEBUG="${LDFLAGS:%{?__global_ldflags}}" \\\
-  QMAKE_LFLAGS_RELEASE="${LDFLAGS:%{?__global_ldflags}}" \\\
+  QMAKE_LFLAGS_DEBUG="${LDFLAGS:-%{?__global_ldflags}}" \\\
+  QMAKE_LFLAGS_RELEASE="${LDFLAGS:-%{?__global_ldflags}}" \\\
   QMAKE_STRIP=
 
