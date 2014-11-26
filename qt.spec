@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 17%{?dist}
+Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -907,9 +907,10 @@ rm -fv %{buildroot}%{_datadir}/kde4/services/phononbackends/gstreamer.desktop
 rm -fv %{buildroot}%{_qt4_datadir}/mkspecs/modules/qt_webkit_version.pri
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qgraphicswebview.h
 rm -fv %{buildroot}%{_qt4_headerdir}/Qt/qweb*.h
+rm -fv %{buildroot}%{_qt4_headerdir}/Qt/QtWebKit
 rm -frv %{buildroot}%{_qt4_headerdir}/QtWebKit/
 rm -frv %{buildroot}%{_qt4_importdir}/QtWebKit/
-rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit.*
+rm -fv %{buildroot}%{_qt4_libdir}/libQtWebKit*
 rm -fv %{buildroot}%{_libdir}/pkgconfig/QtWebKit.pc
 rm -frv %{buildroot}%{_qt4_prefix}/tests/
 
@@ -1283,6 +1284,9 @@ fi
 
 
 %changelog
+* Wed Nov 26 2014 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-18
+- omit previously-overlooked webkit bits (#1168259)
+
 * Sun Nov 09 2014 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-17
 - Broken qmake_qt4 in /usr/lib/rpm/macros.d/macros.qt4 (#1161927)
 
