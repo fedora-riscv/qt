@@ -13,7 +13,7 @@
 %define qt_settings 1
 %endif
 
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 6
 %global system_clucene 1
 %endif
 
