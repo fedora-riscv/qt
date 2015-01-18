@@ -933,6 +933,7 @@ rm -rf %{buildroot}
 
 %if 0%{?qtchooser}
 %pre
+if [ $1 -gt 1 ] ; then
 # remove short-lived qt4.conf alternatives
 %{_sbindir}/update-alternatives  \
   --remove qtchooser-qt4 \
@@ -941,6 +942,7 @@ rm -rf %{buildroot}
 %{_sbindir}/update-alternatives  \
   --remove qtchooser-default \
   %{_sysconfdir}/xdg/qtchooser/qt4.conf >& /dev/null ||:
+fi
 %endif
 
 %post
