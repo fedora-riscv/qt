@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 18%{?dist}
+Release: 19%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -817,10 +817,10 @@ popd
 %if 0%{?qtchooser}
   mkdir -p %{buildroot}%{_sysconfdir}/xdg/qtchooser
   pushd    %{buildroot}%{_sysconfdir}/xdg/qtchooser
-  echo "%{_qt4_bindir}" >  qt4-%{__isa_bits}.conf
-  echo "%{_qt4_prefix}" >> qt4-%{__isa_bits}.conf
+  echo "%{_qt4_bindir}" >  4-%{__isa_bits}.conf
+  echo "%{_qt4_prefix}" >> 4-%{__isa_bits}.conf
   # alternatives targets
-  touch default.conf qt4.conf
+  touch default.conf 4.conf
   popd
 %endif
 
@@ -931,19 +931,31 @@ cat designer.lang linguist.lang >qt-devel.lang
 rm -rf %{buildroot}
 
 
+%if 0%{?qtchooser}
+%pre
+# remove short-lived qt4.conf alternatives
+%{_sbindir}/update-alternatives  \
+  --remove qtchooser-qt4 \
+  %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf
+
+%{_sbindir}/update-alternatives  \
+  --remove qtchooser-default \
+  %{_sysconfdir}/xdg/qtchooser/qt4.conf
+%endif
+
 %post
 /sbin/ldconfig
 %if 0%{?qtchooser}
 %{_sbindir}/update-alternatives \
-  --install %{_sysconfdir}/xdg/qtchooser/qt4.conf \
-  qtchooser-qt4 \
-  %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf \
+  --install %{_sysconfdir}/xdg/qtchooser/4.conf \
+  qtchooser-4 \
+  %{_sysconfdir}/xdg/qtchooser/4-%{__isa_bits}.conf \
   %{priority}
 
 %{_sbindir}/update-alternatives \
   --install %{_sysconfdir}/xdg/qtchooser/default.conf \
   qtchooser-default \
-  %{_sysconfdir}/xdg/qtchooser/qt4.conf \
+  %{_sysconfdir}/xdg/qtchooser/4.conf \
   %{priority}
 %endif
 
@@ -952,12 +964,12 @@ rm -rf %{buildroot}
 %if 0%{?qtchooser}
 if [ $1 -eq 0 ]; then
 %{_sbindir}/update-alternatives  \
-  --remove qtchooser-qt4 \
-  %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf
+  --remove qtchooser-4 \
+  %{_sysconfdir}/xdg/qtchooser/4-%{__isa_bits}.conf
 
 %{_sbindir}/update-alternatives  \
   --remove qtchooser-default \
-  %{_sysconfdir}/xdg/qtchooser/qt4.conf
+  %{_sysconfdir}/xdg/qtchooser/4.conf
 fi
 %endif
 
@@ -968,8 +980,8 @@ fi
 %dir %{_sysconfdir}/xdg/qtchooser
 # not editable config files, so not using %%config here
 %ghost %{_sysconfdir}/xdg/qtchooser/default.conf
-%ghost %{_sysconfdir}/xdg/qtchooser/qt4.conf
-%{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf
+%ghost %{_sysconfdir}/xdg/qtchooser/4.conf
+%{_sysconfdir}/xdg/qtchooser/4-%{__isa_bits}.conf
 %endif
 %if "%{_qt4_libdir}" != "%{_libdir}"
 /etc/ld.so.conf.d/*
@@ -1284,6 +1296,9 @@ fi
 
 
 %changelog
+* Sat Jan 17 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-19
+- qtchooser: /etc/xdg/qthcooser/4.conf alternative instead (of qt4.conf)
+
 * Wed Nov 26 2014 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-18
 - omit previously-overlooked webkit bits (#1168259)
 
