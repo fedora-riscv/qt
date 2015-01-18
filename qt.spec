@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 19%{?dist}
+Release: 20%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -936,11 +936,11 @@ rm -rf %{buildroot}
 # remove short-lived qt4.conf alternatives
 %{_sbindir}/update-alternatives  \
   --remove qtchooser-qt4 \
-  %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf
+  %{_sysconfdir}/xdg/qtchooser/qt4-%{__isa_bits}.conf >& /dev/null ||:
 
 %{_sbindir}/update-alternatives  \
   --remove qtchooser-default \
-  %{_sysconfdir}/xdg/qtchooser/qt4.conf
+  %{_sysconfdir}/xdg/qtchooser/qt4.conf >& /dev/null ||:
 %endif
 
 %post
@@ -1296,6 +1296,9 @@ fi
 
 
 %changelog
+* Sun Jan 18 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-20
+- fix %%pre scriptlet (#1183299)
+
 * Sat Jan 17 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-19
 - ship /etc/xdg/qtchooser/4.conf alternative instead (of qt4.conf)
 
