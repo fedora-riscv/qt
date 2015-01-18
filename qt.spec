@@ -1297,7 +1297,7 @@ fi
 
 %changelog
 * Sat Jan 17 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-19
-- qtchooser: /etc/xdg/qthcooser/4.conf alternative instead (of qt4.conf)
+- ship /etc/xdg/qtchooser/4.conf alternative instead (of qt4.conf)
 
 * Wed Nov 26 2014 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-18
 - omit previously-overlooked webkit bits (#1168259)
