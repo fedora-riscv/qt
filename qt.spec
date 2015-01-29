@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 20%{?dist}
+Release: 21%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -166,7 +166,7 @@ Patch90: qt-everywhere-opensource-src-4.8.6-system-clucene.patch
 Patch102: qt-everywhere-opensource-src-4.8.5-qgtkstyle_disable_gtk_theme_check.patch
 # workaround for MOC issues with Boost headers (#756395)
 # https://bugreports.qt-project.org/browse/QTBUG-22829
-Patch113: qt-everywhere-opensource-src-4.8.5-QTBUG-22829.patch
+Patch113: qt-everywhere-opensource-src-4.8.6-QTBUG-22829.patch
 
 # aarch64 support, https://bugreports.qt-project.org/browse/QTBUG-35442
 Patch180: qt-aarch64.patch
@@ -1298,6 +1298,9 @@ fi
 
 
 %changelog
+* Thu Jan 29 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-21
+- refresh boost/moc patch (QTBUG-22829)
+
 * Sun Jan 18 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-20
 - fix %%pre scriptlet (#1183299)
 
