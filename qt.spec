@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 21%{?dist}
+Release: 22%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1298,6 +1298,9 @@ fi
 
 
 %changelog
+* Wed Feb 11 2015 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-22
+- rebuild (gcc5)
+
 * Thu Jan 29 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-21
 - refresh boost/moc patch (QTBUG-22829)
 
