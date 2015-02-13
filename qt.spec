@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 22%{?dist}
+Release: 23%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -70,6 +70,10 @@ Patch5: qt-everywhere-opensource-src-4.8.5-webcore_debuginfo.patch
 # cups16 printer discovery
 Patch6: qt-cupsEnumDests.patch
 
+# prefer adwaita over gtk+ on DE_GNOME
+# https://bugzilla.redhat.com/show_bug.cgi?id=1192453
+Patch10: qt-prefer_adwaita_on_gnome.patch
+
 # enable ft lcdfilter
 Patch15: qt-x11-opensource-src-4.5.1-enable_ft_lcdfilter.patch
 
@@ -93,6 +97,10 @@ Patch28: qt-everywhere-opensource-src-4.8.5-qt_plugin_path.patch
 ## upstreamable bits
 # add support for pkgconfig's Requires.private to qmake
 Patch50: qt-everywhere-opensource-src-4.8.4-qmake_pkgconfig_requires_private.patch
+
+# backport 'Fix detection of GCC5'
+# https://qt.gitorious.org/qt/qtbase/commit/9fb4c2c412621b63c06dbbd899f44041b2e126c2
+Patch51: qt-fix_detection_of_gcc5.patch
 
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
@@ -527,6 +535,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %if 0%{?fedora} > 18
 #patch6 -p1 -b .cupsEnumDests
 %endif
+%patch10 -p0 -b .prefer_adwaita_on_gnome
 %patch15 -p1 -b .enable_ft_lcdfilter
 %patch23 -p1 -b .glib_eventloop_nullcheck
 %patch25 -p1 -b .qdbusconnection_no_debug
@@ -534,6 +543,7 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch27 -p1 -b .qt3support_debuginfo
 %patch28 -p1 -b .qt_plugin_path
 %patch50 -p1 -b .qmake_pkgconfig_requires_private
+%patch51 -p1 -b .fix_detection_of_gcc5
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1298,7 +1308,11 @@ fi
 
 
 %changelog
-* Wed Feb 11 2015 Rex Dieter <rdieter@fedoraproject.org> 4.8.6-22
+* Fri Feb 13 2015 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.6-23
+- Qt: FTBFS with gcc5 (#1192464)
+- Make Adwaita the default theme for applications running in the GNOME DE (#1192453)
+
+* Wed Feb 11 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-22
 - rebuild (gcc5)
 
 * Thu Jan 29 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-21
