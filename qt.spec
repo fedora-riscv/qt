@@ -548,7 +548,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch28 -p1 -b .qt_plugin_path
 %patch50 -p1 -b .qmake_pkgconfig_requires_private
 %patch51 -p1 -b .fix_detection_of_gcc5
-error
 %patch52 -p1 -b .gcc5_compat_qt_build_key
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
