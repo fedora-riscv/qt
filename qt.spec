@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 23%{?dist}
+Release: 24%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -98,9 +98,13 @@ Patch28: qt-everywhere-opensource-src-4.8.5-qt_plugin_path.patch
 # add support for pkgconfig's Requires.private to qmake
 Patch50: qt-everywhere-opensource-src-4.8.4-qmake_pkgconfig_requires_private.patch
 
-# backport 'Fix detection of GCC5'
+# backport part of 'Fix detection of GCC5'
 # https://qt.gitorious.org/qt/qtbase/commit/9fb4c2c412621b63c06dbbd899f44041b2e126c2
 Patch51: qt-fix_detection_of_gcc5.patch
+
+# F22's gcc5 uses gcc4 ABI, so ensure QT_BUILD_KEY remains the same too
+# TODO: ask upstream how to handle gcc5 moving forward, use g++-5 or not?
+Patch52: qt-gcc5_compat_qt_build_key.patch
 
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
@@ -544,6 +548,8 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch28 -p1 -b .qt_plugin_path
 %patch50 -p1 -b .qmake_pkgconfig_requires_private
 %patch51 -p1 -b .fix_detection_of_gcc5
+error
+%patch52 -p1 -b .gcc5_compat_qt_build_key
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1308,6 +1314,9 @@ fi
 
 
 %changelog
+* Mon Feb 16 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-24
+- more gcc5 detection fixes, in particular, ensure same QT_BUILD_KEY as gcc4 for now
+
 * Fri Feb 13 2015 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.6-23
 - Qt: FTBFS with gcc5 (#1192464)
 - Make Adwaita the default theme for applications running in the GNOME DE (#1192453)
