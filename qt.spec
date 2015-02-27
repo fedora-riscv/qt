@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 24%{?dist}
+Release: 25%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -196,6 +196,9 @@ Patch267: 0067-Fix-AArch64-arm64-detection.patch
 Patch272: 0072-Fix-font-cache-check-in-QFontEngineFT-recalcAdvances.patch
 
 ## security patches
+# CVE-2015-0295
+# http://lists.qt-project.org/pipermail/announce/2015-February/000059.html
+Patch337: 0137-Fix-a-division-by-zero-when-processing-malformed-BMP.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -593,6 +596,7 @@ rm -rf src/3rdparty/clucene
 %patch266 -p1 -b .0066
 %patch267 -p1 -b .0067
 %patch272 -p1 -b .0072
+%patch337 -p1 -b .0137
 
 # security fixes
 # regression fixes for the security fixes
@@ -1313,6 +1317,9 @@ fi
 
 
 %changelog
+* Fri Feb 27 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-25
+- DoS vulnerability in the BMP image handler (CVE-2015-0295)
+
 * Mon Feb 16 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-24
 - more gcc5 detection fixes, in particular, ensure same QT_BUILD_KEY as gcc4 for now
 
