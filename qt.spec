@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 25%{?dist}
+Release: 26%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -898,7 +898,7 @@ sed -i \
   -e "s|@@NAME@@|%{name}|g" \
   -e "s|@@EPOCH@@|%{?epoch}%{!?epoch:0}|g" \
   -e "s|@@VERSION@@|%{version}|g" \
-  -e "s|@@EVR@@|%{?epoch:%{epoch:}}%{version}-%{release}|g" \
+  -e "s|@@EVR@@|%{?epoch:%{epoch}:}%{version}-%{release}|g" \
   %{buildroot}%{rpm_macros_dir}/macros.qt4
 
 # create/own stuff under %%_qt4_docdir
@@ -1317,6 +1317,9 @@ fi
 
 
 %changelog
+* Fri Mar 20 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-26
+- macros.qt4: fix _qt4_evr macro (missing : after epoch)
+
 * Fri Feb 27 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-25
 - DoS vulnerability in the BMP image handler (CVE-2015-0295)
 
