@@ -1083,7 +1083,6 @@ fi
 %{_bindir}/assistant*
 %endif
 %{_qt4_bindir}/assistant*
-%{_datadir}/appdata/*assistant.appdata.xml
 %{_datadir}/applications/*assistant.desktop
 %{_datadir}/icons/hicolor/*/apps/assistant*
 
@@ -1201,6 +1200,7 @@ fi
 %{?docs:%{_qt4_docdir}/qch/designer.qch}
 # Qt Linguist
 %{_qt4_bindir}/linguist*
+%{_datadir}/appdata/*linguist.appdata.xml
 %{_datadir}/applications/*linguist.desktop
 %{_datadir}/icons/hicolor/*/apps/linguist*
 %{?docs:%{_qt4_docdir}/qch/linguist.qch}
