@@ -869,6 +869,20 @@ done
 install -p -m644 -D tools/qdbus/qdbusviewer/images/qdbusviewer.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/qdbusviewer.png
 install -p -m644 -D tools/qdbus/qdbusviewer/images/qdbusviewer-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qdbusviewer.png
 
+# Merge applications into one software center item
+mkdir -p %{buildroot}%{_datadir}/appdata
+cat > %{buildroot}%{_datadir}/appdata/qt4-linguist.appdata.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Richard Hughes <richard@hughsie.com> -->
+<component type="desktop">
+  <metadata_license>CC0-1.0</metadata_license>
+  <id>qt4-linguist.desktop</id>
+  <metadata>
+    <value key="X-Merge-With-Parent">qt4-designer.desktop</value>
+  </metadata>
+</component>
+EOF
+
 # Qt.pc
 cat >%{buildroot}%{_libdir}/pkgconfig/Qt.pc<<EOF
 prefix=%{_qt4_prefix}
@@ -963,20 +977,6 @@ if [ $1 -gt 1 ] ; then
   %{_sysconfdir}/xdg/qtchooser/qt4.conf >& /dev/null ||:
 fi
 %endif
-
-# Merge applications into one software center item
-mkdir -p $RPM_BUILD_ROOT%{_datadir}/appdata
-cat > $RPM_BUILD_ROOT%{_datadir}/appdata/qt4-linguist.appdata.xml <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 Richard Hughes <richard@hughsie.com> -->
-<component type="desktop">
-  <metadata_license>CC0-1.0</metadata_license>
-  <id>qt4-linguist.desktop</id>
-  <metadata>
-    <value key="X-Merge-With-Parent">qt4-designer.desktop</value>
-  </metadata>
-</component>
-EOF
 
 %post
 /sbin/ldconfig
