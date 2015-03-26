@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 26%{?dist}
+Release: 27%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -964,6 +964,20 @@ if [ $1 -gt 1 ] ; then
 fi
 %endif
 
+# Merge applications into one software center item
+mkdir -p $RPM_BUILD_ROOT%{_datadir}/appdata
+cat > $RPM_BUILD_ROOT%{_datadir}/appdata/qt4-linguist.appdata.xml <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2014 Richard Hughes <richard@hughsie.com> -->
+<component type="desktop">
+  <metadata_license>CC0-1.0</metadata_license>
+  <id>qt4-linguist.desktop</id>
+  <metadata>
+    <value key="X-Merge-With-Parent">qt4-designer.desktop</value>
+  </metadata>
+</component>
+EOF
+
 %post
 /sbin/ldconfig
 %if 0%{?qtchooser}
@@ -1069,6 +1083,7 @@ fi
 %{_bindir}/assistant*
 %endif
 %{_qt4_bindir}/assistant*
+%{_datadir}/appdata/*assistant.appdata.xml
 %{_datadir}/applications/*assistant.desktop
 %{_datadir}/icons/hicolor/*/apps/assistant*
 
@@ -1317,6 +1332,9 @@ fi
 
 
 %changelog
+* Thu Mar 26 2015 Richard Hughes <rhughes@redhat.com> - 1:4.8.6-27
+- Add an AppData file for the software center
+
 * Fri Mar 20 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-26
 - macros.qt4: fix _qt4_evr macro (missing : after epoch)
 
