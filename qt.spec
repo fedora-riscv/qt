@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 27%{?dist}
+Release: 28%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -199,6 +199,8 @@ Patch272: 0072-Fix-font-cache-check-in-QFontEngineFT-recalcAdvances.patch
 # CVE-2015-0295
 # http://lists.qt-project.org/pipermail/announce/2015-February/000059.html
 Patch337: 0137-Fix-a-division-by-zero-when-processing-malformed-BMP.patch
+# CVE-2015-1860 CVE-2015-1859 CVE-2015-1858
+Patch338: qt-4.8.6-CVE-2015-1860_CVE-2015-1859_CVE-2015-1858.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -597,6 +599,7 @@ rm -rf src/3rdparty/clucene
 %patch267 -p1 -b .0067
 %patch272 -p1 -b .0072
 %patch337 -p1 -b .0137
+%patch338 -p1 -b .CVE-2015-1860_CVE-2015-1859_CVE-2015-1858
 
 # security fixes
 # regression fixes for the security fixes
@@ -1332,6 +1335,9 @@ fi
 
 
 %changelog
+* Mon Apr 13 2015 Than Ngo <than@redhat.com> - 1:4.8.6-28
+- bz#1210677, CVE-2015-1860 CVE-2015-1859 CVE-2015-1858
+
 * Thu Mar 26 2015 Richard Hughes <rhughes@redhat.com> - 1:4.8.6-27
 - Add an AppData file for the software center
 
