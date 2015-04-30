@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 28%{?dist}
+Release: 29%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -335,6 +335,7 @@ BuildRequires: freetds-devel
 
 Obsoletes: qgtkstyle < 0.1
 Provides:  qgtkstyle = 0.1-1
+Requires: %{name}-common = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: ca-certificates
 %if 0%{?qt_settings}
 Requires: qt-settings
@@ -349,6 +350,13 @@ Qt is a software toolkit for developing applications.
 
 This package contains base tools, like string, xml, and network
 handling.
+
+%package common
+Summary: Common files for Qt
+Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
+BuildArch: noarch
+%description common
+%{summary}.
 
 %package assistant
 Summary: Documentation browser for Qt 4
@@ -392,8 +400,7 @@ Provides:  qt4-doc = %{version}-%{release}
 Obsoletes: qt-doc < 1:4.5.1-4
 BuildArch: noarch
 %description doc
-%{summary}.  Includes:
-Qt Assistant
+%{summary}.
 
 %package designer-plugin-webkit
 Summary: Qt designer plugin for WebKit
@@ -1068,6 +1075,9 @@ fi
 %dir %{_qt4_translationdir}/
 %{_qt4_plugindir}/sqldrivers/libqsqlite*
 
+%files common
+# empty for now, consider: filesystem/dir ownership, licenses
+
 %post assistant
 touch --no-create %{_datadir}/icons/hicolor ||:
 
@@ -1335,6 +1345,10 @@ fi
 
 
 %changelog
+* Thu Apr 30 2015 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.6-29
+- introduce -common noarch subpkg, should help multilib issues
+- -doc: fix %%description (doesn't include assistant)
+
 * Mon Apr 13 2015 Than Ngo <than@redhat.com> - 1:4.8.6-28
 - bz#1210677, CVE-2015-1860 CVE-2015-1859 CVE-2015-1858
 
