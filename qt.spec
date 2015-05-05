@@ -35,7 +35,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.6
-Release: 29%{?dist}
+Release: 30%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -194,6 +194,7 @@ Patch265: 0065-Fix-QPainter-drawPolyline-painting-errors-with-cosme.patch
 Patch266: 0066-Allow-Qt4-to-also-build-in-ppc64-el-le.patch
 Patch267: 0067-Fix-AArch64-arm64-detection.patch
 Patch272: 0072-Fix-font-cache-check-in-QFontEngineFT-recalcAdvances.patch
+Patch363: 0163-QNAM-Fix-upload-corruptions-when-server-closes-conne.patch
 
 ## security patches
 # CVE-2015-0295
@@ -607,6 +608,7 @@ rm -rf src/3rdparty/clucene
 %patch272 -p1 -b .0072
 %patch337 -p1 -b .0137
 %patch338 -p1 -b .CVE-2015-1860_CVE-2015-1859_CVE-2015-1858
+%patch363 -p1 -b .0163
 
 # security fixes
 # regression fixes for the security fixes
@@ -1345,6 +1347,9 @@ fi
 
 
 %changelog
+* Tue May 05 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-30
+- backport: data corruption in QNetworkAccessManager
+
 * Thu Apr 30 2015 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.6-29
 - introduce -common noarch subpkg, should help multilib issues
 - -doc: fix %%description (doesn't include assistant)
