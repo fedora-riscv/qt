@@ -31,18 +31,20 @@
 %endif
 %endif
 
+%define beta rc2
+
 Summary: Qt toolkit
 Name:    qt
 Epoch:   1
-Version: 4.8.6
-Release: 30%{?dist}
+Version: 4.8.7
+Release: 0.1.%{beta}%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
 Group: System Environment/Libraries
 Url:     http://qt-project.org/
-%if 0%{?pre:1}
-Source0: http://download.qt-project.org/development_releases/qt/4.8/%{version}-%{pre}/qt-everywhere-opensource-src-%{version}-%{pre}.tar.gz
+%if 0%{?beta:1}
+Source0: http://download.qt-project.org/development_releases/qt/4.8/%{version}-%{beta}/qt-everywhere-opensource-src-%{version}-%{beta}.tar.gz
 %else
 Source0: http://download.qt-project.org/official_releases/qt/4.8/%{version}/qt-everywhere-opensource-src-%{version}.tar.gz
 %endif
@@ -97,14 +99,6 @@ Patch28: qt-everywhere-opensource-src-4.8.5-qt_plugin_path.patch
 ## upstreamable bits
 # add support for pkgconfig's Requires.private to qmake
 Patch50: qt-everywhere-opensource-src-4.8.4-qmake_pkgconfig_requires_private.patch
-
-# backport part of 'Fix detection of GCC5'
-# https://qt.gitorious.org/qt/qtbase/commit/9fb4c2c412621b63c06dbbd899f44041b2e126c2
-Patch51: qt-fix_detection_of_gcc5.patch
-
-# F22's gcc5 uses gcc4 ABI, so ensure QT_BUILD_KEY remains the same too
-# TODO: ask upstream how to handle gcc5 moving forward, use g++-5 or not?
-Patch52: qt-gcc5_compat_qt_build_key.patch
 
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
@@ -184,24 +178,8 @@ Patch113: qt-everywhere-opensource-src-4.8.6-QTBUG-22829.patch
 Patch180: qt-aarch64.patch
 
 ## upstream git
-Patch210: 0010-QDbus-Fix-a-b-comparison.patch
-Patch223: 0023-Don-t-crash-on-broken-GIF-images.patch
-Patch225: 0025-Fix-visual-index-lookup-in-QTreeViewPrivate-adjustVi.patch
-Patch230: 0030-Memory-and-file-descriptor-leak-in-QFontCache.patch
-Patch234: 0034-Fix-raster-graphics-on-X11-RGB30.patch
-Patch247: 0047-QSslCertificate-blacklist-NIC-certificates-from-Indi.patch
-Patch265: 0065-Fix-QPainter-drawPolyline-painting-errors-with-cosme.patch
-Patch266: 0066-Allow-Qt4-to-also-build-in-ppc64-el-le.patch
-Patch267: 0067-Fix-AArch64-arm64-detection.patch
-Patch272: 0072-Fix-font-cache-check-in-QFontEngineFT-recalcAdvances.patch
-Patch363: 0163-QNAM-Fix-upload-corruptions-when-server-closes-conne.patch
 
 ## security patches
-# CVE-2015-0295
-# http://lists.qt-project.org/pipermail/announce/2015-February/000059.html
-Patch337: 0137-Fix-a-division-by-zero-when-processing-malformed-BMP.patch
-# CVE-2015-1860 CVE-2015-1859 CVE-2015-1858
-Patch338: qt-4.8.6-CVE-2015-1860_CVE-2015-1859_CVE-2015-1858.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -560,8 +538,6 @@ rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch27 -p1 -b .qt3support_debuginfo
 %patch28 -p1 -b .qt_plugin_path
 %patch50 -p1 -b .qmake_pkgconfig_requires_private
-%patch51 -p1 -b .fix_detection_of_gcc5
-%patch52 -p1 -b .gcc5_compat_qt_build_key
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -596,19 +572,6 @@ rm -rf src/3rdparty/clucene
 %patch180 -p1 -b .aarch64
 
 # upstream git
-%patch210 -p1 -b .0010
-%patch223 -p1 -b .0023
-%patch225 -p1 -b .0025
-%patch230 -p1 -b .0030
-%patch234 -p1 -b .0034
-%patch247 -p1 -b .0047
-%patch265 -p1 -b .0065
-%patch266 -p1 -b .0066
-%patch267 -p1 -b .0067
-%patch272 -p1 -b .0072
-%patch337 -p1 -b .0137
-%patch338 -p1 -b .CVE-2015-1860_CVE-2015-1859_CVE-2015-1858
-%patch363 -p1 -b .0163
 
 # security fixes
 # regression fixes for the security fixes
@@ -776,7 +739,7 @@ done
 
 # nuke dangling reference(s) to %buildroot
 sed -i -e "/^QMAKE_PRL_BUILD_DIR/d" %{buildroot}%{_qt4_libdir}/*.prl
-sed -i -e "s|-L%{_builddir}/qt-everywhere-opensource-src-%{version}%{?pre:-%{pre}}/lib||g" \
+sed -i -e "s|-L%{_builddir}/qt-everywhere-opensource-src-%{version}%{?beta:-%{beta}}/lib||g" \
   %{buildroot}%{_qt4_libdir}/pkgconfig/*.pc \
   %{buildroot}%{_qt4_libdir}/*.prl
 
@@ -1109,16 +1072,16 @@ fi
 %{_qt4_bindir}/qt*config*
 %{_datadir}/applications/*qtconfig.desktop
 
+%if 0%{?demos}
 %files demos
 %defattr(-,root,root,-)
-%if 0%{?demos}
 %{_qt4_bindir}/qt*demo*
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qt*demo*
 %endif
 %{_datadir}/applications/*qtdemo.desktop
-%endif
 %{_qt4_demosdir}/
+%endif
 
 %if "%{?webkit}" == "-webkit"
 %files designer-plugin-webkit
@@ -1245,9 +1208,11 @@ fi
 #{_qt4_prefix}/doc
 %endif
 
+%if 0%{?examples}
 %files examples
 %defattr(-,root,root,-)
 %{_qt4_examplesdir}/
+%endif
 
 %if 0%{?qvfb}
 %files qvfb -f qvfb.lang
@@ -1347,6 +1312,9 @@ fi
 
 
 %changelog
+* Fri May 08 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-0.1.rc2
+- qt-4.8.7-rc2
+
 * Tue May 05 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.6-30
 - backport: data corruption in QNetworkAccessManager
 
