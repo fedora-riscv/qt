@@ -19,7 +19,7 @@
 
 %if 0%{?fedora} && 0%{?fedora} < 22
 %global reduce_relocations -reduce-relocations
-%global
+%endif
 
 %global rpm_macros_dir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
