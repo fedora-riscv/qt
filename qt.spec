@@ -17,6 +17,10 @@
 %global system_clucene 1
 %endif
 
+%if 0%{?fedora} && 0%{?fedora} < 22
+%global reduce_relocations -reduce-relocations
+%global
+
 %global rpm_macros_dir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 # trim changelog included in binary rpms
@@ -35,7 +39,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 1%{?dist}
+Release: 2%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -640,7 +644,7 @@ done
   -largefile \
   -gtkstyle \
   -no-rpath \
-  -reduce-relocations \
+  %{?reduce_relocations} \
   -no-separate-debug-info \
   %{?phonon} %{!?phonon:-no-phonon} \
   %{?phonon_backend} \
@@ -1310,6 +1314,9 @@ fi
 
 
 %changelog
+* Tue Jun 09 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-2
+- drop -reduce-relocations (f22+)
+
 * Tue May 26 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-1
 - qt-4.8.7 (final)
 
