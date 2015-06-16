@@ -18,8 +18,7 @@
 %_qt4_sysconfdir %{_sysconfdir}
 %_qt4_translationdir %{_datadir}/qt4/translations 
 
-%qmake_qt4 \
-  %{_qt4_qmake} \\\
+%qmake_qt4 %{_qt4_qmake} \\\
   QMAKE_CFLAGS_DEBUG="${CFLAGS:-%optflags}" \\\
   QMAKE_CFLAGS_RELEASE="${CFLAGS:-%optflags}" \\\
   QMAKE_CXXFLAGS_DEBUG="${CXXFLAGS:-%optflags}" \\\

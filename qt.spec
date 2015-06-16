@@ -39,7 +39,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 2%{?dist}
+Release: 3%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1314,6 +1314,9 @@ fi
 
 
 %changelog
+* Tue Jun 16 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-3
+- macros.qt4: fix qmake_qt4 so "FOO=BAR %%qmake_qt4" works as expected
+
 * Tue Jun 09 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-2
 - drop -reduce-relocations (f22+)
 
