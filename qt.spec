@@ -39,7 +39,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 3%{?dist}
+Release: 4%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -846,20 +846,6 @@ done
 install -p -m644 -D tools/qdbus/qdbusviewer/images/qdbusviewer.png %{buildroot}%{_datadir}/icons/hicolor/32x32/apps/qdbusviewer.png
 install -p -m644 -D tools/qdbus/qdbusviewer/images/qdbusviewer-128.png %{buildroot}%{_datadir}/icons/hicolor/128x128/apps/qdbusviewer.png
 
-# Merge applications into one software center item
-mkdir -p %{buildroot}%{_datadir}/appdata
-cat > %{buildroot}%{_datadir}/appdata/qt4-linguist.appdata.xml <<EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright 2014 Richard Hughes <richard@hughsie.com> -->
-<component type="desktop">
-  <metadata_license>CC0-1.0</metadata_license>
-  <id>qt4-linguist.desktop</id>
-  <metadata>
-    <value key="X-Merge-With-Parent">qt4-designer.desktop</value>
-  </metadata>
-</component>
-EOF
-
 # Qt.pc
 cat >%{buildroot}%{_libdir}/pkgconfig/Qt.pc<<EOF
 prefix=%{_qt4_prefix}
@@ -1180,7 +1166,6 @@ fi
 %{?docs:%{_qt4_docdir}/qch/designer.qch}
 # Qt Linguist
 %{_qt4_bindir}/linguist*
-%{_datadir}/appdata/*linguist.appdata.xml
 %{_datadir}/applications/*linguist.desktop
 %{_datadir}/icons/hicolor/*/apps/linguist*
 %{?docs:%{_qt4_docdir}/qch/linguist.qch}
@@ -1314,6 +1299,9 @@ fi
 
 
 %changelog
+* Fri Sep 18 2015 Richard Hughes <rhughes@redhat.com> - 1:4.8.7-4
+- Remove no longer required AppData file
+
 * Tue Jun 16 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-3
 - macros.qt4: fix qmake_qt4 so "FOO=BAR %%qmake_qt4" works as expected
 
