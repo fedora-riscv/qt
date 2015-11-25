@@ -39,7 +39,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 4%{?dist}
+Release: 5%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -410,7 +410,10 @@ Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
-
+%if 0%{?fedora} > 22
+# default flags are used, important configuration is contained here (#1279265)
+Requires: redhat-rpm-config
+%endif
 %description devel
 This package contains the files necessary to develop
 applications using the Qt toolkit.  Includes:
@@ -1299,6 +1302,9 @@ fi
 
 
 %changelog
+* Wed Nov 25 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-5
+- -devel: Requires: redhat-rpm-config (#1279265)
+
 * Fri Sep 18 2015 Richard Hughes <rhughes@redhat.com> - 1:4.8.7-4
 - Remove no longer required AppData file
 
