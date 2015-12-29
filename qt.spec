@@ -21,6 +21,11 @@
 %global reduce_relocations -reduce-relocations
 %endif
 
+# See http://bugzilla.redhat.com/1279265
+%if 0%{?fedora} < 23
+%global inject_optflags 1
+%endif
+
 %global rpm_macros_dir %(d=%{_rpmconfigdir}/macros.d; [ -d $d ] || d=%{_sysconfdir}/rpm; echo $d)
 
 # trim changelog included in binary rpms
@@ -39,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 5%{?dist}
+Release: 6%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -410,7 +415,7 @@ Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
 Provides:  qt4-static = %{version}-%{release}
-%if 0%{?fedora} > 22
+%if 0%{?fedora} > 22 && 0%{?inject_optflags}
 # default flags are used, important configuration is contained here (#1279265)
 Requires: redhat-rpm-config
 %endif
@@ -526,9 +531,6 @@ and invoke methods on those objects.
 %prep
 %setup -q -n qt-everywhere-opensource-src-%{version} 
 
-%patch2 -p1 -b .multilib-optflags
-# drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
-rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 %patch4 -p1 -b .uic_multilib
 %patch5 -p1 -b .webcore_debuginfo
 # ie, where cups-1.6+ is present
@@ -584,9 +586,6 @@ rm -rf src/3rdparty/clucene
 
 %patch86 -p1 -b .systemtrayicon
 
-# drop -fexceptions from $RPM_OPT_FLAGS
-RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
-
 %define platform linux-g++
 
 # some 64bit platforms assume -64 suffix, https://bugzilla.redhat.com/569542
@@ -599,11 +598,20 @@ RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 %define platform linux-g++
 %endif
 
+%if 0%{?inject_optflags}
+%patch2 -p1 -b .multilib-optflags
+# drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
+rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
+
+# drop -fexceptions from $RPM_OPT_FLAGS
+RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
+
 sed -i -e "s|-O2|$RPM_OPT_FLAGS|g" \
   mkspecs/%{platform}/qmake.conf 
 
 sed -i -e "s|^\(QMAKE_LFLAGS_RELEASE.*\)|\1 $RPM_LD_FLAGS|" \
   mkspecs/common/g++-unix.conf
+%endif
 
 # undefine QMAKE_STRIP (and friends), so we get useful -debuginfo pkgs (#193602)
 sed -i -e 's|^\(QMAKE_STRIP.*=\).*$|\1|g' mkspecs/common/linux.conf
@@ -622,11 +630,23 @@ done
 
 %build
 
-# build shared, threaded (default) libraries
+# drop -fexceptions from $RPM_OPT_FLAGS
+RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
+
+export QTDIR=$PWD
+export PATH=$PWD/bin:$PATH
+export LD_LIBRARY_PATH=$PWD/lib/
+# TODO: opensuse adds -DOPENSSL_LOAD_CONF, find out if we want that too -- rex
+export CXXFLAGS="$CXXFLAGS $RPM_OPT_FLAGS"
+export CFLAGS="$CFLAGS $RPM_OPT_FLAGS"
+export LDFLAGS="$LDFLAGS $RPM_LD_FLAGS"
+export MAKEFLAGS="%{?_smp_mflags}"
+
 ./configure -v \
   -confirm-license \
   -opensource \
   -optimized-qmake \
+  -fast \
   -prefix %{_qt4_prefix} \
   -bindir %{_qt4_bindir} \
   -datadir %{_qt4_datadir} \
@@ -685,13 +705,23 @@ done
   %{!?demos:-nomake demos} \
   %{!?examples:-nomake examples}
 
+%if ! 0%{?inject_optflags}
+# ensure qmake build using optflags (which can happen if not munging qmake.conf defaults)
+make clean -C qmake
+make %{?_smp_mflags} -C qmake \
+  QMAKE_CFLAGS_RELEASE="${CFLAGS:-$RPM_OPT_FLAGS}" \
+  QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-$RPM_OPT_FLAGS}" \
+  QMAKE_LFLAGS_RELEASE="${LDFLAGS:-$RPM_LD_FLAGS}" \
+  QMAKE_STRIP=
+%endif
+
 make %{?_smp_mflags}
 
 # TODO: consider patching tools/tools.pro to enable building this by default
 %{?qvfb:make %{?_smp_mflags} -C tools/qvfb}
 
 # recreate .qm files
-LD_LIBRARY_PATH=`pwd`/lib bin/lrelease translations/*.ts
+bin/lrelease translations/*.ts
 
 
 %install
@@ -1302,6 +1332,9 @@ fi
 
 
 %changelog
+* Thu Nov 26 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-6
+- don't inject $RPM_OPT_FLAGS/$RPM_LD_FLAGS into qmake defaults (#1279265)
+
 * Wed Nov 25 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-5
 - -devel: Requires: redhat-rpm-config (#1279265)
 
