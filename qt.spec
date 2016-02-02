@@ -22,7 +22,7 @@
 %endif
 
 # See http://bugzilla.redhat.com/1279265
-%if 0%{?fedora} < 23
+%if 0%{?fedora} < 24
 %global inject_optflags 1
 %endif
 
