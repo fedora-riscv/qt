@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 6%{?dist}
+Release: 7%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1332,6 +1332,9 @@ fi
 
 
 %changelog
+* Tue Feb 02 2016 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-7
+- macros.qt4 : cleanup, introduce %%_qt4_optflags, %%_qt4_ldflags, %%_qt4_qmake_flags
+
 * Thu Nov 26 2015 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-6
 - don't inject $RPM_OPT_FLAGS/$RPM_LD_FLAGS into qmake defaults (#1279265)
 

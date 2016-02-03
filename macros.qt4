@@ -18,12 +18,16 @@
 %_qt4_sysconfdir %{_sysconfdir}
 %_qt4_translationdir %{_datadir}/qt4/translations 
 
-%qmake_qt4 %{_qt4_qmake} \\\
-  QMAKE_CFLAGS_DEBUG="${CFLAGS:-%optflags}" \\\
-  QMAKE_CFLAGS_RELEASE="${CFLAGS:-%optflags}" \\\
-  QMAKE_CXXFLAGS_DEBUG="${CXXFLAGS:-%optflags}" \\\
-  QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-%optflags}" \\\
-  QMAKE_LFLAGS_DEBUG="${LDFLAGS:-%{?__global_ldflags}}" \\\
-  QMAKE_LFLAGS_RELEASE="${LDFLAGS:-%{?__global_ldflags}}" \\\
+%_qt4_ldflags %{?__global_ldflags}
+%_qt4_optflags %{optflags}
+
+%_qt4_qmake_flags \\\
+  QMAKE_CFLAGS_DEBUG="${CFLAGS:-%{_qt4_optflags}}" \\\
+  QMAKE_CFLAGS_RELEASE="${CFLAGS:-%{_qt4_optflags}}" \\\
+  QMAKE_CXXFLAGS_DEBUG="${CXXFLAGS:-%{_qt4_optflags}}" \\\
+  QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-%{_qt4_optflags}}" \\\
+  QMAKE_LFLAGS_DEBUG="${LDFLAGS:-%{_qt4_ldflags}}" \\\
+  QMAKE_LFLAGS_RELEASE="${LDFLAGS:-%{_qt4_ldflags}}" \\\
   QMAKE_STRIP=
 
+%qmake_qt4 %{_qt4_qmake} %{_qt4_qmake_flags}
