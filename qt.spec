@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 7%{?dist}
+Release: 8%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -171,6 +171,9 @@ Patch89: qt-everywhere-opensource-src-4.8.6-QTBUG-38585.patch
 
 # build against the system clucene09-core
 Patch90: qt-everywhere-opensource-src-4.8.6-system-clucene.patch
+
+# fix build issue with gcc6
+Patch100: qt-everywhere-opensource-src-4.8.7-gcc6.patch
 
 # upstream patches
 # backported from Qt5 (essentially)
@@ -571,6 +574,7 @@ and invoke methods on those objects.
 # delete bundled copy
 rm -rf src/3rdparty/clucene
 %endif
+%patch100 -p1 -b .gcc6
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -1332,6 +1336,9 @@ fi
 
 
 %changelog
+* Thu Feb 04 2016 Than Ngo <than@redhat.com> - 1:4.8.7-8
+- fix build issue with gcc6
+
 * Tue Feb 02 2016 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-7
 - macros.qt4 : cleanup, introduce %%_qt4_optflags, %%_qt4_ldflags, %%_qt4_qmake_flags
 
