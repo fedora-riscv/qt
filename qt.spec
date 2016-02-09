@@ -640,6 +640,9 @@ done
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
+# workaround for class std::auto_ptr' is deprecated with gcc-6
+CXXFLAGS="$CXXFLAGS -std=gnu++98 -Wno-deprecated"
+
 export QTDIR=$PWD
 export PATH=$PWD/bin:$PATH
 export LD_LIBRARY_PATH=$PWD/lib/
