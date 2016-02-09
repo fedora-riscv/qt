@@ -607,6 +607,9 @@ rm -rf src/3rdparty/clucene
 # drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
 rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
+# workaround for class std::auto_ptr' is deprecated with gcc-6
+RPM_OPT_FLAGS="$RPM_OPT_FLAGS -std=gnu++98 -Wno-deprecated"
+
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
@@ -1336,7 +1339,7 @@ fi
 
 
 %changelog
-* Thu Feb 04 2016 Than Ngo <than@redhat.com> - 1:4.8.7-8
+* Tue Feb 09 2016 Than Ngo <than@redhat.com> - 1:4.8.7-8
 - fix build issue with gcc6
 
 * Tue Feb 02 2016 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-7
