@@ -175,6 +175,9 @@ Patch90: qt-everywhere-opensource-src-4.8.6-system-clucene.patch
 # fix build issue with gcc6
 Patch100: qt-everywhere-opensource-src-4.8.7-gcc6.patch
 
+# support alsa-1.1.x
+Patch101: qt-everywhere-opensource-src-4.8.7-alsa-1.1.patch
+
 # upstream patches
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
@@ -575,6 +578,7 @@ and invoke methods on those objects.
 rm -rf src/3rdparty/clucene
 %endif
 %patch100 -p1 -b .gcc6
+%patch101 -p1 -b .alsa1.1
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -1342,8 +1346,9 @@ fi
 
 
 %changelog
-* Tue Feb 09 2016 Than Ngo <than@redhat.com> - 1:4.8.7-8
+* Wed Feb 10 2016 Than Ngo <than@redhat.com> - 1:4.8.7-8
 - fix build issue with gcc6
+- fix alsa version check for version >= 1.1.x
 
 * Tue Feb 02 2016 Rex Dieter <rdieter@fedoraproject.org> 1:4.8.7-7
 - macros.qt4 : cleanup, introduce %%_qt4_optflags, %%_qt4_ldflags, %%_qt4_qmake_flags

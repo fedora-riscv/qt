@@ -12,3 +12,15 @@ diff -up qt-everywhere-opensource-src-4.8.7/src/xmlpatterns/api/qcoloroutput_p.h
          };
  
      public:
+diff -up qt-everywhere-opensource-src-4.8.7/configure.than qt-everywhere-opensource-src-4.8.7/configure
+--- qt-everywhere-opensource-src-4.8.7/configure.than	2016-02-10 16:19:31.763130618 +0100
++++ qt-everywhere-opensource-src-4.8.7/configure	2016-02-10 16:19:48.508500789 +0100
+@@ -7741,7 +7741,7 @@ case "$XPLATFORM" in
+     *-g++*)
+ 	# Check gcc's version
+ 	case "$(${QMAKE_CONF_COMPILER} -dumpversion)" in
+-	    5*|4*|3.4*)
++	    6*|5*|4*|3.4*)
+ 		;;
+             3.3*)
+                 canBuildWebKit="no"
