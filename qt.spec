@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 8%{?dist}
+Release: 9%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1346,6 +1346,9 @@ fi
 
 
 %changelog
+* Tue Mar 01 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-9
+- rebuild (openssl)
+
 * Wed Feb 10 2016 Than Ngo <than@redhat.com> - 1:4.8.7-8
 - fix build issue with gcc6
 - fix alsa version check for version >= 1.1.x
