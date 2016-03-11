@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 9%{?dist}
+Release: 10%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -521,6 +521,9 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
 %{?_isa:Provides: qt4-x11%{?_isa} = %{version}-%{release}}
+%if 0%{?fedora} > 23
+Recommends: sni-qt%{?_isa}
+%endif
 %description x11
 Qt libraries used for drawing widgets and OpenGL items.
 
@@ -1346,6 +1349,9 @@ fi
 
 
 %changelog
+* Fri Mar 11 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-10
+- -x11: Recommends: sni-qt, f24+
+
 * Tue Mar 01 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-9
 - rebuild (openssl)
 
