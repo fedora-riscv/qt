@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 11%{?dist}
+Release: 12%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -522,8 +522,10 @@ Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
 %{?_isa:Provides: qt4-x11%{?_isa} = %{version}-%{release}}
 %if 0%{?fedora} > 22
-# add kde-workspace too? -- rex
-Requires: (sni-qt%{?_isa} if plasma-workspace)
+## add kde-workspace too? -- rex
+#Requires: (sni-qt%{?_isa} if plasma-workspace)
+## yum-based tools still cannot handle rich deps ^^, so settle for Recommends until fixed
+Recommends: sni-qt%{?_isa}
 %endif
 %description x11
 Qt libraries used for drawing widgets and OpenGL items.
@@ -1350,6 +1352,9 @@ fi
 
 
 %changelog
+* Mon Mar 14 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-12
+- -x11: back to Recommends: sni-qt (#1317481)
+
 * Sat Mar 12 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-11
 - -x11: Requires: sni-qt if plasma-workspace, f23+
 
