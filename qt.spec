@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 12%{?dist}
+Release: 13%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1352,6 +1352,9 @@ fi
 
 
 %changelog
+* Wed Mar 16 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-13
+- respin boost/moc patch for boost-1.60 (BOOST_TYPE_TRAITS_HPP)
+
 * Mon Mar 14 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-12
 - -x11: back to Recommends: sni-qt (#1317481)
 
