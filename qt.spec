@@ -5,8 +5,8 @@
 %define no_pch -no-pch
 
 # See http://bugzilla.redhat.com/223663
-%define multilib_archs x86_64 %{ix86} ppc64 ppc s390x s390 sparc64 sparcv9 ppc64le
-%define multilib_basearchs x86_64 ppc64 s390x sparc64 ppc64le
+%define multilib_archs x86_64 %{ix86} %{mips} ppc64 ppc64le ppc s390x s390 sparc64 sparcv9
+%define multilib_basearchs x86_64 %{mips64} ppc64 ppc64le s390x sparc64
 
 %if 0%{?fedora} > 16 || 0%{?rhel} > 6
 # use external qt_settings pkg
@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 13%{?dist}
+Release: 14%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -171,6 +171,9 @@ Patch89: qt-everywhere-opensource-src-4.8.6-QTBUG-38585.patch
 
 # build against the system clucene09-core
 Patch90: qt-everywhere-opensource-src-4.8.6-system-clucene.patch
+
+# fix arch autodetection for 64-bit MIPS
+Patch91: qt-everywhere-opensource-src-4.8.7-mips64.patch
 
 # fix build issue with gcc6
 Patch100: qt-everywhere-opensource-src-4.8.7-gcc6.patch
@@ -583,6 +586,7 @@ and invoke methods on those objects.
 # delete bundled copy
 rm -rf src/3rdparty/clucene
 %endif
+%patch91 -p1 -b .mips64
 %patch100 -p1 -b .gcc6
 %patch101 -p1 -b .alsa1.1
 
@@ -638,6 +642,12 @@ if [ "%{_lib}" == "lib64" ] ; then
   sed -i -e "s,/usr/lib /lib,/usr/%{_lib} /%{_lib},g" config.tests/{unix,x11}/*.test
   sed -i -e "s,/lib /usr/lib,/%{_lib} /usr/%{_lib},g" config.tests/{unix,x11}/*.test
 fi
+
+# MIPS does not accept -m64/-m32 flags
+%ifarch %{mips}
+sed -i -e 's,-m32,,' mkspecs/linux-g++-32/qmake.conf
+sed -i -e 's,-m64,,' mkspecs/linux-g++-64/qmake.conf
+%endif
 
 # let makefile create missing .qm files, the .qm files should be included in qt upstream
 for f in translations/*.ts ; do
@@ -1352,6 +1362,9 @@ fi
 
 
 %changelog
+* Sun Apr 03 2016 Michal Toman <mtoman@fedoraproject.org> - 1:4.8.7-14
+- Fix build on MIPS (#1322524)
+
 * Wed Mar 16 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-13
 - respin boost/moc patch for boost-1.60 (BOOST_TYPE_TRAITS_HPP)
 
