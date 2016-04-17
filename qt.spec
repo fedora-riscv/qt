@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 15%{?dist}
+Release: 16%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -423,11 +423,13 @@ Provides: qt4-phonon-devel = %{version}-%{release}
 Obsoletes: qt4-designer < %{version}-%{release}
 Provides:  qt4-designer = %{version}-%{release}
 # as long as libQtUiTools.a is included
-Provides:  %{name}-static = %{version}-%{release}
+Provides:  %{name}-static = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:  qt4-static = %{version}-%{release}
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
-Provides:  qt4-static = %{version}-%{release}
+Provides:  %{name}-private-devel = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides:  qt4-private-devel = %{version}-%{release}
 %if 0%{?fedora} > 22 && 0%{?inject_optflags}
 # default flags are used, important configuration is contained here (#1279265)
 Requires: redhat-rpm-config
@@ -1367,6 +1369,9 @@ fi
 
 
 %changelog
+* Sun Apr 17 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-16
+- -devel: Provides: qt(4)-private-devel, use epoch in -static Provides
+
 * Fri Apr 15 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-15
 - %%build: -buildkey g++-4 (#1327360)
 
