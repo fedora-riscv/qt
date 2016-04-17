@@ -428,8 +428,6 @@ Provides:  qt4-static = %{version}-%{release}
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
-Provides:  %{name}-private-devel = %{?epoch:%{epoch}:}%{version}-%{release}
-Provides:  qt4-private-devel = %{version}-%{release}
 %if 0%{?fedora} > 22 && 0%{?inject_optflags}
 # default flags are used, important configuration is contained here (#1279265)
 Requires: redhat-rpm-config
@@ -445,6 +443,8 @@ Qt Linguist
 Summary: Private headers for Qt toolkit 
 Group: Development/Libraries
 Provides: qt4-devel-private = %{version}-%{release}
+Provides: %{name}-private-devel = %{?epoch:%{epoch}:}%{version}-%{release}
+Provides: qt4-private-devel = %{version}-%{release}
 Requires: %{name}-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 BuildArch: noarch
 %description devel-private
@@ -1370,7 +1370,8 @@ fi
 
 %changelog
 * Sun Apr 17 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-16
-- -devel: Provides: qt(4)-private-devel, use epoch in -static Provides
+- use epoch in -static Provides
+- -devel-private: Provides: qt(4)-private-devel
 
 * Fri Apr 15 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-15
 - %%build: -buildkey g++-4 (#1327360)
