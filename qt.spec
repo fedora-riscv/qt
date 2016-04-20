@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 16%{?dist}
+Release: 17%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -176,10 +176,6 @@ Patch90: qt-everywhere-opensource-src-4.8.6-system-clucene.patch
 Patch91: qt-everywhere-opensource-src-4.8.7-mips64.patch
 
 # fix build issue(s) with gcc6
-%if 0%{?fedora}
-%global buildkey -buildkey g++-4
-#BuildRequires: gcc-c++ >= 4
-%endif
 Patch100: qt-everywhere-opensource-src-4.8.7-gcc6.patch
 
 # support alsa-1.1.x
@@ -679,7 +675,6 @@ export LDFLAGS="$LDFLAGS $RPM_LD_FLAGS"
 export MAKEFLAGS="%{?_smp_mflags}"
 
 ./configure -v \
-  %{?buildkey} \
   -confirm-license \
   -opensource \
   -optimized-qmake \
@@ -1369,6 +1364,9 @@ fi
 
 
 %changelog
+* Wed Apr 20 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-17
+- %%build: drop --buildkey g++-4 (#1327360)
+
 * Sun Apr 17 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-16
 - use epoch in -static Provides
 - -devel-private: Provides: qt(4)-private-devel
