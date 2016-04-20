@@ -737,6 +737,14 @@ export MAKEFLAGS="%{?_smp_mflags}"
   %{!?demos:-nomake demos} \
   %{!?examples:-nomake examples}
 
+# verify QT_BUILD_KEY
+grep '^#define QT_BUILD_KEY ' src/corelib/global/qconfig.h
+QT_BUILD_KEY_COMPILER="$(grep '^#define QT_BUILD_KEY ' src/corelib/global/qconfig.h | cut -d' ' -f5)"
+if [ "$QT_BUILD_KEY_COMPILER" != 'g++-4' ]; then
+  echo "QT_BUILD_KEY_COMPILER failure"
+  exit 1
+fi
+
 %if ! 0%{?inject_optflags}
 # ensure qmake build using optflags (which can happen if not munging qmake.conf defaults)
 make clean -C qmake
@@ -1366,6 +1374,7 @@ fi
 %changelog
 * Wed Apr 20 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-17
 - %%build: drop --buildkey g++-4 (#1327360)
+- %%build: add QT_BUILD_KEY verification (to avoid future regressions)
 
 * Sun Apr 17 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-16
 - use epoch in -static Provides
