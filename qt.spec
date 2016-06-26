@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 17%{?dist}
+Release: 18%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -623,9 +623,6 @@ rm -rf src/3rdparty/clucene
 # drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
 rm -fv mkspecs/linux-g++*/qmake.conf.multilib-optflags
 
-# workaround for class std::auto_ptr' is deprecated with gcc-6
-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -std=gnu++98 -Wno-deprecated"
-
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
@@ -662,8 +659,12 @@ done
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
+%if 0%{?fedora} > 23
 # workaround for class std::auto_ptr' is deprecated with gcc-6
-CXXFLAGS="$CXXFLAGS -std=gnu++98 -Wno-deprecated"
+CXXFLAGS="$CXXFLAGS -std=gnu++98"
+# javascriptcore FTBFS with gcc-6
+CXXFLAGS="$CXXFLAGS -Wno-deprecated"
+%endif
 
 export QTDIR=$PWD
 export PATH=$PWD/bin:$PATH
@@ -1372,6 +1373,9 @@ fi
 
 
 %changelog
+* Sun Jun 26 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-18
+- qmake-qt4 adds '-std=gnu++98' flag to compiler flags (#1349951)
+
 * Wed Apr 20 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-17
 - %%build: drop --buildkey g++-4 (#1327360)
 - %%build: add QT_BUILD_KEY verification (to avoid future regressions)
