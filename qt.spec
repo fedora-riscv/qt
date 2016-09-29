@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 18%{?dist}
+Release: 19%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -272,6 +272,13 @@ BuildRequires: pkgconfig(icu-i18n)
 BuildRequires: libicu-devel
 %endif
 BuildRequires: pkgconfig(NetworkManager)
+%if 0%{?fedora} > 25 || 0%{?rhel} > 7
+%global openssl -openssl
+# since openssl is loaded dynamically, add an explicit dependency
+Requires: openssl-libs%{?_isa}
+%else
+%global openssl -openssl-linked
+%endif
 BuildRequires: pkgconfig(openssl)
 BuildRequires: pkgconfig(libpng)
 BuildRequires: pkgconfig(libpulse)
@@ -723,7 +730,7 @@ export MAKEFLAGS="%{?_smp_mflags}"
   -xkb \
   -glib \
   -icu \
-  -openssl-linked \
+  %{?openssl} \
   -xmlpatterns \
   %{?dbus} %{!?dbus:-no-dbus} \
   %{?graphicssystem} \
@@ -1373,6 +1380,9 @@ fi
 
 
 %changelog
+* Thu Sep 29 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-19
+- load openssl libs dynamically, f26+ (#1328659)
+
 * Sun Jun 26 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-18
 - qmake-qt4 adds '-std=gnu++98' flag to compiler flags (#1349951)
 
