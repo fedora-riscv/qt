@@ -107,6 +107,9 @@ Patch28: qt-everywhere-opensource-src-4.8.5-qt_plugin_path.patch
 # add support for pkgconfig's Requires.private to qmake
 Patch50: qt-everywhere-opensource-src-4.8.4-qmake_pkgconfig_requires_private.patch
 
+# FTBFS against newer firebird
+Patch51: qt-everywhere-opensource-src-4.8.7-firebird.patch
+
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
 
@@ -569,6 +572,7 @@ and invoke methods on those objects.
 %patch27 -p1 -b .qt3support_debuginfo
 %patch28 -p1 -b .qt_plugin_path
 %patch50 -p1 -b .qmake_pkgconfig_requires_private
+%patch51 -p1 -b .firebird
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1381,7 +1385,7 @@ fi
 
 %changelog
 * Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-20
-- rebuild (openssl)
+- rebuild (openssl), FTBFS firebird
 
 * Thu Sep 29 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-19
 - load openssl libs dynamically, f26+ (#1328659)
