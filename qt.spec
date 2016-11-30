@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 19%{?dist}
+Release: 20%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1380,6 +1380,9 @@ fi
 
 
 %changelog
+* Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-20
+- rebuild (openssl)
+
 * Thu Sep 29 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-19
 - load openssl libs dynamically, f26+ (#1328659)
 
