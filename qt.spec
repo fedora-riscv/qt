@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 20%{?dist}
+Release: 21%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -217,7 +217,11 @@ Source31: hi48-app-qt4-logo.png
 ## optional plugin bits
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
-%define mysql -plugin-sql-mysql
+%if 0%{?fedora} > 25
+%global mysql -no-sql-mysql
+%else
+%global mysql -plugin-sql-mysql
+%endif
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
@@ -276,9 +280,10 @@ BuildRequires: libicu-devel
 %endif
 BuildRequires: pkgconfig(NetworkManager)
 %if 0%{?fedora} > 25 || 0%{?rhel} > 7
-%global openssl -no-openssl
-# since openssl is loaded dynamically, add an explicit dependency
+%global openssl -openssl-linked
+# if openssl is loaded dynamically, add an explicit dependency
 #Requires: openssl-libs%{?_isa}
+BuildRequires: compat-openssl10-devel
 %else
 %global openssl -openssl-linked
 BuildRequires: pkgconfig(openssl)
@@ -302,7 +307,9 @@ BuildRequires: clucene09-core-devel >= 0.9.21b-12
 BuildRequires: firebird-devel
 %endif
 
-%if "%{?mysql}" != "-no-sql-mysql"
+%if "%{?mysql}" == "-no-sql-mysql"
+Obsoletes: %{name}-mysql < %{epoch}:%{version}-%{release}
+%else
 BuildRequires: mysql-devel >= 4.0
 %endif
 
@@ -1386,11 +1393,15 @@ fi
 
 
 %changelog
-* Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-20
+* Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-21
+- BR: compat-openssl10-devel, restore -openssl-linked (#1328659)
+- -no-sql-mysql (#1400233)
+
+* Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-20
 - FTBFS firebird
 - FTBFS openssl-1.1, bootstrap using -no-openssl (#1400196)
 
-* Thu Sep 29 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-19
+* Thu Sep 29 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-19
 - load openssl libs dynamically, f26+ (#1328659)
 
 * Sun Jun 26 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-18
