@@ -276,13 +276,13 @@ BuildRequires: libicu-devel
 %endif
 BuildRequires: pkgconfig(NetworkManager)
 %if 0%{?fedora} > 25 || 0%{?rhel} > 7
-%global openssl -openssl
+%global openssl -no-openssl
 # since openssl is loaded dynamically, add an explicit dependency
-Requires: openssl-libs%{?_isa}
+#Requires: openssl-libs%{?_isa}
 %else
 %global openssl -openssl-linked
-%endif
 BuildRequires: pkgconfig(openssl)
+%endif
 BuildRequires: pkgconfig(libpng)
 BuildRequires: pkgconfig(libpulse)
 BuildRequires: pkgconfig(xtst) 
@@ -808,7 +808,9 @@ desktop-file-install \
 # strip extraneous dirs/libraries 
 # safe ones
 glib2_libs=$(pkg-config --libs glib-2.0 gobject-2.0 gthread-2.0)
+if [ "%{?openssl}" == "-openssl-linked" ]; then
 ssl_libs=$(pkg-config --libs openssl)
+fi
 for dep in \
   -laudio -ldbus-1 -lfreetype -lfontconfig ${glib2_libs} \
   -ljpeg -lm -lmng -lpng -lpulse -lpulse-mainloop-glib ${ssl_libs} -lsqlite3 -lz \
@@ -1385,7 +1387,8 @@ fi
 
 %changelog
 * Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-20
-- rebuild (openssl), FTBFS firebird
+- FTBFS firebird
+- FTBFS openssl-1.1, bootstrap using -no-openssl (#1400196)
 
 * Thu Sep 29 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-19
 - load openssl libs dynamically, f26+ (#1328659)
