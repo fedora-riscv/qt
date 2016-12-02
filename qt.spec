@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 21%{?dist}
+Release: 22%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1393,6 +1393,9 @@ fi
 
 
 %changelog
+* Thu Dec 1 2016 Orion Poplawski <orion@cora.nwra.com> - 1:4.8.7-22
+- Add additional workarounds for boost/glib parsing (#1396755)
+
 * Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-21
 - BR: compat-openssl10-devel, restore -openssl-linked (#1328659)
 - -no-sql-mysql (#1400233)

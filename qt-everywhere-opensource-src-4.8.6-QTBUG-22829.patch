@@ -1,7 +1,7 @@
 diff -up qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp.QTBUG-22829 qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp
---- qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp.QTBUG-22829	2015-05-07 09:14:44.000000000 -0500
-+++ qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp	2016-03-16 13:20:43.145899869 -0500
-@@ -188,8 +188,11 @@ int runMoc(int _argc, char **_argv)
+--- qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp.QTBUG-22829	2015-05-07 08:14:44.000000000 -0600
++++ qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp	2016-12-01 21:12:25.515488200 -0700
+@@ -188,8 +188,13 @@ int runMoc(int _argc, char **_argv)
      pp.macros["Q_MOC_RUN"];
      pp.macros["__cplusplus"];
  
@@ -11,6 +11,8 @@ diff -up qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp.QTBUG-22829 q
 +    pp.macros["BOOST_LEXICAL_CAST_INCLUDED"];
 +    pp.macros["BOOST_NEXT_PRIOR_HPP_INCLUDED"];
 +    pp.macros["BOOST_TYPE_TRAITS_HPP"];
++    pp.macros["BOOST_PREDEF_VERSION_NUMBER_H"];
++    pp.macros["__G_VERSION_MACROS_H__"];
  
      QByteArray filename;
      QByteArray output;
