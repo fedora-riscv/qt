@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 22%{?dist}
+Release: 23%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -217,11 +217,7 @@ Source31: hi48-app-qt4-logo.png
 ## optional plugin bits
 # set to -no-sql-<driver> to disable
 # set to -qt-sql-<driver> to enable *in* qt library
-%if 0%{?fedora} > 25
-%global mysql -no-sql-mysql
-%else
 %global mysql -plugin-sql-mysql
-%endif
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
@@ -1393,6 +1389,9 @@ fi
 
 
 %changelog
+* Wed Dec 07 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-23
+- (re)enable mysql support (#1400233)
+
 * Thu Dec 1 2016 Orion Poplawski <orion@cora.nwra.com> - 1:4.8.7-22
 - Add additional workarounds for boost/glib parsing (#1396755)
 
