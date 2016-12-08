@@ -1395,6 +1395,7 @@ fi
 %changelog
 * Thu Dec 08 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-24
 - namespace QT_VERSION_CHECK to workaround major/minor being pre-defined (#1396755)
+- update QTBUG-22829.patch to define _SYS_SYSMACROS_H (#1396755)
 
 * Wed Dec 07 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-23
 - (re)enable mysql support (#1400233)
