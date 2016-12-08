@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 23%{?dist}
+Release: 24%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -109,6 +109,9 @@ Patch50: qt-everywhere-opensource-src-4.8.4-qmake_pkgconfig_requires_private.pat
 
 # FTBFS against newer firebird
 Patch51: qt-everywhere-opensource-src-4.8.7-firebird.patch
+
+# workaround major/minor macros possibly being defined already
+Patch52: qt-everywhere-opensource-src-4.8.7-QT_VERSION_CHECK.patch
 
 # fix invalid inline assembly in qatomic_{i386,x86_64}.h (de)ref implementations
 Patch53: qt-x11-opensource-src-4.5.0-fix-qatomic-inline-asm.patch
@@ -576,6 +579,7 @@ and invoke methods on those objects.
 %patch28 -p1 -b .qt_plugin_path
 %patch50 -p1 -b .qmake_pkgconfig_requires_private
 %patch51 -p1 -b .firebird
+%patch52 -p1 -b .QT_VERSION_CHECK
 ## TODO: still worth carrying?  if so, upstream it.
 %patch53 -p1 -b .qatomic-inline-asm
 ## TODO: upstream me
@@ -1389,6 +1393,9 @@ fi
 
 
 %changelog
+* Thu Dec 08 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-24
+- namespace QT_VERSION_CHECK to workaround major/minor being pre-defined (#1396755)
+
 * Wed Dec 07 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-23
 - (re)enable mysql support (#1400233)
 
