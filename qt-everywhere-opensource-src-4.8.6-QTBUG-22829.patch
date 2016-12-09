@@ -11,7 +11,7 @@ diff -up qt-everywhere-opensource-src-4.8.7/src/tools/moc/main.cpp.QTBUG-22829 q
 +    pp.macros["BOOST_LEXICAL_CAST_INCLUDED"];
 +    pp.macros["BOOST_NEXT_PRIOR_HPP_INCLUDED"];
 +    pp.macros["BOOST_TYPE_TRAITS_HPP"];
-+    pp.macros["_SYS_SYSMACROS_H"];
++    pp.macros["_SYS_SYSMACROS_H_OUTER"];
  
      QByteArray filename;
      QByteArray output;

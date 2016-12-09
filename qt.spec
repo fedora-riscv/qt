@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 24%{?dist}
+Release: 25%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1393,6 +1393,9 @@ fi
 
 
 %changelog
+* Fri Dec 09 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-25
+- update QTBUG-22829.patch to use _SYS_SYSMACROS_H_OUTER instead (#1396755)
+
 * Thu Dec 08 2016 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-24
 - namespace QT_VERSION_CHECK to workaround major/minor being pre-defined (#1396755)
 - update QTBUG-22829.patch to define _SYS_SYSMACROS_H (#1396755)
