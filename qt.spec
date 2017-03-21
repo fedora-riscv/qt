@@ -13,7 +13,7 @@
 %define qt_settings 1
 %endif
 
-%if 0%{?fedora} > 19 || 0%{?rhel} > 6
+%if (0%{?fedora} > 19 && 0%{?fedora} < 26) || 0%{?rhel} > 6
 %global system_clucene 1
 %endif
 
@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 26%{?dist}
+Release: 27%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1393,6 +1393,9 @@ fi
 
 
 %changelog
+* Tue Mar 21 2017 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-27
+- drop system_clucene on f26+ (clucene09 is FTBFS, #1424046)
+
 * Sat Feb 11 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-26
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
