@@ -375,6 +375,9 @@ Group: Documentation
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-assistant = %{version}-%{release}
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+%if ! 0%{?system_clucene}
+Provides: bundled(clucene09)
+%endif
 %description assistant
 %{summary}.
 
