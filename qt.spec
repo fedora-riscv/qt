@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 20%{?dist}
+Release: 21%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1386,6 +1386,9 @@ fi
 
 
 %changelog
+* Tue Jul 11 2017 Than Ngo <than@redhat.com> - 1:4.8.7-21
+- fixed bz#1409600, stack overflow in QXmlSimpleReader, CVE-2016-1004
+
 * Wed Nov 30 2016 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-20
 - FTBFS firebird
 - FTBFS openssl-1.1, bootstrap using -no-openssl (#1400196)
