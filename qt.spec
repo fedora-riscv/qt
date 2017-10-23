@@ -44,7 +44,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 31%{?dist}
+Release: 32%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -122,6 +122,9 @@ Patch54: qt-everywhere-opensource-src-4.8.5-mysql_config.patch
 
 # http://bugs.kde.org/show_bug.cgi?id=180051#c22
 Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
+
+# backport https://codereview.qt-project.org/#/c/205874/
+Patch56: qt-everywhere-opensource-src-4.8.7-mariadb.patch
 
 # Fails to create debug build of Qt projects on mingw (rhbz#653674)
 Patch64: qt-everywhere-opensource-src-4.8.5-QTBUG-14467.patch
@@ -309,7 +312,11 @@ BuildRequires: firebird-devel
 %if "%{?mysql}" == "-no-sql-mysql"
 Obsoletes: %{name}-mysql < %{epoch}:%{version}-%{release}
 %else
+%if 0%{?fedora} > 27
+BuildRequires: mariadb-connector-c-devel
+%else
 BuildRequires: mysql-devel >= 4.0
+%endif
 %endif
 
 %if "%{?phonon_backend}" == "-phonon-backend"
@@ -588,6 +595,7 @@ and invoke methods on those objects.
 ## TODO: upstream me
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
+%patch56 -p1 -b .mariadb
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 %patch67 -p1 -b .s390
@@ -1396,6 +1404,10 @@ fi
 
 
 %changelog
+* Mon Oct 23 2017 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-32
+- BR: mariadb-connector-c-devel (f28+, #1494085)
+- backport mysql driver mariadb fix (QTBUG-63108)
+
 * Thu Aug 03 2017 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-31
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_27_Binutils_Mass_Rebuild
 
