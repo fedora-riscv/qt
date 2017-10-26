@@ -8,21 +8,17 @@
 %define multilib_archs x86_64 %{ix86} %{mips} ppc64 ppc64le ppc s390x s390 sparc64 sparcv9
 %define multilib_basearchs x86_64 %{mips64} ppc64 ppc64le s390x sparc64
 
-%if 0%{?fedora} > 16 || 0%{?rhel} > 6
+%if 0%{?fedora} || 0%{?rhel} > 6
 # use external qt_settings pkg
 %define qt_settings 1
 %endif
 
-%if (0%{?fedora} > 19 && 0%{?fedora} < 26) || 0%{?rhel} > 6
+%if (0%{?fedora} && 0%{?fedora} < 26) || (0%{?rhel} > 6 && 0%{?rhel} <= 7)
 %global system_clucene 1
 %endif
 
-%if 0%{?fedora} && 0%{?fedora} < 22
-%global reduce_relocations -reduce-relocations
-%endif
-
 # See http://bugzilla.redhat.com/1279265
-%if 0%{?fedora} < 24
+%if 0%{?rhel} && 0%{?rhel} <= 7
 %global inject_optflags 1
 %endif
 
@@ -44,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 32%{?dist}
+Release: 33%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -227,20 +223,20 @@ Source31: hi48-app-qt4-logo.png
 %define odbc -plugin-sql-odbc
 %define psql -plugin-sql-psql
 %define sqlite -plugin-sql-sqlite
-%if 0%{?fedora} < 21 && 0%{?rhel} < 8
+%if 0%{?rhel} && 0%{?rhel} <= 7
 %define phonon -phonon
 %define phonon_backend -phonon-backend
 %endif
 %define dbus -dbus-linked
 %define graphicssystem -graphicssystem raster
 %define gtkstyle -gtkstyle
-%if 0%{?fedora}
+%if 0%{?fedora} || 0%{?rhel} > 7
 # FIXME/TODO: use system webkit for assistant, examples/webkit, demos/browser
 %define webkit -webkit
 %define ibase -plugin-sql-ibase
 %define tds -plugin-sql-tds
 %endif
-%if 0%{?rhel}
+%if 0%{?rhel} && 0%{?rhel} <= 7
 %define no_javascript_jit -no-javascript-jit
 %define ibase -no-sql-ibase
 %define tds -no-sql-tds
@@ -312,7 +308,7 @@ BuildRequires: firebird-devel
 %if "%{?mysql}" == "-no-sql-mysql"
 Obsoletes: %{name}-mysql < %{epoch}:%{version}-%{release}
 %else
-%if 0%{?fedora} > 27
+%if 0%{?fedora} > 27 || 0%{?rhel} > 7
 BuildRequires: mariadb-connector-c-devel
 %else
 BuildRequires: mysql-devel >= 4.0
@@ -450,7 +446,7 @@ Provides:  qt4-static = %{version}-%{release}
 Obsoletes: qt4-devel < %{version}-%{release}
 Provides:  qt4-devel = %{version}-%{release}
 %{?_isa:Provides: qt4-devel%{?_isa} = %{version}-%{release}}
-%if 0%{?fedora} > 22 && 0%{?inject_optflags}
+%if (0%{?fedora} && 0%{?inject_optflags}) || (0%{?rhel} > 7 && 0%{?inject_optflags})
 # default flags are used, important configuration is contained here (#1279265)
 Requires: redhat-rpm-config
 %endif
@@ -552,7 +548,7 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-x11 < %{version}-%{release}
 Provides:  qt4-x11 = %{version}-%{release}
 %{?_isa:Provides: qt4-x11%{?_isa} = %{version}-%{release}}
-%if 0%{?fedora} > 22
+%if 0%{?fedora} || 0%{?rhel} > 7
 ## add kde-workspace too? -- rex
 #Requires: (sni-qt%{?_isa} if plasma-workspace)
 ## yum-based tools still cannot handle rich deps ^^, so settle for Recommends until fixed
@@ -577,7 +573,7 @@ and invoke methods on those objects.
 %patch4 -p1 -b .uic_multilib
 %patch5 -p1 -b .webcore_debuginfo
 # ie, where cups-1.6+ is present
-%if 0%{?fedora} > 18
+%if 0%{?fedora} || 0%{?rhel} > 7
 #patch6 -p1 -b .cupsEnumDests
 %endif
 %patch10 -p0 -b .prefer_adwaita_on_gnome
@@ -688,7 +684,7 @@ done
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
 
-%if 0%{?fedora} > 23
+%if 0%{?fedora} || 0%{?rhel} > 7
 # workaround for class std::auto_ptr' is deprecated with gcc-6
 CXXFLAGS="$CXXFLAGS -std=gnu++98"
 # javascriptcore FTBFS with gcc-6
@@ -1404,6 +1400,9 @@ fi
 
 
 %changelog
+* Wed Oct 25 2017 Troy Dawson <tdawson@redhat.com> - 1:4.8.7-33
+- Cleanup spec file conditionals
+
 * Mon Oct 23 2017 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-32
 - BR: mariadb-connector-c-devel (f28+, #1494085)
 - backport mysql driver mariadb fix (QTBUG-63108)
