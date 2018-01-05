@@ -190,6 +190,10 @@ Patch93: qt-everywhere-opensource-src-4.8.7-alsa-1.1.patch
 # https://anonscm.debian.org/cgit/pkg-kde/qt/qt4-x11.git/tree/debian/patches/openssl_1.1.patch?h=experimental
 Patch94: qt-everywhere-opensource-src-4.8.7-openssl-1.1.patch
 
+# fix build with ICU >= 59, from OpenSUSE (Fabian Vogt)
+# https://build.opensuse.org/package/view_file/KDE:Qt/libqt4/fix-build-icu59.patch?expand=1
+Patch95: qt-everywhere-opensource-src-4.8.7-icu59.patch
+
 # upstream patches
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
@@ -614,6 +618,7 @@ rm -rf src/3rdparty/clucene
 %patch92 -p1 -b .gcc6
 %patch93 -p1 -b .alsa1.1
 %patch94 -p1 -b .openssl1.1
+%patch95 -p1 -b .icu59
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -1400,6 +1405,7 @@ fi
 %changelog
 * Fri Jan 05 2018 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.7-34
 - build with OpenSSL 1.1.x, from Debian (Gert Wollny, Dmitry Eremin-Solenikov)
+- fix build with ICU >= 59, from OpenSUSE (Fabian Vogt)
 - update URL to use HTTPS
 
 * Wed Oct 25 2017 Troy Dawson <tdawson@redhat.com> - 1:4.8.7-33
