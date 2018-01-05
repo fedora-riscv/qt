@@ -47,9 +47,9 @@ License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD a
 Group: System Environment/Libraries
 Url:     http://qt-project.org/
 %if 0%{?beta:1}
-Source0: http://download.qt-project.org/development_releases/qt/4.8/%{version}-%{beta}/qt-everywhere-opensource-src-%{version}-%{beta}.tar.gz
+Source0: https://download.qt-project.org/development_releases/qt/4.8/%{version}-%{beta}/qt-everywhere-opensource-src-%{version}-%{beta}.tar.gz
 %else
-Source0: http://download.qt-project.org/official_releases/qt/4.8/%{version}/qt-everywhere-opensource-src-%{version}.tar.gz
+Source0: https://download.qt-project.org/official_releases/qt/4.8/%{version}/qt-everywhere-opensource-src-%{version}.tar.gz
 %endif
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -1400,6 +1400,7 @@ fi
 %changelog
 * Fri Jan 05 2018 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.7-34
 - build with OpenSSL 1.1.x, from Debian (Gert Wollny, Dmitry Eremin-Solenikov)
+- update URL to use HTTPS
 
 * Wed Oct 25 2017 Troy Dawson <tdawson@redhat.com> - 1:4.8.7-33
 - Cleanup spec file conditionals
