@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 33%{?dist}
+Release: 34%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -181,10 +181,14 @@ Patch90: qt-everywhere-opensource-src-4.8.6-system-clucene.patch
 Patch91: qt-everywhere-opensource-src-4.8.7-mips64.patch
 
 # fix build issue(s) with gcc6
-Patch100: qt-everywhere-opensource-src-4.8.7-gcc6.patch
+Patch92: qt-everywhere-opensource-src-4.8.7-gcc6.patch
 
 # support alsa-1.1.x
-Patch101: qt-everywhere-opensource-src-4.8.7-alsa-1.1.patch
+Patch93: qt-everywhere-opensource-src-4.8.7-alsa-1.1.patch
+
+# support OpenSSL 1.1.x, from Debian (Gert Wollny, Dmitry Eremin-Solenikov)
+# https://anonscm.debian.org/cgit/pkg-kde/qt/qt4-x11.git/tree/debian/patches/openssl_1.1.patch?h=experimental
+Patch94: qt-everywhere-opensource-src-4.8.7-openssl-1.1.patch
 
 # upstream patches
 # backported from Qt5 (essentially)
@@ -277,15 +281,8 @@ BuildRequires: pkgconfig(icu-i18n)
 BuildRequires: libicu-devel
 %endif
 BuildRequires: pkgconfig(NetworkManager)
-%if 0%{?fedora} > 25 || 0%{?rhel} > 7
 %global openssl -openssl-linked
-# if openssl is loaded dynamically, add an explicit dependency
-#Requires: openssl-libs%{?_isa}
-BuildRequires: compat-openssl10-devel
-%else
-%global openssl -openssl-linked
-BuildRequires: pkgconfig(openssl)
-%endif
+BuildRequires: openssl-devel
 BuildRequires: pkgconfig(libpng)
 BuildRequires: pkgconfig(libpulse)
 BuildRequires: pkgconfig(xtst) 
@@ -614,8 +611,9 @@ and invoke methods on those objects.
 rm -rf src/3rdparty/clucene
 %endif
 %patch91 -p1 -b .mips64
-%patch100 -p1 -b .gcc6
-%patch101 -p1 -b .alsa1.1
+%patch92 -p1 -b .gcc6
+%patch93 -p1 -b .alsa1.1
+%patch94 -p1 -b .openssl1.1
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -1400,6 +1398,9 @@ fi
 
 
 %changelog
+* Fri Jan 05 2018 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.7-34
+- build with OpenSSL 1.1.x, from Debian (Gert Wollny, Dmitry Eremin-Solenikov)
+
 * Wed Oct 25 2017 Troy Dawson <tdawson@redhat.com> - 1:4.8.7-33
 - Cleanup spec file conditionals
 
