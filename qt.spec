@@ -188,6 +188,7 @@ Patch93: qt-everywhere-opensource-src-4.8.7-alsa-1.1.patch
 
 # support OpenSSL 1.1.x, from Debian (Gert Wollny, Dmitry Eremin-Solenikov)
 # https://anonscm.debian.org/cgit/pkg-kde/qt/qt4-x11.git/tree/debian/patches/openssl_1.1.patch?h=experimental
+# fixes for -openssl-linked by Kevin Kofler
 Patch94: qt-everywhere-opensource-src-4.8.7-openssl-1.1.patch
 
 # fix build with ICU >= 59, from OpenSUSE (Fabian Vogt)
