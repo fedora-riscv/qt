@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 34%{?dist}
+Release: 35%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1404,6 +1404,9 @@ fi
 
 
 %changelog
+* Fri Feb 09 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:4.8.7-35
+- Escape macros in %%changelog
+
 * Fri Jan 05 2018 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.7-34
 - build with OpenSSL 1.1.x, from Debian (Gert Wollny, Dmitry Eremin-Solenikov)
 - fix build with ICU >= 59, from OpenSUSE (Fabian Vogt)
@@ -2280,7 +2283,7 @@ fi
 - add arch'd provides for sql drivers
 
 * Sun Nov 08 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.4.beta1
-- -x11: Requires: %%{name}-sqlite%{?_isa}
+- -x11: Requires: %%{name}-sqlite%%{?_isa}
 
 * Mon Oct 26 2009 Rex Dieter <rdieter@fedoraproject.org> - 4.6.0-0.3.beta1
 - kde-qt patches (as of 20091026)
