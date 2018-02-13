@@ -51,7 +51,6 @@ Source0: https://download.qt-project.org/development_releases/qt/4.8/%{version}-
 %else
 Source0: https://download.qt-project.org/official_releases/qt/4.8/%{version}/qt-everywhere-opensource-src-%{version}.tar.gz
 %endif
-BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Obsoletes: qt4 < %{version}-%{release}
 Provides: qt4 = %{version}-%{release}
