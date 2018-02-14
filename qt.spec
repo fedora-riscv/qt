@@ -1027,9 +1027,6 @@ cat assistant.lang qt_help.lang qtconfig.lang qtscript.lang >qt-x11.lang
 cat designer.lang linguist.lang >qt-devel.lang
 
 
-%clean
-rm -rf %{buildroot}
-
 
 %if 0%{?qtchooser}
 %pre
