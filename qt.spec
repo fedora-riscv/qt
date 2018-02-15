@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 35%{?dist}
+Release: 36%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -120,6 +120,9 @@ Patch55: qt-everywhere-opensource-src-4.6.2-cups.patch
 
 # backport https://codereview.qt-project.org/#/c/205874/
 Patch56: qt-everywhere-opensource-src-4.8.7-mariadb.patch
+
+# use QMAKE_LFLAGS_RELEASE when building qmake
+Patch57: qt-everywhere-opensource-src-4.8.7-qmake_LFLAGS.patch
 
 # Fails to create debug build of Qt projects on mingw (rhbz#653674)
 Patch64: qt-everywhere-opensource-src-4.8.5-QTBUG-14467.patch
@@ -593,6 +596,7 @@ and invoke methods on those objects.
 %patch54 -p1 -b .mysql_config
 %patch55 -p1 -b .cups-1
 %patch56 -p1 -b .mariadb
+%patch57 -p1 -b .qmake_LFLAGS
 %patch64 -p1 -b .QTBUG-14467
 %patch65 -p1 -b .qtreeview-kpackagekit-crash
 %patch67 -p1 -b .s390
@@ -1400,6 +1404,9 @@ fi
 
 
 %changelog
+* Thu Feb 15 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-36
+- qt: Fedora build flags only partially applied (#1543887)
+
 * Fri Feb 09 2018 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 1:4.8.7-35
 - Escape macros in %%changelog
 
