@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 36%{?dist}
+Release: 37%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -274,6 +274,7 @@ Source1: macros.qt4
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: findutils
+BuildRequires: gcc-c++
 BuildRequires: libjpeg-devel
 BuildRequires: libmng-devel
 BuildRequires: libtiff-devel
@@ -1077,8 +1078,8 @@ fi
 %endif
 
 %files -f qt.lang
-%defattr(-,root,root,-)
-%doc README LICENSE.GPL3 LICENSE.LGPL LGPL_EXCEPTION.txt
+%doc README
+%license LICENSE.GPL3 LICENSE.LGPL LGPL_EXCEPTION.txt
 %if 0%{?qtchooser}
 %dir %{_sysconfdir}/xdg/qtchooser
 # not editable config files, so not using %%config here
@@ -1149,7 +1150,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
 %files assistant
-%defattr(-,root,root,-)
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
 %endif
@@ -1158,7 +1158,6 @@ fi
 %{_datadir}/icons/hicolor/*/apps/assistant*
 
 %files config
-%defattr(-,root,root,-)
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qt*config*
 %endif
@@ -1167,7 +1166,6 @@ fi
 
 %if 0%{?demos}
 %files demos
-%defattr(-,root,root,-)
 %{_qt4_bindir}/qt*demo*
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/qt*demo*
@@ -1178,7 +1176,6 @@ fi
 
 %if "%{?webkit}" == "-webkit"
 %files designer-plugin-webkit
-%defattr(-,root,root,-)
 %{_qt4_plugindir}/designer/libqwebview.so
 %endif
 
@@ -1197,7 +1194,6 @@ update-desktop-database -q &> /dev/null ||:
 fi
 
 %files devel -f qt-devel.lang
-%defattr(-,root,root,-)
 %{rpm_macros_dir}/macros.qt4
 %{_qt4_bindir}/lconvert
 %{_qt4_bindir}/lrelease*
@@ -1278,7 +1274,6 @@ fi
 %exclude %{_qt4_headerdir}/*/private/
 
 %files devel-private
-%defattr(-,root,root,-)
 %{_qt4_headerdir}/QtCore/private/
 %{_qt4_headerdir}/QtDeclarative/private/
 %{_qt4_headerdir}/QtGui/private/
@@ -1291,7 +1286,6 @@ fi
 
 %if 0%{?docs}
 %files doc
-%defattr(-,root,root,-)
 %{_qt4_docdir}/html/*
 %{_qt4_docdir}/qch/*.qch
 %exclude %{_qt4_docdir}/qch/designer.qch
@@ -1302,44 +1296,37 @@ fi
 
 %if 0%{?examples}
 %files examples
-%defattr(-,root,root,-)
 %{_qt4_examplesdir}/
 %endif
 
 %if 0%{?qvfb}
 %files qvfb -f qvfb.lang
-%defattr(-,root,root,-)
 %{_bindir}/qvfb
 %{_qt4_bindir}/qvfb
 %endif
 
 %if "%{?ibase}" == "-plugin-sql-ibase"
 %files ibase
-%defattr(-,root,root,-)
 %{_qt4_plugindir}/sqldrivers/libqsqlibase*
 %endif
 
 %if "%{?mysql}" == "-plugin-sql-mysql"
 %files mysql
-%defattr(-,root,root,-)
 %{_qt4_plugindir}/sqldrivers/libqsqlmysql*
 %endif
 
 %if "%{?odbc}" == "-plugin-sql-odbc"
 %files odbc 
-%defattr(-,root,root,-)
 %{_qt4_plugindir}/sqldrivers/libqsqlodbc*
 %endif
 
 %if "%{?psql}" == "-plugin-sql-psql"
 %files postgresql 
-%defattr(-,root,root,-)
 %{_qt4_plugindir}/sqldrivers/libqsqlpsql*
 %endif
 
 %if "%{?tds}" == "-plugin-sql-tds"
 %files tds
-%defattr(-,root,root,-)
 %{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
@@ -1358,7 +1345,6 @@ gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
 fi
 
 %files x11 -f qt-x11.lang
-%defattr(-,root,root,-)
 %dir %{_qt4_importdir}/
 %{_qt4_importdir}/Qt/
 %{_qt4_libdir}/libQt3Support.so.4*
@@ -1404,6 +1390,9 @@ fi
 
 
 %changelog
+* Tue Feb 20 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-37
+- BR: gcc-c++, use %%license, .spec cosmetics
+
 * Thu Feb 15 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-36
 - qt: Fedora build flags only partially applied (#1543887)
 
