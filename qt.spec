@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 37%{?dist}
+Release: 38%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -437,6 +437,12 @@ Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
+# qmake defaults, could also consider something like:
+# Requires: (gcc-c++ if redhat-rpm-config
+# or
+# Recommends: gcc-c++
+# or a combination of the 2
+Requires: gcc-c++
 Requires: %{gl_deps}
 Requires: %{x_deps}
 Requires: pkgconfig
@@ -1390,6 +1396,9 @@ fi
 
 
 %changelog
+* Wed Mar 07 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-38
+- -devel: Requires: gcc-c++
+
 * Tue Feb 20 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-37
 - BR: gcc-c++, use %%license, .spec cosmetics
 
