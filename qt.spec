@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 38%{?dist}
+Release: 39%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -657,6 +657,16 @@ rm -rf src/3rdparty/clucene
 %define platform linux-g++
 %endif
 
+# workaround qtscript failures when building with f28's gcc8
+# https://bugzilla.redhat.com/show_bug.cgi?id=1580047
+# probably an overly big hammer to build *all* of qt instead of just qtscript
+# leaving that as a fixme/todo
+%if 0%{?fedora} > 27
+sed -i -e 's|-O2|-O1|g' \
+  mkspecs/common/gcc-base.conf \
+  mkspecs/common/g++-base.conf
+%endif
+
 %if 0%{?inject_optflags}
 %patch2 -p1 -b .multilib-optflags
 # drop backup file(s), else they get installed too, http://bugzilla.redhat.com/639463
@@ -713,6 +723,14 @@ export CXXFLAGS="$CXXFLAGS $RPM_OPT_FLAGS"
 export CFLAGS="$CFLAGS $RPM_OPT_FLAGS"
 export LDFLAGS="$LDFLAGS $RPM_LD_FLAGS"
 export MAKEFLAGS="%{?_smp_mflags}"
+
+# workaround qtscript failures when building with f28's gcc8
+# https://bugzilla.redhat.com/show_bug.cgi?id=1580047
+# probably an overly big hammer to build *all* of qt instead of just qtscript
+# leaving that as a fixme/todo
+%if 0%{?fedora} > 27
+export CXXFLAGS="$CXXFLAGS -O1"
+%endif
 
 ./configure -v \
   -confirm-license \
@@ -1396,6 +1414,9 @@ fi
 
 
 %changelog
+* Sat May 19 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-39
+- workaround qtscript/gcc8 bug (#1580047)
+
 * Wed Mar 07 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-38
 - -devel: Requires: gcc-c++
 
