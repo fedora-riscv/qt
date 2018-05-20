@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 39%{?dist}
+Release: 40%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -196,6 +196,10 @@ Patch94: qt-everywhere-opensource-src-4.8.7-openssl-1.1.patch
 # fix build with ICU >= 59, from OpenSUSE (Fabian Vogt)
 # https://build.opensuse.org/package/view_file/KDE:Qt/libqt4/fix-build-icu59.patch?expand=1
 Patch95: qt-everywhere-opensource-src-4.8.7-icu59.patch
+
+# workaround qtscript failures when building with f28's gcc8
+# https://bugzilla.redhat.com/show_bug.cgi?id=1580047
+Patch96: qt-everywhere-opensource-src-4.8.7-gcc8_qtscript.patch
 
 # upstream patches
 # backported from Qt5 (essentially)
@@ -630,6 +634,9 @@ rm -rf src/3rdparty/clucene
 %patch93 -p1 -b .alsa1.1
 %patch94 -p1 -b .openssl1.1
 %patch95 -p1 -b .icu59
+%if 0%{?fedora} > 27
+%patch96 -p1 -b .gcc8_qtscript
+%endif
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -655,16 +662,6 @@ rm -rf src/3rdparty/clucene
 # https://bugzilla.redhat.com/478481
 %ifarch x86_64 aarch64
 %define platform linux-g++
-%endif
-
-# workaround qtscript failures when building with f28's gcc8
-# https://bugzilla.redhat.com/show_bug.cgi?id=1580047
-# probably an overly big hammer to build *all* of qt instead of just qtscript
-# leaving that as a fixme/todo
-%if 0%{?fedora} > 27
-sed -i -e 's|-O2|-O1|g' \
-  mkspecs/common/gcc-base.conf \
-  mkspecs/common/g++-base.conf
 %endif
 
 %if 0%{?inject_optflags}
@@ -723,14 +720,6 @@ export CXXFLAGS="$CXXFLAGS $RPM_OPT_FLAGS"
 export CFLAGS="$CFLAGS $RPM_OPT_FLAGS"
 export LDFLAGS="$LDFLAGS $RPM_LD_FLAGS"
 export MAKEFLAGS="%{?_smp_mflags}"
-
-# workaround qtscript failures when building with f28's gcc8
-# https://bugzilla.redhat.com/show_bug.cgi?id=1580047
-# probably an overly big hammer to build *all* of qt instead of just qtscript
-# leaving that as a fixme/todo
-%if 0%{?fedora} > 27
-export CXXFLAGS="$CXXFLAGS -O1"
-%endif
 
 ./configure -v \
   -confirm-license \
@@ -1414,6 +1403,9 @@ fi
 
 
 %changelog
+* Sat May 19 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-40
+- build only qtscript using -O1 (#1580047)
+
 * Sat May 19 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-39
 - workaround qtscript/gcc8 bug (#1580047)
 
