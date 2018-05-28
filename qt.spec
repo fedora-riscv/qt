@@ -1410,7 +1410,7 @@ fi
 
 
 %changelog
-* Mon May 28 2018 David Abdurachmanov <david.abdurachmanov@gmail.com> - 1:4.8.7-40.0.riscv64
+* Mon May 28 2018 David Abdurachmanov <david.abdurachmanov@gmail.com> - 1:4.8.7-40.1.riscv64
 - Remove pkgconfig(NetworkManager) which is deprecated/retired, and not used in QT (?)
 - Disable JavaScript JIT on RISC-V (riscv64)
 
