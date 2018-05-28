@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 40%{?dist}
+Release: 40.0.riscv64%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -212,6 +212,9 @@ Patch113: qt-everywhere-opensource-src-4.8.6-QTBUG-22829.patch
 
 # aarch64 support, https://bugreports.qt-project.org/browse/QTBUG-35442
 Patch180: qt-aarch64.patch
+
+# riscv64 support
+Patch181: qt-everywhere-opensource-src-4.8.7-riscv64.patch
 
 ## upstream git
 
@@ -643,6 +646,7 @@ rm -rf src/3rdparty/clucene
 %patch113 -p1 -b .QTBUG-22829
 
 %patch180 -p1 -b .aarch64
+%patch181 -p1 -b .riscv64
 
 # upstream git
 
@@ -660,7 +664,7 @@ rm -rf src/3rdparty/clucene
 %endif
 
 # https://bugzilla.redhat.com/478481
-%ifarch x86_64 aarch64
+%ifarch x86_64 aarch64 riscv64
 %define platform linux-g++
 %endif
 
@@ -689,7 +693,7 @@ if [ "%{_lib}" == "lib64" ] ; then
 fi
 
 # MIPS does not accept -m64/-m32 flags
-%ifarch %{mips}
+%ifarch %{mips} riscv64
 sed -i -e 's,-m32,,' mkspecs/linux-g++-32/qmake.conf
 sed -i -e 's,-m64,,' mkspecs/linux-g++-64/qmake.conf
 %endif
@@ -1403,6 +1407,9 @@ fi
 
 
 %changelog
+* Mon May 28 2018 David Abdurachmanov <david.abdurachmanov@gmail.com> - 1:4.8.7-40.0.riscv64
+- Add support for RISC-V (riscv64)
+
 * Sat May 19 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-40
 - build only qtscript using -O1 (#1580047)
 
