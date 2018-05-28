@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 40.0.riscv64%{?dist}
+Release: 40.1.riscv64%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -260,6 +260,10 @@ Source31: hi48-app-qt4-logo.png
 %define tds -no-sql-tds
 %endif
 
+%ifarch riscv64
+%define no_javascript_jit -no-javascript-jit
+%endif
+
 # macros, be mindful to keep sync'd with macros.qt4
 Source1: macros.qt4
 %define _qt4 %{name}
@@ -295,7 +299,6 @@ BuildRequires: pkgconfig(icu-i18n)
 %else
 BuildRequires: libicu-devel
 %endif
-BuildRequires: pkgconfig(NetworkManager)
 %global openssl -openssl-linked
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig(libpng)
@@ -1407,6 +1410,10 @@ fi
 
 
 %changelog
+* Mon May 28 2018 David Abdurachmanov <david.abdurachmanov@gmail.com> - 1:4.8.7-40.0.riscv64
+- Remove pkgconfig(NetworkManager) which is deprecated/retired, and not used in QT (?)
+- Disable JavaScript JIT on RISC-V (riscv64)
+
 * Mon May 28 2018 David Abdurachmanov <david.abdurachmanov@gmail.com> - 1:4.8.7-40.0.riscv64
 - Add support for RISC-V (riscv64)
 
