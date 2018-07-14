@@ -40,7 +40,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 40%{?dist}
+Release: 41%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1403,6 +1403,9 @@ fi
 
 
 %changelog
+* Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-41
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
+
 * Sat May 19 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-40
 - build only qtscript using -O1 (#1580047)
 
