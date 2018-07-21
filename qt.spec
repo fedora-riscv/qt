@@ -292,7 +292,9 @@ BuildRequires: pkgconfig(icu-i18n)
 %else
 BuildRequires: libicu-devel
 %endif
-BuildRequires: pkgconfig(NetworkManager)
+## as far as I can tell, this isn't used anywhere, omitting for now
+## https://bugzilla.redhat.com/show_bug.cgi?id=1606047
+#BuildRequires: pkgconfig(NetworkManager)
 %global openssl -openssl-linked
 BuildRequires: openssl-devel
 BuildRequires: pkgconfig(libpng)
@@ -1403,6 +1405,9 @@ fi
 
 
 %changelog
+* Sat Jul 21 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-42
+- drop BR: pkgconfig(NetworkManager) (#1606047)
+
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-41
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
 
