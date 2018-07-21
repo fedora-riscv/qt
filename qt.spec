@@ -797,25 +797,23 @@ fi
 %if ! 0%{?inject_optflags}
 # ensure qmake build using optflags (which can happen if not munging qmake.conf defaults)
 make clean -C qmake
-make %{?_smp_mflags} -C qmake \
+%make_build -C qmake \
   QMAKE_CFLAGS_RELEASE="${CFLAGS:-$RPM_OPT_FLAGS}" \
   QMAKE_CXXFLAGS_RELEASE="${CXXFLAGS:-$RPM_OPT_FLAGS}" \
   QMAKE_LFLAGS_RELEASE="${LDFLAGS:-$RPM_LD_FLAGS}" \
   QMAKE_STRIP=
 %endif
 
-make %{?_smp_mflags}
+%make_build
 
 # TODO: consider patching tools/tools.pro to enable building this by default
-%{?qvfb:make %{?_smp_mflags} -C tools/qvfb}
+%{?qvfb:%make_build -C tools/qvfb}
 
 # recreate .qm files
 bin/lrelease translations/*.ts
 
 
 %install
-rm -rf %{buildroot}
-
 make install INSTALL_ROOT=%{buildroot}
 
 %if 0%{?qvfb}
@@ -1063,7 +1061,7 @@ fi
 %endif
 
 %post
-/sbin/ldconfig
+%{?ldconfig}
 %if 0%{?qtchooser}
 %{_sbindir}/update-alternatives \
   --install %{_sysconfdir}/xdg/qtchooser/4.conf \
@@ -1079,7 +1077,7 @@ fi
 %endif
 
 %postun
-/sbin/ldconfig
+%{?ldconfig}
 %if 0%{?qtchooser}
 if [ $1 -eq 0 ]; then
 %{_sbindir}/update-alternatives  \
@@ -1407,6 +1405,7 @@ fi
 %changelog
 * Sat Jul 21 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-42
 - drop BR: pkgconfig(NetworkManager) (#1606047)
+- use %%make_build %%ldconfig
 
 * Sat Jul 14 2018 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-41
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_29_Mass_Rebuild
