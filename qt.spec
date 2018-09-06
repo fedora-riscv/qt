@@ -336,7 +336,7 @@ BuildRequires: pkgconfig(gtk+-2.0)
 %endif
 
 %if "%{?psql}" != "-no-sql-psql"
-BuildRequires: postgresql-devel
+BuildRequires: libpq-devel
 %endif
 
 %if "%{?odbc}" != "-no-sql-odbc"
