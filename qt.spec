@@ -27,8 +27,11 @@
 # trim changelog included in binary rpms
 %global _changelog_trimtime %(date +%s -d "1 year ago")
 
-# support qtchooser
+# support qtchooser, except when building for inclusion in a flatpak
+%if !0%{?flatpak}
 %define qtchooser 1
+%endif
+
 %if 0%{?qtchooser}
 %define priority 20
 %ifarch %{multilib_basearchs}
@@ -40,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 41%{?dist}
+Release: 43%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1403,6 +1406,9 @@ fi
 
 
 %changelog
+* Fri Sep 21 2018 Owen Taylor <otaylor@redhat.com> - 1:4.8.7-43
+- Disable qtchooser for Flatpak builds
+
 * Sat Jul 21 2018 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-42
 - drop BR: pkgconfig(NetworkManager) (#1606047)
 - use %%make_build %%ldconfig
