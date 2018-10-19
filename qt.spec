@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 43%{?dist}
+Release: 44%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -299,7 +299,11 @@ BuildRequires: libicu-devel
 ## https://bugzilla.redhat.com/show_bug.cgi?id=1606047
 #BuildRequires: pkgconfig(NetworkManager)
 %global openssl -openssl-linked
+%if 0%{?fedora} == 27
+BuildRequires: compat-openssl10-devel
+%else
 BuildRequires: openssl-devel
+%endif
 BuildRequires: pkgconfig(libpng)
 BuildRequires: pkgconfig(libpulse)
 BuildRequires: pkgconfig(xtst) 
@@ -637,7 +641,9 @@ rm -rf src/3rdparty/clucene
 %patch91 -p1 -b .mips64
 %patch92 -p1 -b .gcc6
 %patch93 -p1 -b .alsa1.1
+%if 0%{?fedora} > 27 || 0%{?rhel} > 7
 %patch94 -p1 -b .openssl1.1
+%endif
 %patch95 -p1 -b .icu59
 %if 0%{?fedora} > 27
 %patch96 -p1 -b .gcc8_qtscript
@@ -1406,6 +1412,11 @@ fi
 
 
 %changelog
+* Fri Oct 19 2018 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.7-44
+- fix QAudio hardcoding hw:0,0 on ALSA1.1 (patch by Jaroslav Škarvada, #1641151)
+- disable OpenSSL 1.1 patch for F27, keep building against compat-openssl10
+  (It really does not make sense to switch over the F27 package at this point.)
+
 * Fri Sep 21 2018 Owen Taylor <otaylor@redhat.com> - 1:4.8.7-43
 - Disable qtchooser for Flatpak builds
 
