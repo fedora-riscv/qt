@@ -1159,18 +1159,6 @@ fi
 %files common
 # empty for now, consider: filesystem/dir ownership, licenses
 
-%post assistant
-touch --no-create %{_datadir}/icons/hicolor ||:
-
-%posttrans assistant
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-
-%postun assistant
-if [ $1 -eq 0 ] ; then
-touch --no-create %{_datadir}/icons/hicolor ||:
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-fi
-
 %files assistant
 %if "%{_qt4_bindir}" != "%{_bindir}"
 %{_bindir}/assistant*
@@ -1352,18 +1340,7 @@ fi
 %{_qt4_plugindir}/sqldrivers/libqsqltds*
 %endif
 
-%post x11
-/sbin/ldconfig
-touch --no-create %{_datadir}/icons/hicolor ||:
-
-%posttrans x11
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-
-%postun x11
-/sbin/ldconfig
-if [ $1 -eq 0 ] ; then
-touch --no-create %{_datadir}/icons/hicolor ||:
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
+%ldconfig_scriptlets x11
 fi
 
 %files x11 -f qt-x11.lang
