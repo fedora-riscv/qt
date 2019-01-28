@@ -47,7 +47,6 @@ Release: 44%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
-Group: System Environment/Libraries
 Url:     http://qt-project.org/
 %if 0%{?beta:1}
 Source0: https://download.qt-project.org/development_releases/qt/4.8/%{version}-%{beta}/qt-everywhere-opensource-src-%{version}-%{beta}.tar.gz
@@ -392,7 +391,6 @@ BuildArch: noarch
 
 %package assistant
 Summary: Documentation browser for Qt 4
-Group: Documentation
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-assistant = %{version}-%{release}
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -404,7 +402,6 @@ Provides: bundled(clucene09)
 
 %package config
 Summary: Graphical configuration tool for programs using Qt 4 
-Group: User Interface/Desktops
 # -config introduced in 4.7.1-10 , for upgrade path
 # seems to tickle a pk bug, https://bugzilla.redhat.com/674326
 #Obsoletes: %{name}-x11 < 1:4.7.1-10
@@ -417,7 +414,6 @@ Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %define demos 1
 %package demos
 Summary: Demonstration applications for %{name}
-Group:   Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-doc
 %description demos
@@ -426,7 +422,6 @@ Requires: %{name}-doc
 %define docs 1
 %package doc
 Summary: API documentation for %{name}
-Group: Documentation
 Requires: %{name} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-assistant
 Obsoletes: qt4-doc < %{version}-%{release}
@@ -439,14 +434,12 @@ BuildArch: noarch
 
 %package designer-plugin-webkit
 Summary: Qt designer plugin for WebKit
-Group: Development/Libraries
 Requires: %{name}-x11%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description designer-plugin-webkit
 %{summary}.
 
 %package devel
 Summary: Development files for the Qt toolkit
-Group: Development/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Requires: %{name}-x11%{?_isa}
 Requires: %{name}-sqlite%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
@@ -483,7 +476,6 @@ Qt Linguist
 %define private 1
 %package devel-private
 Summary: Private headers for Qt toolkit 
-Group: Development/Libraries
 Provides: qt4-devel-private = %{version}-%{release}
 Provides: %{name}-private-devel = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-private-devel = %{version}-%{release}
@@ -495,7 +487,6 @@ BuildArch: noarch
 %define examples 1
 %package examples
 Summary: Programming examples for %{name}
-Group: Documentation
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description examples
 %{summary}.
@@ -503,14 +494,12 @@ Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %define qvfb 1
 %package qvfb
 Summary: Virtual frame buffer for Qt for Embedded Linux
-Group: Applications/Emulators
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 %description qvfb
 %{summary}.
 
 %package ibase
 Summary: IBase driver for Qt's SQL classes
-Group:  System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides:  qt4-ibase = %{version}-%{release}
 %{?_isa:Provides: qt4-ibase%{?_isa} = %{version}-%{release}}
@@ -519,7 +508,6 @@ Provides:  qt4-ibase = %{version}-%{release}
 
 %package mysql
 Summary: MySQL driver for Qt's SQL classes
-Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-MySQL < %{version}-%{release}
 Provides:  qt4-MySQL = %{version}-%{release}
@@ -531,7 +519,6 @@ Provides:  qt4-mysql = %{version}-%{release}
 
 %package odbc 
 Summary: ODBC driver for Qt's SQL classes
-Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-ODBC < %{version}-%{release}
 Provides:  qt4-ODBC = %{version}-%{release}
@@ -543,7 +530,6 @@ Provides:  qt4-odbc = %{version}-%{release}
 
 %package postgresql 
 Summary: PostgreSQL driver for Qt's SQL classes
-Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Obsoletes: qt4-PostgreSQL < %{version}-%{release}
 Provides:  qt4-PostgreSQL = %{version}-%{release}
@@ -555,7 +541,6 @@ Provides:  qt4-postgresql = %{version}-%{release}
 
 %package tds
 Summary: TDS driver for Qt's SQL classes
-Group: System Environment/Libraries
 Requires: %{name}%{?_isa} = %{?epoch:%{epoch}:}%{version}-%{release}
 Provides: qt4-tds = %{version}-%{release}
 %{?_isa:Provides: qt4-tds%{?_isa} = %{version}-%{release}}
@@ -564,7 +549,6 @@ Provides: qt4-tds = %{version}-%{release}
 
 %package x11
 Summary: Qt GUI-related libraries
-Group: System Environment/Libraries
 # include Obsoletes here to be safe(r) bootstrap-wise with phonon-4.5.0
 # that will Provides: it -- Rex
 Obsoletes: qt-designer-plugin-phonon < 1:4.7.2-6
