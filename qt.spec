@@ -1173,20 +1173,6 @@ fi
 %{_qt4_plugindir}/designer/libqwebview.so
 %endif
 
-%post devel
-touch --no-create %{_datadir}/icons/hicolor ||:
-
-%posttrans devel
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-update-desktop-database -q &> /dev/null ||:
-
-%postun devel
-if [ $1 -eq 0 ] ; then
-touch --no-create %{_datadir}/icons/hicolor ||:
-gtk-update-icon-cache -q %{_datadir}/icons/hicolor 2> /dev/null ||:
-update-desktop-database -q &> /dev/null ||:
-fi
-
 %files devel -f qt-devel.lang
 %{rpm_macros_dir}/macros.qt4
 %{_qt4_bindir}/lconvert
