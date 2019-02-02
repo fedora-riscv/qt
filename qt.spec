@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 44%{?dist}
+Release: 45%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1359,6 +1359,9 @@ fi
 
 
 %changelog
+* Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-45
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
+
 * Fri Oct 19 2018 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.7-44
 - fix QAudio hardcoding hw:0,0 on ALSA1.1 (patch by Jaroslav Škarvada, #1641151)
 - disable OpenSSL 1.1 patch for F27, keep building against compat-openssl10
