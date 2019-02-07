@@ -1311,7 +1311,6 @@ fi
 %endif
 
 %ldconfig_scriptlets x11
-fi
 
 %files x11 -f qt-x11.lang
 %dir %{_qt4_importdir}/
