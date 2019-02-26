@@ -215,6 +215,10 @@ Patch113: qt-everywhere-opensource-src-4.8.6-QTBUG-22829.patch
 # aarch64 support, https://bugreports.qt-project.org/browse/QTBUG-35442
 Patch180: qt-aarch64.patch
 
+# Fix problem caused by gcc 9 fixing a longstanding bug.
+# https://github.com/qt/qtbase/commit/c35a3f519007af44c3b364b9af86f6a336f6411b.patch
+Patch181: qt-everywhere-opensource-src-4.8.7-qforeach.patch
+
 ## upstream git
 
 ## security patches
@@ -638,6 +642,7 @@ rm -rf src/3rdparty/clucene
 %patch113 -p1 -b .QTBUG-22829
 
 %patch180 -p1 -b .aarch64
+%patch181 -p1 -b .qforeach
 
 # upstream git
 
