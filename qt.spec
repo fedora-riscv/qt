@@ -263,6 +263,11 @@ Source31: hi48-app-qt4-logo.png
 %define tds -no-sql-tds
 %endif
 
+# workaround FTBFS with gcc9
+%if 0%{?fedora} > 29
+%global no_javascript_jit -no-javascript-jit
+%endif
+
 # macros, be mindful to keep sync'd with macros.qt4
 Source1: macros.qt4
 %define _qt4 %{name}
@@ -1365,6 +1370,7 @@ fi
 %changelog
 * Thu Feb 28 2019 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-46
 - backport qforeach.patch from qt5
+- -no-javascript-jit on f30 to workaround gcc9 FTBFS for now
 
 * Sat Feb 02 2019 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-45
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
