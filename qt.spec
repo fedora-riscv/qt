@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 44%{?dist}
+Release: 45%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -219,6 +219,8 @@ Patch180: qt-aarch64.patch
 ## upstream git
 
 ## security patches
+# CVE-2018-19872 qt: malformed PPM image causing division by zero and crash in qppmhandler.cpp
+Patch500: qt-everywhere-opensource-src-4.8.7-crash-in-qppmhandler.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -658,6 +660,8 @@ rm -rf src/3rdparty/clucene
 # upstream git
 
 # security fixes
+%patch500 -p1 -b .malformed-ppb-image-causing-crash
+
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
 
@@ -1412,6 +1416,9 @@ fi
 
 
 %changelog
+* Fri Mar 22 2019 Than Ngo <than@redhat.com> - 4.8.7-45
+- fixed #1691638 - CVE-2018-19872 qt: malformed PPM image causing division by zero and crash in qppmhandler.cpp
+
 * Fri Oct 19 2018 Kevin Kofler <Kevin@tigcc.ticalc.org> - 1:4.8.7-44
 - fix QAudio hardcoding hw:0,0 on ALSA1.1 (patch by Jaroslav Škarvada, #1641151)
 - disable OpenSSL 1.1 patch for F27, keep building against compat-openssl10
