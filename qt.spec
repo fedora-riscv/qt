@@ -217,6 +217,7 @@ Patch113: qt-everywhere-opensource-src-4.8.6-QTBUG-22829.patch
 Patch180: qt-aarch64.patch
 
 ## upstream git
+Patch300: 0002-Fix-build-with-GCC-8.3.patch
 
 ## security patches
 # CVE-2018-19872 qt: malformed PPM image causing division by zero and crash in qppmhandler.cpp
@@ -658,7 +659,7 @@ rm -rf src/3rdparty/clucene
 %patch180 -p1 -b .aarch64
 
 # upstream git
-
+%patch300 -p1 -b .gcc8.3
 # security fixes
 %patch500 -p1 -b .malformed-ppb-image-causing-crash
 
