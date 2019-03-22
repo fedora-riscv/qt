@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 46%{?dist}
+Release: 47%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -222,6 +222,8 @@ Patch181: qt-everywhere-opensource-src-4.8.7-qforeach.patch
 ## upstream git
 
 ## security patches
+# CVE-2018-19872 qt: malformed PPM image causing division by zero and crash in qppmhandler.cpp
+Patch500: qt-everywhere-opensource-src-4.8.7-crash-in-qppmhandler.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -652,6 +654,8 @@ rm -rf src/3rdparty/clucene
 # upstream git
 
 # security fixes
+%patch500 -p1 -b .malformed-ppb-image-causing-crash
+
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
 
@@ -1368,6 +1372,9 @@ fi
 
 
 %changelog
+* Fri Mar 22 2019 Than Ngo <than@redhat.com> - 4.8.7-47
+- fixed #1691638 - CVE-2018-19872 qt: malformed PPM image causing division by zero and crash in qppmhandler.cpp
+
 * Thu Feb 28 2019 Rex Dieter <rdieter@fedoraproject.org> - 1:4.8.7-46
 - backport qforeach.patch from qt5
 - -no-javascript-jit on f30 to workaround gcc9 FTBFS for now
