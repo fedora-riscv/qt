@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 47%{?dist}
+Release: 48%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1372,6 +1372,9 @@ fi
 
 
 %changelog
+* Tue Apr 02 2019 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-48
+- rebuild
+
 * Fri Mar 22 2019 Than Ngo <than@redhat.com> - 4.8.7-47
 - fixed #1691638 - CVE-2018-19872 qt: malformed PPM image causing division by zero and crash in qppmhandler.cpp
 
