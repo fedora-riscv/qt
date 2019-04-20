@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 48%{?dist}
+Release: 49%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -266,7 +266,8 @@ Source31: hi48-app-qt4-logo.png
 %endif
 
 # workaround FTBFS with gcc9
-%if 0%{?fedora} > 29
+#if 0%{?fedora} > 29
+%if 0
 %global no_javascript_jit -no-javascript-jit
 %endif
 
@@ -1372,6 +1373,9 @@ fi
 
 
 %changelog
+* Sat Apr 20 2019 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-49
+- re-enable javascript-jit
+
 * Tue Apr 02 2019 Rex Dieter <rdieter@fedoraproject.org> - 4.8.7-48
 - rebuild
 
