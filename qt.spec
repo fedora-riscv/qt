@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 52%{?dist}
+Release: 53%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -711,6 +711,11 @@ done
 
 
 %build
+# QT is known not to work properly with LTO at this point.  Some of the issues
+# are being worked on upstream and disabling LTO should be re-evaluated as
+# we update this change.  Until such time...
+# Disable LTO
+%define _lto_cflags %{nil}
 
 # drop -fexceptions from $RPM_OPT_FLAGS
 RPM_OPT_FLAGS=`echo $RPM_OPT_FLAGS | sed 's|-fexceptions||g'`
@@ -1373,6 +1378,9 @@ fi
 
 
 %changelog
+* Wed Jul 01 2020 Jeff Law <law@redhat.com> - 4.8.7-53
+- Disable LTO
+
 * Fri Jan 31 2020 Than Ngo <than@redhat.com> - 4.8.7-52
 - fixed FTBFS against gcc10
 
