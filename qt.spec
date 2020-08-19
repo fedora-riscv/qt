@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 56%{?dist}
+Release: 57%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -203,6 +203,12 @@ Patch95: qt-everywhere-opensource-src-4.8.7-icu59.patch
 # https://bugzilla.redhat.com/show_bug.cgi?id=1580047
 Patch96: qt-everywhere-opensource-src-4.8.7-gcc8_qtscript.patch
 
+# Fix ordered pointer comparison against zero problem reported by gcc-11
+Patch97: qt-everywhere-opensource-src-4.8.7-gcc11.patch
+
+# hardcode the compiler version in the build key once and for all
+Patch98: qt-everywhere-opensource-src-4.8.7-hardcode-buildkey.patch
+
 # upstream patches
 # backported from Qt5 (essentially)
 # http://bugzilla.redhat.com/702493
@@ -218,9 +224,6 @@ Patch180: qt-aarch64.patch
 # Fix problem caused by gcc 9 fixing a longstanding bug.
 # https://github.com/qt/qtbase/commit/c35a3f519007af44c3b364b9af86f6a336f6411b.patch
 Patch181: qt-everywhere-opensource-src-4.8.7-qforeach.patch
-
-# Fix ordered pointer comparison against zero problem reported by gcc-11
-Patch200: qt-gcc11.patch
 
 ## upstream git
 
@@ -650,6 +653,8 @@ rm -rf src/3rdparty/clucene
 %if 0%{?fedora} > 27
 %patch96 -p1 -b .gcc8_qtscript
 %endif
+%patch97 -p1 -b .gcc11
+%patch98 -p1 -b .hardcode-buildkey
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -657,7 +662,6 @@ rm -rf src/3rdparty/clucene
 
 %patch180 -p1 -b .aarch64
 %patch181 -p1 -b .qforeach
-%patch200 -p1 -b .gcc11
 
 # upstream git
 
@@ -1386,6 +1390,9 @@ fi
 
 
 %changelog
+* Wed Aug 19 2020 Kevin Kofler <Kevin@tigcc.ticalc.org> - 4.8.7-57
+- Hardcode the compiler version in the build key once and for all
+
 * Wed Aug 19 2020 Jeff Law <law@redhat.com> - 4.8.7-56
 - Add support for gcc-11
 - Fix ordered pointer comparison against zero problems
