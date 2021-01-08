@@ -298,6 +298,7 @@ Source1: macros.qt4
 %define _qt4_sysconfdir %{_sysconfdir}
 %define _qt4_translationdir %{_datadir}/qt4/translations
 
+BuildRequires: make
 BuildRequires: cups-devel
 BuildRequires: desktop-file-utils
 BuildRequires: findutils
