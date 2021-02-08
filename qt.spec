@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 58%{?dist}
+Release: 59%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1391,6 +1391,9 @@ fi
 
 
 %changelog
+* Mon Feb 08 2021 Pavel Raiskup <praiskup@redhat.com> - 1:4.8.7-59
+- rebuild for libpq ABI fix rhbz#1908268
+
 * Wed Jan 27 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-58
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
