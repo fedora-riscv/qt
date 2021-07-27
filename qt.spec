@@ -276,6 +276,7 @@ Source31: hi48-app-qt4-logo.png
 %define ibase -no-sql-ibase
 %define tds -no-sql-tds
 %endif
+# disable it temporary (firebird build failed on s390x, bz#1969393)
 %if 0%{?fedora} > 34
 %define ibase -no-sql-ibase
 %endif
