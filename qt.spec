@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 61%{?dist}
+Release: 62%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -275,6 +275,9 @@ Source31: hi48-app-qt4-logo.png
 %define no_javascript_jit -no-javascript-jit
 %define ibase -no-sql-ibase
 %define tds -no-sql-tds
+%endif
+%if 0%{?fedora} > 34
+%define ibase -no-sql-ibase
 %endif
 
 # workaround FTBFS with gcc9
@@ -1395,6 +1398,9 @@ fi
 
 
 %changelog
+* Tue Jul 27 2021 Than Ngo <than@redhat.com> - 4.8.7-62
+- Fixed FTBFS 
+
 * Fri Jul 23 2021 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-61
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
 
