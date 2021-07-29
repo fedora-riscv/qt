@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 62%{?dist}
+Release: 63%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -104,8 +104,8 @@ Patch28: qt-everywhere-opensource-src-4.8.5-qt_plugin_path.patch
 # add support for pkgconfig's Requires.private to qmake
 Patch50: qt-everywhere-opensource-src-4.8.4-qmake_pkgconfig_requires_private.patch
 
-# FTBFS against newer firebird
-Patch51: qt-everywhere-opensource-src-4.8.7-firebird.patch
+# FTBFS against newer firebird-4.0.0
+Patch51: qt-everywhere-opensource-src-4.8.7-firebird-4.0.0.patch
 
 # workaround major/minor macros possibly being defined already
 Patch52: qt-everywhere-opensource-src-4.8.7-QT_VERSION_CHECK.patch
@@ -1399,6 +1399,9 @@ fi
 
 
 %changelog
+* Thu Jul 29 2021 Than Ngo <than@redhat.com> - 4.8.7-63
+- Fixed FTBFS against firebird-4.0.0
+
 * Tue Jul 27 2021 Than Ngo <than@redhat.com> - 4.8.7-62
 - Fixed FTBFS 
 
