@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 63%{?dist}
+Release: 64%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -1399,6 +1399,9 @@ fi
 
 
 %changelog
+* Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 1:4.8.7-64
+- Rebuilt with OpenSSL 3.0.0
+
 * Thu Jul 29 2021 Than Ngo <than@redhat.com> - 4.8.7-63
 - Fixed FTBFS against firebird-4.0.0
 
