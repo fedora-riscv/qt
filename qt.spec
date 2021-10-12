@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 64%{?dist}
+Release: 65%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -236,6 +236,9 @@ Patch501: qt-CVE-2020-17507.patch
 
 # no CVE qt: Clamp parsed doubles to float representable values
 Patch502: qt-everywhere-opensource-src-4.8.7-clamp-parsed-doubles-to-float-representtable-values.patch
+
+# CVE-2020-24741 qt: QLibrary loads libraries relative to CWD which could result in arbitrary code execution
+Patch503: qt-everywhere-opensource-src-4.8.5-CVE-2020-24741.patch
 
 # desktop files
 Source20: assistant.desktop
@@ -677,6 +680,7 @@ rm -rf src/3rdparty/clucene
 %patch500 -p1 -b .malformed-ppb-image-causing-crash
 %patch501 -p1 -b .buffer-over-read-in-read_xbm_body
 %patch502 -p1 -b .clamp-parsed-doubles-to-float-representtable-values
+%patch503 -p1 -b .CVE-2020-24741
 
 # regression fixes for the security fixes
 %patch84 -p1 -b .QTBUG-35459
@@ -1399,6 +1403,9 @@ fi
 
 
 %changelog
+* Tue Oct 12 2021 Than Ngo <than@redhat.com> - 1:4.8.7-65
+- CVE-2020-24741, Do not attempt to load a library relative to $PWD
+
 * Tue Sep 14 2021 Sahana Prasad <sahana@redhat.com> - 1:4.8.7-64
 - Rebuilt with OpenSSL 3.0.0
 
