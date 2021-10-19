@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 65%{?dist}
+Release: 66%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -208,6 +208,9 @@ Patch97: qt-everywhere-opensource-src-4.8.7-gcc11.patch
 
 # hardcode the compiler version in the build key once and for all
 Patch98: qt-everywhere-opensource-src-4.8.7-hardcode-buildkey.patch
+
+# FTBFS openssl3
+Patch99: qt-everywhere-opensource-src-4.8.7-openssl3.patch
 
 # upstream patches
 # backported from Qt5 (essentially)
@@ -666,6 +669,7 @@ rm -rf src/3rdparty/clucene
 %endif
 %patch97 -p1 -b .gcc11
 %patch98 -p1 -b .hardcode-buildkey
+%patch99 -p1 -b .ssl3
 
 # upstream patches
 %patch102 -p1 -b .qgtkstyle_disable_gtk_theme_check
@@ -1403,6 +1407,9 @@ fi
 
 
 %changelog
+* Tue Oct 19 2021 Than Ngo <than@redhat.com> - 1:4.8.7-66
+- Fix FTBFS
+
 * Tue Oct 12 2021 Than Ngo <than@redhat.com> - 1:4.8.7-65
 - CVE-2020-24741, Do not attempt to load a library relative to $PWD
 
