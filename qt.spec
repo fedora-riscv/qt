@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 67%{?dist}
+Release: 68%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
@@ -410,6 +410,7 @@ Requires: qt-settings
 Requires(post): %{_sbindir}/update-alternatives
 Requires(postun): %{_sbindir}/update-alternatives
 %endif
+Recommends: (ibus-qt if ibus)
 
 %description 
 Qt is a software toolkit for developing applications.
@@ -1407,6 +1408,9 @@ fi
 
 
 %changelog
+* Mon Apr 25 2022 Jens Petersen <petersen@redhat.com> - 1:4.8.7-68
+- Recommend ibus-qt when ibus is installed
+
 * Fri Jan 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-67
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
