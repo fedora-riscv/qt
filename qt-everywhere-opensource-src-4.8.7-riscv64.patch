@@ -1,0 +1,140 @@
+From 04ba246620ed6f252a818a3ef0561a1f62d95dad Mon Sep 17 00:00:00 2001
+From: David Abdurachmanov <david.abdurachmanov@gmail.com>
+Date: Mon, 28 May 2018 09:37:15 +0000
+Subject: [PATCH] Add support for RISC-V (riscv64)
+
+Original patch: https://git.parabola.nu/~oaken-source/parabola-riscv64-bootstrap.git/tree/src/stage4/patches/riscv64/qt4.patch
+
+This patch adds 64Bit RISC-V support to qt 4.8.7. The relevant changes are:
+
+	* configure: correctly detect riscv64 as $CFG_HOST_ARCH
+
+	* src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h: introduce
+	  WTF_CPU_RISCV64; and since rv64 requires a 64bit JSValue, set
+	  WTF_USE_JSVALUE64 here
+
+	* src/corelib/arch/qatomic_arch.h: use qatomic_generic on rv64
+	* src/corelib/arch/riscv64/arch.pri: likewise
+
+	* src/dbus/qdbusintegrator.cpp: this can not be a const QString since
+	  the atomics involved are defined for pointer types, not const pointer
+	  types (would require -fpermissive to build on current g++)
+
+	* src/3rdparty/webkit/Source/JavaScriptCore/JavaScriptCore.pri: add
+	  -fpermissive to local build flags to work around an unconditional
+	  reinterpret_cast<int32_t> in JSValue.h failing the build in current g++
+	* src/3rdparty/javascriptcore/JavaScriptCore/JavaScriptCore.pri: likewise
+
+Signed-off-by: David Abdurachmanov <david.abdurachmanov@gmail.com>
+---
+ configure                                                 | 6 ++++++
+ .../javascriptcore/JavaScriptCore/JavaScriptCore.pri      | 8 ++++++++
+ src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h  | 7 ++++++-
+ src/corelib/arch/qatomic_arch.h                           | 2 ++
+ src/corelib/arch/riscv64/arch.pri                         | 6 ++++++
+ src/dbus/qdbusintegrator.cpp                              | 2 +-
+ 6 files changed, 29 insertions(+), 2 deletions(-)
+ create mode 100644 src/corelib/arch/riscv64/arch.pri
+
+diff --git a/configure b/configure
+index 226a602f..bf3785ee 100755
+--- a/configure
++++ b/configure
+@@ -3239,6 +3239,12 @@ if [ -z "${CFG_HOST_ARCH}" ]; then
+         fi
+         CFG_HOST_ARCH=powerpc
+         ;;
++    *:*:riscv64*)
++        if [ "$OPT_VERBOSE" = "yes" ]; then
++            echo "    64-bit RISC-V (riscv64)"
++        fi
++        CFG_HOST_ARCH=riscv64
++        ;;
+     *:*:s390*)
+     	if [ "$OPT_VERBOSE" = "yes" ]; then
+     	    echo "    IBM S/390 (s390)"
+diff --git a/src/3rdparty/javascriptcore/JavaScriptCore/JavaScriptCore.pri b/src/3rdparty/javascriptcore/JavaScriptCore/JavaScriptCore.pri
+index 63c8a3a2..9e565712 100644
+--- a/src/3rdparty/javascriptcore/JavaScriptCore/JavaScriptCore.pri
++++ b/src/3rdparty/javascriptcore/JavaScriptCore/JavaScriptCore.pri
+@@ -72,6 +72,14 @@ equals(QT_ARCH, aarch64) {
+     QMAKE_CXXFLAGS += -fpermissive
+ }
+ 
++# Hack around RISCV64 fail wrt JSValue.h
++# SValue.h unconditionally casts pointer to int32_t.
++# add -fpermissive locally as a workaround
++equals(QT_ARCH, riscv64) {
++    message("JavaScriptCore riscv64 hack: -fpermissive")
++    QMAKE_CXXFLAGS += -fpermissive
++}
++
+ wince* {
+     INCLUDEPATH += $$QT_SOURCE_TREE/src/3rdparty/ce-compat
+     SOURCES += $$QT_SOURCE_TREE/src/3rdparty/ce-compat/ce_time.c
+diff --git a/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h b/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h
+index 635df39e..85b1d91b 100644
+--- a/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h
++++ b/src/3rdparty/webkit/Source/JavaScriptCore/wtf/Platform.h
+@@ -236,6 +236,11 @@
+ #define WTF_CPU_X86_64 1
+ #endif
+ 
++/* CPU(RISCV64) - RISCV64 */
++#if defined(__riscv) && defined(__riscv_xlen) && __riscv_xlen == 64
++#define WTF_CPU_RISCV64 1
++#endif
++
+ /* CPU(ARM) - ARM, any version*/
+ #if   defined(arm) \
+     || defined(__arm__) \
+@@ -1012,7 +1017,7 @@
+     || CPU(SPARC64) \
+     || CPU(S390X) \
+     || CPU(PPC64) \
+-    || CPU(MIPS64) || CPU(AARCH64)
++    || CPU(MIPS64) || CPU(AARCH64) || CPU(RISCV64)
+ #define WTF_USE_JSVALUE64 1
+ #else
+ #define WTF_USE_JSVALUE32_64 1
+diff --git a/src/corelib/arch/qatomic_arch.h b/src/corelib/arch/qatomic_arch.h
+index c91c20b3..bbf5d0f7 100644
+--- a/src/corelib/arch/qatomic_arch.h
++++ b/src/corelib/arch/qatomic_arch.h
+@@ -96,6 +96,8 @@ QT_BEGIN_HEADER
+ #  include "QtCore/qatomic_generic.h"
+ #elif defined(QT_ARCH_AARCH64)
+ #  include "QtCore/qatomic_aarch64.h"
++#elif defined(QT_ARCH_RISCV64)
++#  include "QtCore/qatomic_generic.h"
+ #else
+ #  error "Qt has not been ported to this architecture"
+ #endif
+diff --git a/src/corelib/arch/riscv64/arch.pri b/src/corelib/arch/riscv64/arch.pri
+new file mode 100644
+index 00000000..7d054cc9
+--- /dev/null
++++ b/src/corelib/arch/riscv64/arch.pri
+@@ -0,0 +1,6 @@
++#
++# RISC-V 64 architecture
++#
++
++unix:SOURCES += ../generic/qatomic_generic_unix.cpp
++win32:SOURCES += ../generic/qatomic_generic_windows.cpp
+diff --git a/src/dbus/qdbusintegrator.cpp b/src/dbus/qdbusintegrator.cpp
+index eaf3e291..10b246ca 100644
+--- a/src/dbus/qdbusintegrator.cpp
++++ b/src/dbus/qdbusintegrator.cpp
+@@ -73,7 +73,7 @@ QT_BEGIN_NAMESPACE
+ static bool isDebugging;
+ #define qDBusDebug              if (!::isDebugging); else qDebug
+ 
+-Q_GLOBAL_STATIC_WITH_ARGS(const QString, orgFreedesktopDBusString, (QLatin1String(DBUS_SERVICE_DBUS)))
++Q_GLOBAL_STATIC_WITH_ARGS(QString, orgFreedesktopDBusString, (QLatin1String(DBUS_SERVICE_DBUS)))
+ 
+ static inline QString dbusServiceString()
+ { return *orgFreedesktopDBusString(); }
+-- 
+2.17.0
+

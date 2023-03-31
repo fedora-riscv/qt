@@ -43,7 +43,7 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 78%{?dist}
+Release: 79%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
 # Automatically converted from old format: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT - review is highly recommended.
@@ -229,6 +229,9 @@ Patch180: qt-aarch64.patch
 # https://github.com/qt/qtbase/commit/c35a3f519007af44c3b364b9af86f6a336f6411b.patch
 Patch181: qt-everywhere-opensource-src-4.8.7-qforeach.patch
 
+# riscv64 support
+Patch182: qt-everywhere-opensource-src-4.8.7-riscv64.patch
+
 ## upstream git
 
 ## security patches
@@ -296,6 +299,10 @@ Source31: hi48-app-qt4-logo.png
 #if 0%{?fedora} > 29
 %if 0
 %global no_javascript_jit -no-javascript-jit
+%endif
+
+%ifarch riscv64
+%define no_javascript_jit -no-javascript-jit
 %endif
 
 # macros, be mindful to keep sync'd with macros.qt4
@@ -684,6 +691,10 @@ rm -rf src/3rdparty/clucene
 %patch -P180 -p1 -b .aarch64
 %patch -P181 -p1 -b .qforeach
 
+%ifarch riscv64
+%patch -P182 -p1 -b .riscv64
+%endif
+
 # upstream git
 
 # security fixes
@@ -707,7 +718,7 @@ rm -rf src/3rdparty/clucene
 %endif
 
 # https://bugzilla.redhat.com/478481
-%ifarch x86_64 aarch64
+%ifarch x86_64 aarch64 riscv64
 %define platform linux-g++
 %endif
 
@@ -736,7 +747,7 @@ if [ "%{_lib}" == "lib64" ] ; then
 fi
 
 # MIPS does not accept -m64/-m32 flags
-%ifarch %{mips}
+%ifarch %{mips} riscv64
 sed -i -e 's,-m32,,' mkspecs/linux-g++-32/qmake.conf
 sed -i -e 's,-m64,,' mkspecs/linux-g++-64/qmake.conf
 %endif
@@ -1415,6 +1426,9 @@ fi
 
 
 %changelog
+* Sun Oct 27 2024 David Abdurachmanov <davidlt@rivosinc.com> - 1:4.8.7-79
+- Add support for riscv64
+
 * Wed Sep 04 2024 Miroslav Suchý <msuchy@redhat.com> - 1:4.8.7-78
 - convert license to SPDX
 
