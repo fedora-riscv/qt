@@ -43,10 +43,11 @@ Summary: Qt toolkit
 Name:    qt
 Epoch:   1
 Version: 4.8.7
-Release: 77%{?dist}
+Release: 78%{?dist}
 
 # See LGPL_EXCEPTIONS.txt, LICENSE.GPL3, respectively, for exception details
-License: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT
+# Automatically converted from old format: (LGPLv2 with exceptions or GPLv3 with exceptions) and ASL 2.0 and BSD and FTL and MIT - review is highly recommended.
+License: (LGPL-2.0-or-later WITH FLTK-exception OR LicenseRef-Callaway-GPLv3-with-exceptions) AND Apache-2.0 AND LicenseRef-Callaway-BSD AND FTL AND LicenseRef-Callaway-MIT
 Url:     http://qt-project.org/
 %if 0%{?beta:1}
 Source0: https://download.qt-project.org/development_releases/qt/4.8/%{version}-%{beta}/qt-everywhere-opensource-src-%{version}-%{beta}.tar.gz
@@ -1414,6 +1415,9 @@ fi
 
 
 %changelog
+* Wed Sep 04 2024 Miroslav Suchý <msuchy@redhat.com> - 1:4.8.7-78
+- convert license to SPDX
+
 * Fri Jul 19 2024 Fedora Release Engineering <releng@fedoraproject.org> - 1:4.8.7-77
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_41_Mass_Rebuild
 
